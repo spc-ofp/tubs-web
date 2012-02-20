@@ -1,0 +1,23 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+
+<h2>@ViewBag.Title</h2>
+
+<fieldset>
+    <legend>Trip Summary</legend>
+    @{Html.RenderPartial("_TripSummary");}
+</fieldset>
+
+<p>
+    @Html.ActionLink("Crew", "Index", "Crew", new { id = Model.Id }, null) |
+    @Html.ActionLink("Electronics", "List", "Electronics", new { id = Model.Id }, null) |
+    @Html.ActionLink("GEN-1", "Index", "Gen1", new { id = Model.Id }, null) |
+    @Html.ActionLink("GEN-2", "List", "Gen2", new { id = Model.Id }, null) | 
+    @Html.ActionLink("GEN-3", "Index", "Gen3", new { id = Model.Id }, null) | @* FIXME Change this to List like the rest *@
+    @Html.ActionLink("GEN-6", "List", "Gen6", new { id = Model.Id }, null) |
+    @Html.ActionLink("Days", "List", "SeaDay", new { id = Model.Id }, null) |
+    @Html.ActionLink("Sets", "List", "FishingSet", new { id = Model.Id }, null)
+</p>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

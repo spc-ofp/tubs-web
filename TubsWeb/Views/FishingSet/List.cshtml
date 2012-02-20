@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.PurseSeineSet>
+
+@helper IsSkunk(IList<Spc.Ofp.Tubs.DAL.Entities.PurseSeineSetCatch> setcatch) {
+    if (0 == setcatch.Count) {
+        <text>Y</text>   
+    } else {
+        <text>N</text>
+    }
+}
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Set #</th>
+            <th>Association</th>
+            <th>Skunk Set</th>
+            <th>Total Catch (Observed)</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var set in @Model)
+    {
+        <tr>
+            <td>
+                <a href='@Url.RouteUrl("SetDetails", new { id = ViewBag.TripId, setNumber = set.SetNumber })'>@set.SetNumber</a>
+            </td>
+            <td>@set.Activity.SchoolAssociation</td>
+            <td>@IsSkunk(set.CatchList)</td>
+            <td>@set.CatchList.Sum(sc => sc.MetricTonsObserved)</td>
+            <td>@set.Comments</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<p>
+    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>

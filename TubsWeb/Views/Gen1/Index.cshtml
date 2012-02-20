@@ -1,0 +1,19 @@
+﻿@model TubsWeb.Models.Gen1ViewModel
+
+<h2>@ViewBag.Title</h2>
+
+
+
+<fieldset>
+    <legend>Vessel or Aircraft Sightings</legend>
+    @{ Html.RenderPartial("_Sightings", Model.Sightings); }
+</fieldset>
+
+<fieldset>
+    <legend>Fish transferring, Fish dumping, Bunkering by Observer's Vessel</legend>
+    @{ Html.RenderPartial("_Transfers", Model.Transfers); }
+</fieldset>
+
+<p>
+@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.TripId }, null)
+</p>

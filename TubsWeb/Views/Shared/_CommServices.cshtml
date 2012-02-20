@@ -1,0 +1,53 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.CommunicationServices
+
+<table width="100%">
+<thead>
+  <tr>
+    <th>Type</th>
+    <th>Installed</th>
+    <th>Address</th>
+  </tr>
+</thead>
+<tbody>
+   <tr>
+       <td>Satellite Phone</td>
+       <td>@Html.DisplayFor(m => m.HasSatellitePhone)</td>
+       <td>@Model.SatellitePhoneNumber</td>
+   </tr>
+   <tr>
+       <td>Mobile Phone</td>
+       <td>@Html.DisplayFor(m => m.HasMobilePhone)</td>
+       <td>@Model.MobilePhoneNumber</td>
+   </tr>
+   <tr>
+       <td>Fax</td>
+       <td>@Html.DisplayFor(m => m.HasFax)</td>
+       <td>@Model.FaxNumber</td>
+   </tr>
+   <tr>
+       <td>Email</td>
+       <td>@Html.DisplayFor(m => m.HasEmail)</td>
+       <td>@Model.EmailAddress</td>
+   </tr>
+   <tr>
+       <td>Weather Fax</td>
+       <td>@Html.DisplayFor(m => m.HasWeatherFax)</td>
+       <td>N/A</td>
+   </tr>
+   <tr>
+       <td>Phytoplankton</td>
+       <td>@Html.DisplayFor(m => m.HasPhytoplanktonService)</td>
+       <td>@Model.PhytoplanktonUrl</td>
+   </tr>
+   <tr>
+       <td>SST</td>
+       <td>@Html.DisplayFor(m => m.HasSeaSurfaceTemperatureService)</td>
+       <td>@Model.SeaSurfaceTemperatureUrl</td>
+   </tr>
+   <tr>
+       <td>Sea Height</td>
+       <td>@Html.DisplayFor(m => m.HasSeaHeightService)</td>
+       <td>@Model.SeaHeightServiceUrl</td>
+   </tr>
+</tbody>
+</table>

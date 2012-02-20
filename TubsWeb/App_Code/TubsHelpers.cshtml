@@ -1,0 +1,21 @@
+﻿@helper DisplayDate(DateTime? date) {
+    if (date.HasValue) {
+        @String.Format("{0}", date.Value);
+    }
+    else {
+        <text>N/A</text>   
+    }
+}
+
+@helper SpeedAndDirection(int? speed, int? direction) {
+    if (!speed.HasValue && !direction.HasValue) {
+        <text>N/A</text> 
+    } else {
+        var sb = new System.Text.StringBuilder();
+        sb.Append(speed.HasValue ? speed.Value.ToString() : "UNK");
+        sb.Append(" kts @ ");
+        sb.Append(direction.HasValue ? direction.Value.ToString() : "UNK");
+        sb.Append("&deg;");        
+        @Html.Raw(sb.ToString()) 
+    }
+}

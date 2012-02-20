@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Trip>
+           
+@{
+    ViewBag.Title = "List of Trips";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@* TODO Add search capability *@
+@* TODO Fix return and departure dates *@
+
+@{ var grid = new WebGrid(source: Model, defaultSort: "Id", rowsPerPage: 20); }
+
+<div id="tripgrid">
+    @grid.GetHtml(
+    alternatingRowStyle: "alt",
+    columns: grid.Columns(
+        grid.Column(
+            format: (item) => new HtmlString(
+                Html.ActionLink("Edit", "Edit", new { id = item.Id }) + " | " +
+                Html.ActionLink("Details", "Details", new { id = item.Id }))
+        ),
+        grid.Column("Id", "Trip Id"),
+        grid.Column("ProgramCode", "Program"),
+        grid.Column("TripNumber", "Trip Number"),
+        grid.Column("Observer", "Observer"),
+        grid.Column("Vessel", "Vessel"),
+        grid.Column("DeparturePort", "Port of Departure"),
+        grid.Column("DepartureDate", "Departure Date"),
+        grid.Column("ReturnPort", "Port of Return"),
+        grid.Column("ReturnDate", "Return Date"),
+        grid.Column(
+            header: "Trip Map",
+            format: (item) => new HtmlString("xyzzy")
+        ),
+        grid.Column(
+            header: "Report",
+            format: (item) => new HtmlString("xyzzy")
+        )
+    ))
+</div>
+
+@{ if (ViewBag.HasPrevious) 
+   {
+       @Html.ActionLink("<<", "Index", new { page = (ViewBag.CurrentPage - 1) })    
+   }   
+}
+
+@{ if (ViewBag.HasNext)
+   {
+       @Html.ActionLink(">>", "Index", new {page = (ViewBag.CurrentPage + 1)})    
+   }    
+}

@@ -1,0 +1,62 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.SeaDay
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+@{
+    if (ViewBag.CurrentDay > 1) {
+        <a href='@Url.RouteUrl("SeaDayDetails", new { id = ViewBag.TripId, dayNumber = ViewBag.CurrentDay - 1 })'>Previous Day</a>
+    }
+
+    if (ViewBag.MaxDays > ViewBag.CurrentDay)
+    {
+        <a href='@Url.RouteUrl("SeaDayDetails", new { id = ViewBag.TripId, dayNumber = ViewBag.CurrentDay + 1 })'>Next Day</a>
+    }
+}
+</p>
+
+<!-- Add Sea days and sets for PS trips -->
+@if (null == Model)
+{
+    <text>No day found</text>
+}
+else if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay))
+{
+    var psday = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay;
+    <table>
+      <thead>
+          <tr>
+            <th>Ship's Time</th>
+            <th>Position</th>
+            <th>EEZ</th>
+            <th>Activity</th>
+            <th>Wind Speed/Direction</th>
+            <th>Sea</th>
+            <th>Detection Method</th>
+            <th>Association</th>
+            <th>Comments</th>
+          </tr>
+      </thead>
+      <tbody>
+      @foreach (var entry in psday.Activities)
+      {
+          @Html.DisplayFor(m => entry)
+      }
+      </tbody>
+    </table>
+    
+    <p>TODO:  Add color coded dots to the activity column that match the pins in the map?  Or just color code the rows for significant events?</p>
+    <p>TODO:  Add in a hideable map for just this day.  Bonus points for overlaying observer, VMS, and logsheet data.</p>
+}
+else
+{
+    <p>
+        Start of day: @Html.DisplayFor(m => Model.StartOfDay) <br />
+        Start of day (UTC): @Html.DisplayFor(m => Model.UtcStartOfDay)
+    </p>
+}
+
+<p>
+    @Html.ActionLink("Back to Days", "List", "SeaDay", new { id = ViewBag.TripId }, null) |
+    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>

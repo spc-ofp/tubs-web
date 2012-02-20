@@ -1,0 +1,3 @@
+﻿@model System.Int32?
+
+@Html.Encode( !Model.HasValue ? "N/A" : Model.Value.ToString())

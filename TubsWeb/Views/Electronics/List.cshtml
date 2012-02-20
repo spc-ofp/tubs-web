@@ -1,0 +1,9 @@
+﻿@model TubsWeb.Models.ElectronicsViewModel
+
+<h2>@ViewBag.Title</h2>
+
+@{Html.RenderPartial("_Electronics");}
+
+<p>
+@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.TripId }, null)
+</p>

@@ -1,0 +1,27 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.SeaDay
+
+@*  If we have a Gen3 event, highlight the row  *@
+@helper HasGen3(bool? hasEvent) {
+    if (hasEvent.HasValue && hasEvent.Value) {
+        <text>style="color: Red;"</text>
+    }
+}
+
+@{
+    var counter = (int)ViewData["counter"];
+}
+
+<tr @HasGen3(Model.Gen3Events) >
+    <td>
+        <a href="#foo">Edit</a> | @* FIXME Add an edit method *@
+        <a href='@Url.RouteUrl("SeaDayDetails", new { id = Model.Trip.Id, dayNumber = counter })'>Activities</a>
+    </td>
+    <td>@Html.DisplayFor(m => Model.StartOfDay)</td>
+    <td>@Html.DisplayFor(m => Model.UtcStartOfDay)</td>
+    <td>@Model.FloatingObjectsNoSchool</td>
+    <td>@Model.FloatingObjectsWithSchool</td>
+    <td>@Model.FadsNoSchool</td>
+    <td>@Model.FadsWithSchool</td>
+    <td>@Model.FreeSchools</td>
+    <td>@Html.DisplayFor(m => @Model.Gen3Events)</td>
+</tr>

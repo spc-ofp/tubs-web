@@ -1,0 +1,93 @@
+﻿@model TubsWeb.Models.CrewViewModel
+
+@helper DisplayNamedCrew(TubsWeb.Models.CrewViewModel.CrewMemberModel crew) {
+    if (null == crew) {
+        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+    }
+    else {
+        <td>@crew.Name</td>
+        <td>@crew.Experience</td>
+        <td>@crew.Nationality</td>
+        <td>@crew.Comments</td>
+    }
+}
+
+<!-- Named crew -->
+Senior Crew
+<table width="100%">
+    <thead>
+        <tr>
+            <th>Job</th>
+            <th>Name</th>
+            <th>Experience</th>
+            <th>Nationality</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Captain</td>
+            @DisplayNamedCrew(@Model.Captain) 
+        </tr>
+        <tr>
+            <td>Navigator / Master</td>
+            @DisplayNamedCrew(@Model.Navigator) 
+        </tr>
+        <tr>
+            <td>Mate</td>
+            @DisplayNamedCrew(@Model.Mate) 
+        </tr>
+        <tr>
+            <td>Chief Engineer</td>
+            @DisplayNamedCrew(@Model.ChiefEngineer) 
+        </tr>
+        <tr>
+            <td>Assistant Engineer</td>
+            @DisplayNamedCrew(@Model.AssistantEngineer) 
+        </tr>
+        <tr>
+            <td>Deck Boss</td>
+            @DisplayNamedCrew(@Model.DeckBoss) 
+        </tr>
+        <tr>
+            <td>Cook</td>
+            @DisplayNamedCrew(@Model.Cook) 
+        </tr>
+        <tr>
+            <td>Helicopter Pilot</td>
+            @DisplayNamedCrew(@Model.HelicopterPilot) 
+        </tr>
+        <tr>
+            <td>Skiff Man</td>
+            @DisplayNamedCrew(@Model.SkiffMan) 
+        </tr>
+        <tr>
+            <td>Winch Man</td>
+            @DisplayNamedCrew(@Model.WinchMan) 
+        </tr>
+    </tbody>
+</table>
+
+<br />
+
+<!-- The rest of the hands -->
+<table width="100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Experience</th>
+            <th>Nationality</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var hand in Model.Hands) {
+                <tr>
+                    <td>@hand.Name</td>
+                    <td>@hand.Experience</td>
+                    <td>@hand.Nationality</td>
+                </tr>   
+            }
+        }
+    </tbody>
+</table>

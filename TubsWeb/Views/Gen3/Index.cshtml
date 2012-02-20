@@ -1,0 +1,151 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.TripMonitor
+
+@helper DisplayBoolean(bool? value) {
+    @String.Format("{0}", !value.HasValue ? "N/A" : value.Value.ToString());     
+}
+
+<h2>@ViewBag.Title</h2>
+
+@* jQuery function to highlight GEN-3 answers of interest *@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("td").filter(function () {
+            return $(this).text() == "True";
+        }).parent().addClass("lookatme");
+    });
+</script>
+
+<table width="100%">
+<thead>
+    <tr>
+        <th>&nbsp;</th>
+        <th>Question</th>
+        <th>Answer</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>a)</td>
+        <td>Record inaccurate positions on the vessel logsheet</td>
+        <td>@DisplayBoolean(@Model.Question1)</td>
+    </tr>
+    <tr>
+        <td>b)</td>
+        <td>Fish in areas that were not covered by any license or access agreement</td>
+        <td>@DisplayBoolean(@Model.Question2)</td>
+    </tr>
+    <tr>
+        <td>c)</td>
+        <td>Mis-report catch in the vessel logs or weekly reports</td>
+        <td>@DisplayBoolean(@Model.Question3)</td>
+    </tr>
+    <tr>
+        <td>d)</td>
+        <td>Not report catch of commercial species (includeing discards)</td>
+        <td>@DisplayBoolean(@Model.Question4)</td>
+    </tr>
+    <tr>
+        <td>e)</td>
+        <td>Not record bycatch and discards</td>
+        <td>@DisplayBoolean(@Model.Question5)</td>
+    </tr>
+    <tr>
+        <td>f)</td>
+        <td>Record bycatch and discards inaccurately</td>
+        <td>@DisplayBoolean(@Model.Question6)</td>
+    </tr>
+    <tr>
+        <td>g)</td>
+        <td>Target species other than those they are licensed to target</td>
+        <td>@DisplayBoolean(@Model.Question7)</td>
+    </tr>
+    <tr>
+        <td>h)</td>
+        <td>Use a fishing method other than the method they are licensed to use</td>
+        <td>@DisplayBoolean(@Model.Question8)</td>
+    </tr>
+    <tr>
+        <td>i)</td>
+        <td>Record one species as a different species</td>
+        <td>@DisplayBoolean(@Model.Question9)</td>
+    </tr>
+    <tr>
+        <td>j)</td>
+        <td>Catch species of special interest</td>
+        <td>@DisplayBoolean(@Model.Question10)</td>
+    </tr>
+    <tr>
+        <td>k)</td>
+        <td>Breach MARPOL regulations</td>
+        <td>@DisplayBoolean(@Model.Question11)</td>
+    </tr>
+    <tr>
+        <td>l)</td>
+        <td>Bunker or not report bunkering to national authorities</td>
+        <td>@DisplayBoolean(@Model.Question12)</td>
+    </tr>
+    <tr>
+        <td>m)</td>
+        <td>Transfer fish from or to another vessel at sea</td>
+        <td>@DisplayBoolean(@Model.Question13)</td>
+    </tr>
+    <tr>
+        <td>n)</td>
+        <td>Request that an event not be reported</td>
+        <td>@DisplayBoolean(@Model.Question14)</td>
+    </tr>
+    <tr>
+        <td>o)</td>
+        <td>Mistread other crew</td>
+        <td>@DisplayBoolean(@Model.Question15)</td>
+    </tr>
+    <tr>
+        <td>p)</td>
+        <td>Hinder the observer in the carrying out of their duties</td>
+        <td>@DisplayBoolean(@Model.Question16)</td>
+    </tr>
+    <tr>
+        <td>q)</td>
+        <td>Not supply reasonable accomodation, food and facilities to the observer onboard the vessel</td>
+        <td>@DisplayBoolean(@Model.Question17)</td>
+    </tr>
+    <tr>
+        <td>r)</td>
+        <td>High grade or cull the catch</td>
+        <td>@DisplayBoolean(@Model.Question18)</td>
+    </tr>
+    <tr>
+        <td>s)</td>
+        <td>Not report position to countries when crossing from one zone to another</td>
+        <td>@DisplayBoolean(@Model.Question19)</td>
+    </tr>
+    <tr>
+        <td>t)</td>
+        <td>Not display or present a valid (and current) licence document onboard</td>
+        <td>@DisplayBoolean(@Model.Question20)</td>
+    </tr>
+</tbody>
+</table>
+<hr />
+<table width="100%">
+<thead>
+    <tr>
+        <th>Date</th>
+        <th>Details</th>
+    </tr>
+</thead>
+<tbody>
+@{ foreach (var detail in @Model.Details)
+    {
+    <tr>
+        <td>@TubsHelpers.DisplayDate(detail.DetailDate)</td>
+        <td>@detail.Comments</td>
+    </tr>                      
+    }
+}
+</tbody>
+</table>
+
+<p>
+@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.Trip.Id }, null)
+</p>

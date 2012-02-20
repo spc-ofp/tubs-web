@@ -1,0 +1,53 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+
+<table width="100%">
+    <tr>
+        <td>Observer:</td>
+        <td>@Model.Observer.ToString()</td>
+        <td>Program:</td>
+        <td>@Model.ProgramCode</td>
+    </tr>
+    <tr>
+        <td>Trip Number:</td>
+        <td>@Model.TripNumber</td>
+        <td>Alternate Trip Number:</td>
+        <td>N/A</td>
+    </tr>
+    <tr>
+        <td>First Day:</td>
+        <td>@Html.DisplayFor(m => m.DepartureDate)</td>
+        <td>Last Day:</td>
+        <td>@Html.DisplayFor(m => m.ReturnDate)</td>
+    </tr>
+    <tr>
+        <td>Departure Port:</td>
+        <td>@Model.DeparturePort.ToString()</td>
+        <td>Return Port:</td>
+        <td>@Model.ReturnPort.ToString()</td>
+    </tr>
+    <!-- Add Sea days and sets for PS trips -->
+    @if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip))
+    {
+        var pstrip = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip;
+        <tr>
+            <td>Sea Days:</td>
+            <td>@pstrip.SeaDays.Count.ToString()</td>
+            <td>Sets:</td>
+            @{
+                var setcount = (
+                    from d in pstrip.SeaDays
+                    from a in d.Activities
+                    where a.ActivityType.HasValue && a.ActivityType.Value == Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing
+                    select 1
+                ).Sum();                              
+            }
+            <td>@setcount</td>
+        </tr> 
+    }  
+    <tr>
+        <td>Entered By:</td>
+        <td>@Model.EnteredBy</td>
+        <td>Entered Date:</td>
+        <td>@Html.DisplayFor(m => m.EnteredDate)</td>
+    </tr>
+</table>

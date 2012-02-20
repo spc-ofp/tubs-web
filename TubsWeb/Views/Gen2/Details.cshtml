@@ -1,0 +1,263 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.SpecialSpeciesInteraction
+@using Spc.Ofp.Tubs.DAL.Common
+
+<h2>@ViewBag.Title</h2>
+
+@* This data is common to all interactions.  The other sections below are mutually exclusive! *@
+<fieldset>
+    <legend>Interaction Summary</legend>
+    <table>
+        <tbody>
+            <tr>
+                <td class="label" style="width: 15%;">@Html.LabelFor(m => m.LandedDate):</td>
+                <td>@Html.DisplayFor(m => m.LandedDate)</td>
+            </tr>
+            <tr>
+                <td class="label">Position (EEZ):</td>
+                <td>@Model.Latitude / @Model.Longitude (@Model.EezId)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.SpeciesCode):</td>
+                <td>@Model.SpeciesCode</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.SpeciesDescription):</td>
+                <td>@Model.SpeciesDescription</td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>
+
+<fieldset>
+@{
+    // No serious reason to do this, but it was annoying to have the HTML validator
+    // complain about "too many instances of '<legend>' - CLC
+    var legendText = String.Empty;
+    switch (Model.SgType)
+    {
+        case "L":
+            legendText = "Species Landed On Deck";
+            break;
+        case "I":
+            legendText = "Interactions With Vessel or Vessel Gear";
+            break;
+        case "S":
+            legendText = "Species Sighted";
+            break;
+        default:
+            legendText = String.Format("Unknown Interaction Type: {0}", Model.SgType);
+            break;
+    }   
+}
+    <legend>@legendText</legend>
+@if ("L".Equals(Model.SgType))
+{
+    @* This data only appears when the species was landed on deck *@
+    <table>
+        <tbody>
+            <tr>
+                <td class="fake-header" colspan="2">Landed</td>
+            </tr>
+            <tr>
+                <td class="label" style="width: 15%;">@Html.LabelFor(m => m.LandedConditionCode):</td>
+                <td>@Model.LandedConditionCode</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.LandedConditionDescription)</td>
+                <td>@Model.LandedConditionDescription</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.LandedHandling)</td>
+                <td>@Model.LandedHandling</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.LandedLength)</td>
+                <td>@Model.LandedLength</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.LandedLengthCode)</td>
+                <td>@Model.LandedLengthCode</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.LandedSexCode)</td>
+                <td>@Model.LandedSexCode</td>
+            </tr>
+            <tr>
+                <td class="fake-header" colspan="2">Discarded</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.DiscardedConditionCode)</td>
+                <td>@Model.DiscardedConditionCode</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.DiscardedConditionDescription)</td>
+                <td>@Model.DiscardedConditionDescription</td>
+            </tr>
+            <tr>
+                <td class="fake-header" colspan="2">Retrieved Tag</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.TagReturnNumber)</td>
+                <td>@Model.TagReturnNumber</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.TagReturnType)</td>
+                <td>@Model.TagReturnType</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.TagReturnOrganization)</td>
+                <td>@Model.TagReturnOrganization</td>
+            </tr>
+            <tr>
+                <td class="fake-header" colspan="2">Placed Tag</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.TagPlacedNumber)</td>
+                <td>@Model.TagPlacedNumber</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.TagPlacedType)</td>
+                <td>@Model.TagPlacedType</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.TagPlacedOrganization)</td>
+                <td>@Model.TagPlacedOrganization</td>
+            </tr>
+        </tbody>
+    </table>
+}
+else if ("I".Equals(Model.SgType))
+{
+    @* This data only appears when the species interacted with vessel or gear *@
+    <table>
+        <tbody>
+            <tr>
+                @* TODO This is the wrong column for this SgType *@
+                <td class="label" style="width: 15%;">Vessel Activity:</td>
+                <td>@if (InteractionActivity.Other == Model.InteractionActivity)
+                    {
+                        <text>Other (@Model.InteractionIfOther)</text>
+                    }
+                    else
+                    {
+                        @Model.InteractionActivity
+                    }
+                </td>
+            </tr>
+            @if (Model.Details.Count > 0)
+            {
+                <tr>
+                    <td class="fake-header" colspan="2">Individual Interactions</td>
+                </tr>
+                var itemNumbers = (from i in Model.Details select i.Number).Distinct().OrderBy(i => i);
+                foreach (var itemNumber in itemNumbers)
+                {
+                    var startItem = (from d in Model.Details where d.Number == itemNumber && "Start" == d.StartOrEnd select d).FirstOrDefault();
+                    var endItem = (from d in Model.Details where d.Number == itemNumber && "End" == d.StartOrEnd select d).FirstOrDefault();
+                    <tr>
+                        <td class="label">Item Number:</td>
+                        <td>@itemNumber</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Condition At Start:</td>
+                        <td>
+                            @if (null == startItem)
+                            { <text>@startItem.ConditionCode</text> }
+                            else
+                            { <text>Unknown</text> }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Description At Start:</td>
+                        <td>
+                            @if (null == startItem)
+                            { <text>@startItem.Description</text> }
+                            else
+                            { <text>Unknown</text> }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Condition At End:</td>
+                        <td>
+                            @if (null == endItem)
+                            { <text>@endItem.ConditionCode</text> }
+                            else
+                            { <text>Unknown</text> }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Description At End:</td>
+                        <td>
+                            @if (null == endItem)
+                            { <text>@endItem.Description</text> }
+                            else
+                            { <text>Unknown</text> }
+                        </td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.InteractionDescription):</td>
+                <td>@Model.InteractionDescription</td>
+            </tr>
+        </tbody>
+    </table>
+}
+else if ("S".Equals(Model.SgType))
+{
+    @* This data only appears when the species was sighted *@
+    <table>
+        <tbody>
+            <tr>
+                <td class="label" style="width: 15%;">Vessel Activity:</td>
+                <td>@if (InteractionActivity.Other == Model.InteractionActivity)
+                    {
+                        <text>Other (@Model.InteractionIfOther)</text>
+                    }
+                    else
+                    {
+                        @Model.InteractionActivity
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.SightingCount):</td>
+                <td>@Html.DisplayFor(m => m.SightingCount)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.SightingAdultCount):</td>
+                <td>@Html.DisplayFor(m => m.SightingAdultCount)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.SightingJuvenileCount):</td>
+                <td>@Html.DisplayFor(m => m.SightingJuvenileCount)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.SightingLength):</td>
+                <td>@Model.SightingLength</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.SightingDistance):</td>
+                <td>@Html.DisplayFor(m => m.SightingDistance) @Model.SightingDistanceUnit</td>
+            </tr>
+            <tr>
+                <td class="label">Behaviour when sighted:</td>
+                <td>@Model.SightingBehavior</td>
+            </tr>
+        </tbody>
+    </table>
+}
+else
+{
+<p>
+    Nothing to see here, move along...
+</p>
+}
+</fieldset>
+
+<script type="text/javascript">
+    // Add this to pages with tables that need zebra striping
+    $(document).ready(function () {
+    $("table > tbody tr:odd").css("background-color", "#FFFFCC");
+    });
+</script>

@@ -1,0 +1,62 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineSet
+
+<h2>@ViewBag.Title</h2>
+
+@if (null == Model)
+{
+    <text>No such set number</text>
+}
+else
+{
+    <p>
+    @{
+        if (ViewBag.CurrentSet > 1)
+        {
+            <a href='@Url.RouteUrl("SetDetails", new { id = ViewBag.TripId, setNumber = ViewBag.CurrentSet - 1 })'>Previous Set</a>
+        }
+
+        if (ViewBag.MaxSets > ViewBag.CurrentSet)
+        {
+            <a href='@Url.RouteUrl("SetDetails", new { id = ViewBag.TripId, setNumber = ViewBag.CurrentSet + 1 })'>Next Set</a>
+        }
+    }
+    </p>
+      
+    <table>
+        <thead>
+            <tr>
+                <th>Skiff Off</th>
+                <th>Winch On</th>
+                <th>Rings Up</th>
+                <th>Begin Brailing</th>
+                <th>End Brailing</th>
+                <th>End of Set</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Html.DisplayFor(m => Model.SkiffOff)</td>
+                <td>@Html.DisplayFor(m => Model.WinchOn, new { format = "t" })</td>
+                <td>@Html.DisplayFor(m => Model.RingsUp, new { format = "t" })</td>
+                <td>@Html.DisplayFor(m => Model.BeginBrailing, new { format = "t" })</td>
+                <td>@Html.DisplayFor(m => Model.EndBrailing, new { format = "t" })</td>
+                <td>@Html.DisplayFor(m => Model.EndOfSet, new { format = "t" })</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <ul>
+    @foreach (var sc in Model.CatchList)
+    {
+        <li>@sc.SpeciesCode : @sc.MetricTonsObserved mT (@sc.FateCode)</li>
+    }
+    </ul>
+   
+}
+
+<p>
+    @Html.ActionLink("Back to Sets", "List", "FishingSet", new { id = ViewBag.TripId }, null) |
+    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>
+
+

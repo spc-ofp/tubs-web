@@ -1,0 +1,4 @@
+﻿@model System.Decimal?
+
+@*  TODO Add the ability to format better *@
+@Html.Encode( !Model.HasValue ? "N/A" : Model.Value.ToString())

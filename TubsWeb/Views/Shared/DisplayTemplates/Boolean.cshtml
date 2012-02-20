@@ -1,0 +1,6 @@
+﻿@model bool?
+
+@* Per this note, the DisplayTemplate name needs to be "Boolean.cshtml" and not "bool.cshtml" *@
+@* http://stackoverflow.com/questions/6849774/mvc3-creating-checkbox-for-nullable-boolean *@
+
+@Html.Encode( !Model.HasValue ? "NA" : Model.Value ? "True" : "False")

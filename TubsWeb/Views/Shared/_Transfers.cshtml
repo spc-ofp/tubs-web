@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Transfer>
+
+@{ var sightings = new WebGrid(source: Model, defaultSort: "Id", rowsPerPage: 50); }
+
+    @sightings.GetHtml(
+    alternatingRowStyle: "alt",
+    columns: sightings.Columns(
+        sightings.Column("TransferTime", "Date / Time"),
+        sightings.Column("Latitude", "Latitude"),
+        sightings.Column("Longitude", "Longitude"),
+        sightings.Column("VesselType", "Vessel Type"),
+        sightings.Column("TonsOfSkipjack", "Skipjack (mT)"),
+        sightings.Column("TonsOfYellowfin", "Yellowfin (mT)"),
+        sightings.Column("TonsOfBigeye", "Bigeye (mT)"),
+        sightings.Column("TonsOfMixed", "Mixed (mT)"),
+        sightings.Column("ActionType", "Action"),
+        sightings.Column("PhotoNumber", "Photo Frame #"),
+        sightings.Column("Comments", "Comments")
+    ))

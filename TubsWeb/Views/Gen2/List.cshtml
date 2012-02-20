@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.SpecialSpeciesInteraction>
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Position</th>
+            <th>Species Code</th>
+            <th>Species Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var interaction in Model)
+    {
+        <tr>
+            <td>@interaction.SgType</td>
+            <td>@interaction.LandedDate</td>
+            <td>@interaction.Latitude / @interaction.Longitude (@interaction.EezId)</td>
+            <td>@interaction.SpeciesCode</td>
+            <td>@interaction.SpeciesDescription</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<p>
+@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>

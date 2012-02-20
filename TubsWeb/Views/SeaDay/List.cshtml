@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.SeaDay>
+
+<h2>@ViewBag.Title</h2>
+
+@* TODO Add vertical lines to header *@
+<table width="100%">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th colspan="2">Free floating objects</th>
+            <th colspan="2">Anchored floating objects</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+        </tr>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Start of Day</th>
+            <th>Start of Day (UTC)</th>
+            <th>No school</th>
+            <th>With school</th>
+            <th>No school</th>
+            <th>With school</th>
+            <th>Free schools</th>
+            <th>GEN-3 Event?</th>
+        </tr>
+    </thead>
+<tbody>
+
+@foreach (var item in Model.Select((x, i) => new { Data = x, Index = i})) {
+    @Html.DisplayFor(m => item.Data, new { counter = item.Index + 1 })
+}
+</tbody>
+</table>
+
+<p>
+@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>

@@ -1,0 +1,13 @@
+﻿@model TubsWeb.Models.CrewViewModel
+
+@{
+    ViewBag.Title = "Crew List";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@{ Html.RenderPartial("_Crew"); }
+
+<p>
+@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.TripId }, null)
+</p>

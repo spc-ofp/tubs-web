@@ -1,0 +1,28 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineActivity
+
+@helper SpeedAndDirection(int? speed, int? direction) {
+    if (!speed.HasValue && !direction.HasValue) {
+        <text>N/A</text> 
+    } else {
+        var sb = new System.Text.StringBuilder();
+        sb.Append(speed.HasValue ? speed.Value.ToString() : "UNK");
+        sb.Append(" kts @ ");
+        sb.Append(direction.HasValue ? direction.Value.ToString() : "UNK");
+        sb.Append("&deg;");        
+        @Html.Raw(sb.ToString()) 
+    }
+}
+
+<tr>
+    <td>@Html.DisplayFor(m => Model.LocalTime, new { format = "t" })</td>
+    <td>@Model.Latitude / @Model.Longitude</td>
+    <td>@Model.EezCode</td>
+    @*  TODO  If ActivityType is Fishing, link to Set *@
+    <td>@Model.ActivityType</td> @* TODO Change this to use the attached description, not the straight up ToString() version *@
+    <td>@SpeedAndDirection(Model.WindSpeed, Model.WindDirection)
+    </td> @* TODO Change this to xxx kts @ 123 &deg; *@
+    <td>@Model.SeaCode</td>
+    <td>@Model.DetectionMethod</td>
+    <td>@Model.SchoolAssociation</td>
+    <td>@Model.Comments</td>
+</tr>
