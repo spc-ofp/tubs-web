@@ -1,0 +1,21 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Gear
+
+<h2>@ViewBag.Title</h2>
+
+@if (null == Model)
+{
+    <p>No gear information available</p>
+}
+else if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear))
+{
+    var psgear = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear;
+    @Html.DisplayFor(m => psgear)
+}
+else
+{
+    <p>Not implemented</p>
+}
+
+<p>
+@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>

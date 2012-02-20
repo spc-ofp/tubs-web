@@ -6,7 +6,7 @@
 
 namespace TubsWeb.Controllers
 {
-    /*
+   /*
     * This file is part of TUBS.
     *
     * TUBS is free software: you can redistribute it and/or modify

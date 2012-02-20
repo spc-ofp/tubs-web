@@ -174,6 +174,11 @@ namespace TubsWeb
                 new { controller = "SeaDay", action = "List" }
             );
 
+            routes.MapRoute(
+                "Gear",
+                "Trip/Details/{id}/Gear/",
+                new { controller = "Gear", action = "Index" }
+            );
 
             routes.MapRoute(
                 "Default", // Route name

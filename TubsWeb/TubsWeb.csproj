@@ -90,6 +90,7 @@
     <Compile Include="Controllers\CrewController.cs" />
     <Compile Include="Controllers\ElectronicsController.cs" />
     <Compile Include="Controllers\FishingSetController.cs" />
+    <Compile Include="Controllers\GearController.cs" />
     <Compile Include="Controllers\Gen1Controller.cs" />
     <Compile Include="Controllers\Gen2Controller.cs" />
     <Compile Include="Controllers\Gen3Controller.cs" />
@@ -216,7 +217,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="packages.config" />
     <Content Include="App_Code\TubsHelpers.cshtml" />
-    <None Include="readme.txt" />
     <Content Include="Views\Trip\Index.cshtml" />
     <Content Include="Views\Trip\NotFound.cshtml" />
     <Content Include="Views\Trip\Details.cshtml" />
@@ -249,6 +249,8 @@
     <Content Include="Views\Shared\DisplayTemplates\Decimal.cshtml" />
     <Content Include="Views\Gen6\Index.cshtml" />
     <Content Include="Views\Gen6\List.cshtml" />
+    <Content Include="Views\Gear\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\PurseSeineGear.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

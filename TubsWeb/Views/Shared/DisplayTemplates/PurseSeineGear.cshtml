@@ -1,0 +1,100 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear
+
+
+<fieldset>
+    <legend>Powerblock</legend>
+    <table>
+        <tbody>
+            <tr>
+                <td class="label" style="width: 15%;">@Html.LabelFor(m => m.PowerblockMake)</td>
+                <td>@Html.DisplayFor(m => m.PowerblockMake)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.PowerblockModel)</td>
+                <td>@Html.DisplayFor(m => m.PowerblockModel)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.PowerblockPower)</td>
+                <td>@Html.DisplayFor(m => m.PowerblockPower)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.PowerblockSpeed)</td>
+                <td>@Html.DisplayFor(m => m.PowerblockSpeed)</td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>
+
+<fieldset>
+    <legend>Purse Winch</legend>
+    <table>
+        <tbody>
+            <tr>
+                <td class="label" style="width: 15%;">@Html.LabelFor(m => m.PurseWinchMake)</td>
+                <td>@Html.DisplayFor(m => m.PurseWinchMake)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.PurseWinchModel)</td>
+                <td>@Html.DisplayFor(m => m.PurseWinchModel)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.PurseWinchPower)</td>
+                <td>@Html.DisplayFor(m => m.PurseWinchPower)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.PurseWinchSpeed)</td>
+                <td>@Html.DisplayFor(m => m.PurseWinchSpeed)</td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>
+
+<fieldset>
+    <legend>Net</legend>
+    <table>
+        <tbody>
+            <tr>
+                <td class="label" style="width: 15%;">@Html.LabelFor(m => m.NetDepth)</td>
+                <td>
+                    @Html.DisplayFor(m => m.NetDepth) @Html.DisplayFor(m => m.NetDepthUnit)
+                </td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.NetLength)</td>
+                <td>
+                    @Html.DisplayFor(m => m.NetLength) @Html.DisplayFor(m => m.NetLengthUnits)
+                </td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.NetStrips)</td>
+                <td>@Html.DisplayFor(m => m.NetStrips)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.MeshSize)</td>
+                <td>
+                    @Html.DisplayFor(m => m.MeshSize) @Html.DisplayFor(m => m.MeshSizeUnits)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>
+
+<fieldset>
+    <legend>Brails</legend>
+    <table>
+        <tbody>
+            <tr>
+                <td class="label" style="width: 15%;">@Html.LabelFor(m => m.Brail1Size)</td>
+                <td>@Html.DisplayFor(m => m.Brail1Size)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.Brail2Size)</td>
+                <td>@Html.DisplayFor(m => m.Brail2Size)</td>
+            </tr>
+            <tr>
+                <td class="label">@Html.LabelFor(m => m.BrailType)</td>
+                <td>@Html.DisplayFor(m => m.BrailType)</td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>

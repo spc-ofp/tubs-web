@@ -5,9 +5,10 @@
     <file relUrl="Views/Gen2/List.cshtml" publishTime="02/17/2012 09:34:20" />
     <file relUrl="Scripts/jquery-1.7.1.js" publishTime="01/04/2012 13:31:22" />
     <file relUrl="Content/themes/base/minified/jquery.ui.slider.min.css" publishTime="02/14/2012 15:06:48" />
-    <file relUrl="bin/TubsWeb.pdb" publishTime="02/20/2012 10:30:12" />
+    <file relUrl="bin/TubsWeb.pdb" publishTime="02/20/2012 14:37:51" />
     <file relUrl="Content/themes/base/images/ui-icons_cd0a0a_256x240.png" publishTime="02/14/2012 15:06:49" />
     <file relUrl="Content/themes/base/jquery.ui.datepicker.css" publishTime="02/14/2012 15:06:49" />
+    <file relUrl="Views/Shared/DisplayTemplates/PurseSeineGear.cshtml" publishTime="02/20/2012 14:34:17" />
     <file relUrl="Content/themes/base/minified/jquery-ui.min.css" publishTime="02/14/2012 15:06:48" />
     <file relUrl="Views/Shared/DisplayTemplates/SeaDay.cshtml" publishTime="01/18/2012 15:00:54" />
     <file relUrl="Content/themes/base/minified/jquery.ui.autocomplete.min.css" publishTime="02/14/2012 15:06:48" />
@@ -44,7 +45,7 @@
     <file relUrl="Scripts/MicrosoftMvcAjax.js" publishTime="12/08/2011 11:19:53" />
     <file relUrl="Views/Shared/_Electronics.cshtml" publishTime="01/05/2012 10:09:14" />
     <file relUrl="Views/Shared/DisplayTemplates/UsageCode.cshtml" publishTime="01/04/2012 14:44:14" />
-    <file relUrl="bin/TubsWeb.dll" publishTime="02/20/2012 10:30:12" />
+    <file relUrl="bin/TubsWeb.dll" publishTime="02/20/2012 14:37:51" />
     <file relUrl="Content/KeyTips.min.css" publishTime="02/14/2012 15:09:01" />
     <file relUrl="Views/Shared/_Crew.cshtml" publishTime="01/04/2012 15:43:00" />
     <file relUrl="Scripts/MicrosoftAjax.js" publishTime="12/08/2011 11:19:53" />
@@ -52,8 +53,8 @@
     <file relUrl="Scripts/MicrosoftMvcValidation.js" publishTime="12/08/2011 11:19:53" />
     <file relUrl="bin/log4net.xml" publishTime="02/15/2012 09:19:31" />
     <file relUrl="Content/themes/base/minified/jquery.ui.theme.min.css" publishTime="02/14/2012 15:06:48" />
-    <file relUrl="Views/Trip/Index.cshtml" publishTime="02/15/2012 09:16:02" />
-    <file relUrl="Web.config" publishTime="02/20/2012 10:30:36" />
+    <file relUrl="Views/Trip/Index.cshtml" publishTime="02/20/2012 14:00:40" />
+    <file relUrl="Web.config" publishTime="02/20/2012 14:37:52" />
     <file relUrl="Scripts/MicrosoftMvcValidation.debug.js" publishTime="12/08/2011 11:19:53" />
     <file relUrl="Content/themes/base/minified/images/ui-bg_glass_65_ffffff_1x400.png" publishTime="02/14/2012 15:06:49" />
     <file relUrl="Content/themes/base/minified/jquery.ui.dialog.min.css" publishTime="02/14/2012 15:06:48" />
@@ -66,9 +67,9 @@
     <file relUrl="bin/nunit.framework.xml" publishTime="04/02/2011 20:01:20" />
     <file relUrl="Content/themes/base/minified/images/ui-bg_glass_55_fbf9ee_1x400.png" publishTime="02/14/2012 15:06:49" />
     <file relUrl="Content/themes/base/images/ui-icons_222222_256x240.png" publishTime="02/14/2012 15:06:49" />
-    <file relUrl="Views/Trip/Details.cshtml" publishTime="02/17/2012 15:41:49" />
+    <file relUrl="Views/Trip/Details.cshtml" publishTime="02/20/2012 13:26:28" />
     <file relUrl="Content/themes/base/minified/images/ui-icons_cd0a0a_256x240.png" publishTime="02/14/2012 15:06:49" />
-    <file relUrl="bin/TubsDAL.dll" publishTime="02/17/2012 16:24:49" />
+    <file relUrl="bin/TubsDAL.dll" publishTime="02/20/2012 14:29:31" />
     <file relUrl="Views/Electronics/List.cshtml" publishTime="01/05/2012 09:40:46" />
     <file relUrl="Scripts/jquery.validate.unobtrusive.js" publishTime="12/08/2011 11:19:53" />
     <file relUrl="Scripts/jquery.validate.unobtrusive.min.js" publishTime="12/08/2011 11:19:53" />
@@ -124,6 +125,7 @@
     <file relUrl="bin/EntityFramework.xml" publishTime="12/08/2011 11:20:00" />
     <file relUrl="Views/Shared/DisplayTemplates/DeviceModel.cshtml" publishTime="01/04/2012 16:27:55" />
     <file relUrl="bin/EntityFramework.dll" publishTime="12/08/2011 11:20:00" />
+    <file relUrl="Views/Gear/Index.cshtml" publishTime="02/20/2012 14:07:43" />
     <file relUrl="Views/Gen3/NotFound.cshtml" publishTime="12/23/2011 08:01:02" />
     <file relUrl="Content/themes/base/jquery.ui.core.css" publishTime="02/14/2012 15:06:49" />
     <file relUrl="Content/themes/base/images/ui-icons_888888_256x240.png" publishTime="02/14/2012 15:06:49" />

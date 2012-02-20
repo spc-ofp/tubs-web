@@ -37,12 +37,6 @@ namespace TubsWeb.Controllers
         // Default page size
         const int PAGE_SIZE = 20;
 
-        public TripController()
-        {
-            //repo = new TubsRepository<Trip>(TubsDataService.GetSession());
-            Logger.Debug("TripController()");
-        }
-
         //
         // GET: /Trip/
         public ActionResult Index(int? page)
