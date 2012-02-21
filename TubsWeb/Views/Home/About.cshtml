@@ -6,3 +6,14 @@
 <p>
      TUBS was developed by SPC with the generous support of NZAID.
 </p>
+
+@* 
+    Debug code
+Roles for this user:
+<ul>
+   @foreach (var role in System.Web.Security.Roles.GetRolesForUser())
+   {
+    <li>@role</li>
+   }
+</ul>
+*@

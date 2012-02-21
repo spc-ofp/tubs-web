@@ -1,0 +1,16 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Gear
+@using Spc.Ofp.Tubs.DAL.Entities;
+
+@{
+    ViewBag.Title = "Edit Gear";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (ViewBag.GearType == typeof(PurseSeineGear))
+{
+    var gear = Model as PurseSeineGear;
+    @Html.EditorFor(m => gear);
+}
+
+@*  TODO Add other gear types as new trip types come online *@

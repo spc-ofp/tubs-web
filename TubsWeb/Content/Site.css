@@ -181,6 +181,19 @@ fieldset {
     margin: 0 0 1.5em 0;
 }
 
+fieldset label 
+{
+    display: inline-block;
+    width: 150px;
+    font-weight: bold;
+    margin: 2px 12px 10px 10px;
+}
+
+fieldset label.inline 
+{
+    display: inline;
+}
+
 legend {
     font-size: 1.2em;
     font-weight: bold;

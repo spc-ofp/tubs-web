@@ -83,7 +83,8 @@ namespace TubsWeb
         
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            
+            //An authorize attribute filter takes the place of allow roles in web.config
+            //filters.Add(new AuthorizeAttribute { Roles = @"NOUMEA\OFP Users" });
             filters.Add(new HandleErrorAttribute());
         }
 
@@ -173,6 +174,13 @@ namespace TubsWeb
                 "Trip/Details/{id}/Days/",
                 new { controller = "SeaDay", action = "List" }
             );
+
+            routes.MapRoute(
+                "GearModify",
+                "Trip/Details/{id}/Gear/{action}",
+                new { controller = "Gear" }
+            );
+
 
             routes.MapRoute(
                 "Gear",

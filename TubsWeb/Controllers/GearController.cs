@@ -47,5 +47,66 @@ namespace TubsWeb.Controllers
             return View(gear);
         }
 
+        private static Type GetSpecificGearType(Trip trip)
+        {
+            Type gearType = typeof(Gear);
+            var tripType = trip.GetType();
+            if (tripType == typeof(PurseSeineTrip))
+            {
+               gearType = typeof(PurseSeineGear);
+            }
+            // TODO As new trip types come on line, add their gear types here...
+            return gearType;
+        }
+
+        public ActionResult Edit(int id)
+        {
+            ViewBag.TripId = id;
+
+            var repo = new TubsRepository<Gear>(MvcApplication.CurrentSession);
+            var gear = repo.FilterBy(g => g.Trip.Id == id).FirstOrDefault();
+            if (null == gear)
+            {
+                var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id);
+                if (null == trip)
+                {
+                    Flash("Can't add gear for a trip that doesn't exist");
+                    // TODO Need a better view for this...
+                    return View();
+                }
+                ViewBag.GearType = GetSpecificGearType(trip);
+            }
+            else
+            {
+                // TODO If gear exists and viewName is Create, what do we do?
+                ViewBag.GearType = gear.GetType();
+            }
+            return null == gear ?
+                View() :
+                View(gear);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(int id, [AbstractBind(ConcreteTypeParameter = "gearType")] Gear gear)
+        {
+            var tripRepo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var trip = tripRepo.FindBy(id);
+            if (null == trip)
+            {
+                // FIXME
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Do anything in here
+
+                //Don't save via trip -- instantiate a Gear repository, set the Trip property, and then save
+                //Gear.
+                return RedirectToAction("Index", new { id = id });
+            }
+            ViewBag.GearType = GetSpecificGearType(trip);
+            return View(gear);
+        }
+
     }
 }
