@@ -41,7 +41,7 @@ namespace TubsWeb.Controllers
  
         private static string Format(Observer observer)
         {
-            return observer.ToString();
+            return null == observer ? String.Empty : observer.ToString();
         }
 
         public JsonResult Find(string term)

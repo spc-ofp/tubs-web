@@ -39,7 +39,7 @@ namespace TubsWeb.Controllers
 
         private static string Format(Port port)
         {
-            return String.Format("{0} ({1})", port.Name.Trim(), port.CountryCode);
+            return null == port ? String.Empty : String.Format("{0} ({1})", port.Name.Trim(), port.CountryCode);
         }
 
         public JsonResult Find(string term)

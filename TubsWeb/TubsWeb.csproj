@@ -183,6 +183,7 @@
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.17.js" />
     <Content Include="Scripts\jquery-ui-1.8.17.min.js" />
+    <Content Include="Scripts\jquery-ui-timepicker-addon.js" />
     <Content Include="Scripts\jquery.KeyTips.js" />
     <Content Include="Scripts\jquery.KeyTips.min.js" />
     <Content Include="Scripts\jquery.sparkline.min.js" />
