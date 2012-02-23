@@ -59,6 +59,21 @@ namespace TubsWeb.Controllers
             return gearType;
         }
 
+        private static Gear NewGearInstance(Trip trip)
+        {
+            Gear retval = null;
+            if (null != trip)
+            {
+                var tripType = trip.GetType();
+                if (typeof(PurseSeineTrip) == tripType)
+                {
+                    retval = new PurseSeineGear();
+                }
+                // TODO As new trip types come on line, add their gear types here...
+            }
+            return retval;
+        }
+
         public ActionResult Edit(int id)
         {
             ViewBag.TripId = id;
@@ -74,16 +89,11 @@ namespace TubsWeb.Controllers
                     // TODO Need a better view for this...
                     return View();
                 }
-                ViewBag.GearType = GetSpecificGearType(trip);
-            }
-            else
-            {
-                // TODO If gear exists and viewName is Create, what do we do?
-                ViewBag.GearType = gear.GetType();
-            }
-            return null == gear ?
-                View() :
-                View(gear);
+                // This is a consequence of sharing an edit page for Create and Edit
+                gear = NewGearInstance(trip);
+            }            
+            ViewBag.GearType = gear.GetType();
+            return View(gear);
         }
 
         [HttpPost]
@@ -93,15 +103,25 @@ namespace TubsWeb.Controllers
             var trip = tripRepo.FindBy(id);
             if (null == trip)
             {
-                // FIXME
+                Flash("Can't add gear for a trip that doesn't exist");
+                // TODO Need a better view for this...
+                return View(gear);
             }
 
             if (ModelState.IsValid)
             {
-                // Do anything in here
-
                 //Don't save via trip -- instantiate a Gear repository, set the Trip property, and then save
                 //Gear.
+                var repo = new TubsRepository<Gear>(MvcApplication.CurrentSession);
+                if (null == gear.Trip)
+                {
+                    gear.Trip = trip;
+                    repo.Add(gear);
+                }
+                else
+                {
+                    repo.Update(gear);
+                }
                 return RedirectToAction("Index", new { id = id });
             }
             ViewBag.GearType = GetSpecificGearType(trip);

@@ -1,4 +1,5 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear
+@using Spc.Ofp.Tubs.DAL.Common
 
 @if (ViewData["flash"] != null)
 {
@@ -30,19 +31,21 @@
         @Html.LabelFor(m => m.PurseWinchSpeed) @Html.EditorFor(m => m.PurseWinchSpeed)
     </fieldset>
 
-    @* FIXME Need to fix the database, TUBS, and the DAL to manage these units correctly *@
     <fieldset>
         <legend>Net</legend>
-        @Html.LabelFor(m => m.NetDepth) @Html.EditorFor(m => m.NetDepth) @Html.EditorFor(m => m.NetDepthUnit) <br />
-        @Html.LabelFor(m => m.NetLength) @Html.EditorFor(m => m.NetLength) @Html.EditorFor(m => m.NetLengthUnits) <br />
+        @Html.LabelFor(m => m.NetDepth) @Html.EditorFor(m => m.NetDepth)
+        @Html.DropDownListFor(m => m.NetDepthUnit, new SelectList(TubsWeb.Models.GearUnits.UnitOne, Model.NetDepthUnit.HasValue), "Choose") <br />
+        @Html.LabelFor(m => m.NetLength) @Html.EditorFor(m => m.NetLength) 
+        @Html.DropDownListFor(m => m.NetLengthUnits, new SelectList(TubsWeb.Models.GearUnits.UnitOne, Model.NetLengthUnits), "Choose") <br />
         @Html.LabelFor(m => m.NetStrips) @Html.EditorFor(m => m.NetStrips) <br />
-        @Html.LabelFor(m => m.MeshSize) @Html.EditorFor(m => m.MeshSize) @Html.EditorFor(m => m.MeshSizeUnits)
+        @Html.LabelFor(m => m.MeshSize) @Html.EditorFor(m => m.MeshSize) 
+        @Html.DropDownListFor(m => m.MeshSizeUnits, new SelectList(TubsWeb.Models.GearUnits.UnitTwo, Model.MeshSizeUnits), "Choose")
     </fieldset>
 
     <fieldset>
         <legend>Brails</legend>
-        @Html.LabelFor(m => m.Brail1Size) @Html.EditorFor(m => m.Brail1Size) <br />
-        @Html.LabelFor(m => m.Brail2Size) @Html.EditorFor(m => m.Brail2Size) <br />
+        @Html.LabelFor(m => m.Brail1Size) @Html.EditorFor(m => m.Brail1Size) mT<br />
+        @Html.LabelFor(m => m.Brail2Size) @Html.EditorFor(m => m.Brail2Size) mT<br />
         @Html.LabelFor(m => m.BrailType) <br />
         @Html.TextAreaFor(m => m.BrailType, new { @cols = 80, @rows = 5 })
     </fieldset>

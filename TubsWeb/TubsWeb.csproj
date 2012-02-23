@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="Models\CrewViewModel.cs" />
     <Compile Include="Models\ElectronicsViewModel.cs" />
+    <Compile Include="Models\GearUnits.cs" />
     <Compile Include="Models\Gen1ViewModel.cs" />
     <Compile Include="Models\Gen2ViewModel.cs" />
     <Compile Include="Models\TripHeaderViewModel.cs" />
@@ -246,7 +247,7 @@
     <Content Include="Views\Trip\Create.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\TripHeaderViewModel.cshtml" />
     <Content Include="Views\Gen2\List.cshtml" />
-    <Content Include="Views\Gen2\Details.cshtml" />
+    <Content Include="Views\Gen2\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Int32.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Decimal.cshtml" />
     <Content Include="Views\Gen6\Index.cshtml" />
@@ -263,6 +264,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Gear\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\DisplayTemplates\UnitOfMeasure.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

@@ -6,26 +6,10 @@
 @* This data is common to all interactions.  The other sections below are mutually exclusive! *@
 <fieldset>
     <legend>Interaction Summary</legend>
-    <table>
-        <tbody>
-            <tr>
-                <td class="label" style="width: 15%;">@Html.LabelFor(m => m.LandedDate):</td>
-                <td>@Html.DisplayFor(m => m.LandedDate)</td>
-            </tr>
-            <tr>
-                <td class="label">Position (EEZ):</td>
-                <td>@Model.Latitude / @Model.Longitude (@Model.EezId)</td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.SpeciesCode):</td>
-                <td>@Model.SpeciesCode</td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.SpeciesDescription):</td>
-                <td>@Model.SpeciesDescription</td>
-            </tr>
-        </tbody>
-    </table>
+    @Html.LabelFor(m => m.LandedDate) @Html.DisplayFor(m => m.LandedDate) <br />
+    <label>Position (EEZ)</label> @Model.Latitude / @Model.Longitude (@Model.EezId) <br />
+    @Html.LabelFor(m => m.SpeciesCode) @Html.DisplayFor(m => m.SpeciesCode) <br />
+    @Html.LabelFor(m => m.SpeciesDescription) @Model.SpeciesDescription
 </fieldset>
 
 <fieldset>
@@ -206,6 +190,26 @@ else if ("I".Equals(Model.SgType))
 else if ("S".Equals(Model.SgType))
 {
     @* This data only appears when the species was sighted *@
+    <label>Vessel Activity</label>
+    if (InteractionActivity.Other == Model.InteractionActivity)
+    {
+        <text>Other (@Model.InteractionIfOther)</text>
+    }
+    else
+    {
+        @Model.InteractionActivity
+    }
+    <br />
+    @Html.LabelFor(m => m.SightingCount) @Html.DisplayFor(m => m.SightingCount) <br />
+    @Html.LabelFor(m => m.SightingAdultCount) @Html.DisplayFor(m => m.SightingAdultCount) <br />
+    @Html.LabelFor(m => m.SightingJuvenileCount) @Html.DisplayFor(m => m.SightingJuvenileCount) <br />
+    @Html.LabelFor(m => m.SightingLength) @Model.SightingLength <br />
+    @Html.LabelFor(m => m.SightingDistance) 
+    @Html.DisplayFor(m => m.SightingDistance)
+    @* TODO TUBS Frontend saves units in terms of Unit4 -- bleah *@
+    @* @Model.SightingDistanceUnit.GetDescription()  *@ <br />
+    <label>Behaviour when sighted</label> @Html.DisplayFor(m => m.SightingBehavior)
+    
     <table>
         <tbody>
             <tr>

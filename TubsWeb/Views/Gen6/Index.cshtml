@@ -39,58 +39,24 @@ else
 {
     @* TODO Change to label/value layout (like PurseSeineGear.cshtml) *@
     <fieldset>
-        <legend>Incident Details</legend>  
-        <table>
-            <tbody>
-                <tr>
-                    <td class="label" style="width: 15%;">@Html.LabelFor(m => m.IncidentDate):</td>
-                    <td>@Html.DisplayFor(m => m.IncidentDate)</td>
-                </tr>
-                <tr>
-                    <td class="label">Position:</td>
-                    <td>@Model.Latitude / @Model.Longitude (@Model.EezId)</td>
-                </tr>
-                <tr>
-                    <td class="label">Wind Conditions:</td>
-                    <td>@SpeedAndDirection(Model.WindSpeed, Model.WindDirection)</td>
-                </tr>
-                <tr>
-                    <td class="label">@Html.LabelFor(m => m.SeaCode):</td>
-                    <td>@Html.DisplayFor(m => m.SeaCode)</td>
-                </tr>
-                <tr>
-                    <td class="label">Offending Vessel:</td>
-                    <td>@Html.DisplayFor(m => m.VesselName)</td>
-                </tr>
-                @* TODO Add current (knots and direction), observer's vessel activity, ircs, vessel type, and relative location *@
-                <tr>
-                    <td class="label">MARPOL Stickers/Posters on display?</td>
-                    <td>@Html.DisplayFor(m => m.MarpolStickers)</td>
-                </tr>
-                <tr>
-                    <td class="label">Was captain aware of MARPOL Regulations?</td>
-                    <td>@Html.DisplayFor(m => m.CaptainAware)</td>
-                </tr>
-                <tr>
-                    <td class="label">Was captain advised of MARPOL infringements?</td>
-                    <td>@Html.DisplayFor(m => m.CaptainAdvised)</td>
-                </tr>
-                <tr>
-                    <td class="label">Were photos taken?</td>
-                    <td>
-                        @Html.DisplayFor(m => m.PhotosTaken)
-                        @if (!String.IsNullOrEmpty(Model.PhotoFrames))
-                        {
-                            <text>(@Model.PhotoFrames)</text>
-                        }
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">@Html.LabelFor(m => m.Comments)</td>
-                    <td>@Html.DisplayFor(m => m.Comments)</td>
-                </tr>
-            </tbody>
-        </table>
+        <legend>Incident Details</legend>
+         @* TODO Add current (knots and direction), observer's vessel activity, ircs, vessel type, and relative location *@
+        @Html.LabelFor(m => m.IncidentDate) @Html.DisplayFor(m => m.IncidentDate) <br />
+        <label>Position</label> @Model.Latitude / @Model.Longitude (@Model.EezId) <br />
+        <label>Wind Conditions</label> @SpeedAndDirection(Model.WindSpeed, Model.WindDirection) <br />
+        @Html.LabelFor(m => m.SeaCode) @Html.DisplayFor(m => m.SeaCode) <br />
+        <label>Offending Vessel</label> @Html.DisplayFor(m => m.VesselName) <br />
+        <label>MARPOL Stickers/Posters on display?</label> @Html.DisplayFor(m => m.MarpolStickers) <br />
+        <label>Was captain aware of MARPOL Regulations?</label> @Html.DisplayFor(m => m.CaptainAware) <br />
+        <label>Was captain advised of MARPOL infringements?</label> @Html.DisplayFor(m => m.CaptainAdvised) <br />
+        <label>Were photos taken?</label>
+        @Html.DisplayFor(m => m.PhotosTaken)
+        @if (!String.IsNullOrEmpty(Model.PhotoFrames))
+        {
+            <text>(@Model.PhotoFrames)</text>
+        }
+        <br />
+        @Html.LabelFor(m => m.Comments) @Html.DisplayFor(m => m.Comments)
     </fieldset>
     
     @*  Create two additional fieldsets, one for waste dumped overboard and another for oil spills/leaks *@

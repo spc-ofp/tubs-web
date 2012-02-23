@@ -47,6 +47,7 @@ namespace TubsWeb.Controllers
             var repo = new TubsRepository<Port>(MvcApplication.CurrentSession);
             var ports = (
                 from port in repo.FilterBy(p => p.Name.Contains(term))
+                where port.PortCode != null
                 select new
                 {
                     id = port.PortCode,

@@ -5,6 +5,7 @@
 <table>
     <thead>
         <tr>
+            <th>&nbsp;</th>
             <th>Type</th>
             <th>Date</th>
             <th>Position</th>
@@ -13,9 +14,11 @@
         </tr>
     </thead>
     <tbody>
+    @* TODO Change this to a page number like all the rest *@
     @foreach (var interaction in Model)
     {
         <tr>
+            <td>@Html.ActionLink("Details", "Index", new { id = ViewBag.TripId, interactionId = interaction.Id})</td>
             <td>@interaction.SgType</td>
             <td>@interaction.LandedDate</td>
             <td>@interaction.Latitude / @interaction.Longitude (@interaction.EezId)</td>

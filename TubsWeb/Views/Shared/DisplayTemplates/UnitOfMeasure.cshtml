@@ -1,0 +1,4 @@
+﻿@model Spc.Ofp.Tubs.DAL.Common.UnitOfMeasure?
+@using Spc.Ofp.Tubs.DAL.Common
+           
+@Html.Encode( Model.HasValue ? Model.Value.GetDescription() : "N/A")

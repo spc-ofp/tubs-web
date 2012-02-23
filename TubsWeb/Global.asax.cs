@@ -117,7 +117,7 @@ namespace TubsWeb
             routes.MapRoute(
                 "Gen2Details",
                 "Trip/Details/{id}/GEN-2/Interaction/{interactionId}",
-                new { controller = "Gen2", action = "Details" }
+                new { controller = "Gen2", action = "Index" }
             );
 
             routes.MapRoute(

@@ -50,7 +50,7 @@ namespace TubsWeb.Controllers
         }
 
         // GET: /Trip/Details/{id}/Interaction/{interactionId}
-        public ActionResult Details(int id, int interactionId)
+        public ActionResult Index(int id, int interactionId)
         {
             ViewBag.TripId = id;
             var repo = new TubsRepository<SpecialSpeciesInteraction>(MvcApplication.CurrentSession);
