@@ -38,6 +38,8 @@ namespace TubsWeb.Controllers
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class UseTransactionsByDefaultAttribute : ActionFilterAttribute
     {
+        protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(UseTransactionsByDefaultAttribute));
+        
         private static bool ShouldDelegateTransactionSupport(ActionExecutingContext filterContext)
         {
             var attrs = filterContext.ActionDescriptor.GetCustomAttributes(typeof(TransactionalActionBaseAttribute), false);
@@ -53,15 +55,18 @@ namespace TubsWeb.Controllers
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             bool shouldDelegate = ShouldDelegateTransactionSupport(filterContext);
+            Logger.DebugFormat("shouldDelegate? {0}", shouldDelegate);
             MvcApplication.IsEnrolledInTransaction = !shouldDelegate;
             // This also needs to get stuffed into HttpContext.Current
 
             if (!shouldDelegate)
             {
+                Logger.Debug("Creating transaction...");
                 ISession session = MvcApplication.CurrentSession;
                 MvcApplication.CurrentTransaction = session.BeginTransaction();
             }
 
+            Logger.Debug("Passing execution to base");
             base.OnActionExecuting(filterContext);
         }
 
@@ -70,22 +75,41 @@ namespace TubsWeb.Controllers
         {
             base.OnResultExecuted(filterContext);
 
+            Logger.DebugFormat("IsEnrolledInTransaction? {0}", MvcApplication.IsEnrolledInTransaction);
+
             if (MvcApplication.IsEnrolledInTransaction)
             {
-                // TODO This isn't working in prod...
+                // Adding new trip headers is sketchy in prod -- try this to find root cause               
                 ITransaction transaction = null;
                 try
                 {
                     transaction = MvcApplication.CurrentTransaction;
+                    Logger.DebugFormat("CurrentTransaction is null? {0}", null == MvcApplication.CurrentTransaction);
+                    Logger.DebugFormat("filterContext.Exception is not null? {0}", null != filterContext.Exception);
+                    Logger.DebugFormat("filterContext.ExceptionHandled? {0}", filterContext.ExceptionHandled);
                     if ((filterContext.Exception != null) && (!filterContext.ExceptionHandled))
                     {
+                        Logger.Debug("Exception causing rollback", filterContext.Exception);
                         transaction.Rollback();
                     }
                     else
                     {
+                        Logger.Debug("Committing transaction...");
                         transaction.Commit();
+                        Logger.Debug("Transaction committed");
                     }
 
+                }
+                catch (Exception ex)
+                {
+                    ex.Data.Add("IsEnrolledInTransaction", MvcApplication.IsEnrolledInTransaction);
+                    if (null != filterContext.Exception)
+                    {
+                        ex.Data.Add("FilterException", filterContext.Exception);
+                        ex.Data.Add("FilterExceptionHandled", filterContext.ExceptionHandled);
+                    }
+                    Logger.Error("Error finalizing transaction", ex);
+                    throw;
                 }
                 finally
                 {

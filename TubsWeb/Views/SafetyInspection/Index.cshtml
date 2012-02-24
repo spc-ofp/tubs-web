@@ -1,0 +1,78 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.SafetyInspection
+
+<h2>@ViewBag.Title</h2>
+
+@if (null == Model)
+{
+    <p>
+        No safety inspection details available for this trip.
+    </p>
+}
+else
+{
+    <fieldset>
+        <legend>Lifejacket and Buoys</legend>
+        @Html.LabelFor(m => m.LifejacketProvided) @Html.DisplayFor(m => m.LifejacketProvided) <br />
+        @Html.LabelFor(m => m.LifejacketSizeOk) @Html.DisplayFor(m => m.LifejacketSizeOk) <br />
+        @Html.LabelFor(m => m.LifejacketAvailability) @Html.DisplayFor(m => m.LifejacketAvailability) <br />
+        @Html.LabelFor(m => m.BuoyCount) @Html.DisplayFor(m => m.BuoyCount) <br />
+    </fieldset>
+    <br />
+    if (Model.Epirb1.BeaconType != null || Model.Epirb1.Expiration != null || Model.Epirb1.Count.HasValue)
+    {
+    <fieldset>
+        <legend>EPIRB #1</legend>
+        @Html.DisplayFor(m => m.Epirb1)       
+    </fieldset>
+    <br />
+    }
+    if (Model.Epirb2.BeaconType != null || Model.Epirb2.Expiration != null || Model.Epirb2.Count.HasValue)
+    {
+    <fieldset>
+        <legend>EPIRB #2</legend>
+        @Html.DisplayFor(m => m.Epirb2)       
+    </fieldset>
+    <br />
+    }
+
+    if (0 == Model.LifeRafts.Count())
+    {
+        <p>No liferaft data available.</p>
+    }
+    else
+    {
+        <fieldset>
+        <legend>Liferafts</legend>
+            <table style="width: auto;">
+                <thead>
+                    <tr>
+                        <th>@Html.LabelFor(m => m.Raft1.Capacity)</th>
+                        <th>@Html.LabelFor(m => m.Raft1.InspectionDate)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var raft in Model.LifeRafts)
+                {
+                   <tr>
+                        <td>@Html.DisplayFor(r => raft.Capacity)</td>
+                        <td>
+                            @Html.DisplayFor(r => raft.InspectionDate, new { format = "MM/yy" })
+                            @switch (raft.LastOrDue)
+                            {
+                                case 'L':
+                                    <text>(Last)</text>
+                                    break;
+                                case 'D':
+                                    <text>(Due)</text>
+                                    break;
+                                default:
+                                    break;
+                            }
+                        </td>
+                   </tr>     
+                }   
+                </tbody>
+            </table>
+        </fieldset>
+    }
+}

@@ -74,6 +74,9 @@ namespace TubsWeb.Controllers
             return retval;
         }
 
+        // FIXME Need to come up with a better way of doing this -- maybe a "Mutator" attribute
+        // and an authorize filter?
+        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
         public ActionResult Edit(int id)
         {
             ViewBag.TripId = id;
@@ -97,6 +100,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
         public ActionResult Edit(int id, [AbstractBind(ConcreteTypeParameter = "gearType")] Gear gear)
         {
             var tripRepo = new TubsRepository<Trip>(MvcApplication.CurrentSession);

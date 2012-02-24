@@ -1,6 +1,6 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
 
-<table width="100%">
+<table>
     <tr>
         <td>Observer:</td>
         <td>@Model.Observer.ToString()</td>
@@ -11,7 +11,7 @@
         <td>Trip Number:</td>
         <td>@Model.TripNumber</td>
         <td>Alternate Trip Number:</td>
-        <td>N/A</td>
+        <td>@Model.AlternateTripNumber</td>
     </tr>
     <tr>
         <td>First Day:</td>
@@ -44,10 +44,21 @@
             <td>@setcount</td>
         </tr> 
     }  
+    
+    @if (Model.IsSpillSampled.HasValue && Model.IsSpillSampled.Value)
+    {
+    <tr>
+        <td>Spill Observer:</td>
+        <td>TODO</td>
+        <td>Spill Trip Number:</td>
+        <td>@Html.DisplayFor(m => m.SpillTripNumber)</td>
+    </tr>
+    }
     <tr>
         <td>Entered By:</td>
         <td>@Model.EnteredBy</td>
         <td>Entered Date:</td>
         <td>@Html.DisplayFor(m => m.EnteredDate)</td>
     </tr>
+    @* TODO Add verified/closed information *@
 </table>

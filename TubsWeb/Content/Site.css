@@ -175,6 +175,12 @@ ul#menu li.selected a {
 /* FORM LAYOUT ELEMENTS   
 ----------------------------------------------------------*/
 
+/* IE8 and up -- who still uses IE7? */
+input[type="text"]:focus,textarea:focus
+{
+    background-color: Yellow;
+}
+
 fieldset {
     border: 1px solid #ddd;
     padding: 0 1.4em 1.4em 1.4em;
@@ -388,6 +394,11 @@ div#title {
 
 .text-box {
     width: 30em;
+}
+
+.text-box.single-line 
+{
+    width: 50em;
 }
 
 .text-box.multi-line {

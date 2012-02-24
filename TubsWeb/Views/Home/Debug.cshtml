@@ -1,0 +1,50 @@
+﻿@using System.Web.Configuration
+@using System.Configuration
+@using System.Data.Common
+
+@{
+    ViewBag.Title = "Application Debug Information";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<em>Remote Database(s):</em><br />
+<table>
+    <thead>
+        <tr>
+            <th>Connection String Key</th>
+            <th>Provider Name</th>
+            <th>Connection String</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ConnectionStringSettings connString in WebConfigurationManager.ConnectionStrings)
+        {
+        <tr>
+            <td>@connString.Name</td>
+            <td>@connString.ProviderName</td>
+            <td>@connString.ConnectionString</td>
+        </tr>   
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<em>Application Settings:</em><br />
+<ul>
+    @foreach (var key in WebConfigurationManager.AppSettings.AllKeys)
+    {
+        <li>@key :  @WebConfigurationManager.AppSettings[key].ToString()</li>   
+    }
+</ul>
+
+<hr />
+
+<em>Roles for this user:</em><br />
+<ul>
+   @foreach (var role in System.Web.Security.Roles.GetRolesForUser())
+   {
+    <li>@role</li>
+   }
+</ul>

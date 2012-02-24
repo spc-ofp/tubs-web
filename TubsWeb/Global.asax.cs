@@ -90,6 +90,7 @@ namespace TubsWeb
 
         public static void RegisterRoutes(RouteCollection routes)
         {
+            routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
@@ -202,6 +203,8 @@ namespace TubsWeb
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+            // Hard to get Log4net working if you don't call this -- D'Oh!
+            log4net.Config.XmlConfigurator.Configure();
         }
     }
 }

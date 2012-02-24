@@ -100,6 +100,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ObserverController.cs" />
     <Compile Include="Controllers\PortController.cs" />
+    <Compile Include="Controllers\SafetyInspectionController.cs" />
     <Compile Include="Controllers\SeaDayController.cs" />
     <Compile Include="Controllers\SuperController.cs" />
     <Compile Include="Controllers\TransactionalActionBaseAttribute.cs" />
@@ -178,6 +179,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
@@ -267,6 +269,24 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\DisplayTemplates\UnitOfMeasure.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Trip\VesselDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Trip\EditVesselDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Debug.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Confidentiality.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SafetyInspection\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\DisplayTemplates\EpirbResult.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

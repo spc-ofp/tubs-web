@@ -8,6 +8,7 @@
 </fieldset>
 
 <p>
+    @Html.ActionLink("Vessel Details", "VesselDetails", "Trip", new { id = Model.Id }, null) |
     @Html.ActionLink("Crew", "Index", "Crew", new { id = Model.Id }, null) |
     @Html.ActionLink("Electronics", "List", "Electronics", new { id = Model.Id }, null) |
     @Html.ActionLink("Fishing Gear", "Index", "Gear", new { id = Model.Id }, null) |

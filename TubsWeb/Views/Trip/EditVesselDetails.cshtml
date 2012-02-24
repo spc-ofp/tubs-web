@@ -1,0 +1,52 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.VesselNotes
+
+<h2>@ViewBag.Title</h2>
+
+@if (ViewData["flash"] != null)
+{
+    var alertLevel = ViewData["flash-level"] ?? "alert-error";
+<div class="alert @alertLevel">
+    @ViewData["flash"]
+</div>
+}
+
+@using (Html.BeginForm())
+{ 
+    @Html.ValidationSummary(true, "Save failed")
+    <fieldset>
+        <legend>Vessel Details</legend>
+        <p>
+            @Html.LabelFor(m => m.Owner) @Html.EditorFor(m => m.Owner)
+        </p>
+        <p>
+            @Html.LabelFor(m => m.Captain) @Html.EditorFor(m => m.Captain)
+        </p>
+        <p>
+            @Html.LabelFor(m => m.CaptainCountryCode) @Html.TextBoxFor(m => m.CaptainCountryCode, new { @maxlength = "2", @size = "3", style = "width = 10px;" })
+        </p>
+        <p>
+            @Html.LabelFor(m => m.Licenses) @Html.EditorFor(m => m.Licenses) 
+        </p>
+        <p>
+            @Html.LabelFor(m => m.FishingMaster) @Html.EditorFor(m => m.FishingMaster)
+        </p>
+        <p>
+            @Html.LabelFor(m => m.MasterCountryCode) @Html.TextBoxFor(m => m.MasterCountryCode, new { @maxlength = "2", @size = "3", style = "width = 10px;" })
+        </p>
+        <p>
+            @Html.LabelFor(m => m.Comments) @Html.TextAreaFor(m => m.Comments, new { @cols = 100, @rows = 5 })
+        </p>
+    </fieldset>
+    
+    <p>
+        <input type="submit" value="Save" />
+        <input type="reset" value="Cancel" />
+    </p>
+    
+}
+
+
+<p>
+    @Html.ActionLink("Back to Vessel Details", "VesselDetails", "Trip", new { id = ViewBag.TripId }, null) |
+    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>

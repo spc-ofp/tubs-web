@@ -53,14 +53,67 @@ namespace TubsWeb.Controllers
         // GET: /Trip/Details/1
         public ActionResult Details(int id)
         {
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            Trip trip = repo.FindBy(id);
+            ViewBag.TripId = id;
+            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id);
             if (null == trip)
             {
                 return View("NotFound");
             }
-            ViewBag.Title = String.Format("Details for trip {0} / {1}", trip.Observer.StaffCode, trip.TripNumber);
-            return View("Details", trip);
+            ViewBag.Title = trip.ToString();
+            return View(trip);
+            //return View("Details", trip);
+        }
+
+        public ActionResult VesselDetails(int id)
+        {
+            ViewBag.TripId = id;
+            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id);
+            if (null == trip)
+            {
+                return View("NotFound");
+            }
+            ViewBag.Title = trip.ToString();
+            return View(trip.VesselNotes);
+        }
+
+        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
+        public ActionResult EditVesselDetails(int id)
+        {
+            ViewBag.TripId = id;
+            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id);
+            if (null == trip)
+            {
+                return View("NotFound");
+            }
+            ViewBag.Title = trip.ToString();
+            return View(trip.VesselNotes);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
+        public ActionResult EditVesselDetails(int id, VesselNotes notes)
+        {
+            ViewBag.TripId = id;
+            var tripRepo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var trip = tripRepo.FindBy(id);
+            if (null == trip)
+            {
+                Flash("Can't add vessel notes for a trip that doesn't exist");
+                // TODO Need a better view for this...
+                return View(notes);
+            }
+
+            Logger.DebugFormat("ModelState.IsValid? {0}", ModelState.IsValid);
+
+            if (ModelState.IsValid)
+            {               
+                trip.VesselNotes = notes;
+                tripRepo.Update(trip);
+                Logger.Debug("Updated trip");
+                return RedirectToAction("VesselDetails", new { id = id });
+            }
+            Logger.Debug("Redirecting back to edit page");
+            return View(notes);
         }
 
         // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...

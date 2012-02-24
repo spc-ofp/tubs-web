@@ -1,0 +1,28 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.VesselNotes
+
+<h2>@ViewBag.Title</h2>
+
+@if (null == Model)
+{
+<p>
+    No details available for this vessel.
+</p>
+} else {
+<fieldset>
+    <legend>Vessel Details</legend>
+    @Html.LabelFor(m => m.Owner) @Html.DisplayFor(m => m.Owner) <br />
+    @Html.LabelFor(m => m.Captain) @Html.DisplayFor(m => m.Captain) <br />
+    @Html.LabelFor(m => m.CaptainCountryCode) @Html.DisplayFor(m => m.CaptainCountryCode) <br />
+    @Html.LabelFor(m => m.Licenses) @Html.DisplayFor(m => m.Licenses) <br />
+    @Html.LabelFor(m => m.FishingMaster) @Html.DisplayFor(m => m.FishingMaster) <br />
+    @Html.LabelFor(m => m.MasterCountryCode) @Html.DisplayFor(m => m.MasterCountryCode) <br />
+    @Html.LabelFor(m => m.Comments) @Html.DisplayFor(m => m.Comments) <br />
+    
+
+</fieldset>
+}
+
+<p>
+    @Html.ActionLink("Edit Vessel Details", "EditVesselDetails", "Trip", new { id = ViewBag.TripId }, null) | 
+    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>

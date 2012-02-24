@@ -84,5 +84,16 @@ namespace TubsWeb.Controllers
         {
             return View();
         }
+
+        // FIXME Add some kind of security here
+        public ActionResult Debug()
+        {
+            return View();
+        }
+
+        public ActionResult Confidentiality()
+        {
+            return View();
+        }
     }
 }
