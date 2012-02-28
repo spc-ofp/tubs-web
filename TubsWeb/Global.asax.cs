@@ -22,14 +22,12 @@ namespace TubsWeb
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Web;
     using System.Web.Mvc;
     using System.Web.Routing;
     using NHibernate;
     using Spc.Ofp.Tubs.DAL;
+    using TubsWeb.Core;
     
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
@@ -108,9 +106,9 @@ namespace TubsWeb
             // For now, route vessel attributes through Trip since there's a 1:1 relationship
             // and it's PS only.
             routes.MapRoute(
-                "VesselAttributes",
-                "Trip/Details/{id}/VesselAttributes/",
-                new { controller = "Trip", action = "VesselAttributes" }
+                "Auxiliaries",
+                "Trip/Details/{id}/Auxiliaries/",
+                new { controller = "Trip", action = "Auxiliaries" }
             );
 
             // As with vessel attributes, hang this off of Trip
@@ -220,7 +218,8 @@ namespace TubsWeb
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-
+            // Trip is the only model worth binding.
+            ModelBinderProviders.BinderProviders.Add(new TripModelBinderProvider());
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
             // Hard to get Log4net working if you don't call this -- D'Oh!

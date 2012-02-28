@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Controllers
+namespace TubsWeb.Core
 {
     /*
      * This file is part of TUBS.

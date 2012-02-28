@@ -11,7 +11,7 @@
 <p>    
     @if (Model.GetType() == typeof(PurseSeineTrip))
     {
-        @Html.ActionLink("Auxiliaries", "VesselAttributes", "Trip", new { id = Model.Id }, null) <text> |</text>
+        @Html.ActionLink("Auxiliaries", "Auxiliaries", "Trip", new { id = Model.Id }, null) <text> |</text>
     }
     @Html.ActionLink("Vessel Details", "VesselDetails", "Trip", new { id = Model.Id }, null) |
     @Html.ActionLink("Crew", "Index", "Crew", new { id = Model.Id }, null) |

@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Controllers
+namespace TubsWeb.Core
 {
     using System;
     using System.Collections.Generic;

@@ -30,6 +30,7 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
+    using TubsWeb.Core;
        
     public class TripController : SuperController
     {
@@ -49,55 +50,54 @@ namespace TubsWeb.Controllers
             return View(trips.Entities);
         }
 
-        //
         // GET: /Trip/Details/1
-        public ActionResult Details(int id)
+        /// <summary>
+        /// Retrieves Trip details for display.
+        /// NOTE:  Trip is retrieved by TripModelBinder -- the caller actually passes in the
+        /// integer TripId.  If no such trip exists, the ModelBinder will return null.
+        /// </summary>
+        /// <param name="id">Trip</param>
+        /// <returns></returns>
+        public ActionResult Details(Trip id)
         {
-            ViewBag.TripId = id;
-            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id);
-            if (null == trip)
+            if (null == id)
             {
-                return View("NotFound");
+                return new NoSuchTripResult();
             }
-            ViewBag.Title = trip.ToString();
-            return View(trip);
+            ViewBag.Title = id.ToString();
+            return View(id);
         }
 
-        public ActionResult VesselAttributes(int id)
+        public ActionResult Auxiliaries(Trip id)
         {
-            ViewBag.TripId = id;
-            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id) as PurseSeineTrip;
+            var trip = id as PurseSeineTrip;
             if (null == trip)
             {
-                return View("NotFound");
+                return new NoSuchTripResult();
             }
             ViewBag.Title = String.Format("{0} auxiliaries", trip.ToString());
             return View(trip.VesselAttributes);
         }
 
-        public ActionResult VesselDetails(int id)
+        public ActionResult VesselDetails(Trip id)
         {
-            ViewBag.TripId = id;
-            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id);
-            if (null == trip)
+            if (null == id)
             {
-                return View("NotFound");
+                return new NoSuchTripResult();
             }
-            ViewBag.Title = String.Format("{0} vessel details", trip.ToString());
-            return View(trip.VesselNotes);
+            ViewBag.Title = String.Format("{0} vessel details", id.ToString());
+            return View(id.VesselNotes);
         }
 
         [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
-        public ActionResult EditVesselDetails(int id)
+        public ActionResult EditVesselDetails(Trip id)
         {
-            ViewBag.TripId = id;
-            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id);
-            if (null == trip)
+            if (null == id)
             {
-                return View("NotFound");
+                return new NoSuchTripResult();
             }
-            ViewBag.Title = trip.ToString();
-            return View(trip.VesselNotes);
+            ViewBag.Title = id.ToString();
+            return View(id.VesselNotes);
         }
 
         [HttpPost]
@@ -123,7 +123,6 @@ namespace TubsWeb.Controllers
                 Logger.Debug("Updated trip");
                 return RedirectToAction("VesselDetails", new { id = id });
             }
-            Logger.Debug("Redirecting back to edit page");
             return View(notes);
         }
 

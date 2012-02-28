@@ -27,27 +27,24 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Models;
+    using TubsWeb.Core;
 
     public class Gen1Controller : SuperController
     {
 
         //
         // GET: /Gen1/
-        public ActionResult Index(int id)
+        public ActionResult Index(Trip id)
         {
-            ViewBag.TripId = id;
-
             Gen1ViewModel viewModel = new Gen1ViewModel();
-            viewModel.TripId = id;
-
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trip = repo.FindBy(id);
-            if (null != trip)
+            if (null == id)
             {
-                ViewBag.Title = String.Format("GEN-1 events for trip {0} / {1}", trip.Observer.StaffCode, trip.TripNumber);
-                viewModel.Sightings = trip.Sightings;
-                viewModel.Transfers = trip.Transfers;
+                return new NoSuchTripResult();
             }
+            ViewBag.Title = String.Format("GEN-1 events for trip {0}", id.ToString());
+            viewModel.TripId = id.Id;
+            viewModel.Sightings = id.Sightings;
+            viewModel.Transfers = id.Transfers;
             return View(viewModel);
         }
 

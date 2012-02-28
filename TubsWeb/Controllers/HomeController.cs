@@ -88,6 +88,7 @@ namespace TubsWeb.Controllers
         // FIXME Add some kind of security here
         public ActionResult Debug()
         {
+            ViewBag.Xyzzy = "Xyzzy";
             return View();
         }
 

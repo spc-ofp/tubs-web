@@ -1,10 +1,10 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="HandleTransactionManuallyAttribute.cs" company="Secretariat of the Pacific Community">
-// Copyright (C) 2012 Secretariat of the Pacific Community
+// <copyright file="TripModelBinderProvider.cs" company="Secretariat of the Pacific Community">
+// Copyright (C) 2011 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Controllers
+namespace TubsWeb.Core
 {
     /*
      * This file is part of TUBS.
@@ -23,12 +23,16 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-
-    /// <summary>
-    /// Attache this attribute to signal that callier is manually handling transaction.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class HandleTransactionManuallyAttribute : TransactionalActionBaseAttribute
+    using System.Web.Mvc;
+    using Spc.Ofp.Tubs.DAL.Entities;
+    
+    public class TripModelBinderProvider : IModelBinderProvider
     {
+        public IModelBinder GetBinder(Type modelType)
+        {
+            return modelType == typeof(Trip) ?
+                new TripModelBinder() :
+                null;
+        }
     }
 }

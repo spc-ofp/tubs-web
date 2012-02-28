@@ -2,27 +2,27 @@
 
 <table>
     <tr>
-        <td>Observer:</td>
+        <td class="label" style="width: 10%;">Observer:</td>
         <td>@Model.Observer.ToString()</td>
-        <td>Program:</td>
+        <td class="label" style="width: 10%;">Program:</td>
         <td>@Model.ProgramCode</td>
     </tr>
     <tr>
-        <td>Trip Number:</td>
+        <td class="label">Trip Number:</td>
         <td>@Model.TripNumber</td>
-        <td>Alternate Trip Number:</td>
+        <td class="label">Alternate Trip Number:</td>
         <td>@Model.AlternateTripNumber</td>
     </tr>
     <tr>
-        <td>First Day:</td>
+        <td class="label">First Day:</td>
         <td>@Html.DisplayFor(m => m.DepartureDate)</td>
-        <td>Last Day:</td>
+        <td class="label">Last Day:</td>
         <td>@Html.DisplayFor(m => m.ReturnDate)</td>
     </tr>
     <tr>
-        <td>Departure Port:</td>
+        <td class="label">Departure Port:</td>
         <td>@Model.DeparturePort.ToString()</td>
-        <td>Return Port:</td>
+        <td class="label">Return Port:</td>
         <td>@Model.ReturnPort.ToString()</td>
     </tr>
     <!-- Add Sea days and sets for PS trips -->
@@ -30,9 +30,9 @@
     {
         var pstrip = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip;
         <tr>
-            <td>Sea Days:</td>
+            <td class="label">Sea Days:</td>
             <td>@pstrip.SeaDays.Count.ToString()</td>
-            <td>Sets:</td>
+            <td class="label">Sets:</td>
             @{
                 var setcount = (
                     from d in pstrip.SeaDays
@@ -48,16 +48,16 @@
     @if (Model.IsSpillSampled.HasValue && Model.IsSpillSampled.Value)
     {
     <tr>
-        <td>Spill Observer:</td>
+        <td class="label">Spill Observer:</td>
         <td>TODO</td>
-        <td>Spill Trip Number:</td>
+        <td class="label">Spill Trip Number:</td>
         <td>@Html.DisplayFor(m => m.SpillTripNumber)</td>
     </tr>
     }
     <tr>
-        <td>Entered By:</td>
+        <td class="label">Entered By:</td>
         <td>@Model.EnteredBy</td>
-        <td>Entered Date:</td>
+        <td class="label">Entered Date:</td>
         <td>@Html.DisplayFor(m => m.EnteredDate)</td>
     </tr>
     @* TODO Add verified/closed information *@

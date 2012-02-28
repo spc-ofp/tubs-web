@@ -7,6 +7,7 @@
 namespace TubsWeb.Controllers
 {
     using System.Web.Mvc;
+    using TubsWeb.Core;
 
     /*
      * This file is part of TUBS.

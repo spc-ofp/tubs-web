@@ -8,6 +8,19 @@
 
 <h2>@ViewBag.Title</h2>
 
+<em>ViewBag contents:</em><br />
+@{
+    // This returns the dynamic property names in ViewBag, which is actually
+    // DynamicViewDataDictionary and not Object.
+    var props = ViewBag.GetDynamicMemberNames();
+}
+<ul>
+@foreach (var prop in props)
+{
+    <li>@prop.ToString()</li>
+}
+</ul>
+
 <em>Remote Database(s):</em><br />
 <table>
     <thead>

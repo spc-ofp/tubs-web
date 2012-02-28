@@ -87,7 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\AbstractBindAttribute.cs" />
+    <Compile Include="Core\AbstractBindAttribute.cs" />
     <Compile Include="Controllers\CrewController.cs" />
     <Compile Include="Controllers\ElectronicsController.cs" />
     <Compile Include="Controllers\FishingSetController.cs" />
@@ -96,16 +96,19 @@
     <Compile Include="Controllers\Gen2Controller.cs" />
     <Compile Include="Controllers\Gen3Controller.cs" />
     <Compile Include="Controllers\Gen6Controller.cs" />
-    <Compile Include="Controllers\HandleTransactionManuallyAttribute.cs" />
+    <Compile Include="Core\HandleTransactionManuallyAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ObserverController.cs" />
     <Compile Include="Controllers\PortController.cs" />
     <Compile Include="Controllers\SafetyInspectionController.cs" />
     <Compile Include="Controllers\SeaDayController.cs" />
     <Compile Include="Controllers\SuperController.cs" />
-    <Compile Include="Controllers\TransactionalActionBaseAttribute.cs" />
+    <Compile Include="Core\NoSuchTripResult.cs" />
+    <Compile Include="Core\TransactionalActionBaseAttribute.cs" />
     <Compile Include="Controllers\TripController.cs" />
-    <Compile Include="Controllers\UseTransactionsByDefaultAttribute.cs" />
+    <Compile Include="Core\TripModelBinder.cs" />
+    <Compile Include="Core\TripModelBinderProvider.cs" />
+    <Compile Include="Core\UseTransactionsByDefaultAttribute.cs" />
     <Compile Include="Controllers\VesselController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -289,7 +292,10 @@
     <Content Include="Views\Shared\DisplayTemplates\EpirbResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Trip\VesselAttributes.cshtml" />
+    <Content Include="Views\Trip\Auxiliaries.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\TripNotFound.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
