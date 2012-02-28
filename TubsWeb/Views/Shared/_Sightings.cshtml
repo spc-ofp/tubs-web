@@ -1,4 +1,15 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Sighting>
+@using Spc.Ofp.Tubs.DAL.Common
+
+@helper VesselTypeHelper(SightedVesselType? vtype)
+{
+    @Html.Raw(vtype.GetDescription());
+}
+
+@helper ActionTypeHelper(ActionType? atype)
+{
+    @Html.Raw(atype.GetDescription());
+}
 
 @{ var sightings = new WebGrid(source: Model, defaultSort: "Id", rowsPerPage: 50); }
 
@@ -6,12 +17,12 @@
     alternatingRowStyle: "alt",
     columns: sightings.Columns(
         sightings.Column("EventTime", "Date / Time"),
-        sightings.Column("Latitude", "Latitude"),
-        sightings.Column("Longitude", "Longitude"),
-        sightings.Column("VesselType", "Vessel Type"),
-        sightings.Column("Bearing", "Bearing"),
-        sightings.Column("Distance", "Distance"),
-        sightings.Column("ActionType", "Action"),
-        sightings.Column("PhotoNumber", "Photo Frame #"),
-        sightings.Column("Comments", "Comments")
+        sightings.Column("Latitude", "Latitude", canSort: false),
+        sightings.Column("Longitude", "Longitude", canSort: false),
+        sightings.Column(header: "Vessel Type", format: (item) => VesselTypeHelper(item.VesselType)),
+        sightings.Column("Bearing", "Bearing", canSort: false),
+        sightings.Column("Distance", "Distance", canSort: false),
+        sightings.Column(header: "Action", format: (item) => ActionTypeHelper(item.ActionType)),
+        sightings.Column("PhotoNumber", "Photo Frame #", canSort: false),
+        sightings.Column("Comments", "Comments", canSort: false)
     ))

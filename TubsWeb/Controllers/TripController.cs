@@ -61,7 +61,18 @@ namespace TubsWeb.Controllers
             }
             ViewBag.Title = trip.ToString();
             return View(trip);
-            //return View("Details", trip);
+        }
+
+        public ActionResult VesselAttributes(int id)
+        {
+            ViewBag.TripId = id;
+            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id) as PurseSeineTrip;
+            if (null == trip)
+            {
+                return View("NotFound");
+            }
+            ViewBag.Title = String.Format("{0} auxiliaries", trip.ToString());
+            return View(trip.VesselAttributes);
         }
 
         public ActionResult VesselDetails(int id)
@@ -72,7 +83,7 @@ namespace TubsWeb.Controllers
             {
                 return View("NotFound");
             }
-            ViewBag.Title = trip.ToString();
+            ViewBag.Title = String.Format("{0} vessel details", trip.ToString());
             return View(trip.VesselNotes);
         }
 

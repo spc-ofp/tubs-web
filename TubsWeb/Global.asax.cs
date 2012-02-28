@@ -105,6 +105,26 @@ namespace TubsWeb
                 new { controller = "Crew", action = "Index" }
             );
 
+            // For now, route vessel attributes through Trip since there's a 1:1 relationship
+            // and it's PS only.
+            routes.MapRoute(
+                "VesselAttributes",
+                "Trip/Details/{id}/VesselAttributes/",
+                new { controller = "Trip", action = "VesselAttributes" }
+            );
+
+            // As with vessel attributes, hang this off of Trip
+            // Alternately, we could hang this off Vessel and allow users to see the progression of
+            // attributes/details over time.
+            // Second alternate is to move attributes and details into a ViewModel and handle them
+            // elsewhere.
+            routes.MapRoute(
+                "VesselDetails",
+                "Trip/Details/{id}/VesselDetails/",
+                new { controller = "Trip", action = "VesselDetails" }
+            );
+
+
             routes.MapRoute(
                 "Gen1",
                 "Trip/Details/{id}/GEN-1/",

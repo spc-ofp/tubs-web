@@ -1,0 +1,34 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineVesselAttributes
+
+<h2>@ViewBag.Title</h2>
+
+<fieldset>
+    <legend>Auxiliary Boats</legend>
+    @Html.LabelFor(m => m.SpeedboatCount) @Html.DisplayFor(m => m.SpeedboatCount) <br />
+    @Html.LabelFor(m => m.AuxiliaryBoatCount) @Html.DisplayFor(m => m.AuxiliaryBoatCount) <br />
+    @Html.LabelFor(m => m.HasTenderBoats) @Html.DisplayFor(m => m.HasTenderBoats) <br />
+    @Html.LabelFor(m => m.SkiffMake) @Html.DisplayFor(m => m.SkiffMake) 
+    @if (Model.SkiffPower.HasValue)
+    {
+        @Html.DisplayFor(m => m.SkiffPower) <text>hp</text>
+    }
+    <br />
+</fieldset>
+
+<fieldset>
+    <legend>Helicopter</legend>
+    @Html.LabelFor(m => m.HelicopterMake) @Html.DisplayFor(m => m.HelicopterMake) <br />
+    @Html.LabelFor(m => m.HelicopterModel) @Html.DisplayFor(m => m.HelicopterModel) <br />
+    @Html.LabelFor(m => m.HelicopterRange) @Html.DisplayFor(m => m.HelicopterRange) 
+    @if (Model.HelicopterRange.HasValue)
+    {
+        @Html.DisplayFor(m => m.HelicopterRangeUnit)
+    }<br />
+    @Html.LabelFor(m => m.HelicopterColor) @Html.DisplayFor(m => m.HelicopterColor) <br />
+    @Html.LabelFor(m => m.HelicopterServiceOtherCount) @Html.DisplayFor(m => m.HelicopterServiceOtherCount) <br />
+</fieldset>
+
+<p>
+    @Html.ActionLink("Edit Auxiliaries", "EditVesselAttributes", "Trip", new { id = ViewBag.TripId }, null) | 
+    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+</p>

@@ -2,7 +2,9 @@
 
 <h2>@ViewBag.Title</h2>
 
-
+<p>
+@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.TripId }, null)
+</p>
 
 <fieldset>
     <legend>Vessel or Aircraft Sightings</legend>

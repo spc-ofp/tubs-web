@@ -1,9 +1,14 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineActivity
+@using Spc.Ofp.Tubs.DAL.Common
 
-@helper SpeedAndDirection(int? speed, int? direction) {
-    if (!speed.HasValue && !direction.HasValue) {
+@helper SpeedAndDirection(int? speed, int? direction)
+    {
+    if (!speed.HasValue && !direction.HasValue)
+    {
         <text>N/A</text> 
-    } else {
+    }
+    else
+    {
         var sb = new System.Text.StringBuilder();
         sb.Append(speed.HasValue ? speed.Value.ToString() : "UNK");
         sb.Append(" kts @ ");
@@ -18,7 +23,7 @@
     <td>@Model.Latitude / @Model.Longitude</td>
     <td>@Model.EezCode</td>
     @*  TODO  If ActivityType is Fishing, link to Set *@
-    <td>@Model.ActivityType</td> @* TODO Change this to use the attached description, not the straight up ToString() version *@
+    <td>@Model.ActivityType.GetDescription()</td>
     <td>@SpeedAndDirection(Model.WindSpeed, Model.WindDirection)
     </td> @* TODO Change this to xxx kts @ 123 &deg; *@
     <td>@Model.SeaCode</td>

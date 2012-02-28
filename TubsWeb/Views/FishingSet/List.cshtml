@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.PurseSeineSet>
+@using Spc.Ofp.Tubs.DAL.Common           
 
 @helper IsSkunk(IList<Spc.Ofp.Tubs.DAL.Entities.PurseSeineSetCatch> setcatch) {
     if (0 == setcatch.Count) {
@@ -27,7 +28,7 @@
             <td>
                 <a href='@Url.RouteUrl("SetDetails", new { id = ViewBag.TripId, setNumber = set.SetNumber })'>@set.SetNumber</a>
             </td>
-            <td>@set.Activity.SchoolAssociation</td>
+            <td>@set.Activity.SchoolAssociation.GetDescription()</td>
             <td>@IsSkunk(set.CatchList)</td>
             <td>@set.CatchList.Sum(sc => sc.MetricTonsObserved)</td>
             <td>@set.Comments</td>
