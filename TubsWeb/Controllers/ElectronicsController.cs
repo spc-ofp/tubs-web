@@ -63,27 +63,27 @@ namespace TubsWeb.Controllers
         
         //
         // GET: /Electronics/
-        public ActionResult List(int id)
+        public ActionResult List(int tripId)
         {
             var repo = new TubsRepository<ElectronicDevice>(MvcApplication.CurrentSession);
             // Materialize this to convert it to a standard list instead of the collection used by NHibernate 
-            var devices = repo.FilterBy(d => d.Trip.Id == id).ToList<ElectronicDevice>();
+            var devices = repo.FilterBy(d => d.Trip.Id == tripId).ToList<ElectronicDevice>();
             devices.Sort(delegate(ElectronicDevice d1, ElectronicDevice d2)
             {
                 return Comparer<string>.Default.Compare(d1.DeviceType.Description, d2.DeviceType.Description);
             });
             
             ElectronicsViewModel evm = new ElectronicsViewModel();
-            evm.TripId = id;
+            evm.TripId = tripId;
 
             if (null != devices && devices.Count<ElectronicDevice>() > 0)
             {
                 var trip = devices.First<ElectronicDevice>().Trip;
-                ViewBag.Title = String.Format("Electronics for trip {0} / {1}", trip.Observer.StaffCode, trip.TripNumber);
+                ViewBag.Title = String.Format("Electronics for {0}", trip.ToString());
             }
             else
             {
-                ViewBag.Title = String.Format("Electronics for tripId {0}", id);
+                ViewBag.Title = String.Format("Electronics for tripId {0}", tripId);
             }
 
             // Fill devices

@@ -147,5 +147,5 @@
 </table>
 
 <p>
-@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.Trip.Id }, null)
+<a href='@Url.RouteUrl("TripDetails", new { tripId = Model.Trip.Id })'>Back to Trip</a>
 </p>

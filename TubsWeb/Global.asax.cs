@@ -93,22 +93,25 @@ namespace TubsWeb
 
             routes.MapRoute(
                 "Electronics",
-                "Trip/Details/{id}/Electronics/",
-                new { controller = "Electronics", action = "List" }
+                "Trip/{tripId}/Electronics/{action}",
+                new { controller = "Electronics", action = "List" },
+                new { tripId = @"\d+" }
             );
 
             routes.MapRoute(
                 "Crew",
-                "Trip/Details/{id}/Crew/",
-                new { controller = "Crew", action = "Index" }
+                "Trip/{tripId}/Crew/{action}",
+                new { controller = "Crew", action = "Index" },
+                new { tripId = @"\d+" }
             );
 
             // For now, route vessel attributes through Trip since there's a 1:1 relationship
             // and it's PS only.
             routes.MapRoute(
                 "Auxiliaries",
-                "Trip/Details/{id}/Auxiliaries/",
-                new { controller = "Trip", action = "Auxiliaries" }
+                "Trip/{tripId}/Auxiliaries/{action}",
+                new { controller = "Auxiliaries", action = "Index" },
+                new { tripId = @"\d+" }
             );
 
             // As with vessel attributes, hang this off of Trip
@@ -118,65 +121,78 @@ namespace TubsWeb
             // elsewhere.
             routes.MapRoute(
                 "VesselDetails",
-                "Trip/Details/{id}/VesselDetails/",
-                new { controller = "Trip", action = "VesselDetails" }
+                "Trip/{tripId}/VesselDetails/{action}",
+                new { controller = "VesselDetails", action = "Index" },
+                new { tripId = @"\d+" }
             );
 
 
             routes.MapRoute(
                 "Gen1",
-                "Trip/Details/{id}/GEN-1/",
-                new { controller = "Gen1", action = "Index" }
+                "Trip/{tripId}/GEN-1/{action}",
+                new { controller = "Gen1", action = "Index" },
+                new { tripId = @"\d+" }
             );
 
             // FIXME This should probably be changed to look more like sets or days
             // in that we don't expose the primary key of the item.
             // A trip has zero to n GEN-2 forms, and each GEN-2 has a "Page X of Y"
             // field...
+            // TODO Add a route constraint that interactionId has to be numeric
             routes.MapRoute(
                 "Gen2Details",
-                "Trip/Details/{id}/GEN-2/Interaction/{interactionId}",
-                new { controller = "Gen2", action = "Index" }
+                "Trip/{tripId}/GEN-2/Interaction/{interactionId}/{action}",
+                new { controller = "Gen2", action = "Index" },
+                new { tripId = @"\d+" }
             );
 
+            // TODO This is going to be tricky with the Gen2Details routing
             routes.MapRoute(
                 "Gen2",
-                "Trip/Details/{id}/GEN-2/",
-                new { controller = "Gen2", action = "List" }
+                "Trip/{tripId}/GEN-2/",
+                new { controller = "Gen2", action = "List" },
+                new { tripId = @"\d+" }
             );
 
             routes.MapRoute(
                 "Gen3",
-                "Trip/Details/{id}/GEN-3/",
-                new { controller = "Gen3", action = "Index" }
+                "Trip/{tripId}/GEN-3/{action}",
+                new { controller = "Gen3", action = "Index" },
+                new { tripId = @"\d+" }
             );
 
             // Link to particular GEN-6 page has to come first
             // due to route precedence
+            // TODO Add a route constraint that pageNumber must be numeric
             routes.MapRoute(
                 "Gen6Details",
-                "Trip/Details/{id}/GEN-6/{pageNumber}",
-                new { controller = "Gen6", action = "Index" }
+                "Trip/{tripId}/GEN-6/{pageNumber}",
+                new { controller = "Gen6", action = "Index" },
+                new { tripId = @"\d+", pageNumber = @"\d+" }
             );
 
             routes.MapRoute(
                 "Gen6",
-                "Trip/Details/{id}/GEN-6/",
-                new { controller = "Gen6", action = "List" }
+                "Trip/{tripId}/GEN-6/",
+                new { controller = "Gen6", action = "List" },
+                new { tripId = @"\d+" }
             );
 
             // Even though Set is subordinate to day, allow link directly to list of sets
             // and to a particular set number
+            // TODO Add a route constraint that setNumber must be numeric
             routes.MapRoute(
                 "SetDetails",
-                "Trip/Details/{id}/Sets/{setNumber}",
-                new { controller = "FishingSet", action = "Index" }
+                "Trip/{tripId}/Sets/{setNumber}",
+                new { controller = "FishingSet", action = "Index" },
+                new { tripId = @"\d+", setNumber = @"\d+" }
             );
 
             routes.MapRoute(
                 "Sets",
-                "Trip/Details/{id}/Sets/",
-                new { controller = "FishingSet", action = "List" }
+                "Trip/{tripId}/Sets/",
+                new { controller = "FishingSet", action = "List" },
+                new { tripId = @"\d+" }
             );
 
 
@@ -184,27 +200,54 @@ namespace TubsWeb
             // FIXME:  Add another route that gets directly to SeaDay by Id
             routes.MapRoute(
                 "SeaDayDetails",
-                "Trip/Details/{id}/Days/{dayNumber}",
-                new { controller = "SeaDay", action = "Index" }
+                "Trip/{tripId}/Days/{dayNumber}",
+                new { controller = "SeaDay", action = "Index" },
+                new { tripId = @"\d+", dayNumber = @"\d+" }
             );
 
             routes.MapRoute(
                 "SeaDays",
-                "Trip/Details/{id}/Days/",
-                new { controller = "SeaDay", action = "List" }
+                "Trip/{tripId}/Days/",
+                new { controller = "SeaDay", action = "List" },
+                new { tripId = @"\d+" }
             );
 
             routes.MapRoute(
-                "GearModify",
-                "Trip/Details/{id}/Gear/{action}",
-                new { controller = "Gear" }
+                "Gear",
+                "Trip/{tripId}/Gear/{action}",
+                new { controller = "Gear", action = "Index" },
+                new { tripId = @"\d+" }
             );
 
+            routes.MapRoute(
+                "TripDetails",
+                "Trip/{tripId}/{action}",
+                new { controller = "Trip", action = "Details" },
+                new { tripId = @"\d+" }
+            );
 
+            // Can this route replace the fairly generic routes?
+            /*
+            routes.MapRoute(
+                "TripDefault",
+                "Trip/{tripId}/{controller}/{action}",
+                new { action = "Index" },
+                new { tripId = @"\d+" }
+            );
+            */
+
+            /*
             routes.MapRoute(
                 "Gear",
                 "Trip/Details/{id}/Gear/",
                 new { controller = "Gear", action = "Index" }
+            );
+            */
+
+            routes.MapRoute(
+                "TripList",
+                "Trip/",
+                new { controller = "Trip", action = "Index" }
             );
 
             routes.MapRoute(

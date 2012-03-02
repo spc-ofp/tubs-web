@@ -5,5 +5,5 @@
 @{Html.RenderPartial("_Electronics");}
 
 <p>
-@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.TripId }, null)
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = Model.TripId })'>Back to Trip</a>
 </p>

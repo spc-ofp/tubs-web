@@ -33,15 +33,15 @@ namespace TubsWeb.Controllers
     {
         //
         // GET: /Gear/
-        public ActionResult Index(int id)
+        public ActionResult Index(int tripId)
         {
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
             var repo = new TubsRepository<Gear>(MvcApplication.CurrentSession);
-            var gear = repo.FilterBy(g => g.Trip.Id == id).FirstOrDefault();
+            var gear = repo.FilterBy(g => g.Trip.Id == tripId).FirstOrDefault();
             ViewBag.Title =
                 null == gear ?
                     "No gear recorded for this trip" :
-                    String.Format("Gear for trip {0} / {1}", gear.Trip.Observer.StaffCode, gear.Trip.TripNumber);
+                    String.Format("Gear for {0}", gear.Trip.ToString());
 
             return View(gear);
         }
@@ -75,16 +75,16 @@ namespace TubsWeb.Controllers
 
         // FIXME Need to come up with a better way of doing this -- maybe a "Mutator" attribute
         // and an authorize filter?
-        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
-        public ActionResult Edit(int id)
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Edit(int tripId)
         {
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
 
             var repo = new TubsRepository<Gear>(MvcApplication.CurrentSession);
-            var gear = repo.FilterBy(g => g.Trip.Id == id).FirstOrDefault();
+            var gear = repo.FilterBy(g => g.Trip.Id == tripId).FirstOrDefault();
             if (null == gear)
             {
-                var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(id);
+                var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(tripId);
                 if (null == trip)
                 {
                     Flash("Can't add gear for a trip that doesn't exist");
@@ -99,11 +99,11 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
-        public ActionResult Edit(int id, [AbstractBind(ConcreteTypeParameter = "gearType")] Gear gear)
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Edit(int tripId, [AbstractBind(ConcreteTypeParameter = "gearType")] Gear gear)
         {
             var tripRepo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trip = tripRepo.FindBy(id);
+            var trip = tripRepo.FindBy(tripId);
             if (null == trip)
             {
                 Flash("Can't add gear for a trip that doesn't exist");
@@ -113,19 +113,17 @@ namespace TubsWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                //Don't save via trip -- instantiate a Gear repository, set the Trip property, and then save
-                //Gear.
                 var repo = new TubsRepository<Gear>(MvcApplication.CurrentSession);
-                if (null == gear.Trip)
+                gear.Trip = trip;
+                if (default(int) == gear.Id)
                 {
-                    gear.Trip = trip;
                     repo.Add(gear);
                 }
                 else
                 {
-                    repo.Update(gear);
+                    repo.Update(gear, true);
                 }
-                return RedirectToAction("Index", new { id = id });
+                return RedirectToAction("Index", new { tripId = tripId });
             }
             ViewBag.GearType = GetSpecificGearType(trip);
             return View(gear);

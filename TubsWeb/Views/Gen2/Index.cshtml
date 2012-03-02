@@ -259,6 +259,11 @@ else
 }
 </fieldset>
 
+<p>
+    @Html.ActionLink("Back to GEN-2 List", "List", new { tripId = ViewBag.TripId }, null) |
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
+</p>
+
 <script type="text/javascript">
     // Add this to pages with tables that need zebra striping
     $(document).ready(function () {

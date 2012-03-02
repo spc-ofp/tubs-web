@@ -28,34 +28,33 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Models;
+    using TubsWeb.Core;
     
     public class Gen2Controller : SuperController
     {        
         //
         // GET: /Gen2/
-        public ActionResult List(int id)
+        public ActionResult List(Trip tripId)
         {
-            ViewBag.TripId = id;
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trip = repo.FindBy(id);
-            IList<SpecialSpeciesInteraction> interactions =
-                null == trip ? new List<SpecialSpeciesInteraction>() : trip.Interactions;
-            if (null != trip)
+            if (null == tripId)
             {
-                ViewBag.Title = String.Format("GEN-2 events for trip {0} / {1}", trip.Observer.StaffCode, trip.TripNumber);
-                // NOTE:  If list of DAL domain objects is too unwieldy, this is where I'd fill in the
-                // view model
+                return new NoSuchTripResult();
             }
+
+            IList<SpecialSpeciesInteraction> interactions = tripId.Interactions;
+            ViewBag.Title = String.Format("GEN-2 events for trip {0}", tripId.ToString());
+            // NOTE:  If list of DAL domain objects is too unwieldy, this is where I'd fill in the
+            // view model
             return View(interactions);
         }
 
         // GET: /Trip/Details/{id}/Interaction/{interactionId}
-        public ActionResult Index(int id, int interactionId)
+        public ActionResult Index(int tripId, int interactionId)
         {
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
             var repo = new TubsRepository<SpecialSpeciesInteraction>(MvcApplication.CurrentSession);
             var interaction = repo.FindBy(interactionId);
-            if (null == interaction || null == interaction.Trip || interaction.Trip.Id != id)
+            if (null == interaction || null == interaction.Trip || interaction.Trip.Id != tripId)
             {
                 // TODO Work out what to do here
                 return View("NotFound");

@@ -71,5 +71,30 @@ namespace TubsWeb.Models.ExtensionMethods
                 trip.ReturnPort = portRepo.FindBy(thvm.ReturnPortCode);
             }
         }
+
+        public static void CopyTo(this CrewViewModel.CrewMemberModel cmm, Crew crew)
+        {
+            if (null != cmm)
+            {
+                crew.Id = cmm.Id;
+                crew.Job = cmm.Job;
+                crew.Name = cmm.Name;
+                crew.YearsExperience = cmm.Years;
+                crew.MonthsExperience = cmm.Months;
+                crew.CountryCode = cmm.Nationality;
+                crew.Comments = cmm.Comments;
+            }
+        }
+
+        public static Crew CreateCrew(this Trip trip)
+        {
+            if (null == trip)
+            {
+                return null;
+            }
+            var tripType = trip.GetType();
+            // As more crew types come online, add them here
+            return typeof(PurseSeineTrip) == tripType ? new PurseSeineCrew() : null;
+        }
     }
 }

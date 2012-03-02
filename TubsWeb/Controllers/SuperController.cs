@@ -30,6 +30,7 @@ namespace TubsWeb.Controllers
     /// SuperController adds logging and user error reporting capabilities to the MVC3 Controller.
     /// </summary>
     [UseTransactionsByDefault]
+    [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
     public class SuperController : Controller
     {
         // Alert levels

@@ -5,12 +5,12 @@
 <p>
 @{
     if (ViewBag.CurrentDay > 1) {
-        <a href='@Url.RouteUrl("SeaDayDetails", new { id = ViewBag.TripId, dayNumber = ViewBag.CurrentDay - 1 })'>Previous Day</a>
+        <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = ViewBag.TripId, dayNumber = ViewBag.CurrentDay - 1 })'>Previous Day</a>
     }
 
     if (ViewBag.MaxDays > ViewBag.CurrentDay)
     {
-        <a href='@Url.RouteUrl("SeaDayDetails", new { id = ViewBag.TripId, dayNumber = ViewBag.CurrentDay + 1 })'>Next Day</a>
+        <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = ViewBag.TripId, dayNumber = ViewBag.CurrentDay + 1 })'>Next Day</a>
     }
 }
 </p>
@@ -58,5 +58,5 @@ else
 
 <p>
     @Html.ActionLink("Back to Days", "List", "SeaDay", new { id = ViewBag.TripId }, null) |
-    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

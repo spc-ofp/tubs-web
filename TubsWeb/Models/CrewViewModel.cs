@@ -20,11 +20,10 @@ namespace TubsWeb.Models
     *  
     * You should have received a copy of the GNU Affero General Public License
     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
-    */
-    using System;
+    */    
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
+    using System.ComponentModel.DataAnnotations;
+    using Spc.Ofp.Tubs.DAL.Common;
     
     /// <summary>
     /// CrewViewModel holds the crew in a means suitable for display
@@ -52,9 +51,23 @@ namespace TubsWeb.Models
         
         public class CrewMemberModel
         {
+            public int Id { get; set; }
+
+            public JobType? Job { get; set; }
+
             public string Name { get; set; }
+
+            [StringLength(2)]
             public string Nationality { get; set; }
+
+            [Range(0, 99)]
+            public int? Years { get; set; }
+
+            [Range(0, 99)]
+            public int? Months { get; set; }
+
             public string Experience { get; set; }
+
             public string Comments { get; set; }
         }
     }

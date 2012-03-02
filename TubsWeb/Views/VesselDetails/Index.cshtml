@@ -6,6 +6,7 @@
 {
 <p>
     No details available for this vessel.
+    @Html.ActionLink("Add Vessel Details", "Create", "VesselDetails", new { tripId = ViewBag.TripId }, null)
 </p>
 } else {
 <fieldset>
@@ -23,6 +24,6 @@
 }
 
 <p>
-    @Html.ActionLink("Edit Vessel Details", "EditVesselDetails", "Trip", new { id = ViewBag.TripId }, null) | 
-    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+    @Html.ActionLink("Edit Vessel Details", "Edit", "VesselDetails", new { tripId = ViewBag.TripId }, null) |
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

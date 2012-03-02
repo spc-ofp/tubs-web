@@ -12,12 +12,12 @@ else
     @{
         if (ViewBag.CurrentSet > 1)
         {
-            <a href='@Url.RouteUrl("SetDetails", new { id = ViewBag.TripId, setNumber = ViewBag.CurrentSet - 1 })'>Previous Set</a>
+            <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = ViewBag.CurrentSet - 1 })'>Previous Set</a>
         }
 
         if (ViewBag.MaxSets > ViewBag.CurrentSet)
         {
-            <a href='@Url.RouteUrl("SetDetails", new { id = ViewBag.TripId, setNumber = ViewBag.CurrentSet + 1 })'>Next Set</a>
+            <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = ViewBag.CurrentSet + 1 })'>Next Set</a>
         }
     }
     </p>
@@ -55,8 +55,8 @@ else
 }
 
 <p>
-    @Html.ActionLink("Back to Sets", "List", "FishingSet", new { id = ViewBag.TripId }, null) |
-    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+    @Html.ActionLink("Back to Sets", "List", "FishingSet", new { tripId = ViewBag.TripId }, null) |
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>
 
 

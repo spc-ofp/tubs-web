@@ -19,12 +19,12 @@
 <p>
 @{
     if (ViewBag.CurrentPage > 1) {
-        <a href='@Url.RouteUrl("Gen6Details", new { id = ViewBag.TripId, pageNumber = ViewBag.CurrentPage - 1 })'>Previous Page</a>
+        <a href='@Url.RouteUrl("Gen6Details", new { tripId = ViewBag.TripId, pageNumber = ViewBag.CurrentPage - 1 })'>Previous Page</a>
     }
 
     if (ViewBag.MaxPages > ViewBag.CurrentPage)
     {
-        <a href='@Url.RouteUrl("Gen6Details", new { id = ViewBag.TripId, pageNumber = ViewBag.CurrentPage + 1 })'>Next Page</a>
+        <a href='@Url.RouteUrl("Gen6Details", new { tripId = ViewBag.TripId, pageNumber = ViewBag.CurrentPage + 1 })'>Next Page</a>
     }
 }
 </p>
@@ -117,6 +117,6 @@ else
 }
 
 <p>
-    @Html.ActionLink("Back to GEN-6 Events", "List", "Gen6", new { id = ViewBag.TripId }, null) |
-    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+    @Html.ActionLink("Back to GEN-6 Events", "List", "Gen6", new { tripId = ViewBag.TripId }, null) |
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

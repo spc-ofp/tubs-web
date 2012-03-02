@@ -33,24 +33,24 @@ namespace TubsWeb.Controllers
 
         //
         // GET: /Gen3/
-        public ActionResult Index(int id)
+        public ActionResult Index(int tripId)
         {
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
             var repo = new TubsRepository<TripMonitor>(MvcApplication.CurrentSession);
-            var gen3 = repo.FilterBy(g => g.Trip.Id == id).FirstOrDefault();
+            var gen3 = repo.FilterBy(g => g.Trip.Id == tripId).FirstOrDefault();
             if (null == gen3)
             {
                 // No GEN-3
-                ViewBag.Title = String.Format("No GEN-3 for tripId {0}", id);
+                ViewBag.Title = String.Format("No GEN-3 for tripId {0}", tripId);
                 return View("NotFound");
             }
             else if (null == gen3.Trip)
             {
-                ViewBag.Title = String.Format("GEN-3 for tripId {0}", id);
+                ViewBag.Title = String.Format("GEN-3 for tripId {0}", tripId);
             }
             else
             {
-                ViewBag.Title = String.Format("GEN-3 for trip {0} / {1}", gen3.Trip.Observer.StaffCode, gen3.Trip.TripNumber);
+                ViewBag.Title = String.Format("GEN-3 for trip {0}", gen3.Trip.ToString());
             }
             return View(gen3);
         }

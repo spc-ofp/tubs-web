@@ -8,8 +8,8 @@
 <h2>@ViewBag.Title</h2>
 
 <p>
-    @Html.ActionLink("Back to Gear", "Index", "Gear", new { id = ViewBag.TripId }, null) | 
-    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+    @Html.ActionLink("Back to Gear", "Index", "Gear", new { tripId = ViewBag.TripId }, null) | 
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>
 
 @if (ViewBag.GearType == typeof(PurseSeineGear))
@@ -21,6 +21,6 @@
 @*  TODO Add other gear types as new trip types come online *@
     
 <p>
-    @Html.ActionLink("Back to Gear", "Index", "Gear", new { id = ViewBag.TripId }, null) | 
-    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+    @Html.ActionLink("Back to Gear", "Index", "Gear", new { tripId = ViewBag.TripId }, null) | 
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

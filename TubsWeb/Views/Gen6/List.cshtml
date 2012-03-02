@@ -33,7 +33,7 @@
     {
         <tr>
             <td>
-                @Html.ActionLink("Details", "Index", "Gen6", new { id = ViewBag.TripId, pageNumber  = item.Index + 1 }, null)
+                @Html.ActionLink("Details", "Index", "Gen6", new { tripId = ViewBag.TripId, pageNumber  = item.Index + 1 }, null)
             </td>
             <td>@Html.DisplayFor(m => item.Data.IncidentDate)</td>
             <td>@item.Data.Latitude / @item.Data.Longitude (@item.Data.EezId)</td>
@@ -48,5 +48,5 @@
 </table>
 
 <p>
-    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

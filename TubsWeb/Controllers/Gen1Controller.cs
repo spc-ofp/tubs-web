@@ -34,17 +34,17 @@ namespace TubsWeb.Controllers
 
         //
         // GET: /Gen1/
-        public ActionResult Index(Trip id)
+        public ActionResult Index(Trip tripId)
         {
             Gen1ViewModel viewModel = new Gen1ViewModel();
-            if (null == id)
+            if (null == tripId)
             {
                 return new NoSuchTripResult();
             }
-            ViewBag.Title = String.Format("GEN-1 events for trip {0}", id.ToString());
-            viewModel.TripId = id.Id;
-            viewModel.Sightings = id.Sightings;
-            viewModel.Transfers = id.Transfers;
+            ViewBag.Title = String.Format("GEN-1 events for trip {0}", tripId.ToString());
+            viewModel.TripId = tripId.Id;
+            viewModel.Sightings = tripId.Sightings;
+            viewModel.Transfers = tripId.Transfers;
             return View(viewModel);
         }
 

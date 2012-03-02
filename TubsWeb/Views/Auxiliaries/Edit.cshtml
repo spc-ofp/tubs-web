@@ -1,0 +1,145 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineVesselAttributes
+
+<h2>@ViewBag.Title</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Auxiliary Boats</legend>
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SpeedboatCount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SpeedboatCount)
+            @Html.ValidationMessageFor(model => model.SpeedboatCount)
+        </div>
+
+        @* Not using this field at present
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TowboatCount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TowboatCount)
+            @Html.ValidationMessageFor(model => model.TowboatCount)
+        </div>
+        *@
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AuxiliaryBoatCount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.AuxiliaryBoatCount)
+            @Html.ValidationMessageFor(model => model.AuxiliaryBoatCount)
+        </div>
+
+        @* Not using this field at present
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LightCount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LightCount)
+            @Html.ValidationMessageFor(model => model.LightCount)
+        </div>
+        *@
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.HasTenderBoats)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.HasTenderBoats)
+            @Html.ValidationMessageFor(model => model.HasTenderBoats)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SkiffMake)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SkiffMake)
+            @Html.ValidationMessageFor(model => model.SkiffMake)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SkiffPower)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SkiffPower)
+            @Html.ValidationMessageFor(model => model.SkiffPower)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CruiseSpeed)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CruiseSpeed)
+            @Html.ValidationMessageFor(model => model.CruiseSpeed)
+        </div>
+    </fieldset>
+    
+    <fieldset>
+        <legend>Helicopter</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.HelicopterMake)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.HelicopterMake)
+            @Html.ValidationMessageFor(model => model.HelicopterMake)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.HelicopterModel)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.HelicopterModel)
+            @Html.ValidationMessageFor(model => model.HelicopterModel)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.HelicopterRegistrationNumber)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.HelicopterRegistrationNumber)
+            @Html.ValidationMessageFor(model => model.HelicopterRegistrationNumber)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.HelicopterRange)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.HelicopterRange)
+            @Html.DropDownListFor(m => m.HelicopterRangeUnit, new SelectList(TubsWeb.Models.GearUnits.UnitFourLarge, Model.HelicopterRangeUnit), "Choose") <br />
+            @Html.ValidationMessageFor(model => model.HelicopterRange)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.HelicopterColor)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.HelicopterColor)
+            @Html.ValidationMessageFor(model => model.HelicopterColor)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.HelicopterServiceOtherCount)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.HelicopterServiceOtherCount)
+            @Html.ValidationMessageFor(model => model.HelicopterServiceOtherCount)
+        </div>
+ 
+        <p>
+            <input type="submit" value="Save" />
+            <input type="reset" value="Cancel" />
+        </p>
+    </fieldset>
+}
+
+<p>
+    @Html.ActionLink("Back to Auxiliaries", "Index", "Auxiliaries", new { tripId = ViewBag.TripId }, null) | 
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
+</p>

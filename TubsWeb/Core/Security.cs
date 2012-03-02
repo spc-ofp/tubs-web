@@ -1,10 +1,10 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SafetyInspectionController.cs" company="Secretariat of the Pacific Community">
+// <copyright file="Security.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2011 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Controllers
+namespace TubsWeb.Core
 {
     /*
      * This file is part of TUBS.
@@ -22,23 +22,13 @@ namespace TubsWeb.Controllers
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System.Web.Mvc;
-    using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Core;
 
-    public class SafetyInspectionController : SuperController
+    /// <summary>
+    /// Until such time as I feel like implementing a real security filter, this will serve to
+    /// make implementing update security easier.
+    /// </summary>
+    public sealed class Security
     {
-        //
-        // GET: /SafetyInspection/
-        public ActionResult Index(Trip tripId)
-        {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-            ViewBag.Title = tripId.ToString();
-            return View(tripId.Inspection);
-        }
-
+        public const string EditRoles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin";
     }
 }

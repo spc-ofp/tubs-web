@@ -1,82 +1,74 @@
 ﻿@model TubsWeb.Models.CrewViewModel
 
-@helper DisplayNamedCrew(TubsWeb.Models.CrewViewModel.CrewMemberModel crew) {
-    if (null == crew) {
-        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-    }
-    else {
-        <td>@crew.Name</td>
-        <td>@crew.Experience</td>
-        <td>@crew.Nationality</td>
-        <td>@crew.Comments</td>
-    }
-}
-
 <!-- Named crew -->
-Senior Crew
-<table width="100%">
-    <thead>
-        <tr>
-            <th>Job</th>
-            <th>Name</th>
-            <th>Experience</th>
-            <th>Nationality</th>
-            <th>Comments</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Captain</td>
-            @DisplayNamedCrew(@Model.Captain) 
-        </tr>
-        <tr>
-            <td>Navigator / Master</td>
-            @DisplayNamedCrew(@Model.Navigator) 
-        </tr>
-        <tr>
-            <td>Mate</td>
-            @DisplayNamedCrew(@Model.Mate) 
-        </tr>
-        <tr>
-            <td>Chief Engineer</td>
-            @DisplayNamedCrew(@Model.ChiefEngineer) 
-        </tr>
-        <tr>
-            <td>Assistant Engineer</td>
-            @DisplayNamedCrew(@Model.AssistantEngineer) 
-        </tr>
-        <tr>
-            <td>Deck Boss</td>
-            @DisplayNamedCrew(@Model.DeckBoss) 
-        </tr>
-        <tr>
-            <td>Cook</td>
-            @DisplayNamedCrew(@Model.Cook) 
-        </tr>
-        <tr>
-            <td>Helicopter Pilot</td>
-            @DisplayNamedCrew(@Model.HelicopterPilot) 
-        </tr>
-        <tr>
-            <td>Skiff Man</td>
-            @DisplayNamedCrew(@Model.SkiffMan) 
-        </tr>
-        <tr>
-            <td>Winch Man</td>
-            @DisplayNamedCrew(@Model.WinchMan) 
-        </tr>
-    </tbody>
-</table>
+<fieldset>
+    <legend>Senior Crew</legend>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">Job</th>
+                <th>Name</th>
+                <th style="width: 10%;">Experience</th>
+                <th style="width: 10%;">Nationality</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Captain</td>
+                @Html.DisplayFor(m => Model.Captain)
+            </tr>
+            <tr>
+                <td>Navigator / Master</td>
+                @Html.DisplayFor(m => Model.Navigator)
+            </tr>
+            <tr>
+                <td>Mate</td>
+                @Html.DisplayFor(m => Model.Mate)
+            </tr>
+            <tr>
+                <td>Chief Engineer</td>
+                @Html.DisplayFor(m => Model.ChiefEngineer)
+            </tr>
+            <tr>
+                <td>Assistant Engineer</td>
+                @Html.DisplayFor(m => Model.AssistantEngineer)
+            </tr>
+            <tr>
+                <td>Deck Boss</td>
+                @Html.DisplayFor(m => Model.DeckBoss) 
+            </tr>
+            <tr>
+                <td>Cook</td>
+                @Html.DisplayFor(m => Model.Cook) 
+            </tr>
+            <tr>
+                <td>Helicopter Pilot</td>
+                @Html.DisplayFor(m => Model.HelicopterPilot)
+            </tr>
+            <tr>
+                <td>Skiff Man</td>
+                @Html.DisplayFor(m => Model.SkiffMan)
+            </tr>
+            <tr>
+                <td>Winch Man</td>
+                @Html.DisplayFor(m => Model.WinchMan) 
+            </tr>
+        </tbody>
+    </table>
+</fieldset>
 
 <br />
 
 <!-- The rest of the hands -->
-<table width="100%">
+<fieldset>
+    <legend>Hands</legend>
+    <table>
     <thead>
         <tr>
             <th>Name</th>
-            <th>Experience</th>
-            <th>Nationality</th>
+            <th style="width: 10%;">Experience</th>
+            <th style="width: 10%;">Nationality</th>
         </tr>
     </thead>
     <tbody>
@@ -91,3 +83,5 @@ Senior Crew
         }
     </tbody>
 </table>
+</fieldset>
+

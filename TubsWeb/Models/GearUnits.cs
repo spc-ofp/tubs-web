@@ -42,5 +42,22 @@ namespace TubsWeb.Models
             UnitOfMeasure.Centimeters,
             UnitOfMeasure.Inches
         };
+
+        public static IList<UnitOfMeasure> UnitFour = new List<UnitOfMeasure>()
+        {
+            UnitOfMeasure.Meters,
+            UnitOfMeasure.Kilometers,
+            UnitOfMeasure.NauticalMiles
+        };
+
+        /// <summary>
+        /// UnitFourLarge is a subset of all 'Unit 4' units of measure (still not sure what 'Unit 4'
+        /// really is though).
+        /// </summary>
+        public static IList<UnitOfMeasure> UnitFourLarge = new List<UnitOfMeasure>()
+        {
+            UnitOfMeasure.Kilometers,
+            UnitOfMeasure.NauticalMiles
+        };
     }
 }

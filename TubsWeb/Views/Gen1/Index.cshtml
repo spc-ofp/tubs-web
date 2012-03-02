@@ -3,7 +3,7 @@
 <h2>@ViewBag.Title</h2>
 
 <p>
-@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.TripId }, null)
+<a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>
 
 <fieldset>
@@ -17,5 +17,5 @@
 </fieldset>
 
 <p>
-@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = Model.TripId }, null)
+<a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

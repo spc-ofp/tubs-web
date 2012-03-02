@@ -30,9 +30,14 @@ namespace TubsWeb.Core
     {
         public IModelBinder GetBinder(Type modelType)
         {
-            return modelType == typeof(Trip) ?
+            return typeof(Trip).IsAssignableFrom(modelType) ?
                 new TripModelBinder() :
                 null;
+            /*
+            return modelType ==    typeof(Trip) ?
+                new TripModelBinder() :
+                null;
+            */
         }
     }
 }

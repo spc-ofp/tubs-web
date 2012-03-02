@@ -4,6 +4,14 @@
 
 <h2>@ViewBag.Title</h2>
 
+@if (ViewData["flash"] != null)
+{
+    var alertLevel = ViewData["flash-level"] ?? "alert-error";
+<div class="alert @alertLevel">
+    @ViewData["flash"]
+</div>
+}
+
 @* TODO Add more details here, including a link back to the referring page etc. *@
 
 <p>No such trip exists.</p>

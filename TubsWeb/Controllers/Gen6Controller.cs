@@ -34,11 +34,11 @@ namespace TubsWeb.Controllers
     {
         //
         // GET: /Gen6/
-        public ActionResult Index(int id, int pageNumber)
+        public ActionResult Index(int tripId, int pageNumber)
         {
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
             var repo = new TubsRepository<PollutionEvent>(MvcApplication.CurrentSession);
-            var events = repo.FilterBy(e => e.Trip.Id == id);
+            var events = repo.FilterBy(e => e.Trip.Id == tripId);
             int maxPages = events.Count();
             if (pageNumber > maxPages)
             {
@@ -51,11 +51,11 @@ namespace TubsWeb.Controllers
             return View(pollutionEvent);
         }
 
-        public ActionResult List(int id)
+        public ActionResult List(int tripId)
         {
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
             var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trip = repo.FindBy(id);
+            var trip = repo.FindBy(tripId);
             IList<PollutionEvent> events =  null == trip ? 
                 new List<PollutionEvent>() : 
                 trip.PollutionEvents.ToList(); // Push into a "real" list instead of an NHibernate/Iesi collection

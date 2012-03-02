@@ -1,0 +1,16 @@
+﻿@model TubsWeb.Models.CrewViewModel.CrewMemberModel
+
+@if (null == Model)
+{
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+}
+else
+{
+    <td>@Model.Name</td>
+    <td>@Model.Experience</td>
+    <td>@Model.Nationality</td>
+    <td>@Model.Comments</td>
+}

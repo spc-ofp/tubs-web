@@ -30,22 +30,22 @@ namespace TubsWeb.Controllers
     public class FishingSetController : SuperController
     {
 
-        public ActionResult List(int id)
+        public ActionResult List(int tripId)
         {
             // Enable link back to trip without a ViewModel
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
 
             var repo = new TubsRepository<PurseSeineSet>(MvcApplication.CurrentSession);
             // Push the projection into a List so that it's not the NHibernate collection implementation
-            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == id).ToList<PurseSeineSet>();
+            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == tripId).ToList<PurseSeineSet>();
             if (null == sets || sets.Count < 1)
             {
-                ViewBag.Title = String.Format("Sets for tripId {0}", id);
+                ViewBag.Title = String.Format("Sets for tripId {0}", tripId);
             }
             else
             {
                 var trip = sets.First().Activity.Day.Trip;
-                ViewBag.Title = String.Format("Sets for trip {0} / {1}", trip.Observer.StaffCode, trip.TripNumber);
+                ViewBag.Title = String.Format("Sets for {0}", trip.ToString());
                 // Ensure sets are sorted by set number
                 sets.Sort(delegate(PurseSeineSet s1, PurseSeineSet s2)
                 {
@@ -57,13 +57,13 @@ namespace TubsWeb.Controllers
         
         //
         // GET: /FishingSet/
-        public ActionResult Index(int id, int setNumber)
+        public ActionResult Index(int tripId, int setNumber)
         {
             // Enable link back to trip without a ViewModel
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
 
             var repo = new TubsRepository<PurseSeineSet>(MvcApplication.CurrentSession);
-            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == id);
+            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == tripId);
             int maxSets = sets.Count();
             if (setNumber > maxSets)
             {

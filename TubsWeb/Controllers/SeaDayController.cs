@@ -34,35 +34,35 @@ namespace TubsWeb.Controllers
     {
         //
         // GET: /SeaDay/
-        public ActionResult List(int id)
+        public ActionResult List(int tripId)
         {
             // Enable link back to trip without a ViewModel
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
 
             var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);
             
             // Push the projection into a List so that it's not the NHibernate collection implementation
-            var days = repo.FilterBy(d => d.Trip.Id == id).ToList<SeaDay>();
+            var days = repo.FilterBy(d => d.Trip.Id == tripId).ToList<SeaDay>();
             if (null == days || days.Count < 1)
             {
-                ViewBag.Title = String.Format("Sea days for tripId {0}", id);
+                ViewBag.Title = String.Format("Sea days for tripId {0}", tripId);
             }
             else
             {
                 var trip = days.First<SeaDay>().Trip;
-                ViewBag.Title = String.Format("Sea days for trip {0} / {1}", trip.Observer.StaffCode, trip.TripNumber);
+                ViewBag.Title = String.Format("Sea days for {0}", trip.ToString());
             }
             return View(days);
         }
 
-        public ActionResult Index(int id, int dayNumber)
+        public ActionResult Index(int tripId, int dayNumber)
         {
             // Enable link back to trip without a ViewModel
-            ViewBag.TripId = id;
+            ViewBag.TripId = tripId;
 
             var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);
 
-            var days = repo.FilterBy(d => d.Trip.Id == id);
+            var days = repo.FilterBy(d => d.Trip.Id == tripId);
             int maxDays = days.Count();
             if (dayNumber > maxDays)
             {

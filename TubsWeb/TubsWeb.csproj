@@ -87,6 +87,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AuxiliariesController.cs" />
+    <Compile Include="Controllers\VesselDetailsController.cs" />
     <Compile Include="Core\AbstractBindAttribute.cs" />
     <Compile Include="Controllers\CrewController.cs" />
     <Compile Include="Controllers\ElectronicsController.cs" />
@@ -104,6 +106,7 @@
     <Compile Include="Controllers\SeaDayController.cs" />
     <Compile Include="Controllers\SuperController.cs" />
     <Compile Include="Core\NoSuchTripResult.cs" />
+    <Compile Include="Core\Security.cs" />
     <Compile Include="Core\TransactionalActionBaseAttribute.cs" />
     <Compile Include="Controllers\TripController.cs" />
     <Compile Include="Core\TripModelBinder.cs" />
@@ -274,12 +277,6 @@
     <Content Include="Views\Shared\DisplayTemplates\UnitOfMeasure.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Trip\VesselDetails.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Trip\EditVesselDetails.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Home\Debug.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -292,10 +289,34 @@
     <Content Include="Views\Shared\DisplayTemplates\EpirbResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Trip\Auxiliaries.cshtml" />
+    <Content Include="Views\Shared\TripNotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\TripNotFound.cshtml" />
+    <Content Include="Views\Auxiliaries\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Auxiliaries\Create.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Auxiliaries\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\VesselDetails\Create.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\VesselDetails\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\VesselDetails\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\DisplayTemplates\CrewMemberModel.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Crew\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\EditorTemplates\CrewMemberModel.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

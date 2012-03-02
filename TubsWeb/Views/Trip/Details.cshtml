@@ -11,20 +11,20 @@
 <p>    
     @if (Model.GetType() == typeof(PurseSeineTrip))
     {
-        @Html.ActionLink("Auxiliaries", "Auxiliaries", "Trip", new { id = Model.Id }, null) <text> |</text>
+        @Html.ActionLink("Auxiliaries", "Index", "Auxiliaries", new { tripId = Model.Id }, null) <text> |</text>
     }
-    @Html.ActionLink("Vessel Details", "VesselDetails", "Trip", new { id = Model.Id }, null) |
-    @Html.ActionLink("Crew", "Index", "Crew", new { id = Model.Id }, null) |
-    @Html.ActionLink("Electronics", "List", "Electronics", new { id = Model.Id }, null) |
-    @Html.ActionLink("Fishing Gear", "Index", "Gear", new { id = Model.Id }, null) |
-    @Html.ActionLink("GEN-1", "Index", "Gen1", new { id = Model.Id }, null) |
-    @Html.ActionLink("GEN-2", "List", "Gen2", new { id = Model.Id }, null) | 
-    @Html.ActionLink("GEN-3", "Index", "Gen3", new { id = Model.Id }, null) | @* FIXME Change this to List like the rest *@
-    @Html.ActionLink("GEN-6", "List", "Gen6", new { id = Model.Id }, null) |
-    @Html.ActionLink("Days", "List", "SeaDay", new { id = Model.Id }, null) |
-    @Html.ActionLink("Sets", "List", "FishingSet", new { id = Model.Id }, null)
+    @Html.ActionLink("Vessel Details", "Index", "VesselDetails", new { tripId = Model.Id }, null) |
+    @Html.ActionLink("Crew", "Index", "Crew", new { tripId = Model.Id }, null) |
+    @Html.ActionLink("Electronics", "List", "Electronics", new { tripId = Model.Id }, null) |
+    @Html.ActionLink("Fishing Gear", "Index", "Gear", new { tripId = Model.Id }, null) |
+    @Html.ActionLink("GEN-1", "Index", "Gen1", new { tripId = Model.Id }, null) |
+    @Html.ActionLink("GEN-2", "List", "Gen2", new { tripId = Model.Id }, null) | 
+    @Html.ActionLink("GEN-3", "Index", "Gen3", new { tripId = Model.Id }, null) | @* FIXME Change this to List like the rest *@
+    @Html.ActionLink("GEN-6", "List", "Gen6", new { tripId = Model.Id }, null) |
+    @Html.ActionLink("Days", "List", "SeaDay", new { tripId = Model.Id }, null) |
+    @Html.ActionLink("Sets", "List", "FishingSet", new { tripId = Model.Id }, null)
 </p>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Edit", "Edit", new { tripId = Model.Id }) |
+    <a href='@Url.RouteUrl("TripList")'>Back to List</a>
 </p>

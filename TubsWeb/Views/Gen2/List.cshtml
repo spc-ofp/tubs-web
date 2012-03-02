@@ -18,7 +18,7 @@
     @foreach (var interaction in Model)
     {
         <tr>
-            <td>@Html.ActionLink("Details", "Index", new { id = ViewBag.TripId, interactionId = interaction.Id})</td>
+            <td>@Html.ActionLink("Details", "Index", new { tripId = ViewBag.TripId, interactionId = interaction.Id})</td>
             <td>@interaction.SgType</td>
             <td>@interaction.LandedDate</td>
             <td>@interaction.Latitude / @interaction.Longitude (@interaction.EezId)</td>
@@ -30,5 +30,5 @@
 </table>
 
 <p>
-@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+<a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

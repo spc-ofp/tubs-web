@@ -35,5 +35,5 @@
 </table>
 
 <p>
-@Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+<a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

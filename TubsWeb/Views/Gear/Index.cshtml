@@ -17,6 +17,6 @@ else
 }
 
 <p>
-    @Html.ActionLink("Edit Gear", "Edit", "Gear", new { id = ViewBag.TripId }, null) | 
-    @Html.ActionLink("Back to Trip", "Details", "Trip", new { id = ViewBag.TripId }, null)
+    @Html.ActionLink("Edit Gear", "Edit", "Gear", new { tripId = ViewBag.TripId }, null) | 
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>
