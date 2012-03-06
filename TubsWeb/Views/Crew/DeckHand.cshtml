@@ -1,25 +1,16 @@
 ﻿@model TubsWeb.Models.CrewViewModel.CrewMemberModel
-@using Spc.Ofp.Tubs.DAL.Common
-
-@*
-   The trick for fixing field prefixes comes from here:
-   http://davybrion.com/blog/2011/01/prefixing-input-elements-of-partial-views-with-asp-net-mvc/
-
-   The author writes a long, involved bit of code, at which point a commenter points out that
-   setting HtmlFieldPrefix does the same thing.
-*@
 
 @{ ViewData.TemplateInfo.HtmlFieldPrefix = String.Empty; }
+
 
 <td>
     @Html.HiddenFor(m => Model.Id)
     @Html.HiddenFor(m => Model.Job)
-    @Model.Job.GetDescription()
+    @Html.TextBoxFor(m => Model.Name)
 </td>
-<td>@Html.TextBoxFor(m => Model.Name, new { style = "width: 95%" })</td>
 <td>@Html.TextBoxFor(m => Model.Years, new { style = "width: 50px;" }) years @Html.TextBoxFor(m => Model.Months, new { style = "width: 50px;" }) months</td>
 <td>@Html.TextBoxFor(m => Model.Nationality, new { style = "width: 50px;" })</td>
-<td>@Html.TextBoxFor(m => Model.Comments, new { style = "width: 95%" })</td>
+@* TODO Change this to a hyperlink? *@
 <td>
     <input type="Submit" value="Save" style="font-size: 1.0em;"/>
     <input type="Reset" value="Undo" style="font-size: 1.0em;"/>

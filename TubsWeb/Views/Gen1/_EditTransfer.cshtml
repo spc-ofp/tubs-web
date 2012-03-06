@@ -1,0 +1,57 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Transfer
+
+@*
+ _EditTransfer renders an update form (in table format) for a single
+ Transfer entity.  The parent partial is responsible for the parent
+ table row.  There are two reasons for this:
+ 1)  This partial is used to re-render the result after the save
+ 2)  The parent manages a unique identity for each row and all the Ajax form business
+*@
+
+<td>
+    @Html.HiddenFor(m => Model.Id)
+    @* TODO Format the date better *@
+    @* NOTE: By default, MVC is uses the same Id for each value.  Not great, but then it really only matters for the date field *@
+    @Html.TextBoxFor(m => Model.TransferTime, new { @class = "date", style = "width: 110px", id = System.Guid.NewGuid().ToString() })
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.Latitude, new { style = "width: 80px;" })
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.Longitude, new { style = "width: 90px;" })
+</td>
+<td>
+    @* TODO Do something about VesselId / Vessel *@
+    @Html.TextBoxFor(m => Model.VesselName)
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.Ircs, new { style = "width: 125px;" })
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.VesselFlag, new { style = "width: 25px;" })
+</td>
+<td>
+    @Html.DropDownListFor(m => Model.VesselType, new SelectList(TubsWeb.Models.Gen1ViewModel.TransferVessels, Model.VesselType), "Choose") <br />
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.TonsOfSkipjack, new { style = "width: 30px;" })
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.TonsOfYellowfin, new { style = "width: 30px;" })
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.TonsOfBigeye, new { style = "width: 30px;" })
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.TonsOfMixed, new { style = "width: 30px;" })
+</td>
+<td>
+    @Html.DropDownListFor(m => Model.ActionType, new SelectList(TubsWeb.Models.Gen1ViewModel.TransferActionTypes, Model.ActionType), "Choose") <br />
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.Comments)
+</td>
+<td>
+    <input type="Submit" value="Save" style="font-size: 1.0em;"/>
+    <input type="Reset" value="Undo" style="font-size: 1.0em;"/>
+</td>

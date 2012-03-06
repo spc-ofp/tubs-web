@@ -83,7 +83,10 @@
 
 <script>
     $(function () {
-        $(".date").datetimepicker({ dateFormat: 'dd/mm/yy'});
+        // Observer workbooks don't fly into our hands, so starting 6 months back is probably a good bet.
+        var sixMonthsAgo = new Date();
+        sixMonthsAgo.setDate(sixMonthsAgo.getDate() - 180);
+        $(".date").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2, defaultDate: sixMonthsAgo });
     });
 
     $(function () {

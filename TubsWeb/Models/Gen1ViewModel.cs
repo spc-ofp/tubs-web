@@ -23,9 +23,80 @@ namespace TubsWeb.Models
      */
     using System.Collections.Generic;
     using Spc.Ofp.Tubs.DAL.Entities;
+    using Spc.Ofp.Tubs.DAL.Common;
     
     public class Gen1ViewModel
-    {      
+    {
+        public static IList<SightedVesselType> SightedVessels = new List<SightedVesselType>()
+        {
+            SightedVesselType.SinglePurseSeine,
+            SightedVesselType.Longline,
+            SightedVesselType.PoleAndLine,
+            SightedVesselType.Mothership,
+            SightedVesselType.Troll,
+            SightedVesselType.NetBoat, 
+            SightedVesselType.Bunker,
+            SightedVesselType.SearchAnchorOrLightBoat,           
+            SightedVesselType.FishCarrier,
+            SightedVesselType.Trawler,            
+            SightedVesselType.LightAircraft,
+            SightedVesselType.Helicopter,
+            SightedVesselType.Other,
+        };
+
+        public static IList<VesselType> TransferVessels = new List<VesselType>()
+        {
+            VesselType.SinglePurseSeine,
+            VesselType.Longline,
+            VesselType.PoleAndLine,
+            VesselType.Mothership,
+            VesselType.Troll,
+            VesselType.NetBoat,
+            VesselType.Bunker,
+            VesselType.FishCarrier,        
+            VesselType.Trawler,
+            VesselType.Other,
+        };
+
+        // TODO Rationalize this list
+        public static IList<ActionType> ActionTypes = new List<ActionType>()
+        {
+            ActionType.AG,
+            ActionType.BG,
+            ActionType.BR,
+            ActionType.DF,
+            ActionType.FI,
+            ActionType.FS,
+            ActionType.NF,
+            ActionType.OG,
+            ActionType.OR,
+            ActionType.PF,
+            ActionType.SG,
+            ActionType.SR,
+            ActionType.TG,
+            ActionType.TR,
+            ActionType.UL,
+            ActionType.WT,
+        };
+
+        /// <summary>
+        /// List of ActionType values that make sense for the transfer portion of
+        /// the GEN-1 form.
+        /// </summary>
+        public static IList<ActionType> TransferActionTypes = new List<ActionType>()
+        {
+            ActionType.DF,
+            ActionType.TR,
+            ActionType.SR,
+            ActionType.BR,
+            ActionType.TR,
+            ActionType.SG,
+            ActionType.BG,
+            ActionType.OR,
+            ActionType.OG
+        };
+        
+        
         public Gen1ViewModel()
         {
             this.Sightings = new List<Sighting>();

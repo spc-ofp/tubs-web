@@ -1,9 +1,13 @@
 ﻿@model TubsWeb.Models.Gen1ViewModel
 
+@* TODO Change the Model to Trip since we're binding trip anyways *@
+
 <h2>@ViewBag.Title</h2>
 
 <p>
-<a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
+    @Html.ActionLink("Edit sightings", "EditSightings") |
+    @Html.ActionLink("Edit transfers", "EditTransfers") |
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>
 
 <fieldset>
@@ -17,5 +21,7 @@
 </fieldset>
 
 <p>
-<a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
+    @Html.ActionLink("Edit sightings", "EditSightings") |
+    @Html.ActionLink("Edit transfers", "EditTransfers") |
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>

@@ -213,7 +213,7 @@ input[type="text"],
 input[type="password"] {
     border: 1px solid #ccc;
     padding: 2px;
-    font-size: 1.2em;
+    font-size: 1.0em;
     color: #444;
     width: 200px;
 }
@@ -221,7 +221,7 @@ input[type="password"] {
 select {
     border: 1px solid #ccc;
     padding: 2px;
-    font-size: 1.2em;
+    font-size: 1.0em;
     color: #444;
 }
 
@@ -269,6 +269,23 @@ tr.alt td
 tr.over td 
 {
     background: #FFE066;
+}
+
+#notify 
+{
+    position: relative;
+    width: 100%;
+    background-color: Lime;
+    height: 30px;
+    color: White;
+    display: none;
+    text-align: center;
+    padding: 5px;
+    font-size: 2em;
+    line-height: 1em;
+    font-family: Arial, Sans-Serif;
+    border: 2px solid #666;
+    cursor: pointer;
 }
 
 /* From Twitter's Bootstrap project

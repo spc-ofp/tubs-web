@@ -48,5 +48,91 @@ namespace TubsWeb.Controllers
             return View(viewModel);
         }
 
+        private ActionResult Load(Trip tripId, string titleFormat, string viewName)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+            ViewBag.Title = String.Format(titleFormat, tripId.ToString());
+            AddMinMaxDates(tripId);
+            return View(viewName, tripId);
+        }
+
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult EditSightings(Trip tripId)
+        {
+            return Load(tripId, "Edit GEN-1 sightings for trip {0}", "EditSightings");
+        }
+
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult EditTransfers(Trip tripId)
+        {
+            return Load(tripId, "Edit GEN-1 transfers for trip {0}", "EditTransfers");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public PartialViewResult EditSighting(Trip tripId, Sighting sighting)
+        {            
+            if (ModelState.IsValid)
+            {
+                var repo = new TubsRepository<Sighting>(MvcApplication.CurrentSession);
+                sighting.Trip = tripId;
+                repo.Update(sighting, true);
+                Logger.Debug("Sighting updated!");
+            }           
+            return PartialView("_EditSighting", sighting);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public PartialViewResult AddSighting(Trip tripId, [Bind(Prefix = "sighting")] Sighting sighting)
+        {
+            var repo = new TubsRepository<Sighting>(MvcApplication.CurrentSession);
+            if (ModelState.IsValid)
+            {
+                sighting.Trip = tripId;
+                sighting.EnteredBy = User.Identity.Name;
+                sighting.EnteredDate = DateTime.Now;
+                repo.Add(sighting);
+            }
+            var sightings = repo.FilterBy(t => t.Trip.Id == tripId.Id);
+            return PartialView("_EditSightings", sightings);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public PartialViewResult EditTransfer(Trip tripId, Transfer transfer)
+        {
+            if (ModelState.IsValid)
+            {
+                var repo = new TubsRepository<Transfer>(MvcApplication.CurrentSession);
+                transfer.Trip = tripId;
+                repo.Update(transfer, true);
+            }
+            return PartialView("_EditTransfer", transfer);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public PartialViewResult AddTransfer(Trip tripId, [Bind(Prefix = "transfer")] Transfer transfer)
+        {
+            var repo = new TubsRepository<Transfer>(MvcApplication.CurrentSession);
+            if (ModelState.IsValid)
+            {
+                transfer.Trip = tripId;
+                transfer.EnteredBy = User.Identity.Name;
+                transfer.EnteredDate = DateTime.Now;
+                repo.Add(transfer);
+            }
+            var transfers = repo.FilterBy(t => t.Trip.Id == tripId.Id);
+            return PartialView("_EditTransfers", transfers);
+        }
+
     }
 }

@@ -51,6 +51,15 @@ namespace TubsWeb.Models
         
         public class CrewMemberModel
         {
+            public CrewMemberModel()
+            {
+            }
+            
+            public CrewMemberModel(JobType job)
+            {
+                this.Job = job;
+            }
+            
             public int Id { get; set; }
 
             public JobType? Job { get; set; }

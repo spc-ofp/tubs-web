@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Transfer>
+
+@*
+ _EditTransfers is a partial for displaying an editable table of Transfer objects.
+ Responsibility for rendering of form will fall to _EditTransfer (note lack of "s" at the end).
+*@
+
+<table id="gen1Transfers">
+    <thead>
+        <tr>
+            <th>Date / Time</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Vessel Name</th>
+            <th>IRCS</th>
+            <th>Flag</th>
+            <th>Vessel Type</th>
+            <th>SKJ</th>
+            <th>YFT</th>
+            <th>BET</th>
+            <th>Mixed</th>
+            <th>Host Action Code</th>
+            <th>Comments</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var sighting in Model)
+    {
+        var updateTargetId = System.Guid.NewGuid().ToString();
+        using (Ajax.BeginForm("EditTransfer", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = updateTargetId }))
+        {
+        <tr id='@updateTargetId'>
+            @{ Html.RenderPartial("_EditTransfer", sighting); }
+        </tr>
+        }
+    }
+    </tbody>
+</table>

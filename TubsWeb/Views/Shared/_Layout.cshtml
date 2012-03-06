@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")" />
+    <link rel="alternate" type="application/rss+xml" title="Latest Trips" href="@Url.Action("Rss", "Trip")" />
     <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="stylesheet" type="text/css" />
     <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
@@ -18,9 +19,14 @@
         $("table > tbody tr:odd").css("background-color", "#FFFFCC");
         });
         */
+        function notify(msg) {
+            $('#notify').html(msg).slideDown();
+        }
     </script>
 </head>
 <body>
+    @* Notify div is here for whatever page might need it *@
+    <div id="notify"></div>
     <div class="page">        
         <header> 
             <div id="title">                                
@@ -43,5 +49,10 @@
             This is confidential data subject to a @Html.ActionLink("data disclosure policy", "Confidentiality", "Home")
         </footer>
     </div>
+    <script type="text/javascript">
+        $('#notify').click(function () {
+            $(this).slideUp().empty();
+        });
+    </script>
 </body>
 </html>

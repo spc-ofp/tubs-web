@@ -8,6 +8,7 @@ namespace TubsWeb.Controllers
 {
     using System.Web.Mvc;
     using TubsWeb.Core;
+    using Spc.Ofp.Tubs.DAL.Entities;
 
     /*
      * This file is part of TUBS.
@@ -39,6 +40,10 @@ namespace TubsWeb.Controllers
         public const string ALERT_ERROR = "alert-error";
         public const string ALERT_INFO = "alert-info";
 
+        // Minimum/Maximum Date keys
+        public const string MINUMUM_DATE = "MinDate";
+        public const string MAXIMUM_DATE = "MaxDate";
+
         protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(SuperController));
 
         /// <summary>
@@ -52,6 +57,33 @@ namespace TubsWeb.Controllers
         {
             ViewData["flash"] = message;
             ViewData["flash-level"] = level;
+        }
+
+        /// <summary>
+        /// Push JavaScript-compatible string values of departure and return dates into
+        /// ViewBag for use in wiring up the date/time picker.
+        /// </summary>
+        /// <param name="trip"></param>
+        public void AddMinMaxDates(Trip trip)
+        {
+            if (null != trip)
+            {
+                if (trip.DepartureDate.HasValue || trip.DepartureDateOnly.HasValue)
+                {
+                    ViewData[MINUMUM_DATE] =
+                        trip.DepartureDate.HasValue ?
+                            trip.DepartureDate.Value.ToString("r") :
+                            trip.DepartureDateOnly.Value.ToString("r");
+                }
+
+                if (trip.ReturnDate.HasValue || trip.ReturnDateOnly.HasValue)
+                {
+                    ViewData[MAXIMUM_DATE] =
+                        trip.ReturnDate.HasValue ?
+                            trip.ReturnDate.Value.ToString("r") :
+                            trip.ReturnDateOnly.Value.ToString("r");
+                }
+            }
         }
     }
 }

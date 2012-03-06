@@ -91,10 +91,18 @@ namespace TubsWeb
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            // TODO This should default to Index
             routes.MapRoute(
                 "Electronics",
                 "Trip/{tripId}/Electronics/{action}",
                 new { controller = "Electronics", action = "List" },
+                new { tripId = @"\d+" }
+            );
+
+            routes.MapRoute(
+                "SafetyInspection",
+                "Trip/{tripId}/SafetyInspection/{action}",
+                new { controller = "SafetyInspection", action = "Index" },
                 new { tripId = @"\d+" }
             );
 
@@ -163,7 +171,6 @@ namespace TubsWeb
 
             // Link to particular GEN-6 page has to come first
             // due to route precedence
-            // TODO Add a route constraint that pageNumber must be numeric
             routes.MapRoute(
                 "Gen6Details",
                 "Trip/{tripId}/GEN-6/{pageNumber}",

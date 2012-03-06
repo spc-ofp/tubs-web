@@ -1,0 +1,105 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+@using Spc.Ofp.Tubs.DAL.Entities
+
+<h2>@ViewBag.Title</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+<p>
+    @Html.ActionLink("Back to GEN-1", "Index") |
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
+</p>
+
+<fieldset>
+    <legend>Vessel or Aircraft Sightings</legend>
+    @{ Html.RenderPartial("_EditSightings", Model.Sightings); }
+</fieldset>
+
+@* Because the form doesn't reload the whole page, we need to take it upon ourselves to clear the form values manually. *@
+@* TODO Pull this into a site-wide JavaScript file *@
+<script type="text/javascript">
+    function done() {
+        $(':input', '#addSightingForm').each(function () {
+            var type = this.type.toLowerCase();
+            if (type == 'text' || type == 'password' || type == 'textarea' || type == 'hidden') {
+                this.value = "";
+            } else if (type == 'select-one' || type == 'select-multi') {
+                this.selectedIndex = -1;
+            } else if (type == 'radio' || type == 'checkbox') {
+                if (this.checked) { this.checked = false; }
+            }
+        });
+    }
+</script>
+
+<fieldset>
+    <legend>Add Sighting</legend>
+    @using (Ajax.BeginForm("AddSighting", null, new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen1Sightings", OnSuccess = "done" }, new { id = "addSightingForm" }))
+    {
+        @Html.ValidationSummary(false);
+
+        var sighting = new Sighting();
+        @Html.HiddenFor(m => sighting.Id) @* I know it's zero, but add it for completeness sake *@
+        @Html.LabelFor(m => sighting.EventTime) @Html.TextBoxFor(m => sighting.EventTime, new { @class = "date", id = System.Guid.NewGuid().ToString() }) <br />
+        @Html.LabelFor(m => sighting.Latitude) @Html.TextBoxFor(m => sighting.Latitude) @Html.ValidationMessageFor(m => sighting.Latitude)<br />
+        @Html.LabelFor(m => sighting.Longitude) @Html.TextBoxFor(m => sighting.Longitude) @Html.ValidationMessageFor(m => sighting.Longitude)<br />
+        @* Add Ajax to fill this in based on lat/long? *@
+        @Html.LabelFor(m => sighting.EezCode) @Html.TextBoxFor(m => sighting.EezCode) @Html.ValidationMessageFor(m => sighting.EezCode)<br />
+        @Html.LabelFor(m => sighting.VesselName) @Html.TextBoxFor(m => sighting.VesselName) @Html.ValidationMessageFor(m => sighting.VesselName)<br />
+        @* VesselId will have to go somewhere other than the model *@
+        @Html.LabelFor(m => sighting.Ircs) @Html.TextBoxFor(m => sighting.Ircs) @Html.ValidationMessageFor(m => sighting.Ircs)<br />
+        @Html.LabelFor(m => sighting.VesselType)
+        @* TODO Add description text to dropdown *@
+        @Html.DropDownListFor(m => sighting.VesselType, new SelectList(TubsWeb.Models.Gen1ViewModel.SightedVessels, sighting.VesselType), "Choose") <br />
+        @Html.LabelFor(m => sighting.Bearing)
+        @Html.TextBoxFor(m => sighting.Bearing)
+        @Html.ValidationMessageFor(m => sighting.Bearing)<br />
+        @Html.LabelFor(m => sighting.Distance)
+        @Html.TextBoxFor(m => sighting.Distance) @* TODO Add distance dropdown *@
+        @Html.ValidationMessageFor(m => sighting.Distance)<br />
+        @Html.LabelFor(m => sighting.ActionType)
+        @* TODO Add description text to dropdown *@
+        @Html.DropDownListFor(m => sighting.ActionType, new SelectList(TubsWeb.Models.Gen1ViewModel.ActionTypes, sighting.ActionType), "Choose") <br />
+        @Html.LabelFor(m => sighting.PhotoNumber)
+        @Html.TextBoxFor(m => sighting.PhotoNumber)
+        @Html.ValidationMessageFor(m => sighting.PhotoNumber)<br />
+        @Html.LabelFor(m => sighting.Comments)
+        @Html.TextAreaFor(m => sighting.Comments, new { style = "width: 300px; height: 100px;" })
+        @Html.ValidationMessageFor(m => sighting.Comments)<br />
+        <p>
+            <input type="Submit" value="Add" style="font-size: 1.0em;"/>
+            <input type="Reset" value="Cancel" style="font-size: 1.0em;"/>
+        </p>
+    }
+</fieldset>
+
+<p>
+    @Html.ActionLink("Back to GEN-1", "Index") |
+    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
+</p>
+
+<script>
+    @{
+        var minDateKey = "MinDate";
+        var maxDateKey = "MaxDate";
+        if (ViewData.ContainsKey(minDateKey) && ViewData.ContainsKey(maxDateKey))
+        {
+            <text>
+            var depDate = new Date('@ViewData[minDateKey]');
+            var retDate = new Date('@ViewData[maxDateKey]');
+            $(function () {
+                $(".date").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2, defaultDate: depDate, minDate: depDate, maxDate: retDate });
+            });
+            </text>
+        } else {
+            <text>
+            $(function () {
+                $(".date").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2});
+            });
+            </text>
+        }
+    }
+    // TODO Wire up Ajax on addSightingForm#VesselName
+</script>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Sighting>
+
+<table id="gen1Sightings">
+    <thead>
+        <tr>
+            <th>Date / Time</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Vessel Name</th>
+            <th>IRCS</th>
+            <th>Flag</th>
+            <th>Vessel Type</th>
+            <th>Bearing</th>
+            <th>Distance</th>
+            <th>Action</th>
+            <th>Photo Frame #</th>
+            <th>Comments</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var sighting in Model)
+    {
+        var updateTargetId = System.Guid.NewGuid().ToString();
+        using (Ajax.BeginForm("EditSighting", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = updateTargetId }))
+        {
+        <tr id='@updateTargetId'>
+            @{ Html.RenderPartial("_EditSighting", sighting); }
+        </tr>
+        }
+    }
+    </tbody>
+</table>

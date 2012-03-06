@@ -32,6 +32,7 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
+    using System.Collections.Generic;
 
     public class CrewController : SuperController
     {
@@ -41,6 +42,91 @@ namespace TubsWeb.Controllers
         // into something that's hosted elsewhere.  That will mean having to provide the partial name where appropriate
         private const string PathToEditPartial = @"~/Views/Shared/EditorTemplates/CrewMemberModel.cshtml";
 
+        private const string PathToDeckHandPartial = @"~/Views/Crew/DeckHand.cshtml";
+
+        private CrewViewModel.CrewMemberModel SaveCrewmember(Trip tripId, CrewViewModel.CrewMemberModel cmm, out bool success)
+        {
+            success = false;
+            if (ModelState.IsValid)
+            {
+                Crew crew = tripId.CreateCrew();
+                if (null != crew)
+                {
+                    cmm.CopyTo(crew);
+                    crew.Trip = tripId;
+                    var repo = new TubsRepository<Crew>(MvcApplication.CurrentSession);
+                    if (default(int) == crew.Id)
+                    {
+                        crew.EnteredBy = User.Identity.Name;
+                        crew.EnteredDate = DateTime.Now;
+                        repo.Add(crew);
+                        cmm.Id = crew.Id;
+                        success = true;
+                    }
+                    else
+                    {
+                        repo.Update(crew, true);
+                        success = true;
+                    }
+                }
+            }
+            return cmm;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="cmm"></param>
+        /// <param name="partialName"></param>
+        /// <returns></returns>
+        private PartialViewResult ModifyCrewmember(Trip tripId, CrewViewModel.CrewMemberModel cmm, string partialName)
+        {
+            // Not the best way to handle this, but how often will it happen?
+            if (null == tripId)
+            {
+                return PartialView(partialName, cmm);
+            }
+
+            bool modelSaved = false;
+            cmm = SaveCrewmember(tripId, cmm, out modelSaved);
+            ViewData["modelSaved"] = modelSaved;
+            return PartialView(partialName, cmm);
+
+            /*
+            // Ideally, we'd pass a status message back to the
+            // UI.  Unfortunately, jQuery and MVC3 are having issues
+            // with escaping data correctly
+            bool modelSaved = false;
+            if (ModelState.IsValid)
+            {
+                Crew crew = tripId.CreateCrew();
+                if (null != crew)
+                {
+                    cmm.CopyTo(crew);
+                    crew.Trip = tripId;
+                    var repo = new TubsRepository<Crew>(MvcApplication.CurrentSession);
+                    if (default(int) == crew.Id)
+                    {
+                        crew.EnteredBy = User.Identity.Name;
+                        crew.EnteredDate = DateTime.Now;
+                        repo.Add(crew);
+                        // Does this work?
+                        cmm.Id = crew.Id;
+                        modelSaved = true;
+                    }
+                    else
+                    {
+                        repo.Update(crew, true);
+                        modelSaved = true;
+                    }
+                }
+            }
+
+            ViewData["modelSaved"] = modelSaved;
+            return PartialView(partialName, cmm);
+            */
+        }
 
         private static string Experience(int? years, int? months)
         {
@@ -79,7 +165,7 @@ namespace TubsWeb.Controllers
                 select new CrewViewModel.CrewMemberModel
                 {
                     Id = c.Id,
-                    Job = jobType,
+                    Job = c.Job,
                     Name = c.Name,
                     Nationality = c.CountryCode,
                     Comments = c.Comments,
@@ -87,16 +173,13 @@ namespace TubsWeb.Controllers
                     Months = c.MonthsExperience,
                     Experience = Experience(c.YearsExperience, c.MonthsExperience)
                 }
-            ).FirstOrDefault<CrewViewModel.CrewMemberModel>() ?? new CrewViewModel.CrewMemberModel() { Job = jobType };
+            ).FirstOrDefault<CrewViewModel.CrewMemberModel>() ?? new CrewViewModel.CrewMemberModel(jobType);
         }
 
-        private CrewViewModel Fill(int tripId)
+        private static IEnumerable<CrewViewModel.CrewMemberModel> GetDeckHands(IQueryable<Crew> crew)
         {
-            CrewViewModel cvm = new CrewViewModel();
-            cvm.TripId = tripId;
-            var crewlist = new TubsRepository<Crew>(MvcApplication.CurrentSession).FilterBy(c => c.Trip.Id == tripId);
-            var hands =
-                from c in crewlist
+            return 
+                from c in crew
                 where c.Job.HasValue && JobType.Crew == c.Job.Value
                 select new CrewViewModel.CrewMemberModel
                 {
@@ -109,7 +192,14 @@ namespace TubsWeb.Controllers
                     Months = c.MonthsExperience,
                     Experience = Experience(c.YearsExperience, c.MonthsExperience)
                 };
-            cvm.Hands.AddRange(hands);
+        }
+
+        private CrewViewModel Fill(int tripId)
+        {
+            CrewViewModel cvm = new CrewViewModel();
+            cvm.TripId = tripId;
+            var crewlist = new TubsRepository<Crew>(MvcApplication.CurrentSession).FilterBy(c => c.Trip.Id == tripId);
+            cvm.Hands.AddRange(GetDeckHands(crewlist));
 
             // Get named crew members
             cvm.Captain = GetCrewmember(crewlist, JobType.Captain);
@@ -148,6 +238,7 @@ namespace TubsWeb.Controllers
             return View(Fill(tripId.Id));
         }
 
+        /*
         [HttpPost]
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, CrewViewModel cvm)
@@ -162,6 +253,15 @@ namespace TubsWeb.Controllers
             // Add/Update as appropriate
             return View(cvm);
         }
+        */
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public PartialViewResult EditSingleDeckhand(Trip tripId, CrewViewModel.CrewMemberModel cmm)
+        {
+            return ModifyCrewmember(tripId, cmm, PathToDeckHandPartial);
+        }
 
         // TODO At some point in the future, change this from the ViewModel directly to the DAL model.
         // However, at this point, it's a PITA because it requires the AbstractBind attribute, which
@@ -173,39 +273,22 @@ namespace TubsWeb.Controllers
         //
         [HttpPost]
         [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public PartialViewResult EditSingle(Trip tripId, CrewViewModel.CrewMemberModel cmm)
         {
-            // Not the best way to handle this, but how often will it happen?
-            if (null == tripId)
-            {
-                return PartialView(PathToEditPartial, cmm);
-            }
-            
-            if (ModelState.IsValid)
-            {
-                Crew crew = tripId.CreateCrew();
-                if (null != crew)
-                {
-                    cmm.CopyTo(crew);
-                    crew.Trip = tripId;
-                    var repo = new TubsRepository<Crew>(MvcApplication.CurrentSession);
-                    if (default(int) == crew.Id)
-                    {
-                        crew.EnteredBy = User.Identity.Name;
-                        crew.EnteredDate = DateTime.Now;
-                        repo.Add(crew);
-                        // Does this work?
-                        cmm.Id = crew.Id;
-                    }
-                    else
-                    {
-                        repo.Update(crew, true);
-                    }                   
-                }
-            }
-            
-            // TODO Use ViewData to do something about status
-            return PartialView(PathToEditPartial, cmm);
+            return ModifyCrewmember(tripId, cmm, PathToEditPartial);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public PartialViewResult AddDeckHand(Trip tripId, [Bind(Prefix = "hand")] CrewViewModel.CrewMemberModel cmm)
+        {
+            bool modelSaved = false;
+            SaveCrewmember(tripId, cmm, out modelSaved);
+            var crewlist = new TubsRepository<Crew>(MvcApplication.CurrentSession).FilterBy(c => c.Trip.Id == tripId.Id);
+            var hands = GetDeckHands(crewlist);
+            return PartialView("OtherCrew", hands);
         }
 
     }

@@ -36,7 +36,6 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 25px;">&nbsp;</th>
                 <th>Job</th>
                 <th>Name</th>
                 <th>Experience</th>
@@ -65,27 +64,53 @@
 @* http://forums.asp.net/t/1652312.aspx/1?MVC+3+razor+grid+using+edit+and+delete+buttons *@
 <!-- The rest of the hands -->
 <fieldset>
-    <legend>Hands</legend>
-    <table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Experience</th>
-            <th>Nationality</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var hand in Model.Hands)
-    {
-        <tr>
-            <td>@hand.Name</td>
-            <td>@hand.Experience</td>
-            <td>@hand.Nationality</td>
-        </tr>   
-    }
-    </tbody>
-</table>
+    <legend>Other Crew</legend>
+    @{ Html.RenderPartial("~/Views/Crew/OtherCrew.cshtml", Model.Hands); }
 </fieldset>
+
+@* Because the form doesn't reload the whole page, we need to take it upon ourselves to clear the form values manually. *@
+@* TODO Pull this into a site-wide JavaScript file *@
+<script type="text/javascript">
+    function done() {
+        $(':input', '#addHandForm').each(function () {
+            var type = this.type;
+            if (type == 'text' || type == 'password' || this.tagName == 'textarea') {
+                this.value = "";
+            }
+        });
+    }
+</script>
+
+@* TODO Change this to a modal dialog *@
+<fieldset>
+    <legend>Add New Deckhand</legend>
+    @using (Ajax.BeginForm("AddDeckHand", null, new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "deckHands", OnSuccess = "done" }, new { id = "addHandForm" }))
+    {
+        @Html.ValidationSummary(false)
+        var hand = new CrewViewModel.CrewMemberModel(Spc.Ofp.Tubs.DAL.Common.JobType.Crew);
+        @Html.HiddenFor(m => hand.Id)
+        @Html.HiddenFor(m => hand.Job)
+        @Html.LabelFor(m => hand.Name)
+        @Html.TextBoxFor(m => hand.Name)
+        @Html.ValidationMessageFor(m => hand.Name)
+        <br />
+        @Html.Label("Experience")
+        @Html.TextBoxFor(m => hand.Years, new { style = "width: 50px;" }) <text>years</text> 
+        @Html.TextBoxFor(m => hand.Months, new { style = "width: 50px;" }) <text>months</text>
+        @Html.ValidationMessageFor(m => hand.Years)
+        @Html.ValidationMessageFor(m => hand.Months)
+        <br />
+        @Html.LabelFor(m => hand.Nationality)
+        @Html.TextBoxFor(m => hand.Nationality, new { style = "width: 50px;" })
+        @Html.ValidationMessageFor(m => hand.Nationality)
+        <br />
+    
+        <p>
+            <input type="submit" name="Add" value="Add" />
+        </p>
+    }
+</fieldset>
+
 
 <p>
     @Html.ActionLink("Back to Crew", "Index", "Crew", new { tripId = ViewBag.TripId }, null) | 

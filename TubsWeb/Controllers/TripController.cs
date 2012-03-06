@@ -31,23 +31,43 @@ namespace TubsWeb.Controllers
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
     using TubsWeb.Core;
+    using System.ServiceModel.Syndication;
        
     public class TripController : SuperController
     {
 
-        // Default page size
-        const int PAGE_SIZE = 20;
-
         //
         // GET: /Trip/
-        public ActionResult Index(int? page)
+        public ActionResult Index(int? page, int itemsPerPage = 20)
         {
             var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trips = repo.GetPagedList((page ?? 0) * PAGE_SIZE, PAGE_SIZE);
+            var trips = repo.GetPagedList((page ?? 0) * itemsPerPage, itemsPerPage);
             ViewBag.HasPrevious = trips.HasPrevious;
             ViewBag.HasNext = trips.HasNext;
             ViewBag.CurrentPage = (page ?? 0);
             return View(trips.Entities);
+        }
+
+        public ActionResult Rss()
+        {
+            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var lastTen = repo.All().OrderByDescending(t => t.EnteredDate).Take(10).ToList();
+            var feedItems =
+                from trip in lastTen
+                select new SyndicationItem(
+                    trip.ToString(), 
+                    String.Format("Entered by {0}", trip.EnteredBy), 
+                    new Uri(String.Format("/Trip/{0}", trip.Id), UriKind.Relative))
+                {
+                    PublishDate = trip.EnteredDate.Value
+                };
+
+
+
+            SyndicationFeed feed = new SyndicationFeed("Latest TUBS Trips", "http://nouofpweb01.corp.spc.int/tubs/Trip/Rss", Request.Url, feedItems);
+
+            return new RssResult(feed);
+
         }
 
         // GET: /Trip/Details/1

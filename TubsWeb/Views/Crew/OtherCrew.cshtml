@@ -1,0 +1,24 @@
+﻿@model IEnumerable<TubsWeb.Models.CrewViewModel.CrewMemberModel>
+
+<table id="deckHands">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Experience</th>
+            <th>Nationality</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var hand in Model)
+    {
+        var updateTarget = System.Guid.NewGuid().ToString();
+        using (Ajax.BeginForm("EditSingleDeckhand", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = updateTarget }))
+        {
+        <tr id='@updateTarget'>
+            @{ Html.RenderPartial("~/Views/Crew/DeckHand.cshtml", hand); }
+        </tr>
+        }  
+    }
+    </tbody>
+</table>
