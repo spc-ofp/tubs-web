@@ -6,53 +6,129 @@
 
 namespace TubsWeb.Controllers
 {
-   /*
-    * This file is part of TUBS.
-    *
-    * TUBS is free software: you can redistribute it and/or modify
-    * it under the terms of the GNU Affero General Public License as published by
-    * the Free Software Foundation, either version 3 of the License, or
-    * (at your option) any later version.
-    *  
-    * TUBS is distributed in the hope that it will be useful,
-    * but WITHOUT ANY WARRANTY; without even the implied warranty of
-    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    * GNU Affero General Public License for more details.
-    *  
-    * You should have received a copy of the GNU Affero General Public License
-    * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
-    */
+    /*
+     * This file is part of TUBS.
+     *
+     * TUBS is free software: you can redistribute it and/or modify
+     * it under the terms of the GNU Affero General Public License as published by
+     * the Free Software Foundation, either version 3 of the License, or
+     * (at your option) any later version.
+     *  
+     * TUBS is distributed in the hope that it will be useful,
+     * but WITHOUT ANY WARRANTY; without even the implied warranty of
+     * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     * GNU Affero General Public License for more details.
+     *  
+     * You should have received a copy of the GNU Affero General Public License
+     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
+     */
     using System;
-    using System.Linq;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
-    
+    using TubsWeb.Core;
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class Gen3Controller : SuperController
     {
-
-        //
-        // GET: /Gen3/
-        public ActionResult Index(int tripId)
+        private ActionResult Load(Trip tripId, string titleFormat, bool createNew = false)
         {
-            ViewBag.TripId = tripId;
-            var repo = new TubsRepository<TripMonitor>(MvcApplication.CurrentSession);
-            var gen3 = repo.FilterBy(g => g.Trip.Id == tripId).FirstOrDefault();
-            if (null == gen3)
+            if (null == tripId)
             {
-                // No GEN-3
-                ViewBag.Title = String.Format("No GEN-3 for tripId {0}", tripId);
-                return View("NotFound");
+                return new NoSuchTripResult();
             }
-            else if (null == gen3.Trip)
+
+            ViewBag.Title = String.Format(titleFormat, tripId.ToString());
+            string actionName = this.ControllerContext.RouteData.GetRequiredString("action");
+            AddMinMaxDates(tripId);
+            return
+                createNew ?
+                    View(actionName, tripId.TripMonitor ?? new TripMonitor()) :
+                    View(actionName, tripId.TripMonitor);
+        }
+
+        public ActionResult Index(Trip tripId)
+        {
+            return Load(tripId, "GEN-3 for trip {0}");
+        }
+
+        public ActionResult Edit(Trip tripId)
+        {
+            return Load(tripId, "Edit GEN-3 for trip {0}", true);
+        }
+
+        [HttpPost]
+        public PartialViewResult BlankEditorRow(Trip tripId)
+        {
+            AddMinMaxDates(tripId);
+            return PartialView("_DetailEditorRow", new TripMonitorDetail());
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Trip tripId, TripMonitor header)
+        {
+            if (null == tripId)
             {
-                ViewBag.Title = String.Format("GEN-3 for tripId {0}", tripId);
+                return new NoSuchTripResult();
             }
-            else
+
+            if (null == header)
             {
-                ViewBag.Title = String.Format("GEN-3 for trip {0}", gen3.Trip.ToString());
+                return View("Edit", new TripMonitor());
             }
-            return View(gen3);
+
+            // There's no real validation in the header, so we'll start by checking the
+            // date for each detail
+            // At the same time, perform some minor fixups on the entities, like resetting
+            // parent/child relationship and adding audit trail data.
+            var enteredDate = DateTime.Now;
+            if (null != header.Details)
+            {
+                foreach (var detail in header.Details)
+                {
+                    // (Re)set the association between parent and child
+                    detail.Header = header;
+                    // Set EnteredBy/EnteredDate where necessary
+                    if (default(int) == detail.Id)
+                    {
+                        detail.EnteredBy = User.Identity.Name;
+                        detail.EnteredDate = enteredDate;
+                    }
+                    if (detail.DetailDate.HasValue)
+                    {
+                        if (!tripId.IsDuringTrip(detail.DetailDate.Value))
+                        {
+                            ModelState.AddModelError("DetailDate", "Date doesn't fall between departure and return dates");
+                        }
+                    }
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                header.Trip = tripId;
+                bool isNewHeader = default(int) == header.Id;
+                if (isNewHeader)
+                {
+                    header.EnteredBy = User.Identity.Name;
+                    header.EnteredDate = enteredDate;
+                }
+
+                var repo = new TubsRepository<TripMonitor>(MvcApplication.CurrentSession);
+                bool success =
+                    isNewHeader ?
+                        repo.Add(header) :
+                        repo.Update(header);
+                if (success)
+                {
+                    return RedirectToAction("Index", new { tripId = tripId.Id });
+                }
+            }
+
+            tripId.TripMonitor = header;
+            return View("Edit", tripId);            
         }
 
     }

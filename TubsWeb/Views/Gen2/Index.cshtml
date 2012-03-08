@@ -39,6 +39,12 @@
     @* This data only appears when the species was landed on deck *@
     <table>
         <tbody>
+        
+        </tbody>
+    </table>
+    @*
+    <table>
+        <tbody>
             <tr>
                 <td class="fake-header" colspan="2">Landed</td>
             </tr>
@@ -81,34 +87,35 @@
                 <td class="fake-header" colspan="2">Retrieved Tag</td>
             </tr>
             <tr>
-                <td class="label">@Html.LabelFor(m => m.TagReturnNumber)</td>
-                <td>@Model.TagReturnNumber</td>
+                <td class="label">@Html.LabelFor(m => m.RetrievedTagNumber)</td>
+                <td>@Model.RetrievedTagNumber</td>
             </tr>
             <tr>
-                <td class="label">@Html.LabelFor(m => m.TagReturnType)</td>
-                <td>@Model.TagReturnType</td>
+                <td class="label">@Html.LabelFor(m => m.RetrievedTagType)</td>
+                <td>@Model.RetrievedTagType</td>
             </tr>
             <tr>
-                <td class="label">@Html.LabelFor(m => m.TagReturnOrganization)</td>
-                <td>@Model.TagReturnOrganization</td>
+                <td class="label">@Html.LabelFor(m => m.RetrievedTagOrganization)</td>
+                <td>@Model.RetrievedTagOrganization</td>
             </tr>
             <tr>
                 <td class="fake-header" colspan="2">Placed Tag</td>
             </tr>
             <tr>
-                <td class="label">@Html.LabelFor(m => m.TagPlacedNumber)</td>
-                <td>@Model.TagPlacedNumber</td>
+                <td class="label">@Html.LabelFor(m => m.PlacedTagNumber)</td>
+                <td>@Model.PlacedTagNumber</td>
             </tr>
             <tr>
-                <td class="label">@Html.LabelFor(m => m.TagPlacedType)</td>
-                <td>@Model.TagPlacedType</td>
+                <td class="label">@Html.LabelFor(m => m.PlacedTagType)</td>
+                <td>@Model.PlacedTagType</</td>
             </tr>
             <tr>
-                <td class="label">@Html.LabelFor(m => m.TagPlacedOrganization)</td>
-                <td>@Model.TagPlacedOrganization</td>
+                <td class="label">@Html.LabelFor(m => m.PlacedTagOrganization)</td>
+                <td>@Model.PlacedTagOrganization</td>
             </tr>
         </tbody>
     </table>
+    *@
 }
 else if ("I".Equals(Model.SgType))
 {
@@ -209,47 +216,6 @@ else if ("S".Equals(Model.SgType))
     @* TODO TUBS Frontend saves units in terms of Unit4 -- bleah *@
     @* @Model.SightingDistanceUnit.GetDescription()  *@ <br />
     <label>Behaviour when sighted</label> @Html.DisplayFor(m => m.SightingBehavior)
-    
-    <table>
-        <tbody>
-            <tr>
-                <td class="label" style="width: 15%;">Vessel Activity:</td>
-                <td>@if (InteractionActivity.Other == Model.InteractionActivity)
-                    {
-                        <text>Other (@Model.InteractionIfOther)</text>
-                    }
-                    else
-                    {
-                        @Model.InteractionActivity
-                    }
-                </td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.SightingCount):</td>
-                <td>@Html.DisplayFor(m => m.SightingCount)</td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.SightingAdultCount):</td>
-                <td>@Html.DisplayFor(m => m.SightingAdultCount)</td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.SightingJuvenileCount):</td>
-                <td>@Html.DisplayFor(m => m.SightingJuvenileCount)</td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.SightingLength):</td>
-                <td>@Model.SightingLength</td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.SightingDistance):</td>
-                <td>@Html.DisplayFor(m => m.SightingDistance) @Model.SightingDistanceUnit</td>
-            </tr>
-            <tr>
-                <td class="label">Behaviour when sighted:</td>
-                <td>@Model.SightingBehavior</td>
-            </tr>
-        </tbody>
-    </table>
 }
 else
 {

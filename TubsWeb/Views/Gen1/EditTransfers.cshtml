@@ -17,28 +17,11 @@
     @{ Html.RenderPartial("_EditTransfers", Model.Transfers); }
 </fieldset>
 
-@* Because the form doesn't reload the whole page, we need to take it upon ourselves to clear the form values manually. *@
-@* TODO Pull this into a site-wide JavaScript file *@
-<script type="text/javascript">
-    function done(formName) {
-        $(':input', formName).each(function () {
-            var type = this.type.toLowerCase();
-            if (type == 'text' || type == 'password' || type == 'textarea' || type == 'hidden') {
-                this.value = "";
-            } else if (type == 'select-one' || type == 'select-multi') {
-                this.selectedIndex = -1;
-            } else if (type == 'radio' || type == 'checkbox') {
-                if (this.checked) { this.checked = false; }
-            }
-        });
-    }
-</script>
-
 <fieldset>
     <legend>Add Transfer</legend>
     @* Passing the argument to 'done' requires the String.Format call *@
     @* http://stackoverflow.com/questions/6550290/ajaxoptions-onsuccess-callback-with-parameter-not-working *@
-    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen1Transfers", OnSuccess = String.Format("done('{0}')", "#addTransferForm") }; }
+    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen1Transfers", OnSuccess = String.Format("clearForm('{0}')", "#addTransferForm") }; }
     @using (Ajax.BeginForm("AddTransfer", null, options, new { id = "addTransferForm" }))
     {
         @Html.ValidationSummary(false)
@@ -47,7 +30,7 @@
         
         @Html.HiddenFor(m => transfer.Id)
         @Html.LabelFor(m => transfer.TransferTime)
-        @Html.TextBoxFor(m => transfer.TransferTime, new { @class = "date", id = System.Guid.NewGuid().ToString() })
+        @Html.TextBoxFor(m => transfer.TransferTime, new { @class = "datetime", id = System.Guid.NewGuid().ToString() })
         @Html.ValidationMessageFor(m => transfer.TransferTime)<br />
         @Html.LabelFor(m => transfer.Latitude) 
         @Html.TextBoxFor(m => transfer.Latitude) 
@@ -93,26 +76,6 @@
     }
 </fieldset>
 
-<script>
-    @{
-        var minDateKey = "MinDate";
-        var maxDateKey = "MaxDate";
-        if (ViewData.ContainsKey(minDateKey) && ViewData.ContainsKey(maxDateKey))
-        {
-            <text>
-            var depDate = new Date('@ViewData[minDateKey]');
-            var retDate = new Date('@ViewData[maxDateKey]');
-            $(function () {
-                $(".date").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2, defaultDate: depDate, minDate: depDate, maxDate: retDate });
-            });
-            </text>
-        } else {
-            <text>
-            $(function () {
-                $(".date").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2});
-            });
-            </text>
-        }
-    }
-    // TODO Wire up Ajax on addSightingForm#VesselName
-</script>
+@{ Html.RenderPartial("_DateTimePickerInit"); }
+
+@* TODO Wire up Ajax on vessel name field *@

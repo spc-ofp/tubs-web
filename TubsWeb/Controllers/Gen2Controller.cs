@@ -2,6 +2,7 @@
 // <copyright file="Gen2Controller.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2011 Secretariat of the Pacific Community
 // </copyright>
+// -----------------------------------------------------------------------
 
 namespace TubsWeb.Controllers
 {
@@ -31,7 +32,33 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     
     public class Gen2Controller : SuperController
-    {        
+    {
+        private ActionResult Load(Trip tripId, int pageNumber, string titleFormat, bool createNew = false)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            int maxPages = tripId.Interactions.Count;
+            if (pageNumber > maxPages)
+            {
+                pageNumber = maxPages;
+            }
+
+            ViewBag.MaxPages = maxPages;
+            ViewBag.CurrentPage = pageNumber;
+            var interaction = tripId.Interactions.Skip(pageNumber - 1).Take(1).FirstOrDefault();
+
+            ViewBag.Title = String.Format(titleFormat, pageNumber, maxPages, tripId.ToString());
+            string actionName = this.ControllerContext.RouteData.GetRequiredString("action");
+            AddMinMaxDates(tripId);
+            return
+                createNew ?
+                    View(actionName, interaction ?? new SpecialSpeciesInteraction()) :
+                    View(actionName, interaction);
+        }
+        
         //
         // GET: /Gen2/
         public ActionResult List(Trip tripId)
@@ -41,27 +68,49 @@ namespace TubsWeb.Controllers
                 return new NoSuchTripResult();
             }
 
-            IList<SpecialSpeciesInteraction> interactions = tripId.Interactions;
             ViewBag.Title = String.Format("GEN-2 events for trip {0}", tripId.ToString());
-            // NOTE:  If list of DAL domain objects is too unwieldy, this is where I'd fill in the
-            // view model
-            return View(interactions);
+            AddMinMaxDates(tripId);
+            return View(tripId);
         }
 
-        // GET: /Trip/Details/{id}/Interaction/{interactionId}
-        public ActionResult Index(int tripId, int interactionId)
+        // GET: /Trip/{tripId}/GEN-2/{pageNumber}
+        public ActionResult Index(Trip tripId, int pageNumber)
         {
-            ViewBag.TripId = tripId;
+            return Load(tripId, pageNumber, "GEN-2 Page {0} of {1} for {2}");
+        }
+
+        public ActionResult Edit(Trip tripId, int pageNumber)
+        {
+            return Load(tripId, pageNumber, "Edit GEN-2 Page {0} of {1} for {2}", true);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public PartialViewResult AddInteraction(Trip tripId, SpecialSpeciesInteraction interaction)
+        {
             var repo = new TubsRepository<SpecialSpeciesInteraction>(MvcApplication.CurrentSession);
-            var interaction = repo.FindBy(interactionId);
-            if (null == interaction || null == interaction.Trip || interaction.Trip.Id != tripId)
+            // Check that interaction date between trip start/end dates
+
+            if (ModelState.IsValid)
             {
-                // TODO Work out what to do here
-                return View("NotFound");
+                // Fix for something that MVC is doing to/for us.
+                if (!"S".Equals(interaction.SgType, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    interaction.InteractionActivity = null;
+                }
+                if (!"L".Equals(interaction.SgType, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    interaction.InteractionId = null;
+                }
+                interaction.Trip = tripId;
+                interaction.EnteredBy = User.Identity.Name;
+                interaction.EnteredDate = DateTime.Now;
+                repo.Add(interaction);
             }
-            // TODO Not sure I like this title...
-            ViewBag.Title = String.Format("Special Species Interaction Id {0}", interactionId);
-            return View(interaction);
+
+            var interactions = repo.FilterBy(t => t.Trip.Id == tripId.Id);
+            return PartialView("_Interactions", interactions);
         }
 
     }

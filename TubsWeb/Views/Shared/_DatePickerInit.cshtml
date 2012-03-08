@@ -1,0 +1,29 @@
+﻿@*
+    _DatePickerInit pulls trip departure and return dates out of ViewData (if they're present)
+    and uses them to initialize a jQuery date/time picker with a consistent set of options.
+    NOTE:  Action method must call AddMinMaxDates(...) from SuperController before passing
+    control over to the View.
+*@
+
+<script>
+    @{
+        var minDateKey = "MinDate";
+        var maxDateKey = "MaxDate";
+        if (ViewData.ContainsKey(minDateKey) && ViewData.ContainsKey(maxDateKey))
+        {
+            <text>
+            var depDate = new Date('@ViewData[minDateKey]');
+            var retDate = new Date('@ViewData[maxDateKey]');
+            $(function () {
+                $(".date").datepicker({ dateFormat: 'dd/mm/yy', numberOfMonths: 2, defaultDate: depDate, minDate: depDate, maxDate: retDate });
+            });
+            </text>
+        } else {
+            <text>
+            $(function () {
+                $(".date").datepicker({ dateFormat: 'dd/mm/yy', numberOfMonths: 2});
+            });
+            </text>
+        }
+    }
+</script>

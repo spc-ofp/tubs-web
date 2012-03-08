@@ -46,7 +46,7 @@ namespace TubsWeb
              * http://ayende.com/blog/4101/do-you-need-a-framework
              * Essentially, what happens is that each Request gets a new Session on creation,
              * and when the request is finished, the Session is disposed of.  NHibernate Sessions
-             * are very lightweight, so there's no overhead to this.
+             * are very lightweight, so there's no significant overhead to this.
              */
             BeginRequest += delegate
             {
@@ -142,22 +142,20 @@ namespace TubsWeb
                 new { tripId = @"\d+" }
             );
 
-            // FIXME This should probably be changed to look more like sets or days
-            // in that we don't expose the primary key of the item.
             // A trip has zero to n GEN-2 forms, and each GEN-2 has a "Page X of Y"
             // field...
-            // TODO Add a route constraint that interactionId has to be numeric
             routes.MapRoute(
                 "Gen2Details",
-                "Trip/{tripId}/GEN-2/Interaction/{interactionId}/{action}",
+                "Trip/{tripId}/GEN-2/{pageNumber}/{action}",
                 new { controller = "Gen2", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = @"\d+", pageNumber = @"\d+" }
             );
 
             // TODO This is going to be tricky with the Gen2Details routing
+            // TODO Change the default action to Index 
             routes.MapRoute(
                 "Gen2",
-                "Trip/{tripId}/GEN-2/",
+                "Trip/{tripId}/GEN-2/{action}",
                 new { controller = "Gen2", action = "List" },
                 new { tripId = @"\d+" }
             );
@@ -178,9 +176,10 @@ namespace TubsWeb
                 new { tripId = @"\d+", pageNumber = @"\d+" }
             );
 
+            // TODO Change the default action to Index
             routes.MapRoute(
                 "Gen6",
-                "Trip/{tripId}/GEN-6/",
+                "Trip/{tripId}/GEN-6/{action}",
                 new { controller = "Gen6", action = "List" },
                 new { tripId = @"\d+" }
             );

@@ -42,8 +42,9 @@ else
         <legend>Incident Details</legend>
          @* TODO Add current (knots and direction), observer's vessel activity, ircs, vessel type, and relative location *@
         @Html.LabelFor(m => m.IncidentDate) @Html.DisplayFor(m => m.IncidentDate) <br />
-        <label>Position</label> @Model.Latitude / @Model.Longitude (@Model.EezId) <br />
-        <label>Wind Conditions</label> @SpeedAndDirection(Model.WindSpeed, Model.WindDirection) <br />
+        @Html.Label("Position")
+        @Model.Latitude / @Model.Longitude (@Model.EezId) <br />
+        @Html.Label("Wind Conditions") @SpeedAndDirection(Model.WindSpeed, Model.WindDirection) <br />
         @Html.LabelFor(m => m.SeaCode) @Html.DisplayFor(m => m.SeaCode) <br />
         <label>Offending Vessel</label> @Html.DisplayFor(m => m.VesselName) <br />
         <label>MARPOL Stickers/Posters on display?</label> @Html.DisplayFor(m => m.MarpolStickers) <br />

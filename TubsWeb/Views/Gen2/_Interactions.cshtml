@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.SpecialSpeciesInteraction>
+
+<table id="gen2Interactions">
+    <thead>
+        <tr>           
+            <th>Page Number</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Position</th>
+            <th>Species Code</th>
+            <th>Species Description</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Select((x, i) => new { Data = x, Index = i }))
+    {
+        var pageNum = item.Index + 1;
+        <tr>
+            
+            <td>@pageNum</td>
+            <td>@item.Data.SgType</td>
+            <td>@item.Data.LandedDate</td>
+            <td>@item.Data.Latitude / @item.Data.Longitude (@item.Data.EezId)</td>
+            <td>@item.Data.SpeciesCode</td>
+            <td><div class="large-text">@item.Data.SpeciesDescription</div></td>
+            @* TODO Add direct edit link *@
+            <td>@Html.ActionLink("Details", "Index", new { tripId = ViewBag.TripId, pageNumber = pageNum })</td>
+        </tr>
+    }
+    </tbody>
+</table>

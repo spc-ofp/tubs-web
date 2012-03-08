@@ -1,34 +1,41 @@
-﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.SpecialSpeciesInteraction>
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+@using Spc.Ofp.Tubs.DAL.Entities
+@using Spc.Ofp.Tubs.DAL.Common
 
 <h2>@ViewBag.Title</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>&nbsp;</th>
-            <th>Type</th>
-            <th>Date</th>
-            <th>Position</th>
-            <th>Species Code</th>
-            <th>Species Description</th>
-        </tr>
-    </thead>
-    <tbody>
-    @* TODO Change this to a page number like all the rest *@
-    @foreach (var interaction in Model)
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+<fieldset>
+    <legend>Interactions with Species of Special Interest</legend>
+    @{ Html.RenderPartial("_Interactions", Model.Interactions); }
+</fieldset>
+
+@if (!Model.IsReadOnly)
+{
+    @* Passing the argument to 'done' requires the String.Format call *@
+    @* http://stackoverflow.com/questions/6550290/ajaxoptions-onsuccess-callback-with-parameter-not-working *@
+    var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen2Interactions", OnSuccess = String.Format("clearForm('#{0}')", "addInteractionForm") };
+    using (Ajax.BeginForm("AddInteraction", null, options, new { id = "addInteractionForm" }))
     {
-        <tr>
-            <td>@Html.ActionLink("Details", "Index", new { tripId = ViewBag.TripId, interactionId = interaction.Id})</td>
-            <td>@interaction.SgType</td>
-            <td>@interaction.LandedDate</td>
-            <td>@interaction.Latitude / @interaction.Longitude (@interaction.EezId)</td>
-            <td>@interaction.SpeciesCode</td>
-            <td>@interaction.SpeciesDescription</td>
-        </tr>
+        @Html.ValidationSummary(false)
+        <fieldset>
+            <legend>Add Interaction</legend>
+            @{ var interaction = new SpecialSpeciesInteraction(); }
+            @Html.EditorFor(i => interaction)
+            <p>
+                <input type="Submit" value="Add" style="font-size: 1.0em;"/>
+                <input type="Reset" value="Cancel" style="font-size: 1.0em;"/>
+            </p>
+        </fieldset>
     }
-    </tbody>
-</table>
+
+}
 
 <p>
 <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>
+
+@{ Html.RenderPartial("_DateTimePickerInit"); }

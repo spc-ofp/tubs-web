@@ -1,0 +1,163 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.TripMonitor
+
+<h2>@ViewBag.Title</h2>
+
+@{
+    SelectListItem[] choices = {
+        new SelectListItem()
+        {
+            Text = "Yes",
+            Value = "true"
+        },
+        new SelectListItem()
+        {
+            Text = "No",
+            Value = "false"   
+        }                              
+    };
+}
+
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(m => Model.Id)
+<table style="width: auto;">
+<thead>
+    <tr>
+        <th>&nbsp;</th>
+        <th>Question</th>
+        <th>Answer</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>a)</td>
+        <td>Record inaccurate positions on the vessel logsheet</td>
+        <td>@Html.DropDownListFor(m => Model.Question1, new SelectList(choices, "Value", "Text", Model.Question1.HasValue ? Model.Question1.Value : false), "Choose")</td>       
+    </tr>
+    <tr>
+        <td>b)</td>
+        <td>Fish in areas that were not covered by any license or access agreement</td>
+        <td>@Html.DropDownListFor(m => Model.Question2, new SelectList(choices, "Value", "Text", Model.Question2.HasValue ? Model.Question2.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>c)</td>
+        <td>Mis-report catch in the vessel logs or weekly reports</td>
+        <td>@Html.DropDownListFor(m => Model.Question3, new SelectList(choices, "Value", "Text", Model.Question3.HasValue ? Model.Question3.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>d)</td>
+        <td>Not report catch of commercial species (includeing discards)</td>
+        <td>@Html.DropDownListFor(m => Model.Question4, new SelectList(choices, "Value", "Text", Model.Question4.HasValue ? Model.Question4.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>e)</td>
+        <td>Not record bycatch and discards</td>
+        <td>@Html.DropDownListFor(m => Model.Question5, new SelectList(choices, "Value", "Text", Model.Question5.HasValue ? Model.Question5.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>f)</td>
+        <td>Record bycatch and discards inaccurately</td>
+        <td>@Html.DropDownListFor(m => Model.Question6, new SelectList(choices, "Value", "Text", Model.Question6.HasValue ? Model.Question6.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>g)</td>
+        <td>Target species other than those they are licensed to target</td>
+        <td>@Html.DropDownListFor(m => Model.Question7, new SelectList(choices, "Value", "Text", Model.Question7.HasValue ? Model.Question7.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>h)</td>
+        <td>Use a fishing method other than the method they are licensed to use</td>
+        <td>@Html.DropDownListFor(m => Model.Question8, new SelectList(choices, "Value", "Text", Model.Question8.HasValue ? Model.Question8.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>i)</td>
+        <td>Record one species as a different species</td>
+        <td>@Html.DropDownListFor(m => Model.Question9, new SelectList(choices, "Value", "Text", Model.Question9.HasValue ? Model.Question9.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>j)</td>
+        <td>Catch species of special interest</td>
+        <td>@Html.DropDownListFor(m => Model.Question10, new SelectList(choices, "Value", "Text", Model.Question10.HasValue ? Model.Question10.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>k)</td>
+        <td>Breach MARPOL regulations</td>
+        <td>@Html.DropDownListFor(m => Model.Question11, new SelectList(choices, "Value", "Text", Model.Question11.HasValue ? Model.Question11.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>l)</td>
+        <td>Bunker or not report bunkering to national authorities</td>
+        <td>@Html.DropDownListFor(m => Model.Question12, new SelectList(choices, "Value", "Text", Model.Question12.HasValue ? Model.Question12.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>m)</td>
+        <td>Transfer fish from or to another vessel at sea</td>
+        <td>@Html.DropDownListFor(m => Model.Question13, new SelectList(choices, "Value", "Text", Model.Question13.HasValue ? Model.Question13.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>n)</td>
+        <td>Request that an event not be reported</td>
+        <td>@Html.DropDownListFor(m => Model.Question14, new SelectList(choices, "Value", "Text", Model.Question14.HasValue ? Model.Question14.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>o)</td>
+        <td>Mistreat other crew</td>
+        <td>@Html.DropDownListFor(m => Model.Question15, new SelectList(choices, "Value", "Text", Model.Question15.HasValue ? Model.Question15.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>p)</td>
+        <td>Hinder the observer in the carrying out of their duties</td>
+        <td>@Html.DropDownListFor(m => Model.Question16, new SelectList(choices, "Value", "Text", Model.Question16.HasValue ? Model.Question16.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>q)</td>
+        <td>Not supply reasonable accomodation, food and facilities to the observer onboard the vessel</td>
+        <td>@Html.DropDownListFor(m => Model.Question17, new SelectList(choices, "Value", "Text", Model.Question17.HasValue ? Model.Question17.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>r)</td>
+        <td>High grade or cull the catch</td>
+        <td>@Html.DropDownListFor(m => Model.Question18, new SelectList(choices, "Value", "Text", Model.Question18.HasValue ? Model.Question18.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>s)</td>
+        <td>Not report position to countries when crossing from one zone to another</td>
+        <td>@Html.DropDownListFor(m => Model.Question19, new SelectList(choices, "Value", "Text", Model.Question19.HasValue ? Model.Question19.Value : false), "Choose")</td>
+    </tr>
+    <tr>
+        <td>t)</td>
+        <td>Not display or present a valid (and current) licence document onboard</td>
+        <td>@Html.DropDownListFor(m => Model.Question20, new SelectList(choices, "Value", "Text", Model.Question20.HasValue ? Model.Question20.Value : false), "Choose")</td>
+    </tr>
+</tbody>
+</table>
+<hr />
+    
+@* editorRows holds the dynamic content we're going to push into here in an Ajaxy fashion *@
+<div id="editorRows">
+    @foreach (var detailItem in Model.Details)
+    {
+        Html.RenderPartial("_DetailEditorRow", detailItem);
+    }
+</div>
+    
+@Ajax.ActionLink("Add new row", "BlankEditorRow", null, null, new { id = "addItem" })
+    
+<p>
+    <input type="submit" name="Save" value="Save" />
+    <input type="reset" name="Undo" value="Undo" />
+</p>
+    
+}
+
+<script type="text/javascript">
+    $("#addItem").click(function () {
+        $.ajax({
+            url: this.href,
+            cache: false,
+            type: 'POST',
+            success: function (html) { $("#editorRows").append(html); }
+        });
+        return false;
+    });
+</script>

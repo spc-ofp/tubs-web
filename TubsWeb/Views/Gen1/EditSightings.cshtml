@@ -17,32 +17,16 @@
     @{ Html.RenderPartial("_EditSightings", Model.Sightings); }
 </fieldset>
 
-@* Because the form doesn't reload the whole page, we need to take it upon ourselves to clear the form values manually. *@
-@* TODO Pull this into a site-wide JavaScript file *@
-<script type="text/javascript">
-    function done() {
-        $(':input', '#addSightingForm').each(function () {
-            var type = this.type.toLowerCase();
-            if (type == 'text' || type == 'password' || type == 'textarea' || type == 'hidden') {
-                this.value = "";
-            } else if (type == 'select-one' || type == 'select-multi') {
-                this.selectedIndex = -1;
-            } else if (type == 'radio' || type == 'checkbox') {
-                if (this.checked) { this.checked = false; }
-            }
-        });
-    }
-</script>
-
 <fieldset>
     <legend>Add Sighting</legend>
-    @using (Ajax.BeginForm("AddSighting", null, new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen1Sightings", OnSuccess = "done" }, new { id = "addSightingForm" }))
+    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen1Sightings", OnSuccess = String.Format("clearForm('#{0}')", "addSightingForm") }; }
+    @using (Ajax.BeginForm("AddSighting", null, options, new { id = "addSightingForm" }))
     {
         @Html.ValidationSummary(false);
 
         var sighting = new Sighting();
         @Html.HiddenFor(m => sighting.Id) @* I know it's zero, but add it for completeness sake *@
-        @Html.LabelFor(m => sighting.EventTime) @Html.TextBoxFor(m => sighting.EventTime, new { @class = "date", id = System.Guid.NewGuid().ToString() }) <br />
+        @Html.LabelFor(m => sighting.EventTime) @Html.TextBoxFor(m => sighting.EventTime, new { @class = "datetime", id = System.Guid.NewGuid().ToString() }) <br />
         @Html.LabelFor(m => sighting.Latitude) @Html.TextBoxFor(m => sighting.Latitude) @Html.ValidationMessageFor(m => sighting.Latitude)<br />
         @Html.LabelFor(m => sighting.Longitude) @Html.TextBoxFor(m => sighting.Longitude) @Html.ValidationMessageFor(m => sighting.Longitude)<br />
         @* Add Ajax to fill this in based on lat/long? *@
@@ -80,26 +64,5 @@
     <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>
 
-<script>
-    @{
-        var minDateKey = "MinDate";
-        var maxDateKey = "MaxDate";
-        if (ViewData.ContainsKey(minDateKey) && ViewData.ContainsKey(maxDateKey))
-        {
-            <text>
-            var depDate = new Date('@ViewData[minDateKey]');
-            var retDate = new Date('@ViewData[maxDateKey]');
-            $(function () {
-                $(".date").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2, defaultDate: depDate, minDate: depDate, maxDate: retDate });
-            });
-            </text>
-        } else {
-            <text>
-            $(function () {
-                $(".date").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2});
-            });
-            </text>
-        }
-    }
-    // TODO Wire up Ajax on addSightingForm#VesselName
-</script>
+@{ Html.RenderPartial("_DateTimePickerInit"); }
+

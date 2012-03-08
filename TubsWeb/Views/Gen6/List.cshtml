@@ -1,9 +1,14 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.PollutionEvent>
+@using Spc.Ofp.Tubs.DAL.Common
 
-@helper SpeedAndDirection(int? speed, int? direction) {
-    if (!speed.HasValue && !direction.HasValue) {
+@helper SpeedAndDirection(int? speed, int? direction)
+    {
+    if (!speed.HasValue && !direction.HasValue)
+    {
         <text>N/A</text> 
-    } else {
+    }
+    else
+    {
         var sb = new System.Text.StringBuilder();
         sb.Append(speed.HasValue ? speed.Value.ToString() : "UNK");
         sb.Append(" kts @ ");
@@ -15,6 +20,8 @@
 
 <h2>@ViewBag.Title</h2>
 
+@* TODO Change this to a partial that displays a list of these items (no edit!) *@
+@* That will mean changing the Model type to Trip *@
 <table>
     <thead>
         <tr>
@@ -39,13 +46,15 @@
             <td>@item.Data.Latitude / @item.Data.Longitude (@item.Data.EezId)</td>
             <td>@SpeedAndDirection(item.Data.WindSpeed, item.Data.WindDirection)</td>
             <td>@item.Data.SeaCode</td>
-            <td>@item.Data.ActivityType</td>
+            <td>@item.Data.ActivityType.GetDescription()</td>
             <td>@item.Data.VesselName</td>
             <td>@item.Data.Comments</td>
         </tr>
     }
     </tbody>
 </table>
+
+@* TODO Add a form here for a new GEN-6 event.  On submit, reload the table above *@
 
 <p>
     <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>

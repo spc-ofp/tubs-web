@@ -1,0 +1,215 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.SpecialSpeciesInteraction
+@using Spc.Ofp.Tubs.DAL.Entities
+@using Spc.Ofp.Tubs.DAL.Common
+
+@{
+    // LINQ, SelectList, and enums FTW!
+    // http://stackoverflow.com/questions/388483/how-do-you-create-a-dropdownlist-from-an-enum-in-asp-net-mvc/5255108#5255108
+    var conditionCodes =
+        from ConditionCode cc in Enum.GetValues(typeof(ConditionCode))
+        select new { ID = cc, Name = cc.GetDescription() };
+
+    // Create a new SelectList thus (actually, change the second one to "Name" for the description)
+    var conditionCodeList = new SelectList(conditionCodes, "ID", "ID");
+
+    var lengthCodes =
+        from LengthCode lc in Enum.GetValues(typeof(LengthCode))
+        select new { ID = lc, Name = lc.GetDescription() };
+
+    var lengthCodeList = new SelectList(lengthCodes, "ID", "ID");
+
+    var sexCodes =
+        from SexCode sc in Enum.GetValues(typeof(SexCode))
+        select new { ID = sc, Name = sc.GetDescription() };
+
+    var sexCodeList = new SelectList(sexCodes, "ID", "ID");
+
+    var sightingActivities =
+        from InteractionActivity ia in Enum.GetValues(typeof(InteractionActivity))
+        where ia != InteractionActivity.None
+        select new { ID = ia, Name = ia.GetDescription() };
+
+    var sightingActivityList = new SelectList(sightingActivities, "ID", "Name");
+    
+}
+
+<fieldset>
+    <legend>Common Interaction Data</legend>
+    @Html.HiddenFor(m => Model.Id)
+    @* Radio button to select interaction type -- show/hide appropriate div based on selection *@
+    @* TODO Still need to bind Checked to this:  Use a local IDictionary instead of the anonymous object that's there now.  *@
+    @* http://stackoverflow.com/questions/5768274/correct-way-to-bind-an-mvc3-radiobutton-to-a-model *@
+    @Html.Label("landedRadio", "Landed On Deck")
+    @Html.RadioButtonFor(m => Model.SgType, "L", new { @class = "interactionType", id = "landedRadio" }) 
+    @Html.Label("interactedRadio", "Interacted With Vessel's Gear Only")
+    @Html.RadioButtonFor(m => Model.SgType, "I", new { @class = "interactionType", id = "interactedRadio" })
+    @Html.Label("sightedRadio", "Sighted Only")
+    @Html.RadioButtonFor(m => Model.SgType, "S", new { @class = "interactionType", id = "sightedRadio" })
+    <br />
+
+    @* Place the event in space and time *@
+    @Html.LabelFor(m => Model.LandedDate)
+    @Html.TextBoxFor(m => Model.LandedDate, new { @class = "datetime", id = System.Guid.NewGuid().ToString() })
+    @Html.ValidationMessageFor(m => Model.LandedDate)<br />
+    @Html.LabelFor(m => Model.Latitude) 
+    @Html.TextBoxFor(m => Model.Latitude) 
+    @Html.ValidationMessageFor(m => Model.Latitude)<br />
+    @Html.LabelFor(m => Model.Longitude)
+    @Html.TextBoxFor(m => Model.Longitude)
+    @Html.ValidationMessageFor(m => Model.Longitude)<br />
+        
+    @* Species *@
+    @Html.LabelFor(m => Model.SpeciesCode)
+    @{
+        IDictionary<string, object> speciesValidator = new Dictionary<string, object>();
+        speciesValidator.Add("data-val-remote-url", "/Validation/IsSpeciesCodeValid");
+        speciesValidator.Add("data-val-remote", "Not a valid species code");
+        speciesValidator.Add("data-val-length-min", 3);
+    }
+    @Html.TextBoxFor(m => Model.SpeciesCode, speciesValidator) 
+    @Html.ValidationMessageFor(m => Model.SpeciesCode)<br />
+    @Html.LabelFor(m => Model.SpeciesDescription)
+    @Html.TextAreaFor(m => Model.SpeciesDescription, new { style = "width: 300px; height: 100px;" })
+    @Html.ValidationMessageFor(m => Model.SpeciesDescription)<br />
+</fieldset>
+        
+@* There are three different kinds of interactions: *@
+@* Landed, interact with vessel or gear, and sighted *@
+@* To make this easier to enter, show/hide the appropriate section *@
+<div id="subsectionLanded" style="display: none;">
+    <fieldset>
+        <legend>Species Landed On Deck</legend>
+        <h3>Landed</h3>
+        @Html.LabelFor(m => Model.LandedConditionCode)
+        @Html.DropDownListFor(m => Model.LandedConditionCode, conditionCodeList, "Choose")
+        @Html.ValidationMessageFor(m => Model.LandedConditionCode)<br />
+
+        @Html.LabelFor(m => Model.LandedConditionDescription)
+        @Html.TextAreaFor(m => Model.LandedConditionDescription, new { style = "width: 300px; height: 100px;" })
+        @Html.ValidationMessageFor(m => Model.LandedConditionDescription)<br />
+
+        @Html.LabelFor(m => Model.LandedHandling)
+        @Html.TextAreaFor(m => Model.LandedHandling, new { style = "width: 300px; height: 100px;" })
+        @Html.ValidationMessageFor(m => Model.LandedHandling)<br /><br />
+
+        @Html.LabelFor(m => Model.LandedLength)
+        @Html.TextBoxFor(m => Model.LandedLength)
+        @Html.ValidationMessageFor(m => Model.LandedLength)<br />
+
+        @Html.LabelFor(m => Model.LandedLengthCode)
+        @Html.DropDownListFor(m => Model.LandedLengthCode, lengthCodeList, "Choose")
+        @Html.ValidationMessageFor(m => Model.LandedLengthCode)<br />
+
+        @Html.LabelFor(m => Model.LandedSexCode)
+        @Html.DropDownListFor(m => Model.LandedSexCode, sexCodeList, "Choose")
+        @Html.ValidationMessageFor(m => Model.LandedSexCode)<br />
+
+        <h3>Discarded</h3>
+        @Html.LabelFor(m => Model.DiscardedConditionCode)
+        @Html.DropDownListFor(m => Model.DiscardedConditionCode, conditionCodeList, "Choose")
+        @Html.ValidationMessageFor(m => Model.DiscardedConditionCode)<br />
+
+        @Html.LabelFor(m => Model.DiscardedConditionDescription)
+        @Html.TextAreaFor(m => Model.DiscardedConditionDescription, new { style = "width: 300px; height: 100px;" })
+        @Html.ValidationMessageFor(m => Model.DiscardedConditionDescription)<br />
+
+        <h3>Retrieved Tag</h3>
+        @Html.LabelFor(m => Model.RetrievedTagNumber)
+        @Html.TextBoxFor(m => Model.RetrievedTagNumber)
+        @Html.ValidationMessageFor(m => Model.RetrievedTagNumber)<br />
+
+        @Html.LabelFor(m => Model.RetrievedTagType)
+        @Html.TextBoxFor(m => Model.RetrievedTagType)
+        @Html.ValidationMessageFor(m => Model.RetrievedTagType)<br />
+
+        @Html.LabelFor(m => Model.RetrievedTagOrganization)
+        @Html.TextBoxFor(m => Model.RetrievedTagOrganization)
+        @Html.ValidationMessageFor(m => Model.RetrievedTagOrganization)<br />
+
+        <h3>Placed Tag</h3>
+        @Html.LabelFor(m => Model.PlacedTagNumber)
+        @Html.TextBoxFor(m => Model.PlacedTagNumber)
+        @Html.ValidationMessageFor(m => Model.PlacedTagNumber)<br />
+
+        @Html.LabelFor(m => Model.PlacedTagType)
+        @Html.TextBoxFor(m => Model.PlacedTagType)
+        @Html.ValidationMessageFor(m => Model.PlacedTagType)<br />
+
+        @Html.LabelFor(m => Model.PlacedTagOrganization)
+        @Html.TextBoxFor(m => Model.PlacedTagOrganization)
+        @Html.ValidationMessageFor(m => Model.PlacedTagOrganization)<br />
+    </fieldset>
+</div>
+        
+<div id="subsectionGear" style="display: none;">
+    <fieldset>
+        <legend>Interactions With Vessel or Vessel Gear</legend>
+        // TODO Do this one last as it has an embedded Ajax multiline form with it
+    </fieldset>
+</div>
+        
+<div id="subsectionSighted" style="display: none;">
+    <fieldset>
+        <legend>Species Sighted</legend>
+        @Html.Label("Activity when sighted")
+        @Html.DropDownListFor(m => Model.InteractionActivity, sightingActivityList, "Choose")
+        @* TODO Disable unless other selected? *@
+        @Html.Label("If Other, Specify")
+        @Html.TextBoxFor(m => Model.InteractionOther)<br />
+
+        @Html.LabelFor(m => Model.SightingCount)
+        @Html.TextBoxFor(m => Model.SightingCount)
+        @Html.ValidationMessageFor(m => Model.SightingCount)<br />
+
+        @Html.LabelFor(m => Model.SightingAdultCount)
+        @Html.TextBoxFor(m => Model.SightingAdultCount)
+        @Html.ValidationMessageFor(m => Model.SightingAdultCount)<br />
+
+        @Html.LabelFor(m => Model.SightingJuvenileCount)
+        @Html.TextBoxFor(m => Model.SightingJuvenileCount)
+        @Html.ValidationMessageFor(m => Model.SightingJuvenileCount)<br />
+
+        @Html.LabelFor(m => Model.SightingLength)
+        @Html.TextBoxFor(m => Model.SightingLength)
+        @Html.ValidationMessageFor(m => Model.SightingLength)<br />
+
+        @Html.LabelFor(m => Model.SightingDistance)
+        @Html.TextBoxFor(m => Model.SightingDistance)
+        @Html.DropDownListFor(m => Model.SightingDistanceUnit, new SelectList(TubsWeb.Models.GearUnits.UnitFour, Model.SightingDistanceUnit), "Choose")
+        @Html.ValidationMessageFor(m => Model.SightingDistance)<br />
+
+        @Html.LabelFor(m => Model.SightingBehavior)
+        @Html.TextAreaFor(m => Model.SightingBehavior, new { style = "width: 300px; height: 100px;" })
+        @Html.ValidationMessageFor(m => Model.SightingBehavior)<br />
+    </fieldset>
+</div>
+
+<script type="text/javascript">
+    $('.interactionType').change(function () {
+        //alert("Got: " + $(this).val()); // Debug code
+        switch ($(this).val()) {
+            case 'S':
+                $('#subsectionSighted').show();
+                $('#subsectionGear').hide();
+                $('#subsectionLanded').hide();
+                break;
+            case 'I':
+                $('#subsectionSighted').hide();
+                $('#subsectionGear').show();
+                $('#subsectionLanded').hide();
+                break;
+            case 'L':
+                $('#subsectionSighted').hide();
+                $('#subsectionGear').hide();
+                $('#subsectionLanded').show();
+                break;
+            default:
+                // Dunno -- hide 'em all?
+                $('#subsectionSighted').hide();
+                $('#subsectionGear').hide();
+                $('#subsectionLanded').hide();
+                break;
+        }
+
+    });
+</script>

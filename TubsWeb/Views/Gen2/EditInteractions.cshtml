@@ -1,0 +1,90 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+@using Spc.Ofp.Tubs.DAL.Entities
+@using Spc.Ofp.Tubs.DAL.Common
+
+<h2>@ViewBag.Title</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+@{
+    // LINQ, SelectList, and enums FTW!
+    // http://stackoverflow.com/questions/388483/how-do-you-create-a-dropdownlist-from-an-enum-in-asp-net-mvc/5255108#5255108
+    var conditionCodes =
+        from ConditionCode cc in Enum.GetValues(typeof(ConditionCode))
+        select new { ID = cc, Name = cc.GetDescription() };
+    
+    // Create a new SelectList thus
+    var conditionCodeList = new SelectList(conditionCodes, "ID", "Name", ConditionCode.A0);
+    
+}
+
+<fieldset>
+    <legend>Interactions with Species of Special Interest</legend>
+    @{ Html.RenderPartial("_EditInteractions", Model.Interactions); }
+</fieldset>
+
+<fieldset>
+    <legend>Add Interaction</legend>
+    @* Passing the argument to 'done' requires the String.Format call *@
+    @* http://stackoverflow.com/questions/6550290/ajaxoptions-onsuccess-callback-with-parameter-not-working *@
+    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen2Interactions", OnSuccess = String.Format("clearForm('#{0}')", "addInteractionForm") }; }
+    @using (Ajax.BeginForm("AddInteraction", null, options, new { id = "addInteractionForm" }))
+    {
+        @Html.ValidationSummary(false)
+
+        var interaction = new SpecialSpeciesInteraction();
+        
+        @Html.HiddenFor(m => interaction.Id)
+        @* Place the event in space and time *@
+        @Html.LabelFor(m => interaction.LandedDate)
+        @Html.TextBoxFor(m => interaction.LandedDate, new { @class = "datetime", id = System.Guid.NewGuid().ToString() })
+        @Html.ValidationMessageFor(m => interaction.LandedDate)<br />
+        @Html.LabelFor(m => interaction.Latitude) 
+        @Html.TextBoxFor(m => interaction.Latitude) 
+        @Html.ValidationMessageFor(m => interaction.Latitude)<br />
+        @Html.LabelFor(m => interaction.Longitude)
+        @Html.TextBoxFor(m => interaction.Longitude)
+        @Html.ValidationMessageFor(m => interaction.Longitude)<br />
+        @* Add Ajax to fill this in based on lat/long? *@
+        @Html.LabelFor(m => interaction.EezId) @Html.TextBoxFor(m => interaction.EezId) @Html.ValidationMessageFor(m => interaction.EezId)<br />
+        
+        @* Species *@
+        @Html.LabelFor(m => interaction.SpeciesCode) @Html.TextBoxFor(m => interaction.SpeciesCode) @Html.ValidationMessageFor(m => interaction.SpeciesCode)<br />
+        @Html.LabelFor(m => interaction.SpeciesDescription)
+        @Html.TextBoxFor(m => interaction.SpeciesDescription, new { style = "width: 300px; height: 100px;" })
+        @Html.ValidationMessageFor(m => interaction.SpeciesDescription)<br />
+        
+        @* There are three different kinds of interactions: *@
+        @* Landed, interact with vessel or gear, and sighted *@
+        @* To make this easier to enter, show/hide the appropriate section *@
+        <div id="subsectionLanded" >
+            <fieldset>
+                <legend>Species Landed On Deck</legend>
+                @Html.LabelFor(m => interaction.LandedConditionCode)
+                @Html.DropDownListFor(m => interaction.LandedConditionCode, conditionCodeList)
+                @Html.ValidationMessageFor(m => interaction.LandedConditionCode)
+            </fieldset>
+        </div>
+        
+        <div id="subsectionGear" style="display: none;">
+            <fieldset>
+                <legend>Interactions With Vessel or Vessel Gear</legend>
+            </fieldset>
+        </div>
+        
+        <div id="subsectionSighted" style="display: none;">
+            <fieldset>
+                <legend>Species Sighted</legend>
+            </fieldset>
+        </div>
+        
+        <p>
+            <input type="Submit" value="Add" style="font-size: 1.0em;"/>
+            <input type="Reset" value="Cancel" style="font-size: 1.0em;"/>
+        </p>
+    }
+</fieldset>
+
+@{ Html.RenderPartial("_DateTimePickerInit"); }

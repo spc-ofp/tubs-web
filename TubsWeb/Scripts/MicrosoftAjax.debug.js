@@ -1207,13 +1207,13 @@ Sys._indexOf = function Sys$_indexOf(array, item, start) {
     return -1;
 }
 Type._registerScript._scripts = {
-	"MicrosoftAjaxCore.js": true,
-	"MicrosoftAjaxGlobalization.js": true,
-	"MicrosoftAjaxSerialization.js": true,
-	"MicrosoftAjaxComponentModel.js": true,
-	"MicrosoftAjaxHistory.js": true,
-	"MicrosoftAjaxNetwork.js" : true,
-	"MicrosoftAjaxWebServices.js": true };
+    "MicrosoftAjaxCore.js": true,
+    "MicrosoftAjaxGlobalization.js": true,
+    "MicrosoftAjaxSerialization.js": true,
+    "MicrosoftAjaxComponentModel.js": true,
+    "MicrosoftAjaxHistory.js": true,
+    "MicrosoftAjaxNetwork.js" : true,
+    "MicrosoftAjaxWebServices.js": true };
  
 Sys.IDisposable = function Sys$IDisposable() {
     throw Error.notImplemented();
@@ -5051,7 +5051,7 @@ Sys._Application = function Sys$_Application() {
                 check();
             }
             else {
-		document.attachEvent("onreadystatechange", check = function() {
+        document.attachEvent("onreadystatechange", check = function() {
                     if (document.readyState === "complete") {
                         document.detachEvent("onreadystatechange", check);
                         init();

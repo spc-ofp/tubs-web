@@ -20,6 +20,12 @@
         <td>@Html.DisplayFor(m => m.ReturnDate)</td>
     </tr>
     <tr>
+        <td class="label">Vessel Name:</td>
+        <td>@Html.DisplayFor(m => m.Vessel.Name)</td>
+        <td class="label">Vessel Flag:</td>
+        <td>@Html.DisplayFor(m => m.Vessel.RegisteredCountryCode)</td>
+    </tr>
+    <tr>
         <td class="label">Departure Port:</td>
         <td>@Model.DeparturePort.ToString()</td>
         <td class="label">Return Port:</td>
