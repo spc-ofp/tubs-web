@@ -213,7 +213,7 @@ namespace TubsWeb
 
             routes.MapRoute(
                 "SeaDays",
-                "Trip/{tripId}/Days/",
+                "Trip/{tripId}/Days/{action}",
                 new { controller = "SeaDay", action = "List" },
                 new { tripId = @"\d+" }
             );
@@ -222,6 +222,13 @@ namespace TubsWeb
                 "Gear",
                 "Trip/{tripId}/Gear/{action}",
                 new { controller = "Gear", action = "Index" },
+                new { tripId = @"\d+" }
+            );
+
+            routes.MapRoute(
+                "PageCount",
+                "Trip/{tripId}/PageCount/{action}",
+                new { controller = "PageCount", action = "Index" },
                 new { tripId = @"\d+" }
             );
 

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.PageCount>
+@using Spc.Ofp.Tubs.DAL.Entities
+@using Spc.Ofp.Tubs.DAL.Common
+
+<table id="pageCounts">
+    <thead>
+        <tr>
+            <th>Form Name</th>
+            <th>Count</th>
+            <th>Entered By</th>
+            <th>Entered Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var pageCount in Model)
+    {
+        <tr>
+            <td>@pageCount.FormName.GetDescription()</td>
+            <td>@Html.DisplayFor(m => pageCount.FormCount)</td>
+            <td>@Html.DisplayFor(M => pageCount.EnteredBy)</td>
+            <td>@Html.DisplayFor(M => pageCount.EnteredDate)</td>
+        </tr>
+    }
+    </tbody>
+</table>

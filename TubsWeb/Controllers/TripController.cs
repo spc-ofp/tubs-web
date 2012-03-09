@@ -62,12 +62,26 @@ namespace TubsWeb.Controllers
                     PublishDate = trip.EnteredDate.Value
                 };
 
-
-
-            SyndicationFeed feed = new SyndicationFeed("Latest TUBS Trips", "http://nouofpweb01.corp.spc.int/tubs/Trip/Rss", Request.Url, feedItems);
+            SyndicationFeed feed =
+                new SyndicationFeed(
+                    "Latest TUBS Trips", 
+                    "http://nouofpweb01.corp.spc.int/tubs/Trip/Rss", 
+                    Request.Url, 
+                    feedItems);
 
             return new RssResult(feed);
+        }
 
+        public ActionResult Positions(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            var positions = tripId.Pushpins;
+
+            return new KmlResult();
         }
 
         // GET: /Trip/Details/1
@@ -84,6 +98,7 @@ namespace TubsWeb.Controllers
             {
                 return new NoSuchTripResult();
             }
+
             ViewBag.Title = tripId.ToString();
             return View(tripId);
         }

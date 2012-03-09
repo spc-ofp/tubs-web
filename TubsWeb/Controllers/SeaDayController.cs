@@ -23,35 +23,29 @@ namespace TubsWeb.Controllers
     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
     */
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Models;
+    using TubsWeb.Core;
 
     public class SeaDayController : SuperController
     {
         //
         // GET: /SeaDay/
-        public ActionResult List(int tripId)
+        public ActionResult List(Trip tripId)
         {
-            // Enable link back to trip without a ViewModel
-            ViewBag.TripId = tripId;
-
-            var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
             
+            ViewBag.IsReadOnly = tripId.IsReadOnly;
+
+            var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);            
             // Push the projection into a List so that it's not the NHibernate collection implementation
-            var days = repo.FilterBy(d => d.Trip.Id == tripId).ToList<SeaDay>();
-            if (null == days || days.Count < 1)
-            {
-                ViewBag.Title = String.Format("Sea days for tripId {0}", tripId);
-            }
-            else
-            {
-                var trip = days.First<SeaDay>().Trip;
-                ViewBag.Title = String.Format("Sea days for {0}", trip.ToString());
-            }
+            var days = repo.FilterBy(d => d.Trip.Id == tripId.Id).ToList<SeaDay>();
+            ViewBag.Title = String.Format("Sea days for {0}", tripId.ToString());
             return View(days);
         }
 
@@ -75,21 +69,9 @@ namespace TubsWeb.Controllers
             return View(day);
         }
 
-        //
-        // GET: /SeaDay/1
-        public ActionResult IndexEx(int dayId)
+        public ActionResult AutoFill(Trip tripId)
         {
-            var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);
-            var day = repo.FindBy(dayId);
-            if (null == day)
-            {
-                ViewBag.Title = String.Format("No sea day with Id {0}", dayId);
-            }
-            else
-            {
-                ViewBag.Title = String.Format("Sea day {0}", dayId); // FIXME Need a better title
-            }
-            return View(day);
+            return JavaScript("alert('foo');");
         }
 
     }

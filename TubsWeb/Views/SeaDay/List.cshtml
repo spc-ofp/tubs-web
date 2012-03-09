@@ -2,8 +2,20 @@
 
 <h2>@ViewBag.Title</h2>
 
+<script type="text/javascript">
+//<!CDATA[
+    function onAutoFail(xhr, status, error) {
+        alert("Epic fail");
+    }
+
+    function onAutoSuccess(data, status, xhr) {
+        alert("It worked?");
+    }
+//]]>
+</script>
+
 @* TODO Add vertical lines to header *@
-<table width="100%">
+<table>
     <thead>
         <tr>
             <th>&nbsp;</th>
@@ -33,6 +45,29 @@
 }
 </tbody>
 </table>
+
+@if (0 == Model.Count())
+{
+    var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "autoFillResults", OnFailure = "onAutoFail", OnSuccess = "onAutoSuccess" };
+    <div id="noDaysDiv">
+        <p>
+            No days recorded. @Html.ActionLink("Auto fill days?", "AutoFill", new { tripId = ViewBag.TripId }, new { id = "autoFill" })
+        </p>
+    </div>
+    <div id="autoFillResults"></div>
+    <script type="text/javascript">
+        $(function () {
+            $('#autoFill').click(function () {
+                $.ajax({
+                    url: this.href,
+                    type: 'POST',
+                    success: onAutoSuccess
+                });
+                return false;
+            });
+        });
+    </script>
+}
 
 <p>
 <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>

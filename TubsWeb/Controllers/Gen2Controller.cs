@@ -23,12 +23,10 @@ namespace TubsWeb.Controllers
     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
     */
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Models;
     using TubsWeb.Core;
     
     public class Gen2Controller : SuperController
@@ -90,7 +88,7 @@ namespace TubsWeb.Controllers
         public PartialViewResult AddInteraction(Trip tripId, SpecialSpeciesInteraction interaction)
         {
             var repo = new TubsRepository<SpecialSpeciesInteraction>(MvcApplication.CurrentSession);
-            // Check that interaction date between trip start/end dates
+            // TODO Check that interaction date between trip start/end dates
 
             if (ModelState.IsValid)
             {
