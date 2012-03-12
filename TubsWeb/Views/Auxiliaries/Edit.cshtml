@@ -1,9 +1,17 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineVesselAttributes
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create(Url.Action("Index", "Auxiliaries", new { tripId = ViewBag.TripId }), "Auxiliaries"),
+        Tuple.Create("#", "Edit Auxiliaries")
+    };
+}
 
-<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @using (Html.BeginForm()) {
     @Html.ValidationSummary(true)
@@ -138,8 +146,3 @@
         </p>
     </fieldset>
 }
-
-<p>
-    @Html.ActionLink("Back to Auxiliaries", "Index", "Auxiliaries", new { tripId = ViewBag.TripId }, null) | 
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>

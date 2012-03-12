@@ -17,8 +17,11 @@
     @Html.ActionLink("List of Trips", "Index", "Trip") | @Html.ActionLink("Register New Trip", "Create", "Trip")
 </p>
 
+
+@section AdditionalScripts {
 <script type="text/javascript">
     $(function () {
         $('.inlinesparkline').sparkline('html', {height: '50px', width: '200px'});
     });
 </script>
+}

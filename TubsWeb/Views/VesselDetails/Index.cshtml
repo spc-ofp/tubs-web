@@ -1,6 +1,16 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.VesselNotes
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create("#", "Vessel Details")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @if (null == Model)
 {
@@ -18,12 +28,9 @@
     @Html.LabelFor(m => m.FishingMaster) @Html.DisplayFor(m => m.FishingMaster) <br />
     @Html.LabelFor(m => m.MasterCountryCode) @Html.DisplayFor(m => m.MasterCountryCode) <br />
     @Html.LabelFor(m => m.Comments) @Html.DisplayFor(m => m.Comments) <br />
-    
-
 </fieldset>
 }
 
 <p>
-    @Html.ActionLink("Edit Vessel Details", "Edit", "VesselDetails", new { tripId = ViewBag.TripId }, null) |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
+    @Html.ActionLink("Edit Vessel Details", "Edit", "VesselDetails", new { tripId = ViewBag.TripId }, null)
 </p>

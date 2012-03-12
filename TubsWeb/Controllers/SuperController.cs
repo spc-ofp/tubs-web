@@ -27,6 +27,7 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
 
     /// <summary>
@@ -86,6 +87,35 @@ namespace TubsWeb.Controllers
                             trip.ReturnDateOnly.Value.ToString("r");
                 }
             }
+        }
+
+        protected void AddTripNavbar(Trip tripId)
+        {
+            // TODO Figure out how to get the Controller name from the ControllerContext
+            // Until then, no active pill
+
+            var routeValues = new { tripId = tripId.Id };
+
+            IList<Tuple<string, string>> pills = new List<Tuple<string, string>>(12);
+
+            if (typeof(PurseSeineTrip) == tripId.GetType())
+            {
+                pills.Add(Tuple.Create("Auxiliaries", Url.Action("Index", "Auxiliaries", routeValues)));
+            }
+
+            pills.Add(Tuple.Create("Vessel", Url.Action("Index", "VesselDetails", routeValues)));
+            pills.Add(Tuple.Create("Crew", Url.Action("Index", "Crew", routeValues)));
+            pills.Add(Tuple.Create("Electronics", Url.Action("List", "Electronics", routeValues)));
+            pills.Add(Tuple.Create("Safety Gear", Url.Action("Index", "SafetyInspection", routeValues)));
+            pills.Add(Tuple.Create("Fishing Gear", Url.Action("Index", "Gear", routeValues)));
+            pills.Add(Tuple.Create("GEN-1", Url.Action("Index", "Gen1", routeValues)));
+            pills.Add(Tuple.Create("GEN-2", Url.Action("List", "Gen2", routeValues)));
+            pills.Add(Tuple.Create("GEN-3", Url.Action("Index", "Gen3", routeValues))); 
+            pills.Add(Tuple.Create("GEN-6", Url.Action("List", "Gen6", routeValues)));
+            pills.Add(Tuple.Create("Days", Url.Action("List", "SeaDay", routeValues)));
+            pills.Add(Tuple.Create("Sets", Url.Action("List", "FishingSet", routeValues)));
+
+            ViewBag.NavPills = pills;
         }
 
         // FIXME Work on this as a refactoring effort

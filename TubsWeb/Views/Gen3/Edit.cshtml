@@ -1,6 +1,17 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.TripMonitor
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create(Url.Action("Index", "Gen3", new { tripId = ViewBag.TripId }), "GEN-3"),
+        Tuple.Create("#", "Edit GEN-3")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @{
     SelectListItem[] choices = {
@@ -20,7 +31,7 @@
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(m => Model.Id)
-<table style="width: auto;">
+<table class="table table-bordered table-condensed table-striped">
 <thead>
     <tr>
         <th>&nbsp;</th>
@@ -134,6 +145,7 @@
 <hr />
     
 @* editorRows holds the dynamic content we're going to push into here in an Ajaxy fashion *@
+@* TODO Fix styling *@
 <div id="editorRows">
     @foreach (var detailItem in Model.Details)
     {
@@ -150,14 +162,18 @@
     
 }
 
-<script type="text/javascript">
-    $("#addItem").click(function () {
-        $.ajax({
-            url: this.href,
-            cache: false,
-            type: 'POST',
-            success: function (html) { $("#editorRows").append(html); }
+@section AdditionalScripts {
+
+    <script type="text/javascript">
+        $("#addItem").click(function () {
+            $.ajax({
+                url: this.href,
+                cache: false,
+                type: 'POST',
+                success: function (html) { $("#editorRows").append(html); }
+            });
+            return false;
         });
-        return false;
-    });
-</script>
+    </script>
+
+}

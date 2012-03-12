@@ -11,18 +11,18 @@
     @Html.Raw(atype.GetDescription());
 }
 
-@{ var sightings = new WebGrid(source: Model, defaultSort: "Id", rowsPerPage: 50); }
+@{ var sightings = new WebGrid(source: Model, canSort: false, canPage: false, defaultSort: "Id", rowsPerPage: 50); }
 
     @sightings.GetHtml(
-    alternatingRowStyle: "alt",
+    tableStyle: "table table-bordered table-condensed table-striped",
     columns: sightings.Columns(
         sightings.Column("EventTime", "Date / Time"),
-        sightings.Column("Latitude", "Latitude", canSort: false),
-        sightings.Column("Longitude", "Longitude", canSort: false),
+        sightings.Column("Latitude", "Latitude"),
+        sightings.Column("Longitude", "Longitude"),
         sightings.Column(header: "Vessel Type", format: (item) => VesselTypeHelper(item.VesselType)),
-        sightings.Column("Bearing", "Bearing", canSort: false),
-        sightings.Column("Distance", "Distance", canSort: false),
+        sightings.Column("Bearing", "Bearing"),
+        sightings.Column("Distance", "Distance"),
         sightings.Column(header: "Action", format: (item) => ActionTypeHelper(item.ActionType)),
-        sightings.Column("PhotoNumber", "Photo Frame #", canSort: false),
-        sightings.Column("Comments", "Comments", canSort: false)
+        sightings.Column("PhotoNumber", "Photo Frame #"),
+        sightings.Column("Comments", "Comments")
     ))

@@ -1,20 +1,25 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineVesselAttributes
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.Trip.SpcTripNumber ?? "This Trip"),
+        Tuple.Create("#", "Auxiliaries")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @if (null == Model)
 {
     <p>
         No auxiliaries recorded for this trip.
     </p>
-    <p>
-        @Html.ActionLink("Add Auxiliaries", "Create", "Auxiliaries", new { tripId = ViewBag.TripId }, null) | 
-        <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-    </p>
 }
 else
 {
-
     <fieldset>
         <legend>Auxiliary Boats</legend>
         @Html.LabelFor(m => m.SpeedboatCount) @Html.DisplayFor(m => m.SpeedboatCount) <br />
@@ -43,7 +48,6 @@ else
     </fieldset>
 
     <p>
-        @Html.ActionLink("Edit", "Edit", "Auxiliaries", new { tripId = ViewBag.TripId }, null) | 
-        <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
+        @Html.ActionLink("Edit", "Edit", "Auxiliaries", new { tripId = ViewBag.TripId }, null)
     </p>
 }

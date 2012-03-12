@@ -28,22 +28,26 @@ namespace TubsWeb.Controllers
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Models;
+    using TubsWeb.Core;
     
     public class Gen6Controller : SuperController
     {
         //
         // GET: /Gen6/
-        public ActionResult Index(int tripId, int pageNumber)
+        public ActionResult Index(Trip tripId, int pageNumber)
         {
-            ViewBag.TripId = tripId;
-            var repo = new TubsRepository<PollutionEvent>(MvcApplication.CurrentSession);
-            var events = repo.FilterBy(e => e.Trip.Id == tripId);
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            var events = tripId.PollutionEvents;
             int maxPages = events.Count();
             if (pageNumber > maxPages)
             {
                 pageNumber = maxPages;
             }
+
             ViewBag.MaxPages = maxPages;
             ViewBag.CurrentPage = pageNumber;
             ViewBag.Title = String.Format("GEN-6 page {0} of {1}", pageNumber, maxPages);
@@ -51,20 +55,17 @@ namespace TubsWeb.Controllers
             return View(pollutionEvent);
         }
 
-        public ActionResult List(int tripId)
+        public ActionResult List(Trip tripId)
         {
-            ViewBag.TripId = tripId;
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trip = repo.FindBy(tripId);
-            IList<PollutionEvent> events =  null == trip ? 
-                new List<PollutionEvent>() : 
-                trip.PollutionEvents.ToList(); // Push into a "real" list instead of an NHibernate/Iesi collection
-
-            if (null != trip)
+            if (null == tripId)
             {
-                ViewBag.Title = String.Format("GEN-6 events for trip {0}", trip.ToString());
+                return new NoSuchTripResult();
             }
-            return View(events);
+
+            ViewBag.Title = String.Format("GEN-6 events for trip {0}", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+
+            return View(tripId.PollutionEvents ?? new List<PollutionEvent>());
         }
 
     }

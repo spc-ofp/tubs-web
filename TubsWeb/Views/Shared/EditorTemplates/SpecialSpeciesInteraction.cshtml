@@ -183,33 +183,3 @@
         @Html.ValidationMessageFor(m => Model.SightingBehavior)<br />
     </fieldset>
 </div>
-
-<script type="text/javascript">
-    $('.interactionType').change(function () {
-        //alert("Got: " + $(this).val()); // Debug code
-        switch ($(this).val()) {
-            case 'S':
-                $('#subsectionSighted').show();
-                $('#subsectionGear').hide();
-                $('#subsectionLanded').hide();
-                break;
-            case 'I':
-                $('#subsectionSighted').hide();
-                $('#subsectionGear').show();
-                $('#subsectionLanded').hide();
-                break;
-            case 'L':
-                $('#subsectionSighted').hide();
-                $('#subsectionGear').hide();
-                $('#subsectionLanded').show();
-                break;
-            default:
-                // Dunno -- hide 'em all?
-                $('#subsectionSighted').hide();
-                $('#subsectionGear').hide();
-                $('#subsectionLanded').hide();
-                break;
-        }
-
-    });
-</script>

@@ -29,6 +29,7 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Models;
+    using TubsWeb.Core;
     
     public class ElectronicsController : SuperController
     {
@@ -65,28 +66,26 @@ namespace TubsWeb.Controllers
         
         //
         // GET: /Electronics/
-        public ActionResult List(int tripId)
+        public ActionResult List(Trip tripId)
         {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+                       
             var repo = new TubsRepository<ElectronicDevice>(MvcApplication.CurrentSession);
             // Materialize this to convert it to a standard list instead of the collection used by NHibernate 
-            var devices = repo.FilterBy(d => d.Trip.Id == tripId).ToList<ElectronicDevice>();
+            var devices = repo.FilterBy(d => d.Trip.Id == tripId.Id).ToList<ElectronicDevice>();
             devices.Sort(delegate(ElectronicDevice d1, ElectronicDevice d2)
             {
                 return Comparer<string>.Default.Compare(d1.DeviceType.Description, d2.DeviceType.Description);
             });
             
             ElectronicsViewModel evm = new ElectronicsViewModel();
-            evm.TripId = tripId;
+            evm.TripId = tripId.Id;
+            evm.TripNumber = tripId.SpcTripNumber ?? "This Trip";
 
-            if (null != devices && devices.Count<ElectronicDevice>() > 0)
-            {
-                var trip = devices.First<ElectronicDevice>().Trip;
-                ViewBag.Title = String.Format("Electronics for {0}", trip.ToString());
-            }
-            else
-            {
-                ViewBag.Title = String.Format("Electronics for tripId {0}", tripId);
-            }
+            ViewBag.Title = String.Format("Electronics for {0}", tripId.ToString());
 
             // Fill devices
             evm.Gps = GetDeviceModel(devices, "GPS");

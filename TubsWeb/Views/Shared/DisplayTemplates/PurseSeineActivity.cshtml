@@ -27,7 +27,7 @@
     <td>@SpeedAndDirection(Model.WindSpeed, Model.WindDirection)
     </td> @* TODO Change this to xxx kts @ 123 &deg; *@
     <td>@Model.SeaCode</td>
-    <td>@Model.DetectionMethod</td>
-    <td>@Model.SchoolAssociation</td>
+    <td>@Model.DetectionMethod.GetDescription()</td>
+    <td>@Model.SchoolAssociation.GetDescription()</td>
     <td>@Model.Comments</td>
 </tr>

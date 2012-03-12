@@ -2,6 +2,7 @@
 // <copyright file="CrewViewModel.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2012 Secretariat of the Pacific Community
 // </copyright>
+// -----------------------------------------------------------------------
 
 namespace TubsWeb.Models
 {
@@ -36,15 +37,27 @@ namespace TubsWeb.Models
         }
 
         public int TripId { get; set; }
+
+        public string TripNumber { get; set; }
+
         public CrewMemberModel Captain { get; set; }
+
         public CrewMemberModel Navigator { get; set; }
+
         public CrewMemberModel Mate { get; set; }
+
         public CrewMemberModel ChiefEngineer { get; set; }
+
         public CrewMemberModel AssistantEngineer { get; set; }
+
         public CrewMemberModel DeckBoss { get; set; }
+
         public CrewMemberModel Cook { get; set; }
+
         public CrewMemberModel HelicopterPilot { get; set; }
+
         public CrewMemberModel SkiffMan { get; set; }
+
         public CrewMemberModel WinchMan { get; set; }
 
         public List<CrewMemberModel> Hands { get; set; }

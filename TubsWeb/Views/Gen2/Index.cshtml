@@ -1,7 +1,18 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.SpecialSpeciesInteraction
 @using Spc.Ofp.Tubs.DAL.Common
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.Trip.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "Gen2", new { tripId = ViewBag.TripId }), "GEN-2 Events"),
+        Tuple.Create("#", String.Format("Page {0} of {1}", ViewBag.CurrentPage, ViewBag.MaxPages))
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @* This data is common to all interactions.  The other sections below are mutually exclusive! *@
 <fieldset>
@@ -230,9 +241,3 @@ else
     <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
 </p>
 
-<script type="text/javascript">
-    // Add this to pages with tables that need zebra striping
-    $(document).ready(function () {
-    $("table > tbody tr:odd").css("background-color", "#FFFFCC");
-    });
-</script>

@@ -1,19 +1,31 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.SeaDay
 
-<h2>@ViewBag.Title</h2>
-
-<p>
+@* For now, create this in the View. *@
 @{
-    if (ViewBag.CurrentDay > 1) {
-        <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = ViewBag.TripId, dayNumber = ViewBag.CurrentDay - 1 })'>Previous Day</a>
-    }
-
-    if (ViewBag.MaxDays > ViewBag.CurrentDay)
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = ViewBag.TripId, dayNumber = ViewBag.CurrentDay + 1 })'>Next Day</a>
-    }
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.Trip.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "SeaDay", new { tripId = ViewBag.TripId }), "Sea Days"),
+        Tuple.Create("#", String.Format("Day {0} of {1}", ViewBag.CurrentDay, ViewBag.MaxDays))
+    };
 }
-</p>
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<ul class="pager">
+    @if (ViewBag.CurrentDay > 1) {
+        <li>
+            <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = ViewBag.TripId, dayNumber = ViewBag.CurrentDay - 1 })'>Previous Day</a>
+        </li>
+    }
+    
+    @if(ViewBag.MaxDays > ViewBag.CurrentDay) {
+        <li>
+            <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = ViewBag.TripId, dayNumber = ViewBag.CurrentDay + 1 })'>Next Day</a>
+        </li>
+    }
+</ul>
 
 <!-- Add Sea days and sets for PS trips -->
 @if (null == Model)
@@ -23,7 +35,7 @@
 else if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay))
 {
     var psday = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay;
-    <table>
+    <table class="table table-bordered table-condensed table-striped">
       <thead>
           <tr>
             <th>Ship's Time</th>
@@ -55,8 +67,3 @@ else
         Start of day (UTC): @Html.DisplayFor(m => Model.UtcStartOfDay)
     </p>
 }
-
-<p>
-    @Html.ActionLink("Back to Days", "List", "SeaDay", new { id = ViewBag.TripId }, null) |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>

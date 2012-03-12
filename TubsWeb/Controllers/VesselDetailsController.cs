@@ -61,7 +61,9 @@ namespace TubsWeb.Controllers
             {
                 return new NoSuchTripResult();
             }
+
             ViewBag.Title = String.Format("{0} vessel details", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             return View(tripId.VesselNotes);
         }
 
@@ -106,6 +108,7 @@ namespace TubsWeb.Controllers
             }
 
             ViewBag.Title = String.Format("Edit vessel details for {0}", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             return View(tripId.VesselNotes);
         }
 

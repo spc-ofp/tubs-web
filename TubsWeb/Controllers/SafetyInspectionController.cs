@@ -36,7 +36,9 @@ namespace TubsWeb.Controllers
             {
                 return new NoSuchTripResult();
             }
+
             ViewBag.Title = tripId.ToString();
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             return View(tripId.Inspection);
         }
 

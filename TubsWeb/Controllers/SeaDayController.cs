@@ -46,6 +46,7 @@ namespace TubsWeb.Controllers
             // Push the projection into a List so that it's not the NHibernate collection implementation
             var days = repo.FilterBy(d => d.Trip.Id == tripId.Id).ToList<SeaDay>();
             ViewBag.Title = String.Format("Sea days for {0}", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             return View(days);
         }
 
@@ -71,6 +72,24 @@ namespace TubsWeb.Controllers
 
         public ActionResult AutoFill(Trip tripId)
         {
+            if (null == tripId)
+            {
+                // TODO Figure out if this is really how we want to handle this...
+                return new NoSuchTripResult();
+            }
+
+            var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);
+            if (repo.FilterBy(d => d.Trip.Id == tripId.Id).Count() > 0)
+            {
+                // Already has at least one day -- don't mess with it
+            }
+
+            // Figure out how many days are between departure and end date
+            // for each day, create a new SeaDay
+            SeaDay day = new PurseSeineSeaDay();
+            day.Trip = tripId;
+            repo.Add(day);
+
             return JavaScript("alert('foo');");
         }
 

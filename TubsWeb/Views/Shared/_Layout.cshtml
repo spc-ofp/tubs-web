@@ -4,18 +4,91 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
-
-    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")" />
+    
     <link rel="alternate" type="application/rss+xml" title="Latest Trips" href="@Url.Action("Rss", "Trip")" />
-    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="@Url.Content("~/Content/bootstrap-responsive.min.css")" rel="stylesheet">
     <link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="stylesheet" type="text/css" />
 
+    <!-- Use Modernizr instead of html5shim / html5shiv, at least until it breaks -->
+    <script src="@Url.Content("~/Scripts/modernizr-2.0.6-development-only.js")" type="text/javascript"></script>
+    <!-- Probably the biggest script, but it's handy to have it before the rest of the DOM loads -->
     <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")" />
+    <!-- // TODO
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    -->   
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Tuna Observer Data System (TUBS)</a>
+          <div class="nav-collapse">
+            <!-- Conditionally replace Bootstrap static nav with RenderSection(...) -->
+            @if (IsSectionDefined("NavBar"))
+            {
+                @RenderSection("NavBar")
+            }
+            else
+            {
+                <ul class="nav">
+                  <li class="active">@Html.ActionLink("Home", "Index", "Home")</li>
+                  <li>@Html.ActionLink("About", "About", "Home")</li>
+                  @* Redundant for IE, but put it up there in the user's face... *@
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">RSS<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="@Url.Action("Rss", "Trip")">
+                            <img src="@Url.Content("~/Content/images/25px-Feed-icon.png")" />Latest Trips</a>
+                        </li>
+                    </ul>
+                  </li>
+                  <li><a href="#">Welcome @User.Identity.Name</a></li>
+                </ul>
+            }
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      @RenderBody()
+      <footer>
+            This is confidential data subject to a @Html.ActionLink("data disclosure policy", "Confidentiality", "Home")
+        </footer>
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->   
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
     <script src="@Url.Content("~/Scripts/jquery.jtruncate.pack.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery-ui-1.8.17.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery-ui-timepicker-addon.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.sparkline.min.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/modernizr-2.0.6-development-only.js")" type="text/javascript"></script>
+
+    <!-- Might as well load these all the time... -->
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
+
     <script type="text/javascript">
         String.prototype.endsWith = function(str) {return (this.match(str+"$")==str); }
         
@@ -25,9 +98,6 @@
         $("table > tbody tr:odd").css("background-color", "#FFFFCC");
         });
         */
-        function notify(msg) {
-            $('#notify').html(msg).slideDown();
-        }
 
         // Use jTruncate jQuery plugin to automatically truncate large text
         // http://www.jeremymartin.name/projects.php?project=jTruncate
@@ -61,37 +131,7 @@
             });
         }
     </script>
-</head>
-<body>
-    @* Notify div is here for whatever page might need it *@
-    <div id="notify"></div>
-    <div class="page">        
-        <header> 
-            <div id="title">                                
-                <h1>Tuna Observer Data System (TUBS)</h1>
-            </div>
-            <div id="logindisplay">
-                Welcome <strong>@User.Identity.Name</strong>!
-            </div>
-            <nav>
-                <ul id="menu">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                </ul>
-            </nav>
-        </header>
-        <section id="main">
-            @RenderBody()
-        </section>
-        <footer>
-            This is confidential data subject to a @Html.ActionLink("data disclosure policy", "Confidentiality", "Home")
-        </footer>
-    </div>
-    
-    <script type="text/javascript">
-        $('#notify').click(function () {
-            $(this).slideUp().empty();
-        });
-    </script>
+
+    @RenderSection("AdditionalScripts", false)
 </body>
 </html>

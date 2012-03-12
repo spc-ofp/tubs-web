@@ -1,27 +1,31 @@
-﻿@model TubsWeb.Models.Gen1ViewModel
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+@using Spc.Ofp.Tubs.DAL.Entities
 
-@* TODO Change the Model to Trip since we're binding trip anyways *@
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
+        Tuple.Create("#", "GEN-1 Events")
+    };
+}
 
-<h2>@ViewBag.Title</h2>
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-<p>
-    @Html.ActionLink("Edit sightings", "EditSightings") |
-    @Html.ActionLink("Edit transfers", "EditTransfers") |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>
-
-<fieldset>
-    <legend>Vessel or Aircraft Sightings</legend>
-    @{ Html.RenderPartial("_Sightings", Model.Sightings); }
-</fieldset>
-
-<fieldset>
-    <legend>Fish transferring, Fish dumping, Bunkering by Observer's Vessel</legend>
-    @{ Html.RenderPartial("_Transfers", Model.Transfers); }
-</fieldset>
-
-<p>
-    @Html.ActionLink("Edit sightings", "EditSightings") |
-    @Html.ActionLink("Edit transfers", "EditTransfers") |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>
+<div class="tabbable">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#1" data-toggle="tab">Sightings</a></li>
+        <li><a href="#2" data-toggle="tab">Transfers</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="1">
+        <p>@Html.ActionLink("Edit sightings", "EditSightings")</p>
+        @{ Html.RenderPartial("_Sightings", Model.Sightings); }
+        </div>
+        <div class="tab-pane" id="2">
+        <p>@Html.ActionLink("Edit transfers", "EditTransfers")</p>        
+        @{ Html.RenderPartial("_Transfers", Model.Transfers); }
+        </div>
+    </div>
+</div>

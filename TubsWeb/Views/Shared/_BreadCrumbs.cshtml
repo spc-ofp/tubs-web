@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Tuple<string, string>>
+
+@if (null != Model && Model.Count() > 0)
+{
+
+    <ul class="breadcrumb">
+    @* Reverse, skip 1, and reverse again is the equivalent of "take all but last" *@
+    @foreach (var crumb in Model.Reverse().Skip(1).Reverse())
+    {
+        <li>
+            <a href="@crumb.Item1">@crumb.Item2</a> <span class="divider">&gt;</span>
+        </li>
+    }
+    <li class="active">
+        <a href="#">@Model.Last().Item2</a>
+    </li>
+    </ul>
+}

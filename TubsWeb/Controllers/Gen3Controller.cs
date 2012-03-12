@@ -41,6 +41,7 @@ namespace TubsWeb.Controllers
             }
 
             ViewBag.Title = String.Format(titleFormat, tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             string actionName = this.ControllerContext.RouteData.GetRequiredString("action");
             AddMinMaxDates(tripId);
             return
@@ -54,12 +55,14 @@ namespace TubsWeb.Controllers
             return Load(tripId, "GEN-3 for trip {0}");
         }
 
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId)
         {
             return Load(tripId, "Edit GEN-3 for trip {0}", true);
         }
 
         [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
         public PartialViewResult BlankEditorRow(Trip tripId)
         {
             AddMinMaxDates(tripId);
@@ -67,6 +70,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, TripMonitor header)
         {
             if (null == tripId)

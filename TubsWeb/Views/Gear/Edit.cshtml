@@ -1,16 +1,18 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.Gear
 @using Spc.Ofp.Tubs.DAL.Entities;
 
+@* For now, create this in the View. *@
 @{
-    ViewBag.Title = "Edit Gear";
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.Trip.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Index", "Gear", new { tripId = ViewBag.TripId }), "Fishing Gear"),
+        Tuple.Create("#", "Edit Fishing Gear")
+    };
 }
 
-<h2>@ViewBag.Title</h2>
-
-<p>
-    @Html.ActionLink("Back to Gear", "Index", "Gear", new { tripId = ViewBag.TripId }, null) | 
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @if (ViewBag.GearType == typeof(PurseSeineGear))
 {

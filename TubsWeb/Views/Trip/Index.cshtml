@@ -14,13 +14,26 @@
 
 @* TODO Add search capability *@
 @* TODO Fix return and departure dates *@
-@* TODO Change this over to creating a table by hand *@
 
-@{ var grid = new WebGrid(source: Model, defaultSort: "Id", rowsPerPage: 20); }
+@{ 
+    //var grid = new WebGrid(source: Model, canSort:false, rowsPerPage: 15);
+
+    var grid = new WebGrid(rowsPerPage: 15, canSort: false);
+    grid.Bind(Model, rowCount: ViewBag.TotalRows);
+}
+
+@*
+   Html.Raw(String.Format("<a href='{0}{1}' target='_blank'>Report</a>", baseReportUrl, item.Id))
+
+   grid.Column(
+            header: "Trip Map",
+                    format: (item) => new HtmlString(String.Format("<a href='{0}{1}' target='_blank'>Positions</a>", baseMapUrl, item.Id))
+        ),
+*@
 
 <div id="tripgrid">
     @grid.GetHtml(
-    alternatingRowStyle: "alt",
+    tableStyle:"table table-striped table-bordered table-condensed",
     columns: grid.Columns(
         grid.Column(
             format: (item) => 
@@ -30,21 +43,13 @@
         ),
         grid.Column("Id", "Trip Id"),
         grid.Column("ProgramCode", "Program"),
-        grid.Column("TripNumber", "Trip Number"),
+        grid.Column("TripNumber", "Trip Number"), @* Reformat this to ABC / 10-01 ? *@
         grid.Column("Observer", "Observer"),
         grid.Column("Vessel", "Vessel"),
         grid.Column("DeparturePort", "Port of Departure"),
         grid.Column("DepartureDate", "Departure Date"),
         grid.Column("ReturnPort", "Port of Return"),
-        grid.Column("ReturnDate", "Return Date"),
-        grid.Column(
-            header: "Trip Map",
-                    format: (item) => new HtmlString(String.Format("<a href='{0}{1}' target='_blank'>Positions</a>", baseMapUrl, item.Id))
-        ),
-        grid.Column(
-            header: "Report",
-                    format: (item) => new HtmlString(String.Format("<a href='{0}{1}' target='_blank'>Report</a>", baseReportUrl, item.Id))
-        )
+        grid.Column("ReturnDate", "Return Date")
     ))
 </div>
 

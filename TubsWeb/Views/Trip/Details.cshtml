@@ -3,29 +3,28 @@
 
 <h2>@ViewBag.Title</h2>
 
-<fieldset>
-    <legend>Trip Summary</legend>
-    @{Html.RenderPartial("_TripSummary");}
-</fieldset>
-
-<p>    
-    @if (Model.GetType() == typeof(PurseSeineTrip))
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        @Html.ActionLink("Auxiliaries", "Index", "Auxiliaries", new { tripId = Model.Id }, null) <text> |</text>
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create("#", Model.SpcTripNumber)
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@* Nav at the top *@
+@{
+    IEnumerable<Tuple<string, string>> navpills = ViewBag.NavPills;
+    if (null != navpills)
+    {
+        Html.RenderPartial("_TripNavBar", navpills);   
     }
-    @Html.ActionLink("Vessel Details", "Index", "VesselDetails", new { tripId = Model.Id }, null) |
-    @Html.ActionLink("Crew", "Index", "Crew", new { tripId = Model.Id }, null) |
-    @Html.ActionLink("Electronics", "List", "Electronics", new { tripId = Model.Id }, null) |
-    @Html.ActionLink("Safety Gear", "Index", "SafetyInspection", new { tripId = Model.Id }, null) |
-    @Html.ActionLink("Fishing Gear", "Index", "Gear", new { tripId = Model.Id }, null) |
-    @Html.ActionLink("GEN-1", "Index", "Gen1", new { tripId = Model.Id }, null) |
-    @Html.ActionLink("GEN-2", "List", "Gen2", new { tripId = Model.Id }, null) | 
-    @Html.ActionLink("GEN-3", "Index", "Gen3", new { tripId = Model.Id }, null) | @* FIXME Change this to List like the rest *@
-    @Html.ActionLink("GEN-6", "List", "Gen6", new { tripId = Model.Id }, null) |
-    @Html.ActionLink("Days", "List", "SeaDay", new { tripId = Model.Id }, null) |
-    @Html.ActionLink("Sets", "List", "FishingSet", new { tripId = Model.Id }, null)
-</p>
+}
+
+@{Html.RenderPartial("_TripSummary");}
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { tripId = Model.Id }) |
-    <a href='@Url.RouteUrl("TripList")'>Back to List</a>
+    @Html.ActionLink("Edit", "Edit", new { tripId = Model.Id })
 </p>

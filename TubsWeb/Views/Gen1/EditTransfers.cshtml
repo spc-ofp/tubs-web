@@ -3,10 +3,6 @@
 
 <h2>@ViewBag.Title</h2>
 
-<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
-
 <p>
     @Html.ActionLink("Back to GEN-1", "Index") |
     <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
@@ -76,6 +72,8 @@
     }
 </fieldset>
 
-@{ Html.RenderPartial("_DateTimePickerInit"); }
+@section AdditionalScripts {
+    @{ Html.RenderPartial("_DateTimePickerInit"); }
+}
 
 @* TODO Wire up Ajax on vessel name field *@

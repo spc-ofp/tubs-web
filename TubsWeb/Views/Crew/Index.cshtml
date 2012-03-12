@@ -1,10 +1,19 @@
 ﻿@model TubsWeb.Models.CrewViewModel
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber),
+        Tuple.Create("#", "Crew")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @{ Html.RenderPartial("_Crew"); }
 
 <p>
-    @Html.ActionLink("Edit Crew", "Edit") |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = Model.TripId })'>Back to Trip</a>
+    @Html.ActionLink("Edit Crew", "Edit")
 </p>

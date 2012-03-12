@@ -23,6 +23,7 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Web.Mvc;
@@ -32,7 +33,6 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
-    using System.Collections.Generic;
 
     public class CrewController : SuperController
     {
@@ -194,13 +194,13 @@ namespace TubsWeb.Controllers
                 };
         }
 
-        private CrewViewModel Fill(int tripId)
-        {
+        private CrewViewModel Fill(Trip tripId)
+        {            
             CrewViewModel cvm = new CrewViewModel();
-            cvm.TripId = tripId;
-            var crewlist = new TubsRepository<Crew>(MvcApplication.CurrentSession).FilterBy(c => c.Trip.Id == tripId);
+            cvm.TripId = tripId.Id;
+            cvm.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+            var crewlist = new TubsRepository<Crew>(MvcApplication.CurrentSession).FilterBy(c => c.Trip.Id == tripId.Id);
             cvm.Hands.AddRange(GetDeckHands(crewlist));
-
             // Get named crew members
             cvm.Captain = GetCrewmember(crewlist, JobType.Captain);
             cvm.Navigator = GetCrewmember(crewlist, JobType.NavigatorOrMaster);
@@ -223,8 +223,9 @@ namespace TubsWeb.Controllers
             {
                 return new NoSuchTripResult();
             }
+
             ViewBag.Title = String.Format("Crew list for {0}", tripId.ToString());
-            return View(Fill(tripId.Id));
+            return View(Fill(tripId));
         }
 
         [Authorize(Roles = Security.EditRoles)]
@@ -235,7 +236,7 @@ namespace TubsWeb.Controllers
                 return new NoSuchTripResult();
             }
             ViewBag.Title = String.Format("Edit crew list for {0}", tripId.ToString());
-            return View(Fill(tripId.Id));
+            return View(Fill(tripId));
         }
 
         /*

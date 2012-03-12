@@ -12,19 +12,19 @@
 }
 
 
-@{ var sightings = new WebGrid(source: Model, defaultSort: "Id", rowsPerPage: 50); }
+@{ var sightings = new WebGrid(source: Model, canSort: false, canPage: false, defaultSort: "Id", rowsPerPage: 50); }
 
     @sightings.GetHtml(
-    alternatingRowStyle: "alt",
+    tableStyle: "table table-bordered table-condensed table-striped",
     columns: sightings.Columns(
         sightings.Column("TransferTime", "Date / Time"),
-        sightings.Column("Latitude", "Latitude", canSort: false),
-        sightings.Column("Longitude", "Longitude", canSort: false),
+        sightings.Column("Latitude", "Latitude"),
+        sightings.Column("Longitude", "Longitude"),
         sightings.Column(header: "Vessel Type", format: (item) => VesselTypeHelper(item.VesselType)),
-        sightings.Column("TonsOfSkipjack", "Skipjack (mT)", canSort: false),
-        sightings.Column("TonsOfYellowfin", "Yellowfin (mT)", canSort: false),
-        sightings.Column("TonsOfBigeye", "Bigeye (mT)", canSort: false),
-        sightings.Column("TonsOfMixed", "Mixed (mT)", canSort: false),
+        sightings.Column("TonsOfSkipjack", "Skipjack (mT)"),
+        sightings.Column("TonsOfYellowfin", "Yellowfin (mT)"),
+        sightings.Column("TonsOfBigeye", "Bigeye (mT)"),
+        sightings.Column("TonsOfMixed", "Mixed (mT)"),
         sightings.Column(header: "Action", format: (item) => ActionTypeHelper(item.ActionType)),
-        sightings.Column("Comments", "Comments", canSort: false)
+        sightings.Column("Comments", "Comments")
     ))

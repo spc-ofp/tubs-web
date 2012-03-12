@@ -114,7 +114,9 @@ namespace TubsWeb.Controllers
                 // Should be create
                 return RedirectToAction("Create", new { tripId = tripId }); 
             }
+
             ViewBag.Title = String.Format("Edit auxiliaries for {0}", trip.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             return View(trip.VesselAttributes);
         }
 

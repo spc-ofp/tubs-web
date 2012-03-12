@@ -24,27 +24,28 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Linq;
+    using System.ServiceModel.Syndication;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
+    using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
-    using TubsWeb.Core;
-    using System.ServiceModel.Syndication;
        
     public class TripController : SuperController
     {
 
         //
         // GET: /Trip/
-        public ActionResult Index(int? page, int itemsPerPage = 20)
+        public ActionResult Index(int? page, int itemsPerPage = 15)
         {
             var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
             var trips = repo.GetPagedList((page ?? 0) * itemsPerPage, itemsPerPage);
             ViewBag.HasPrevious = trips.HasPrevious;
             ViewBag.HasNext = trips.HasNext;
             ViewBag.CurrentPage = (page ?? 0);
+            ViewBag.TotalRows = Math.Max(repo.All().Count() - 1, 0);
             return View(trips.Entities);
         }
 
@@ -99,12 +100,13 @@ namespace TubsWeb.Controllers
                 return new NoSuchTripResult();
             }
 
+            AddTripNavbar(tripId);
             ViewBag.Title = tripId.ToString();
             return View(tripId);
         }
 
         // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
-        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create()
         {
             return View();
@@ -112,7 +114,7 @@ namespace TubsWeb.Controllers
 
         // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
         [HttpPost]
-        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create(TripHeaderViewModel thvm)
         {
             // Model level validations

@@ -14,7 +14,18 @@
     }
 }
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.Trip.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "Gen6", new { tripId = ViewBag.TripId }), "GEN-6 Events"),
+        Tuple.Create("#", String.Format("Page {0} of {1}", ViewBag.CurrentPage, ViewBag.MaxPages))
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 <p>
 @{
@@ -68,7 +79,7 @@ else
     {
     <fieldset>
         <legend>Waste Dumped Overboard</legend>
-        <table>
+        <table class="table table-bordered table-condensed table-striped">
             <thead>
                 <tr>
                     <th>Material</th>
@@ -94,7 +105,7 @@ else
     {
     <fieldset>
         <legend>Oil Spillages and Leakages</legend>
-        <table>
+        <table class="table table-bordered table-condensed table-striped">
             <thead>
                 <tr>
                     <th>Source</th>
@@ -116,8 +127,3 @@ else
     </fieldset>
     }
 }
-
-<p>
-    @Html.ActionLink("Back to GEN-6 Events", "List", "Gen6", new { tripId = ViewBag.TripId }, null) |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>

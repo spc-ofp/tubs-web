@@ -33,20 +33,9 @@ namespace TubsWeb.Controllers
 
         //
         // GET: /Gen1/
-        // FIXME Change the model for this view to Trip and deep six Gen1ViewModel.  Then this can use the 'Load' function...
         public ActionResult Index(Trip tripId)
         {
-            Gen1ViewModel viewModel = new Gen1ViewModel();
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
-            ViewBag.Title = String.Format("GEN-1 events for trip {0}", tripId.ToString());
-            viewModel.TripId = tripId.Id;
-            viewModel.Sightings = tripId.Sightings;
-            viewModel.Transfers = tripId.Transfers;
-            return View(viewModel);
+            return Load(tripId, "GEN-1 events for trip {0}");
         }
 
         private ActionResult Load(Trip tripId, string titleFormat)

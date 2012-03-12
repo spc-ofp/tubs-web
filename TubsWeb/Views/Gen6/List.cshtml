@@ -18,11 +18,21 @@
     }
 }
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create("#", "GEN-6 Events")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @* TODO Change this to a partial that displays a list of these items (no edit!) *@
 @* That will mean changing the Model type to Trip *@
-<table>
+<table class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>
             <th>&nbsp;</th>
@@ -55,7 +65,3 @@
 </table>
 
 @* TODO Add a form here for a new GEN-6 event.  On submit, reload the table above *@
-
-<p>
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>

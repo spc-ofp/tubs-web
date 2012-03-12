@@ -1,6 +1,16 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.SafetyInspection
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create("#", "Safety Inspection")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @if (null == Model)
 {
@@ -76,6 +86,4 @@ else
         </fieldset>
     }
 }
-<p>
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>
+<br />
