@@ -1,140 +1,82 @@
 ﻿@model TubsWeb.Models.TripHeaderViewModel
 
-@if (ViewData["flash"] != null)
-{
-    var alertLevel = ViewData["flash-level"] ?? "alert-error";
-<div class="alert @alertLevel">
-    @ViewData["flash"]
+<fieldset>
+    <legend>Register New Trip</legend>
+    <div class="control-group">
+        @Html.LabelFor(m => m.ObserverCode)
+        <div class="controls">
+            @Html.HiddenFor(m => m.ObserverCode)
+            @Html.TextBoxFor(m => m.ObserverFullName)
+            <span class="help-inline" data-valmsg-for="ObserverCode" data-valmsg-replace="true"></span>           
+        </div>
+    </div>
+ 
+    @Html.EditorFor(m => m.TripNumber, "BootstrapTextbox")
+
+    <div class="control-group">
+        @Html.LabelFor(m => m.VesselId)
+        <div class="controls">
+            @Html.HiddenFor(m => m.VesselId)
+            @Html.TextBoxFor(m => m.VesselName)
+            <span class="help-inline">@Html.ValidationMessageFor(m => m.VesselId)</span>           
+        </div>
+    </div>
+
+    @*
+    @Html.EditorFor(m => m.VesselName, "BootstrapTextbox", new { id = "VesselName" })
+    @Html.HiddenFor(m => m.VesselId)
+    *@
+
+    <div class="control-group">
+        <label class="control-label" for="GearCode">Gear Type</label>
+        <div class="controls">
+            @Html.DropDownListFor(m => m.GearCode, new SelectList(TubsWeb.Models.TripHeaderViewModel.GearTypes, "Code", "Label"), "Choose")
+            <span class="help-inline" data-valmsg-for="DeparturePortCode" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    @Html.EditorFor(m => m.DepartureDate, "BootstrapTextbox", new { @class = "datetime" })
+
+    <div class="control-group">
+        <label class="control-label" for="DeparturePortName">Departure Port</label>
+        <div class="controls">
+                @Html.HiddenFor(m => m.DeparturePortCode)
+                @Html.TextBoxFor(m => m.DeparturePortName)
+                <span class="help-inline" data-valmsg-for="DeparturePortCode" data-valmsg-replace="true"></span>           
+        </div>
+    </div>
+
+    @Html.EditorFor(m => m.ReturnDate, "BootstrapTextbox", new { @class = "datetime" })
+
+    <div class="control-group">
+        <label class="control-label" for="ReturnPortName">Return Port</label>
+        <div class="controls">
+                @Html.HiddenFor(m => m.ReturnPortCode)
+                @Html.TextBoxFor(m => m.ReturnPortName)
+                <span class="help-inline" data-valmsg-for="ReturnPortCode" data-valmsg-replace="true"></span>           
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="ProgramCode">Program Code</label>
+        <div class="controls">
+            @Html.DropDownListFor(m => m.ProgramCode, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose")
+            <span class="help-inline" data-valmsg-for="ProgramCode" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+
+    @Html.EditorFor(m => m.CountryCode, "BootstrapTextbox")
+
+    <div class="control-group">
+        <label class="control-label" for="Version">Workbook Version</label>
+        <div class="controls">
+            @Html.DropDownListFor(m => m.Version, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.WorkbookVersion))), "Choose")
+            <span class="help-inline" data-valmsg-for="Version" data-valmsg-replace="true"></span>
+        </div>
+    </div>
+</fieldset>
+   
+<div class="btn-group">
+    <input class="btn-primary" type="submit" value="Save" />
+    <input type="reset" value="Cancel" />
 </div>
-}
-
-@using (Html.BeginForm())
-{ 
-    @Html.ValidationSummary(true, "Trip registration failed")
-    <table style="width: auto;">
-        <tbody>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.ObserverCode):</td>
-                <td>@Html.TextBoxFor(m => m.ObserverFullName) @Html.ValidationMessageFor(m => m.ObserverCode) @Html.HiddenFor(m => m.ObserverCode)</td>
-                <td class="label">@Html.LabelFor(m => m.TripNumber) :</td>
-                <td>@Html.TextBoxFor(m => m.TripNumber) @Html.ValidationMessageFor(m => m.TripNumber)</td>
-            </tr>
-            <tr>           
-                <td class="label">@Html.LabelFor(m => m.VesselId):</td>
-                <td>
-                    @Html.HiddenFor(m => m.VesselId) 
-                    @Html.TextBoxFor(m => m.VesselName) 
-                    @Html.ValidationMessageFor(m => m.VesselId)
-                </td>
-                <td class="label">@Html.LabelFor(m => m.GearCode):</td>
-                <td>
-                    @Html.DropDownListFor(m => m.GearCode, new SelectList(TubsWeb.Models.TripHeaderViewModel.GearTypes, "Code", "Label"), "Choose") 
-                    @Html.ValidationMessageFor(m => m.GearCode)
-                </td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.DepartureDate):</td>
-                <td>@Html.TextBoxFor(m => m.DepartureDate, new { @class = "date" }) @Html.ValidationMessageFor(m => m.DepartureDate)</td>
-                <td class="label">Departure Port:</td>
-                <td>
-                    @Html.HiddenFor(m => m.DeparturePortCode)
-                    @Html.TextBoxFor(m => m.DeparturePortName) 
-                    @Html.ValidationMessageFor(m => m.DeparturePortCode)
-                </td>            
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.ReturnDate):</td>
-                <td>@Html.TextBoxFor(m => m.ReturnDate, new { @class = "date" }) @Html.ValidationMessageFor(m => m.ReturnDate)</td>
-                <td class="label">Return Port:</td>
-                <td>
-                    @Html.HiddenFor(m => m.ReturnPortCode) 
-                    @Html.TextBoxFor(m => m.ReturnPortName) 
-                    @Html.ValidationMessageFor(m => m.ReturnPortCode)
-                </td>            
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.ProgramCode):</td>
-                <td>
-                    @Html.DropDownListFor(m => m.ProgramCode, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose")
-                    @Html.ValidationMessageFor(m => m.ProgramCode)
-                </td>
-                <td class="label">@Html.LabelFor(m => m.CountryCode):</td>
-                <td>@Html.TextBoxFor(m => m.CountryCode)</td>
-            </tr>
-            <tr>
-                <td class="label">@Html.LabelFor(m => m.Version):</td>
-                <td>
-                    @Html.DropDownListFor(m => m.Version, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.WorkbookVersion))), "Choose")
-                    @Html.ValidationMessageFor(m => m.Version)
-                </td>
-                <td colspan="2">&nbsp;</td>            
-            </tr>
-        </tbody>
-    </table>
-    
-    <p>
-        <input type="submit" value="Save" />
-        <input type="reset" value="Cancel" />
-    </p>
-}
-
-
-@*  JavaScript for Ajax lookups and date/time pickers *@
-
-<script>
-    $(function () {
-        // Observer workbooks don't fly into our hands, so starting 6 months back is probably a good bet.
-        var sixMonthsAgo = new Date();
-        sixMonthsAgo.setDate(sixMonthsAgo.getDate() - 180);
-        $(".date").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2, defaultDate: sixMonthsAgo });
-    });
-
-    $(function () {
-        var autocompleteUrl = '@Url.Action("Find", "Vessel")';
-        $("#VesselName").autocomplete({
-            minLength: 2,
-            source: autocompleteUrl,
-            select: function (event, ui) {
-                $("#VesselName").val(ui.item.label);
-                $("#VesselId").val(ui.item.id);
-                $("#GearCode").val(ui.item.GearType);
-            }
-        });
-    });
-
-    $(function () {
-        var autocompleteUrl = '@Url.Action("Find", "Observer")';
-        $("#ObserverFullName").autocomplete({
-            minLength: 2,
-            source: autocompleteUrl,
-            select: function (event, ui) {
-                $("#ObserverFullName").val(ui.item.label);
-                $("#ObserverCode").val(ui.item.id);
-            }
-        });
-    });
-
-    $(function () {
-        var autocompleteUrl = '@Url.Action("Find", "Port")';
-        $("#DeparturePortName").autocomplete({
-            minLength: 2,
-            source: autocompleteUrl,
-            select: function (event, ui) {
-                $("#DeparturePortName").val(ui.item.label);
-                $("#DeparturePortCode").val(ui.item.id);
-            }
-        });
-    });
-
-    $(function () {
-        var autocompleteUrl = '@Url.Action("Find", "Port")';
-        $("#ReturnPortName").autocomplete({
-            minLength: 2,
-            source: autocompleteUrl,
-            select: function (event, ui) {
-                $("#ReturnPortName").val(ui.item.label);
-                $("#ReturnPortCode").val(ui.item.id);
-            }
-        });
-    });
-</script>

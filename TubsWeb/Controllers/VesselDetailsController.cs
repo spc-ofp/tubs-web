@@ -47,8 +47,7 @@ namespace TubsWeb.Controllers
                 var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
                 repo.Update(trip);
                 Logger.Debug("Updated trip");
-                // FIXME This isn't returning correctly
-                return RedirectToAction("Index", new { tripId = trip });
+                return RedirectToAction("Index", "VesselDetails", new { tripId = trip.Id });
             }
             return View(viewName, notes);
         }

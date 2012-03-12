@@ -46,6 +46,7 @@ namespace TubsWeb.Models
         [Display(Name = "Vessel")]
         public int VesselId { get; set; }
         
+        [Display(Name = "Vessel")]
         public string VesselName { get; set; }
 
         public string GearCode { get; set; }
@@ -54,6 +55,7 @@ namespace TubsWeb.Models
         [Display(Name = "Observer")]
         public string ObserverCode { get; set; }
 
+        [Display(Name = "Observer Name")]
         public string ObserverFullName { get; set; }
 
         [Required]
@@ -70,12 +72,14 @@ namespace TubsWeb.Models
         [Display(Name = "Departure Port")]
         public string DeparturePortCode { get; set; }
 
+        [Display(Name = "Departure Port")]
         public string DeparturePortName { get; set; }
 
         [Required]
         [Display(Name = "Return Port")]
         public string ReturnPortCode { get; set; }
 
+        [Display(Name = "Return Port")]
         public string ReturnPortName { get; set; }
 
         [Required]

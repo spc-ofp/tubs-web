@@ -4,6 +4,82 @@
     ViewBag.Title = "Register new trip";
 }
 
-<h2>@ViewBag.Title</h2>
+@if (ViewData["flash"] != null)
+{
+    var alertLevel = ViewData["flash-level"] ?? "alert-error";
+<div class="alert @alertLevel">
+    <a class="close" data-dismiss="alert">&times;</a>
+    @ViewData["flash"]
+</div>
+}
 
-@Html.EditorFor(m => Model) 
+@using (Html.BeginForm("Create", "Trip", FormMethod.Post, new { id = "createTripForm", @class = "well" }))
+{
+    @Html.ValidationSummary(true, "Trip registration failed")
+    @Html.EditorFor(m => Model) 
+    
+}
+
+@section AdditionalScripts {
+    
+    @*  JavaScript for Ajax lookups and date/time pickers *@
+
+    <script>
+        $(function () {
+            // Observer workbooks don't fly into our hands, so starting 6 months back is probably a good bet.
+            var sixMonthsAgo = new Date();
+            sixMonthsAgo.setDate(sixMonthsAgo.getDate() - 180);
+            $(".datetime").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2, defaultDate: sixMonthsAgo });
+        });
+
+        $(function () {
+            var autocompleteUrl = '@Url.Action("Find", "Vessel")';
+            $("#VesselName").autocomplete({
+                minLength: 2,
+                source: autocompleteUrl,
+                select: function (event, ui) {
+                    $("#VesselName").val(ui.item.label);
+                    $("#VesselId").val(ui.item.id);
+                    $("#GearCode").val(ui.item.GearType);
+                }
+            });
+        });
+
+        $(function () {
+            var autocompleteUrl = '@Url.Action("Find", "Observer")';
+            $("#ObserverFullName").autocomplete({
+                minLength: 2,
+                source: autocompleteUrl,
+                select: function (event, ui) {
+                    $("#ObserverFullName").val(ui.item.label);
+                    $("#ObserverCode").val(ui.item.id);
+                }
+            });
+        });
+
+        $(function () {
+            var autocompleteUrl = '@Url.Action("Find", "Port")';
+            $("#DeparturePortName").autocomplete({
+                minLength: 2,
+                source: autocompleteUrl,
+                select: function (event, ui) {
+                    $("#DeparturePortName").val(ui.item.label);
+                    $("#DeparturePortCode").val(ui.item.id);
+                }
+            });
+        });
+
+        $(function () {
+            var autocompleteUrl = '@Url.Action("Find", "Port")';
+            $("#ReturnPortName").autocomplete({
+                minLength: 2,
+                source: autocompleteUrl,
+                select: function (event, ui) {
+                    $("#ReturnPortName").val(ui.item.label);
+                    $("#ReturnPortCode").val(ui.item.id);
+                }
+            });
+        });
+    </script>
+
+}
