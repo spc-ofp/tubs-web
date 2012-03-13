@@ -46,7 +46,7 @@
             }
             else
             {
-                <ul class="nav">
+                <ul class="nav pull-left">
                   <li class="active">@Html.ActionLink("Home", "Index", "Home")</li>
                   <li>@Html.ActionLink("About", "About", "Home")</li>
                   @* Redundant for IE, but put it up there in the user's face... *@
@@ -58,10 +58,12 @@
                             <img src="@Url.Content("~/Content/images/25px-Feed-icon.png")" alt="RSS Feed Icon"/>Latest Trips</a>
                         </li>
                     </ul>
-                  </li>
-                  <li><a href="#">Welcome @User.Identity.Name</a></li>
+                  </li>                 
                 </ul>
             }
+            <ul class="nav pull-right">
+                <li><a href="#">Welcome @User.Identity.Name</a></li>
+            </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>

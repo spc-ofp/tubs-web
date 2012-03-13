@@ -13,14 +13,7 @@
 </div>
 }
 
-@{
-    AjaxOptions options = new AjaxOptions
-    {
-        HttpMethod = "Post"
-    };
-    
-}
-@using (Ajax.BeginForm("Create", "Trip", options, new { id = "createTripForm", @class = "well" }))
+@using (Html.BeginForm("Create", "Trip", FormMethod.Post, new { id = "createTripForm", @class = "well" }))
 {
     @Html.ValidationSummary(true)
     <fieldset>

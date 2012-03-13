@@ -72,6 +72,70 @@ namespace TubsWeb.Models.ExtensionMethods
             }
         }
 
+        /*
+         Trip trip = null;
+                    switch (thvm.GearCode) {
+                        case "S":
+                            trip = new PurseSeineTrip();
+                            break;
+                        case "L":
+                            trip = new LongLineTrip();
+                            break;
+                        case "P":
+                            // No support for Pole and Line yet
+                            break;
+                        default:
+                            // Don't know what this is...
+                            break;                              
+                    }
+         */
+
+        public static Trip ToTrip(this TripHeaderViewModel thvm)
+        {
+            if (null == thvm)
+            {
+                return null;
+            }
+
+            Trip trip = null;
+            switch (thvm.GearCode)
+            {
+                case "S":
+                    trip = new PurseSeineTrip();
+                    break;
+                case "L":
+                    trip = new LongLineTrip();
+                    break;
+                case "P":
+                    trip = new PoleAndLineTrip();
+                    break;
+                default:
+                    // Don't know what kind of trip this is...
+                    break;
+            }
+
+            if (null != trip)
+            {
+                trip.DepartureDate = thvm.DepartureDate;
+                trip.DepartureTimeOnly = trip.DepartureDate.Value.ToString("HHmm");
+                trip.DepartureDateOnly = thvm.DepartureDate.Value.Subtract(thvm.DepartureDate.Value.TimeOfDay);
+                trip.ReturnDate = thvm.ReturnDate;
+                trip.ReturnTimeOnly = trip.ReturnDate.Value.ToString("HHmm");
+                trip.ReturnDateOnly = thvm.ReturnDate.Value.Subtract(thvm.ReturnDate.Value.TimeOfDay);
+                trip.TripNumber = thvm.TripNumber;
+                if (Enum.IsDefined(typeof(ObserverProgram), thvm.ProgramCode))
+                {
+                    trip.ProgramCode = (ObserverProgram)Enum.Parse(typeof(ObserverProgram), thvm.ProgramCode);
+                }
+
+                if (Enum.IsDefined(typeof(WorkbookVersion), thvm.Version))
+                {
+                    trip.Version = (WorkbookVersion)Enum.Parse(typeof(WorkbookVersion), thvm.Version);
+                }
+            }
+            return trip;
+        }
+
         public static void CopyTo(this CrewViewModel.CrewMemberModel cmm, Crew crew)
         {
             if (null != cmm)

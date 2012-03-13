@@ -50,13 +50,18 @@ namespace TubsWeb
              */
             BeginRequest += delegate
             {
-                CurrentSession = TubsDataService.GetSession();
+                if (!HttpContext.Current.Items.Contains(ISessionKey))
+                {
+                    CurrentSession = TubsDataService.GetSession();
+                }
             };
             EndRequest += delegate
             {
                 if (null != CurrentSession)
                 {
                     CurrentSession.Dispose();
+                    HttpContext.Current.Items.Remove(ITransactionKey);
+                    HttpContext.Current.Items.Remove(ISessionKey);
                 }
             };
         }

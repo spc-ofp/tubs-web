@@ -30,7 +30,7 @@ namespace TubsWeb.Models
     /// <summary>
     /// TripHeaderViewModel holds the minimum set of data required to consider an entity a Trip.
     /// </summary>
-    public class TripHeaderViewModel : IValidatableObject
+    public class TripHeaderViewModel /* : IValidatableObject */
     {
         /*
          * After much experimentation, determined to use the following convention for
@@ -137,6 +137,7 @@ namespace TubsWeb.Models
             public string Label { get; set; }
         }
 
+        /*
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!this.DepartureDate.HasValue)
@@ -152,5 +153,6 @@ namespace TubsWeb.Models
                 yield return new ValidationResult("Vessel is required", new string[] { "VesselId" });
             }
         }
+        */
     }
 }

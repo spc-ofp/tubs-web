@@ -32,9 +32,47 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
+    using System.Text;
        
     public class TripController : SuperController
     {
+        
+        /// <summary>
+        /// Check that the required dependent objects are present.
+        /// </summary>
+        /// <param name="trip"></param>
+        private void ValidateTripDependencies(Trip trip, TripHeaderViewModel thvm)
+        {
+            // These shouldn't happen, so in addition to notifying user, drop a warning message into the application log
+            if (null == trip.Observer)
+            {
+                var message = String.Format("Can't find observer with name [{0}] and staff code [{1}]", thvm.ObserverFullName, thvm.ObserverCode);
+                Logger.Warn(message);
+                ModelState["ObserverName"].Errors.Add(message);
+            }
+
+            if (null == trip.Vessel)
+            {
+                var message = String.Format("Can't find vessel with name [{0}]", thvm.VesselName);
+                Logger.Warn(message);
+                ModelState["VesselName"].Errors.Add(message);
+            }
+
+            if (null == trip.DeparturePort)
+            {
+                var message = String.Format("Can't find port with name [{0}] and port code [{1}]", thvm.DeparturePortName, thvm.DeparturePortCode);
+                Logger.Warn(message);
+                ModelState["DeparturePortName"].Errors.Add(message);
+            }
+
+            if (null == trip.ReturnPort)
+            {
+                var message = String.Format("Can't find port with name [{0}] and port code [{1}]", thvm.ReturnPortName, thvm.ReturnPortCode);
+                Logger.Warn(message);
+                ModelState["ReturnPortName"].Errors.Add(message);
+            }
+        }
+
 
         //
         // GET: /Trip/
@@ -121,8 +159,8 @@ namespace TubsWeb.Controllers
         // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create()
-        {
-            return View();
+        {           
+            return View(new TripHeaderViewModel());
         }
 
         // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
@@ -130,94 +168,89 @@ namespace TubsWeb.Controllers
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create(TripHeaderViewModel thvm)
         {
+            // Validate ViewModel (potentially, just copy and then validate domain model...)
+            Logger.Debug("Entering function...");
             // Model level validations
             if (ModelState.IsValidField("DepartureDate") && ModelState.IsValidField("ReturnDate"))
             {
+                Logger.Debug("Has departure/return date fields");
                 if (!thvm.ReturnDate.HasValue)
                 {
                     ModelState["ReturnDate"].Errors.Add("Return Date is required");
+                    Logger.Debug("Failed on ReturnDate validation");
                 }
 
                 if (!thvm.DepartureDate.HasValue)
                 {
                     ModelState["DepartureDate"].Errors.Add("Departure Date is required");
+                    Logger.Debug("Failed on DepartureDate validation");
                 }
                 
                 if (thvm.ReturnDate.Value.CompareTo(thvm.DepartureDate.Value) < 0)
                 {
                     // This will prevent ModelState.IsValid from returning true
                     ModelState["ReturnDate"].Errors.Add("Return Date can't be before departure date");
+                    Logger.Debug("Failed on return date after departure date");
                 }
             }
 
             // Check to see if the observer code/trip number combo already exists
             var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var constraintQuery =
+            int existingId = (
                 from t in repo.FilterBy(t => t.Observer.StaffCode == thvm.ObserverCode && t.TripNumber == thvm.TripNumber)
-                select t.Id;
+                select t.Id).FirstOrDefault<int>();
 
-            if (constraintQuery.Count() > 0)
+            Logger.Debug("Checking for observer/tripNumber violation...");
+            if (existingId != default(int))
             {
+                string message =
+                    String.Format(
+                        "Trip with obstripId {0} already has this observer/trip number combination",
+                        existingId);
+                ModelState["ObserverCode"].Errors.Add(message);
+                ModelState["TripNumber"].Errors.Add(message);
+                Logger.DebugFormat("Found observer/tripNumber violation.  Existing obstripId={0}");
                 // Redirect to some error page that includes link to existing trip
+                Flash(message);
+                return View(thvm);
             }
 
-            if (ModelState.IsValid)
+            Trip trip = thvm.ToTrip();
+            if (null == trip)
             {
-                try
-                {
-                    Trip trip = null;
-                    switch (thvm.GearCode) {
-                        case "S":
-                            trip = new PurseSeineTrip();
-                            break;
-                        case "L":
-                            trip = new LongLineTrip();
-                            break;
-                        case "P":
-                            // No support for Pole and Line yet
-                            break;
-                        default:
-                            // Don't know what this is...
-                            break;                              
-                    }
-                    if (null == trip)
-                    {
-                        Flash("Unsupported Gear Code");
-                        return View(thvm);
-                    }
-                    trip.EnteredDate = DateTime.Now;
-                    trip.EnteredBy = User.Identity.Name ?? "Xyzzy";
-                    trip.DepartureDate = thvm.DepartureDate;
-                    trip.DepartureDateOnly = thvm.DepartureDate.Value.Subtract(thvm.DepartureDate.Value.TimeOfDay);
-                    trip.ReturnDate = thvm.ReturnDate;
-                    trip.ReturnDateOnly = thvm.ReturnDate.Value.Subtract(thvm.ReturnDate.Value.TimeOfDay);
-                    trip.TripNumber = thvm.TripNumber;
-                    if (Enum.IsDefined(typeof(ObserverProgram), thvm.ProgramCode))
-                    {
-                        trip.ProgramCode = (ObserverProgram)Enum.Parse(typeof(ObserverProgram), thvm.ProgramCode);
-                    }
-                        
-                    if (Enum.IsDefined(typeof(WorkbookVersion), thvm.Version))
-                    {
-                        trip.Version = (WorkbookVersion)Enum.Parse(typeof(WorkbookVersion), thvm.Version);
-                    }
-                    trip.FillDependentObjects(thvm, MvcApplication.CurrentSession);
-                    if (null == trip.Observer || null == trip.DeparturePort || null == trip.ReturnPort || null == trip.Vessel)
-                    {
-                        Flash("One or more entities (Observer, Port, and/or Vessel) not found in TUBS database");
-                        return View(thvm);
-                    }
-                    repo.Add(trip);
-                    // Return to list o' trips
-                    return RedirectToAction("Index");
-                }
-                catch (Exception)
-                {
-                    Flash("Failed to register trip.  Please contact technical support.");
-                    return View(thvm);
-                }               
+                var message = String.Format("[{0}] is an unsupported gear code", thvm.GearCode);
+                ModelState["GearCode"].Errors.Add(message);
             }
+
+            // Add Vessel, Observer and Ports
+            trip.FillDependentObjects(thvm, MvcApplication.CurrentSession);
+
+            // This method fills in ModelState errors
+            ValidateTripDependencies(trip, thvm);
             
+            Logger.DebugFormat("ModelState.IsValid? {0}", ModelState.IsValid);
+            if (!ModelState.IsValid)
+            {
+                Flash("Fix the errors below and try again");
+                return View(thvm);
+            }
+
+            // Set audit trail data
+            trip.EnteredDate = DateTime.Now;
+            trip.EnteredBy = User.Identity.Name ?? "Unknown User";
+
+            try
+            {
+                repo.Add(trip);
+                // Push to detail page for this trip
+                return RedirectToAction("Details", "Trip", new { tripId = trip.Id });
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to save trip header", ex);
+                Flash("Failed to register trip.  Please contact technical support.");
+            }
+ 
             return View(thvm);
         }
 
