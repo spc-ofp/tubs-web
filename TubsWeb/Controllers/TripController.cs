@@ -53,12 +53,13 @@ namespace TubsWeb.Controllers
         {
             var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
             var lastTen = repo.All().OrderByDescending(t => t.EnteredDate).Take(10).ToList();
+            string formatString = Url.Content("~/Trip/{0}");
             var feedItems =
                 from trip in lastTen
                 select new SyndicationItem(
                     trip.ToString(), 
                     String.Format("Entered by {0}", trip.EnteredBy), 
-                    new Uri(String.Format("/Trip/{0}", trip.Id), UriKind.Relative))
+                    new Uri(String.Format(formatString, trip.Id), UriKind.Relative))
                 {
                     PublishDate = trip.EnteredDate.Value
                 };
@@ -94,6 +95,18 @@ namespace TubsWeb.Controllers
         /// <param name="id">Trip</param>
         /// <returns></returns>
         public ActionResult Details(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            AddTripNavbar(tripId);
+            ViewBag.Title = tripId.ToString();
+            return View(tripId);
+        }
+
+        public ActionResult Details2(Trip tripId)
         {
             if (null == tripId)
             {

@@ -67,8 +67,15 @@
       </div>
     </div>
 
-    <div class="container">
-      @RenderBody()
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span2">
+                @RenderSection("Sidebar", true)
+            </div>
+            <div class="span10">
+                @RenderBody()
+            </div>
+        </div>
       <footer>
             This is confidential data subject to a @Html.ActionLink("data disclosure policy", "Confidentiality", "Home")
         </footer>
@@ -90,8 +97,8 @@
 
 
     <script type="text/javascript">
-        String.prototype.endsWith = function(str) {return (this.match(str+"$")==str); }
-        
+        String.prototype.endsWith = function (str) { return (this.match(str + "$") == str); }
+
         /*
         // Add this to pages with tables that need zebra striping
         $(document).ready(function () {
@@ -135,3 +142,4 @@
     @RenderSection("AdditionalScripts", false)
 </body>
 </html>
+

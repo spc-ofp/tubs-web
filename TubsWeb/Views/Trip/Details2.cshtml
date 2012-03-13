@@ -1,0 +1,31 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+@using Spc.Ofp.Tubs.DAL.Entities
+
+@{
+    Layout = "~/Views/Shared/_Fluid_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create("#", Model.SpcTripNumber)
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@{Html.RenderPartial("_TripSummary");}
+
+@section Sidebar {
+@{
+    IEnumerable<Tuple<string, string>> navpills = ViewBag.NavPills;
+    if (null != navpills)
+    {
+        Html.RenderPartial("_VerticalTripNavBar", navpills);   
+    }
+}
+}
