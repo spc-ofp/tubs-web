@@ -1,76 +1,49 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
 @using Spc.Ofp.Tubs.DAL.Entities
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Index", "Gen1", new { tripId = ViewBag.TripId }), "GEN-1"),
+        Tuple.Create("#", "Edit GEN-1 Transfers")
+    };
+}
 
-<p>
-    @Html.ActionLink("Back to GEN-1", "Index") |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 <fieldset>
     <legend>Fish Transferring, Fish Dumping, Bunkering by Observer's Vessel</legend>
     @{ Html.RenderPartial("_EditTransfers", Model.Transfers); }
 </fieldset>
 
-<fieldset>
-    <legend>Add Transfer</legend>
-    @* Passing the argument to 'done' requires the String.Format call *@
-    @* http://stackoverflow.com/questions/6550290/ajaxoptions-onsuccess-callback-with-parameter-not-working *@
-    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen1Transfers", OnSuccess = String.Format("clearForm('{0}')", "#addTransferForm") }; }
-    @using (Ajax.BeginForm("AddTransfer", null, options, new { id = "addTransferForm" }))
-    {
-        @Html.ValidationSummary(false)
+@{
+    // Passing the argument to 'done' requires the String.Format call
+    // http://stackoverflow.com/questions/6550290/ajaxoptions-onsuccess-callback-with-parameter-not-working
+    AjaxOptions options = new AjaxOptions { 
+        HttpMethod = "Post", 
+        UpdateTargetId = "gen1Transfers", 
+        OnSuccess = String.Format("clearForm('{0}')", "#addTransferForm") 
+    };
+}
 
-        var transfer = new Transfer();
-        
-        @Html.HiddenFor(m => transfer.Id)
-        @Html.LabelFor(m => transfer.TransferTime)
-        @Html.TextBoxFor(m => transfer.TransferTime, new { @class = "datetime", id = System.Guid.NewGuid().ToString() })
-        @Html.ValidationMessageFor(m => transfer.TransferTime)<br />
-        @Html.LabelFor(m => transfer.Latitude) 
-        @Html.TextBoxFor(m => transfer.Latitude) 
-        @Html.ValidationMessageFor(m => transfer.Latitude)<br />
-        @Html.LabelFor(m => transfer.Longitude)
-        @Html.TextBoxFor(m => transfer.Longitude)
-        @Html.ValidationMessageFor(m => transfer.Longitude)<br />
-        @* Add Ajax to fill this in based on lat/long? *@
-        @Html.LabelFor(m => transfer.EezCode) @Html.TextBoxFor(m => transfer.EezCode) @Html.ValidationMessageFor(m => transfer.EezCode)<br />
-        
-        @* Other vessel *@
-        @Html.LabelFor(m => transfer.VesselName) @Html.TextBoxFor(m => transfer.VesselName) @Html.ValidationMessageFor(m => transfer.VesselName)<br />
-        @* VesselId will have to go somewhere other than the model *@
-        @Html.LabelFor(m => transfer.Ircs) @Html.TextBoxFor(m => transfer.Ircs) @Html.ValidationMessageFor(m => transfer.Ircs)<br />
-        @Html.LabelFor(m => transfer.VesselType)
-        @* TODO Add description text to dropdown *@
-        @Html.DropDownListFor(m => transfer.VesselType, new SelectList(TubsWeb.Models.Gen1ViewModel.TransferVessels, transfer.VesselType), "Choose") <br />
-        
-        @* Fish transferred *@
-        @Html.LabelFor(m => transfer.TonsOfSkipjack)
-        @Html.TextBoxFor(m => transfer.TonsOfSkipjack)
-        @Html.ValidationMessageFor(m => transfer.TonsOfSkipjack)<br />
-        @Html.LabelFor(m => transfer.TonsOfYellowfin)
-        @Html.TextBoxFor(m => transfer.TonsOfYellowfin)
-        @Html.ValidationMessageFor(m => transfer.TonsOfYellowfin)<br />
-        @Html.LabelFor(m => transfer.TonsOfBigeye)
-        @Html.TextBoxFor(m => transfer.TonsOfBigeye)
-        @Html.ValidationMessageFor(m => transfer.TonsOfBigeye)<br />
-        @Html.LabelFor(m => transfer.TonsOfMixed)
-        @Html.TextBoxFor(m => transfer.TonsOfMixed)
-        @Html.ValidationMessageFor(m => transfer.TonsOfMixed)<br />
-        
-        @* *@
-        @Html.LabelFor(m => transfer.ActionType)
-        @Html.DropDownListFor(m => transfer.ActionType, new SelectList(TubsWeb.Models.Gen1ViewModel.TransferActionTypes, transfer.ActionType), "Choose") <br />
-        @Html.LabelFor(m => transfer.Comments)
-        @Html.TextAreaFor(m => transfer.Comments, new { style = "width: 300px; height: 100px;" })
-        @Html.ValidationMessageFor(m => transfer.Comments)<br />
-        <p>
-            <input type="Submit" value="Add" style="font-size: 1.0em;"/>
-            <input type="Reset" value="Cancel" style="font-size: 1.0em;"/>
-        </p>
-    }
-</fieldset>
+@using (Ajax.BeginForm("AddTransfer", "Gen1", null, options, new { id = "addTransferForm", @class = "form well" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Add Transfer</legend>
+        @{ var transfer = new Transfer(); }
+        @Html.EditorFor(t => transfer)
+        <div class="btn-group">
+            <input type="submit" name="Save" value="Save" class="btn-primary" />
+            <input type="reset" name="Cancel" />
+        </div>
+    </fieldset>
+}
+
+
 
 @section AdditionalScripts {
     @{ Html.RenderPartial("_DateTimePickerInit"); }

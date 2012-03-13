@@ -28,6 +28,7 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
+    using TubsWeb.Models.ExtensionMethods;
 
     public class SeaDayController : SuperController
     {
@@ -82,15 +83,28 @@ namespace TubsWeb.Controllers
             if (repo.FilterBy(d => d.Trip.Id == tripId.Id).Count() > 0)
             {
                 // Already has at least one day -- don't mess with it
+                return JavaScript("alert('One or more days already present');");
             }
 
             // Figure out how many days are between departure and end date
-            // for each day, create a new SeaDay
-            SeaDay day = new PurseSeineSeaDay();
-            day.Trip = tripId;
-            repo.Add(day);
+            TimeSpan span = tripId.ReturnDate.Value.Subtract(tripId.DepartureDate.Value);
+            int daysAdded = 0;
+            for (int i = 1; i < span.Days; i++)
+            {
+                DateTime startDate = tripId.DepartureDate.Value.AddDays(i);
+                SeaDay seaDay = tripId.CreateSeaDay(startDate);
+                var enteredDate = DateTime.Now;
+                if (null != seaDay)
+                {
+                    seaDay.Trip = tripId;
+                    seaDay.EnteredBy = User.Identity.Name;
+                    seaDay.EnteredDate = enteredDate;
+                    repo.Add(seaDay);
+                    daysAdded++;
+                }
+            }
 
-            return JavaScript("alert('foo');");
+            return JavaScript(String.Format("alert('Added {0} day(s)');", daysAdded));
         }
 
     }

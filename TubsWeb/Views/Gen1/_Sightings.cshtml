@@ -14,6 +14,7 @@
 @{ var sightings = new WebGrid(source: Model, canSort: false, canPage: false, defaultSort: "Id", rowsPerPage: 50); }
 
     @sightings.GetHtml(
+    
     tableStyle: "table table-bordered table-condensed table-striped",
     columns: sightings.Columns(
         sightings.Column("EventTime", "Date / Time"),

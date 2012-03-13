@@ -1,0 +1,44 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Transfer
+@using Spc.Ofp.Tubs.DAL.Entities
+
+@Html.HiddenFor(m => Model.Id)
+@Html.LabelFor(m => Model.TransferTime)
+@Html.TextBoxFor(m => Model.TransferTime, new { @class = "datetime", id = System.Guid.NewGuid().ToString() })
+@Html.ValidationMessageFor(m => Model.TransferTime)<br />
+@Html.LabelFor(m => Model.Latitude) 
+@Html.TextBoxFor(m => Model.Latitude) 
+@Html.ValidationMessageFor(m => Model.Latitude)<br />
+@Html.LabelFor(m => Model.Longitude)
+@Html.TextBoxFor(m => Model.Longitude)
+@Html.ValidationMessageFor(m => Model.Longitude)<br />
+@* Add Ajax to fill this in based on lat/long? *@
+@Html.LabelFor(m => Model.EezCode) @Html.TextBoxFor(m => Model.EezCode) @Html.ValidationMessageFor(m => Model.EezCode)<br />
+        
+@* Other vessel *@
+@Html.LabelFor(m => Model.VesselName) @Html.TextBoxFor(m => Model.VesselName) @Html.ValidationMessageFor(m => Model.VesselName)<br />
+@* VesselId will have to go somewhere other than the model *@
+@Html.LabelFor(m => Model.Ircs) @Html.TextBoxFor(m => Model.Ircs) @Html.ValidationMessageFor(m => Model.Ircs)<br />
+@Html.LabelFor(m => Model.VesselType)
+@* TODO Add description text to dropdown *@
+@Html.DropDownListFor(m => Model.VesselType, new SelectList(TubsWeb.Models.Gen1ViewModel.TransferVessels, Model.VesselType), "Choose") <br />
+        
+@* Fish transferred *@
+@Html.LabelFor(m => Model.TonsOfSkipjack)
+@Html.TextBoxFor(m => Model.TonsOfSkipjack)
+@Html.ValidationMessageFor(m => Model.TonsOfSkipjack)<br />
+@Html.LabelFor(m => Model.TonsOfYellowfin)
+@Html.TextBoxFor(m => Model.TonsOfYellowfin)
+@Html.ValidationMessageFor(m => Model.TonsOfYellowfin)<br />
+@Html.LabelFor(m => Model.TonsOfBigeye)
+@Html.TextBoxFor(m => Model.TonsOfBigeye)
+@Html.ValidationMessageFor(m => Model.TonsOfBigeye)<br />
+@Html.LabelFor(m => Model.TonsOfMixed)
+@Html.TextBoxFor(m => Model.TonsOfMixed)
+@Html.ValidationMessageFor(m => Model.TonsOfMixed)<br />
+        
+@* *@
+@Html.LabelFor(m => Model.ActionType)
+@Html.DropDownListFor(m => Model.ActionType, new SelectList(TubsWeb.Models.Gen1ViewModel.TransferActionTypes, Model.ActionType), "Choose") <br />
+@Html.LabelFor(m => Model.Comments)
+@Html.TextAreaFor(m => Model.Comments, new { style = "width: 300px; height: 100px;" })
+@Html.ValidationMessageFor(m => Model.Comments)<br />

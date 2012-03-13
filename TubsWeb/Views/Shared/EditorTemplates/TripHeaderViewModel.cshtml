@@ -1,82 +1,52 @@
 ﻿@model TubsWeb.Models.TripHeaderViewModel
 
-<fieldset>
-    <legend>Register New Trip</legend>
-    <div class="control-group">
-        @Html.LabelFor(m => m.ObserverCode)
-        <div class="controls">
-            @Html.HiddenFor(m => m.ObserverCode)
-            @Html.TextBoxFor(m => m.ObserverFullName)
-            <span class="help-inline" data-valmsg-for="ObserverCode" data-valmsg-replace="true"></span>           
-        </div>
-    </div>
- 
-    @Html.EditorFor(m => m.TripNumber, "BootstrapTextbox")
+@Html.HiddenFor(m => m.Id)
 
-    <div class="control-group">
-        @Html.LabelFor(m => m.VesselId)
-        <div class="controls">
-            @Html.HiddenFor(m => m.VesselId)
-            @Html.TextBoxFor(m => m.VesselName)
-            <span class="help-inline">@Html.ValidationMessageFor(m => m.VesselId)</span>           
-        </div>
-    </div>
+@* Use a hidden field for the staff code -- the full name field is for actual entry *@
+@Html.LabelFor(m => m.ObserverCode)
+@Html.HiddenFor(m => m.ObserverCode)
+@Html.TextBoxFor(m => m.ObserverFullName)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.ObserverCode)</span>
 
-    @*
-    @Html.EditorFor(m => m.VesselName, "BootstrapTextbox", new { id = "VesselName" })
-    @Html.HiddenFor(m => m.VesselId)
-    *@
+@Html.LabelFor(m => m.TripNumber)
+@Html.TextBoxFor(m => m.TripNumber)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.TripNumber)</span>
 
-    <div class="control-group">
-        <label class="control-label" for="GearCode">Gear Type</label>
-        <div class="controls">
-            @Html.DropDownListFor(m => m.GearCode, new SelectList(TubsWeb.Models.TripHeaderViewModel.GearTypes, "Code", "Label"), "Choose")
-            <span class="help-inline" data-valmsg-for="DeparturePortCode" data-valmsg-replace="true"></span>
-        </div>
-    </div>
+@* Use a hidden field for the vessel Id -- the vessel name field is for actual entry *@
+@Html.LabelFor(m => m.VesselId)
+@Html.HiddenFor(m => m.VesselId)
+@Html.TextBoxFor(m => m.VesselName)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.VesselId)</span>
 
-    @Html.EditorFor(m => m.DepartureDate, "BootstrapTextbox", new { @class = "datetime" })
+@Html.LabelFor(m => m.GearCode)
+@Html.DropDownListFor(m => m.GearCode, new SelectList(TubsWeb.Models.TripHeaderViewModel.GearTypes, "Code", "Label"), "Choose")
+<span class="help-inline">@Html.ValidationMessageFor(m => m.GearCode)</span>
 
-    <div class="control-group">
-        <label class="control-label" for="DeparturePortName">Departure Port</label>
-        <div class="controls">
-                @Html.HiddenFor(m => m.DeparturePortCode)
-                @Html.TextBoxFor(m => m.DeparturePortName)
-                <span class="help-inline" data-valmsg-for="DeparturePortCode" data-valmsg-replace="true"></span>           
-        </div>
-    </div>
+@Html.LabelFor(m => m.DepartureDate)
+@Html.TextBoxFor(m => m.DepartureDate, new { @class = "datetime" })
+<span class="help-inline">@Html.ValidationMessageFor(m => m.DepartureDate)</span>
 
-    @Html.EditorFor(m => m.ReturnDate, "BootstrapTextbox", new { @class = "datetime" })
+@Html.LabelFor(m => m.DeparturePortCode)
+@Html.HiddenFor(m => m.DeparturePortCode)
+@Html.TextBoxFor(m => m.DeparturePortName)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.DeparturePortCode)</span>
 
-    <div class="control-group">
-        <label class="control-label" for="ReturnPortName">Return Port</label>
-        <div class="controls">
-                @Html.HiddenFor(m => m.ReturnPortCode)
-                @Html.TextBoxFor(m => m.ReturnPortName)
-                <span class="help-inline" data-valmsg-for="ReturnPortCode" data-valmsg-replace="true"></span>           
-        </div>
-    </div>
+@Html.LabelFor(m => m.ReturnDate)
+@Html.TextBoxFor(m => m.ReturnDate, new { @class = "datetime" })
+<span class="help-inline">@Html.ValidationMessageFor(m => m.ReturnDate)</span>
 
-    <div class="control-group">
-        <label class="control-label" for="ProgramCode">Program Code</label>
-        <div class="controls">
-            @Html.DropDownListFor(m => m.ProgramCode, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose")
-            <span class="help-inline" data-valmsg-for="ProgramCode" data-valmsg-replace="true"></span>
-        </div>
-    </div>
+@Html.LabelFor(m => m.ReturnPortCode)
+@Html.HiddenFor(m => m.ReturnPortCode)
+@Html.TextBoxFor(m => m.ReturnPortName)
 
-    @Html.EditorFor(m => m.CountryCode, "BootstrapTextbox")
+@Html.LabelFor(m => m.ProgramCode)
+@Html.DropDownListFor(m => m.ProgramCode, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose")
+<span class="help-inline">@Html.ValidationMessageFor(m => m.ProgramCode)</span>
 
-    <div class="control-group">
-        <label class="control-label" for="Version">Workbook Version</label>
-        <div class="controls">
-            @Html.DropDownListFor(m => m.Version, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.WorkbookVersion))), "Choose")
-            <span class="help-inline" data-valmsg-for="Version" data-valmsg-replace="true"></span>
-        </div>
-    </div>
-</fieldset>
-   
-<div class="btn-group">
-    <input class="btn-primary" type="submit" value="Save" />
-    <input type="reset" value="Cancel" />
-</div>
+@Html.LabelFor(m => m.CountryCode)
+@Html.TextBoxFor(m => m.CountryCode)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.CountryCode)</span>
+
+@Html.LabelFor(m => m.Version)
+@Html.DropDownListFor(m => m.Version, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.WorkbookVersion))), "Choose")
+<span class="help-inline">@Html.ValidationMessageFor(m => m.Version)</span>

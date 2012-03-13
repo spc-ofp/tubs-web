@@ -29,3 +29,35 @@
         </div>
     </div>
 </div>
+
+@* Ajax dialog will go here *@
+<div id="ajax-content" style="display:none;">
+
+</div>
+
+@section AdditionalScripts {
+<script type="text/javascript">
+    function loadEndity(xhr, status) {
+        $('#ajax-content').dialog({
+            modal: true,
+            width: 600,
+            title: $('#ajax-content legend').text(),
+            buttons: {
+                "Save": function () {
+                    // submit the form
+                    $('#ajax-content form').submit();
+                },
+                "Close": function () {
+                    //remove the content, destroy the dialog
+                    $(this).dialog('destroy').html('');
+                }
+            }
+        });
+    }
+
+    function entityDetailsUpdated(responseText, status, xhr) {
+        $('#ajax-content').dialog("option", "title", $('#ajax-content legend').text());
+        $('#entity-list').load('@Url.Action("Sightings")');
+    }
+</script>
+}

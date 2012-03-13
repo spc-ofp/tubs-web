@@ -120,10 +120,20 @@ namespace TubsWeb.Controllers
             // Model level validations
             if (ModelState.IsValidField("DepartureDate") && ModelState.IsValidField("ReturnDate"))
             {
-                if (thvm.ReturnDate.CompareTo(thvm.DepartureDate) < 0)
+                if (!thvm.ReturnDate.HasValue)
+                {
+                    ModelState["ReturnDate"].Errors.Add("Return Date is required");
+                }
+
+                if (!thvm.DepartureDate.HasValue)
+                {
+                    ModelState["DepartureDate"].Errors.Add("Departure Date is required");
+                }
+                
+                if (thvm.ReturnDate.Value.CompareTo(thvm.DepartureDate.Value) < 0)
                 {
                     // This will prevent ModelState.IsValid from returning true
-                    ModelState["ReturnDate"].Errors.Add("Return date can't be before departure date");
+                    ModelState["ReturnDate"].Errors.Add("Return Date can't be before departure date");
                 }
             }
 
@@ -165,9 +175,9 @@ namespace TubsWeb.Controllers
                     trip.EnteredDate = DateTime.Now;
                     trip.EnteredBy = User.Identity.Name ?? "Xyzzy";
                     trip.DepartureDate = thvm.DepartureDate;
-                    trip.DepartureDateOnly = thvm.DepartureDate.Subtract(thvm.DepartureDate.TimeOfDay);
+                    trip.DepartureDateOnly = thvm.DepartureDate.Value.Subtract(thvm.DepartureDate.Value.TimeOfDay);
                     trip.ReturnDate = thvm.ReturnDate;
-                    trip.ReturnDateOnly = thvm.ReturnDate.Subtract(thvm.ReturnDate.TimeOfDay);
+                    trip.ReturnDateOnly = thvm.ReturnDate.Value.Subtract(thvm.ReturnDate.Value.TimeOfDay);
                     trip.TripNumber = thvm.TripNumber;
                     if (Enum.IsDefined(typeof(ObserverProgram), thvm.ProgramCode))
                     {

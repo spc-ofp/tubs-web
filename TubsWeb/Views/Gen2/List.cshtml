@@ -19,22 +19,28 @@
     @{ Html.RenderPartial("_Interactions", Model.Interactions); }
 </fieldset>
 
+@{
+    AjaxOptions options = new AjaxOptions
+    {
+        HttpMethod = "Post",
+        UpdateTargetId = "gen2Interactions",
+        OnSuccess = String.Format("clearForm('#{0}')", "addInteractionForm")
+    };
+}
+
 @if (!Model.IsReadOnly)
 {
-    @* Passing the argument to 'done' requires the String.Format call *@
-    @* http://stackoverflow.com/questions/6550290/ajaxoptions-onsuccess-callback-with-parameter-not-working *@
-    var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen2Interactions", OnSuccess = String.Format("clearForm('#{0}')", "addInteractionForm") };
-    using (Ajax.BeginForm("AddInteraction", null, options, new { id = "addInteractionForm" }))
+    using (Ajax.BeginForm("AddInteraction", null, options, new { id = "addInteractionForm", @class = "form well" }))
     {
         @Html.ValidationSummary(false)
         <fieldset>
             <legend>Add Interaction</legend>
             @{ var interaction = new SpecialSpeciesInteraction(); }
             @Html.EditorFor(i => interaction)
-            <p>
-                <input type="Submit" value="Add" style="font-size: 1.0em;"/>
-                <input type="Reset" value="Cancel" style="font-size: 1.0em;"/>
-            </p>
+            <div class="btn-group">
+                <input type="submit" name="Save" value="Save" class="btn-primary" />
+                <input type="reset" name="Cancel" />
+            </div>
         </fieldset>
     }
 }
@@ -46,4 +52,34 @@
 
 @section AdditionalScripts {
     @{ Html.RenderPartial("_DateTimePickerInit"); }
+
+    <script type="text/javascript">
+        $('.interactionType').change(function () {
+            //alert("Got: " + $(this).val()); // Debug code
+            switch ($(this).val()) {
+                case 'S':
+                    $('#subsectionSighted').show();
+                    $('#subsectionGear').hide();
+                    $('#subsectionLanded').hide();
+                    break;
+                case 'I':
+                    $('#subsectionSighted').hide();
+                    $('#subsectionGear').show();
+                    $('#subsectionLanded').hide();
+                    break;
+                case 'L':
+                    $('#subsectionSighted').hide();
+                    $('#subsectionGear').hide();
+                    $('#subsectionLanded').show();
+                    break;
+                default:
+                    // Dunno -- hide 'em all?
+                    $('#subsectionSighted').hide();
+                    $('#subsectionGear').hide();
+                    $('#subsectionLanded').hide();
+                    break;
+            }
+
+        });
+    </script>
 }

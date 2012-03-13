@@ -13,11 +13,24 @@
 </div>
 }
 
-@using (Html.BeginForm("Create", "Trip", FormMethod.Post, new { id = "createTripForm", @class = "well" }))
-{
-    @Html.ValidationSummary(true, "Trip registration failed")
-    @Html.EditorFor(m => Model) 
+@{
+    AjaxOptions options = new AjaxOptions
+    {
+        HttpMethod = "Post"
+    };
     
+}
+@using (Ajax.BeginForm("Create", "Trip", options, new { id = "createTripForm", @class = "well" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Register New Trip</legend>
+        @Html.EditorFor(m => Model)
+        <div class="btn-group">
+            <input type="submit" name="Save" value="Save" class="btn-primary" />
+            <input type="reset" name="Cancel" />
+        </div>
+    </fieldset>  
 }
 
 @section AdditionalScripts {

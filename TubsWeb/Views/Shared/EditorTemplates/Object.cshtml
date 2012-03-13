@@ -1,0 +1,28 @@
+﻿@model Object
+
+@* By default, MVC3 uses the parent object's variable name as the HtmlFieldPrefix *@
+@* A possibly useful modification would be to jam the desired prefix into ViewData and pull it out, but this works for now *@
+@{ ViewData.TemplateInfo.HtmlFieldPrefix = String.Empty; }
+
+@foreach (var prop in ViewData.ModelMetadata.Properties.Where(pm => pm.ShowForEdit && !ViewData.TemplateInfo.Visited(pm)))
+{
+    @*
+        This is something of a hack.  When looking up data via Ajax, you'll have the human-readable
+        string property and some form of Id value that came back from the lookup.  In the Model,
+        mark the field with the [Editable(false)] attribute to let this template know it should
+        be rendered as a hidden field.  There's still the problem of where the validation message goes,
+        but for now it's baby steps...
+    *@
+    
+    if (prop.IsReadOnly)
+    {
+        @Html.Hidden(prop.PropertyName)
+    }
+    else
+    {
+        @Html.Label(prop.PropertyName, prop.DisplayName ?? prop.PropertyName)
+        @Html.Editor(prop.PropertyName)
+        @* This isn't perfect, and what I'd rather have is a single span that works with Bootstrap and the Microsoft jQuery stuff *@
+        <span class="help-inline">@Html.ValidationMessage(prop.PropertyName)</span>
+    }
+}

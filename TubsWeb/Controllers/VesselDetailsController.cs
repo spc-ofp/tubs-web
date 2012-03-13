@@ -66,7 +66,7 @@ namespace TubsWeb.Controllers
             return View(tripId.VesselNotes);
         }
 
-        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create(Trip tripId)
         {
             if (null == tripId)
@@ -81,18 +81,19 @@ namespace TubsWeb.Controllers
             }
 
             ViewBag.Title = String.Format("Create vessel details for {0}", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             return View(new VesselNotes());
         }
 
         [HttpPost]
-        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create(Trip tripId, VesselNotes notes)
         {
             return Modify(tripId, notes, "Create");
         }
 
 
-        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId)
         {
             if (null == tripId)
@@ -112,7 +113,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin")]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, VesselNotes notes)
         {
             return Modify(tripId, notes, "Edit");

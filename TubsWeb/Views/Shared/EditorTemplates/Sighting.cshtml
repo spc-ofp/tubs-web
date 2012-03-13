@@ -1,0 +1,50 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.Sighting
+
+@Html.HiddenFor(m => Model.Id) @* I know it's zero, but add it for completeness sake *@
+
+@Html.LabelFor(m => Model.EventTime) 
+@Html.TextBoxFor(m => Model.EventTime, new { @class = "datetime", id = System.Guid.NewGuid().ToString() }) <br />
+
+@Html.LabelFor(m => Model.Latitude) 
+@Html.TextBoxFor(m => Model.Latitude) @Html.ValidationMessageFor(m => Model.Latitude)<br />
+
+@Html.LabelFor(m => Model.Longitude) 
+@Html.TextBoxFor(m => Model.Longitude) @Html.ValidationMessageFor(m => Model.Longitude)<br />
+
+@* Add Ajax to fill this in based on lat/long? *@
+@Html.LabelFor(m => Model.EezCode) 
+@Html.TextBoxFor(m => Model.EezCode) 
+@Html.ValidationMessageFor(m => Model.EezCode)<br />
+
+@Html.LabelFor(m => Model.VesselName) 
+@Html.TextBoxFor(m => Model.VesselName) 
+@Html.ValidationMessageFor(m => Model.VesselName)<br />
+
+@* VesselId will have to go somewhere other than the model *@
+@Html.LabelFor(m => Model.Ircs)
+@Html.TextBoxFor(m => Model.Ircs) 
+@Html.ValidationMessageFor(m => Model.Ircs)<br />
+
+@Html.LabelFor(m => Model.VesselType)
+@* TODO Add description text to dropdown *@
+@Html.DropDownListFor(m => Model.VesselType, new SelectList(TubsWeb.Models.Gen1ViewModel.SightedVessels, Model.VesselType), "Choose") <br />
+
+@Html.LabelFor(m => Model.Bearing)
+@Html.TextBoxFor(m => Model.Bearing)
+@Html.ValidationMessageFor(m => Model.Bearing)<br />
+
+@Html.LabelFor(m => Model.Distance)
+@Html.TextBoxFor(m => Model.Distance) @* TODO Add distance dropdown *@
+@Html.ValidationMessageFor(m => Model.Distance)<br />
+
+@Html.LabelFor(m => Model.ActionType)
+@* TODO Add description text to dropdown *@
+@Html.DropDownListFor(m => Model.ActionType, new SelectList(TubsWeb.Models.Gen1ViewModel.ActionTypes, Model.ActionType), "Choose") <br />
+
+@Html.LabelFor(m => Model.PhotoNumber)
+@Html.TextBoxFor(m => Model.PhotoNumber)
+@Html.ValidationMessageFor(m => Model.PhotoNumber)<br />
+
+@Html.LabelFor(m => Model.Comments)
+@Html.TextAreaFor(m => Model.Comments, new { style = "width: 300px; height: 100px;" })
+@Html.ValidationMessageFor(m => Model.Comments)<br />

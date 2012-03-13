@@ -96,5 +96,32 @@ namespace TubsWeb.Models.ExtensionMethods
             // As more crew types come online, add them here
             return typeof(PurseSeineTrip) == tripType ? new PurseSeineCrew() : null;
         }
+
+        public static SeaDay CreateSeaDay(this Trip trip, DateTime date)
+        {
+            if (null == trip)
+            {
+                return null;
+            }
+
+            var tripType = trip.GetType();
+
+            DateTime midnightOf = new DateTime(date.Ticks);
+            midnightOf.Subtract(date.TimeOfDay);
+            // As more trip types come online, add them here
+            SeaDay day =
+                typeof(PurseSeineTrip) == tripType ?
+                    new PurseSeineSeaDay() :
+                    null;
+
+            if (null != day)
+            {
+                day.StartDateOnly = midnightOf;
+                day.StartOfDay = midnightOf;
+                day.StartTimeOnly = "0000";
+            }
+
+            return day;
+        }
     }
 }

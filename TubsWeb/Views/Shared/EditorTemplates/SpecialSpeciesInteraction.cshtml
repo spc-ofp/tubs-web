@@ -33,27 +33,33 @@
     
 }
 
-<fieldset>
-    <legend>Common Interaction Data</legend>
+    <h4>Common Interaction Data</h4>
     @Html.HiddenFor(m => Model.Id)
     @* Radio button to select interaction type -- show/hide appropriate div based on selection *@
     @* TODO Still need to bind Checked to this:  Use a local IDictionary instead of the anonymous object that's there now.  *@
     @* http://stackoverflow.com/questions/5768274/correct-way-to-bind-an-mvc3-radiobutton-to-a-model *@
-    @Html.Label("landedRadio", "Landed On Deck")
-    @Html.RadioButtonFor(m => Model.SgType, "L", new { @class = "interactionType", id = "landedRadio" }) 
-    @Html.Label("interactedRadio", "Interacted With Vessel's Gear Only")
-    @Html.RadioButtonFor(m => Model.SgType, "I", new { @class = "interactionType", id = "interactedRadio" })
-    @Html.Label("sightedRadio", "Sighted Only")
-    @Html.RadioButtonFor(m => Model.SgType, "S", new { @class = "interactionType", id = "sightedRadio" })
-    <br />
+
+    @* Getting this correct was a two-step process -- use the straight up MVC helpers first, then hand-code the appropriate label content *@
+    <div class="control-group">
+        <div class="controls">
+            <label for="interaction_landedRadio" class="radio inline">Landed On Deck</label>
+            @Html.RadioButtonFor(m => Model.SgType, "L", new { @class = "interactionType", id = "landedRadio" }) 
+            <label for="interaction_interactedRadio" class="radio inline">Interacted With Gear Only</label>
+            @Html.RadioButtonFor(m => Model.SgType, "I", new { @class = "interactionType", id = "interactedRadio" })
+            <label for="interaction_sightedRadio" class="radio inline">Sighted Only</label>
+            @Html.RadioButtonFor(m => Model.SgType, "S", new { @class = "interactionType", id = "sightedRadio" })
+        </div>
+    </div>
 
     @* Place the event in space and time *@
     @Html.LabelFor(m => Model.LandedDate)
     @Html.TextBoxFor(m => Model.LandedDate, new { @class = "datetime", id = System.Guid.NewGuid().ToString() })
     @Html.ValidationMessageFor(m => Model.LandedDate)<br />
+
     @Html.LabelFor(m => Model.Latitude) 
     @Html.TextBoxFor(m => Model.Latitude) 
     @Html.ValidationMessageFor(m => Model.Latitude)<br />
+
     @Html.LabelFor(m => Model.Longitude)
     @Html.TextBoxFor(m => Model.Longitude)
     @Html.ValidationMessageFor(m => Model.Longitude)<br />
@@ -71,15 +77,12 @@
     @Html.LabelFor(m => Model.SpeciesDescription)
     @Html.TextAreaFor(m => Model.SpeciesDescription, new { style = "width: 300px; height: 100px;" })
     @Html.ValidationMessageFor(m => Model.SpeciesDescription)<br />
-</fieldset>
         
 @* There are three different kinds of interactions: *@
 @* Landed, interact with vessel or gear, and sighted *@
 @* To make this easier to enter, show/hide the appropriate section *@
 <div id="subsectionLanded" style="display: none;">
-    <fieldset>
-        <legend>Species Landed On Deck</legend>
-        <h3>Landed</h3>
+        <h4>Landed</h4>
         @Html.LabelFor(m => Model.LandedConditionCode)
         @Html.DropDownListFor(m => Model.LandedConditionCode, conditionCodeList, "Choose")
         @Html.ValidationMessageFor(m => Model.LandedConditionCode)<br />
@@ -104,7 +107,7 @@
         @Html.DropDownListFor(m => Model.LandedSexCode, sexCodeList, "Choose")
         @Html.ValidationMessageFor(m => Model.LandedSexCode)<br />
 
-        <h3>Discarded</h3>
+        <h4>Discarded</h4>
         @Html.LabelFor(m => Model.DiscardedConditionCode)
         @Html.DropDownListFor(m => Model.DiscardedConditionCode, conditionCodeList, "Choose")
         @Html.ValidationMessageFor(m => Model.DiscardedConditionCode)<br />
@@ -113,7 +116,7 @@
         @Html.TextAreaFor(m => Model.DiscardedConditionDescription, new { style = "width: 300px; height: 100px;" })
         @Html.ValidationMessageFor(m => Model.DiscardedConditionDescription)<br />
 
-        <h3>Retrieved Tag</h3>
+        <h4>Retrieved Tag</h4>
         @Html.LabelFor(m => Model.RetrievedTagNumber)
         @Html.TextBoxFor(m => Model.RetrievedTagNumber)
         @Html.ValidationMessageFor(m => Model.RetrievedTagNumber)<br />
@@ -126,7 +129,7 @@
         @Html.TextBoxFor(m => Model.RetrievedTagOrganization)
         @Html.ValidationMessageFor(m => Model.RetrievedTagOrganization)<br />
 
-        <h3>Placed Tag</h3>
+        <h4>Placed Tag</h4>
         @Html.LabelFor(m => Model.PlacedTagNumber)
         @Html.TextBoxFor(m => Model.PlacedTagNumber)
         @Html.ValidationMessageFor(m => Model.PlacedTagNumber)<br />
@@ -138,7 +141,6 @@
         @Html.LabelFor(m => Model.PlacedTagOrganization)
         @Html.TextBoxFor(m => Model.PlacedTagOrganization)
         @Html.ValidationMessageFor(m => Model.PlacedTagOrganization)<br />
-    </fieldset>
 </div>
         
 <div id="subsectionGear" style="display: none;">

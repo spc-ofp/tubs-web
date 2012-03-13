@@ -1,64 +1,46 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
 @using Spc.Ofp.Tubs.DAL.Entities
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Index", "Gen1", new { tripId = ViewBag.TripId }), "GEN-1"),
+        Tuple.Create("#", "Edit GEN-1 Sightings")
+    };
+}
 
-<p>
-    @Html.ActionLink("Back to GEN-1", "Index") |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 <fieldset>
     <legend>Vessel or Aircraft Sightings</legend>
     @{ Html.RenderPartial("_EditSightings", Model.Sightings); }
 </fieldset>
 
-<fieldset>
-    <legend>Add Sighting</legend>
-    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "gen1Sightings", OnSuccess = String.Format("clearForm('#{0}')", "addSightingForm") }; }
-    @using (Ajax.BeginForm("AddSighting", null, options, new { id = "addSightingForm" }))
+@{
+    AjaxOptions options = new AjaxOptions
     {
-        @Html.ValidationSummary(false);
+        HttpMethod = "Post",
+        UpdateTargetId = "gen1Sightings",
+        OnSuccess = String.Format("clearForm('#{0}')", "addSightingForm")
+    }; 
+}
 
-        var sighting = new Sighting();
-        @Html.HiddenFor(m => sighting.Id) @* I know it's zero, but add it for completeness sake *@
-        @Html.LabelFor(m => sighting.EventTime) @Html.TextBoxFor(m => sighting.EventTime, new { @class = "datetime", id = System.Guid.NewGuid().ToString() }) <br />
-        @Html.LabelFor(m => sighting.Latitude) @Html.TextBoxFor(m => sighting.Latitude) @Html.ValidationMessageFor(m => sighting.Latitude)<br />
-        @Html.LabelFor(m => sighting.Longitude) @Html.TextBoxFor(m => sighting.Longitude) @Html.ValidationMessageFor(m => sighting.Longitude)<br />
-        @* Add Ajax to fill this in based on lat/long? *@
-        @Html.LabelFor(m => sighting.EezCode) @Html.TextBoxFor(m => sighting.EezCode) @Html.ValidationMessageFor(m => sighting.EezCode)<br />
-        @Html.LabelFor(m => sighting.VesselName) @Html.TextBoxFor(m => sighting.VesselName) @Html.ValidationMessageFor(m => sighting.VesselName)<br />
-        @* VesselId will have to go somewhere other than the model *@
-        @Html.LabelFor(m => sighting.Ircs) @Html.TextBoxFor(m => sighting.Ircs) @Html.ValidationMessageFor(m => sighting.Ircs)<br />
-        @Html.LabelFor(m => sighting.VesselType)
-        @* TODO Add description text to dropdown *@
-        @Html.DropDownListFor(m => sighting.VesselType, new SelectList(TubsWeb.Models.Gen1ViewModel.SightedVessels, sighting.VesselType), "Choose") <br />
-        @Html.LabelFor(m => sighting.Bearing)
-        @Html.TextBoxFor(m => sighting.Bearing)
-        @Html.ValidationMessageFor(m => sighting.Bearing)<br />
-        @Html.LabelFor(m => sighting.Distance)
-        @Html.TextBoxFor(m => sighting.Distance) @* TODO Add distance dropdown *@
-        @Html.ValidationMessageFor(m => sighting.Distance)<br />
-        @Html.LabelFor(m => sighting.ActionType)
-        @* TODO Add description text to dropdown *@
-        @Html.DropDownListFor(m => sighting.ActionType, new SelectList(TubsWeb.Models.Gen1ViewModel.ActionTypes, sighting.ActionType), "Choose") <br />
-        @Html.LabelFor(m => sighting.PhotoNumber)
-        @Html.TextBoxFor(m => sighting.PhotoNumber)
-        @Html.ValidationMessageFor(m => sighting.PhotoNumber)<br />
-        @Html.LabelFor(m => sighting.Comments)
-        @Html.TextAreaFor(m => sighting.Comments, new { style = "width: 300px; height: 100px;" })
-        @Html.ValidationMessageFor(m => sighting.Comments)<br />
-        <p>
-            <input type="Submit" value="Add" style="font-size: 1.0em;"/>
-            <input type="Reset" value="Cancel" style="font-size: 1.0em;"/>
-        </p>
-    }
-</fieldset>
-
-<p>
-    @Html.ActionLink("Back to GEN-1", "Index") |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>
+@using (Ajax.BeginForm("AddSighting", "Gen1", null, options, new { id = "addSightingForm", @class = "form well" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Add Sighting</legend>
+        @{ var sighting = new Sighting(); }
+        @Html.EditorFor(s => sighting)
+        <div class="btn-group">
+            <input type="submit" name="Save" value="Save" class="btn-primary" />
+            <input type="reset" name="Cancel" />
+        </div>
+    </fieldset>
+}
 
 @section AdditionalScripts {
     @{ Html.RenderPartial("_DateTimePickerInit"); }

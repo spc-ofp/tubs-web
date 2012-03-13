@@ -1,0 +1,17 @@
+﻿@model DateTime?
+
+@* As a reminder, MVC acts a little crazy with GET vs. POST *@
+@* http://xhalent.wordpress.com/2011/05/14/localization-of-dates-in-asp-net-mvc/ *@
+
+@{
+    string dataTypeName = ViewData.ModelMetadata.DataTypeName ?? "DateTime";
+    string icon = "DateTime".Equals(dataTypeName, StringComparison.InvariantCultureIgnoreCase) ? "icon-calendar" : "icon-time";
+    var classValue = dataTypeName.ToLower() + " span2"; // TODO Change class to date and use different picker
+}
+
+@* This still needs work, as the validation message shows up under rather than next to... *@
+@* Consider making this HTML5 and changing the type to 'date' *@
+<div class="input-prepend">
+    <span class="add-on"><i class="@icon"></i></span>
+    @Html.TextBox("", Model.HasValue ? String.Format("{0}", Model.Value) : String.Empty, new { @class = "datetime span2" })
+</div>
