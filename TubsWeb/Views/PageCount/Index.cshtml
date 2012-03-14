@@ -2,15 +2,20 @@
 @using Spc.Ofp.Tubs.DAL.Entities
 @using Spc.Ofp.Tubs.DAL.Common
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
+        Tuple.Create("#", "Page Counts")
+    };
+}
 
-
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @* TODO Should we enable edits directly in the table too? *@
-<fieldset>
-    <legend>Page Counts</legend>
-    @{ Html.RenderPartial("_PageCounts", Model.PageCounts); }
-</fieldset>
+@{ Html.RenderPartial("_PageCounts", Model.PageCounts); }
 
 @if (!Model.IsReadOnly)
 {
@@ -38,11 +43,10 @@
             @Html.LabelFor(m => pageCount.FormCount)
             @Html.TextBoxFor(m => pageCount.FormCount)
             @Html.ValidationMessageFor(m => pageCount.FormCount) <br />
-
-            <p>
-                <input type="Submit" value="Add" style="font-size: 1.0em;"/>
-                <input type="Reset" value="Cancel" style="font-size: 1.0em;"/>
-            </p>
+            <div class="btn-group">
+                <input type="submit" name="Add" value="Add" class="btn-primary" />
+                <input type="reset" name="Cancel" />
+            </div>
         </fieldset>
     }
 }

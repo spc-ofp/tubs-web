@@ -119,6 +119,7 @@
     <Compile Include="Core\NoSuchTripResult.cs" />
     <Compile Include="Core\RssResult.cs" />
     <Compile Include="Core\Security.cs" />
+    <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\TransactionalActionBaseAttribute.cs" />
     <Compile Include="Controllers\TripController.cs" />
     <Compile Include="Core\TripModelBinder.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Models\GearUnits.cs" />
     <Compile Include="Models\Gen1ViewModel.cs" />
     <Compile Include="Models\Gen2ViewModel.cs" />
+    <Compile Include="Models\TripClosureViewModel.cs" />
     <Compile Include="Models\TripHeaderViewModel.cs" />
     <Compile Include="Models\TubsExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -142,7 +144,10 @@
     <Content Include="Content\bootstrap-responsive.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\datetimepicker.css" />
     <Content Include="Content\images\25px-Feed-icon.png" />
+    <Content Include="Content\images\calendar-icon.png" />
+    <Content Include="Content\images\feed-icon.png" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
     <Content Include="Content\KeyTips.css" />
@@ -420,10 +425,13 @@
     <Content Include="Views\Shared\_Fluid_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Trip\Details2.cshtml" />
+    <Content Include="Views\Shared\_VerticalTripNavBar.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\_VerticalTripNavBar.cshtml" />
+    <Content Include="Views\Trip\Close.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Trip\MyTrips.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

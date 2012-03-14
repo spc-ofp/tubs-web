@@ -67,8 +67,15 @@ namespace TubsWeb.Controllers
                 return new NoSuchTripResult();
             }
 
+            var aux = trip.VesselAttributes;
+            if (null == aux)
+            {
+                aux = new PurseSeineVesselAttributes();
+                aux.Trip = tripId;
+            }
+
             ViewBag.Title = String.Format("{0} auxiliaries", trip.ToString());
-            return View(trip.VesselAttributes);
+            return View(aux);
         }
 
         [Authorize(Roles = Security.EditRoles)]
@@ -83,10 +90,11 @@ namespace TubsWeb.Controllers
             if (null != trip.VesselAttributes)
             {
                 // Should be edit
-                return RedirectToAction("Edit", new { tripId = tripId });
+                return RedirectToAction("Edit", new { tripId = tripId.Id });
             }
+            var aux = new PurseSeineVesselAttributes() { Trip = tripId };
             ViewBag.Title = String.Format("Create auxiliaries for {0}", trip.ToString());
-            return View(new PurseSeineVesselAttributes());
+            return View(aux);
         }
 
         
@@ -112,7 +120,7 @@ namespace TubsWeb.Controllers
             if (null == trip.VesselAttributes)
             {
                 // Should be create
-                return RedirectToAction("Create", new { tripId = tripId }); 
+                return RedirectToAction("Create", new { tripId = tripId.Id }); 
             }
 
             ViewBag.Title = String.Format("Edit auxiliaries for {0}", trip.ToString());

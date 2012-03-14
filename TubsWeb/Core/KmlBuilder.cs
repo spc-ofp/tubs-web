@@ -192,7 +192,7 @@ namespace TubsWeb.Core
             return folder;
         }
         
-        public static Folder Build(IEnumerable<Pushpin> positions)
+        public static Document Build(IEnumerable<Pushpin> positions)
         {
             // TODO See about moving StyleBuilder over
             Folder root = new Folder()
@@ -221,7 +221,13 @@ namespace TubsWeb.Core
             // Add GEN-6 events
             root.Features.Add(BuildGen6(positions));
 
-            return root;
+            Document doc = new Document()
+            {
+                id = Guid.NewGuid().ToString(),
+                open = true
+            };
+            doc.Features.Add(root);
+            return doc;
         }
     }
 }

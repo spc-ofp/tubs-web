@@ -46,8 +46,16 @@
             }
             else
             {
-                <ul class="nav">
-                  <li class="active">@Html.ActionLink("Home", "Index", "Home")</li>
+                <ul class="nav pull-left">
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Trips<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>@Html.ActionLink("All Trips", "Index", "Trip")</li>
+                        <li>@Html.ActionLink("My Trips", "MyTrips", "Trip")</li>
+                        <li>@Html.ActionLink("Register New Trip", "Create", "Trip")</li>
+                    </ul>
+                  </li>
+                  <li>@Html.ActionLink("Home", "Index", "Home")</li>
                   <li>@Html.ActionLink("About", "About", "Home")</li>
                   @* Redundant for IE, but put it up there in the user's face... *@
                   <li class="dropdown">
@@ -59,9 +67,11 @@
                         </li>
                     </ul>
                   </li>
-                  <li><a href="#">Welcome @User.Identity.Name</a></li>
                 </ul>
             }
+            <ul class="nav pull-right">
+                <li><a href="#">Welcome @User.Identity.Name</a></li>
+            </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -74,11 +84,12 @@
             </div>
             <div class="span10">
                 @RenderBody()
+                <footer>
+                    This is confidential data subject to a @Html.ActionLink("data disclosure policy", "Confidentiality", "Home")
+                 </footer>
             </div>
         </div>
-      <footer>
-            This is confidential data subject to a @Html.ActionLink("data disclosure policy", "Confidentiality", "Home")
-        </footer>
+      
     </div> <!-- /container -->
 
     <!-- Le javascript

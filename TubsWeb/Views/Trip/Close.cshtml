@@ -1,0 +1,38 @@
+﻿@model TubsWeb.Models.TripClosureViewModel
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create("#", "Close Trip")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@if (ViewData["flash"] != null)
+{
+    var alertLevel = ViewData["flash-level"] ?? "alert-error";
+<div class="alert @alertLevel">
+    <a class="close" data-dismiss="alert">&times;</a>
+    @ViewData["flash"]
+</div>
+}
+
+@* TODO Add a confirmation prompt *@
+
+@using (Html.BeginForm("Close", "Trip", FormMethod.Post, new { @class = "form well" }))
+{
+    <fieldset>
+        <legend>Close Trip</legend>
+        @Html.HiddenFor(m => Model.TripId)
+        @Html.LabelFor(m => Model.Comments)
+        @Html.TextAreaFor(m => Model.Comments, new { @class = "span6", style = "height: 200px;" })
+        <div class="btn-group">
+                <input type="submit" name="Save" value="Save" class="btn-primary" />
+                <input type="reset" name="Cancel" />
+        </div>
+    </fieldset>
+}

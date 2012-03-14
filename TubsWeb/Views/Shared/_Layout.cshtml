@@ -14,6 +14,7 @@
     </style>
     <link href="@Url.Content("~/Content/bootstrap-responsive.min.css")" rel="stylesheet">
     <link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/datetimepicker.css")" rel="stylesheet" type="text/css" />
 
     <!-- Use Modernizr instead of html5shim / html5shiv, at least until it breaks -->
     <script src="@Url.Content("~/Scripts/modernizr-2.0.6-development-only.js")" type="text/javascript"></script>
@@ -47,7 +48,15 @@
             else
             {
                 <ul class="nav pull-left">
-                  <li class="active">@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Trips<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("All Trips", "Index", "Trip")</li>
+                            <li>@Html.ActionLink("My Trips", "MyTrips", "Trip")</li>
+                            <li>@Html.ActionLink("Register New Trip", "Create", "Trip")</li>
+                        </ul>
+                    </li>
+                  <li>@Html.ActionLink("Home", "Index", "Home")</li>
                   <li>@Html.ActionLink("About", "About", "Home")</li>
                   @* Redundant for IE, but put it up there in the user's face... *@
                   <li class="dropdown">
@@ -55,7 +64,8 @@
                     <ul class="dropdown-menu">
                         <li>
                             <a href="@Url.Action("Rss", "Trip")">
-                            <img src="@Url.Content("~/Content/images/25px-Feed-icon.png")" alt="RSS Feed Icon"/>Latest Trips</a>
+                            <img src="@Url.Content("~/Content/images/feed-icon.png")" alt="RSS Feed Icon"/>
+                            Latest Trips</a>
                         </li>
                     </ul>
                   </li>                 

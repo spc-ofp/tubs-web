@@ -15,13 +15,28 @@
             var depDate = new Date('@ViewData[minDateKey]');
             var retDate = new Date('@ViewData[maxDateKey]');
             $(function () {
-                $(".datetime").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2, defaultDate: depDate, minDate: depDate, maxDate: retDate });
+                $(".datetime").datetimepicker({ 
+                    showOn: "button",
+                    buttonImage: '@Url.Content("~/Content/images/calendar-icon.png")',
+                    buttonImageOnly: true,
+                    dateFormat: 'dd/mm/yy', 
+                    timeFormat: 'hh:mm', 
+                    numberOfMonths: 2, 
+                    defaultDate: depDate, 
+                    minDate: depDate, 
+                    maxDate: retDate });
             });
             </text>
         } else {
             <text>
             $(function () {
-                $(".datetime").datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm', numberOfMonths: 2});
+                $(".datetime").datetimepicker({ 
+                    showOn: "button",
+                    buttonImage: '@Url.Content("~/Content/images/calendar-icon.png")',
+                    buttonImageOnly: true,
+                    dateFormat: 'dd/mm/yy', 
+                    timeFormat: 'hh:mm', 
+                    numberOfMonths: 2});
             });
             </text>
         }

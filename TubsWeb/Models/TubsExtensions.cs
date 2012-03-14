@@ -72,24 +72,6 @@ namespace TubsWeb.Models.ExtensionMethods
             }
         }
 
-        /*
-         Trip trip = null;
-                    switch (thvm.GearCode) {
-                        case "S":
-                            trip = new PurseSeineTrip();
-                            break;
-                        case "L":
-                            trip = new LongLineTrip();
-                            break;
-                        case "P":
-                            // No support for Pole and Line yet
-                            break;
-                        default:
-                            // Don't know what this is...
-                            break;                              
-                    }
-         */
-
         public static Trip ToTrip(this TripHeaderViewModel thvm)
         {
             if (null == thvm)

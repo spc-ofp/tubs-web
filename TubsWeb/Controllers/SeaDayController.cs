@@ -89,7 +89,7 @@ namespace TubsWeb.Controllers
             // Figure out how many days are between departure and end date
             TimeSpan span = tripId.ReturnDate.Value.Subtract(tripId.DepartureDate.Value);
             int daysAdded = 0;
-            for (int i = 1; i < span.Days; i++)
+            for (int i = 0; i <= span.Days; i++)
             {
                 DateTime startDate = tripId.DepartureDate.Value.AddDays(i);
                 SeaDay seaDay = tripId.CreateSeaDay(startDate);

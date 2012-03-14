@@ -27,13 +27,11 @@ namespace TubsWeb.Controllers
     using System.ServiceModel.Syndication;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
-    using System.Text;
-       
+
     public class TripController : SuperController
     {
         
@@ -87,6 +85,25 @@ namespace TubsWeb.Controllers
             return View(trips.Entities);
         }
 
+        public ActionResult MyTrips(int? page, int itemsPerPage = 15)
+        {
+            string filterCriteria = User.Identity.Name.WithoutDomain().ToUpper();
+            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var trips = repo.GetPagedList(t => t.EnteredBy.ToUpper().Contains(filterCriteria), (page ?? 0) * itemsPerPage, itemsPerPage);
+            ViewBag.HasPrevious = trips.HasPrevious;
+            ViewBag.HasNext = trips.HasNext;
+            ViewBag.CurrentPage = (page ?? 0);
+            ViewBag.TotalRows = Math.Max(repo.All().Count() - 1, 0);
+            ViewBag.FilterCriteria = filterCriteria; // For debug use
+            return View(trips.Entities);
+        }
+
+        /// <summary>
+        /// Publishes the last 10 trips as a simple RSS feed with the
+        /// Spc trip number, DCT who opened it, and direct link to
+        /// the trip in TUBS.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Rss()
         {
             var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
@@ -119,9 +136,15 @@ namespace TubsWeb.Controllers
                 return new NoSuchTripResult();
             }
 
-            var positions = tripId.Pushpins;
-
-            return new KmlResult();
+            var tripDoc = KmlBuilder.Build(tripId.Pushpins);
+            tripDoc.name = "All Trip Positions";
+            tripDoc.description =
+                String.Format(
+                    "Positions for trip {0} generated on {1} via URL: [{2}]",
+                    tripId.ToString(),
+                    DateTime.Now.ToShortDateString(),
+                    this.HttpContext.Request.RawUrl);
+            return new KmlResult(tripDoc);
         }
 
         // GET: /Trip/Details/1
@@ -144,18 +167,6 @@ namespace TubsWeb.Controllers
             return View(tripId);
         }
 
-        public ActionResult Details2(Trip tripId)
-        {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
-            AddTripNavbar(tripId);
-            ViewBag.Title = tripId.ToString();
-            return View(tripId);
-        }
-
         // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create()
@@ -163,7 +174,74 @@ namespace TubsWeb.Controllers
             return View(new TripHeaderViewModel());
         }
 
-        // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Close(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            if (tripId.IsReadOnly)
+            {
+                return RedirectToAction("Details", "Trip", new { tripId = tripId.Id });
+            }
+
+            ViewBag.Title = tripId.ToString();
+            ViewBag.TripNumber = tripId.SpcTripNumber;
+            TripClosureViewModel tcvm = new TripClosureViewModel()
+            {
+                TripId = tripId.Id
+            };
+
+            return View(tcvm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Close(TripClosureViewModel tcvm)
+        {
+            if (!tcvm.TripId.HasValue)
+            {
+                return new NoSuchTripResult();
+            }
+
+            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var trip = repo.FindBy(tcvm.TripId.Value);
+            if (null == trip)
+            {
+                return new NoSuchTripResult();
+            }
+
+            // Idempotent -- if the trip is already closed, just push to the details page
+            if (trip.IsReadOnly)
+            {
+                return RedirectToAction("Details", "Trip", new { tripId = trip.Id });
+            }
+
+            // Just in case we have to push back to the edit form
+            ViewBag.Title = trip.ToString();
+            ViewBag.TripNumber = trip.SpcTripNumber;
+
+            trip.ClosedDate = DateTime.Now;
+            trip.Comments = tcvm.Comments;
+            try
+            {
+                repo.Update(trip);
+                return RedirectToAction("Details", "Trip", new { tripId = trip.Id });
+            }
+            catch (Exception ex)
+            {
+                Flash("Unable to close trip -- contact technical support");
+                Logger.Error("Error while closing trip", ex);
+            }
+            return View(tcvm);
+        }
+
+        //
+        // This method is a little verbose, but then it's probably the most complex
+        // CRUD operation in the application.
+        //
         [HttpPost]
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create(TripHeaderViewModel thvm)

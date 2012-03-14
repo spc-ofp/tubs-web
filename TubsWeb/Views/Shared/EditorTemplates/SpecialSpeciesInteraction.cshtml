@@ -68,7 +68,7 @@
     @Html.LabelFor(m => Model.SpeciesCode)
     @{
         IDictionary<string, object> speciesValidator = new Dictionary<string, object>();
-        speciesValidator.Add("data-val-remote-url", "/Validation/IsSpeciesCodeValid");
+        speciesValidator.Add("data-val-remote-url", Url.Content("~/Validation/IsSpeciesCodeValid"));
         speciesValidator.Add("data-val-remote", "Not a valid species code");
         speciesValidator.Add("data-val-length-min", 3);
     }

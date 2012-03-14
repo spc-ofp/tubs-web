@@ -66,5 +66,18 @@
         <td>Entered Date:</td>
         <td>@Html.DisplayFor(m => m.EnteredDate)</td>
     </tr>
-    @* TODO Add verified/closed information *@
+    @if (Model.ClosedDate.HasValue)
+    {
+    <tr>
+        <td>Closed Date:</td>
+        <td>@Html.DisplayFor(m => m.ClosedDate)</td>
+        <td>Entry Comments:</td>
+        <td>
+            <div class="large-text">
+                @Html.DisplayFor(m => m.Comments)
+            </div>
+        </td>
+    </tr>
+    }
+    @* TODO Add verified information *@
 </table>
