@@ -28,44 +28,42 @@ namespace TubsWeb.Controllers
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
+    using TubsWeb.Core;
 
     public class FishingSetController : SuperController
     {
 
-        public ActionResult List(int tripId)
+        public ActionResult List(Trip tripId)
         {
-            // Enable link back to trip without a ViewModel
-            ViewBag.TripId = tripId;
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            ViewBag.Title = String.Format("Sets for {0}", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
 
             var repo = new TubsRepository<PurseSeineSet>(MvcApplication.CurrentSession);
             // Push the projection into a List so that it's not the NHibernate collection implementation
-            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == tripId).ToList<PurseSeineSet>();
-            if (null == sets || sets.Count < 1)
+            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == tripId.Id).ToList<PurseSeineSet>();
+            sets.Sort(delegate(PurseSeineSet s1, PurseSeineSet s2)
             {
-                ViewBag.Title = String.Format("Sets for tripId {0}", tripId);
-            }
-            else
-            {
-                var trip = sets.First().Activity.Day.Trip;
-                ViewBag.Title = String.Format("Sets for {0}", trip.ToString());
-                // Ensure sets are sorted by set number
-                sets.Sort(delegate(PurseSeineSet s1, PurseSeineSet s2)
-                {
-                    return Comparer<int?>.Default.Compare(s1.SetNumber, s2.SetNumber);
-                });
-            }
+                return Comparer<int?>.Default.Compare(s1.SetNumber, s2.SetNumber);
+            });
             return View(sets);
         }
         
         //
         // GET: /FishingSet/
-        public ActionResult Index(int tripId, int setNumber)
+        public ActionResult Index(Trip tripId, int setNumber)
         {
-            // Enable link back to trip without a ViewModel
-            ViewBag.TripId = tripId;
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
 
             var repo = new TubsRepository<PurseSeineSet>(MvcApplication.CurrentSession);
-            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == tripId);
+            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == tripId.Id);
             int maxSets = sets.Count();
             if (setNumber > maxSets)
             {
@@ -74,7 +72,8 @@ namespace TubsWeb.Controllers
             ViewBag.MaxSets = maxSets;
             ViewBag.CurrentSet = setNumber;
             // TODO Add trip number to title?
-            ViewBag.Title = String.Format("Set {0} of {1}", setNumber, maxSets);
+            ViewBag.Title = String.Format("Set {0} of {1} for {2}", setNumber, maxSets, tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             // This depends on set number!
             var set = (
                 from s in sets

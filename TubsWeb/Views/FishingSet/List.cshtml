@@ -9,9 +9,19 @@
     }
 }
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create("#", "Sets")
+    };
+}
 
-<table class="table table-bordered table-condensed">
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<table class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>
             <th>Set #</th>
@@ -31,12 +41,9 @@
             <td>@set.Activity.SchoolAssociation.GetDescription()</td>
             <td>@IsSkunk(set.CatchList)</td>
             <td>@set.CatchList.Sum(sc => sc.MetricTonsObserved)</td>
-            <td>@set.Comments</td>
+            <td><div class="large-text">@set.Comments</div></td>
         </tr>
     }
     </tbody>
 </table>
 
-<p>
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>

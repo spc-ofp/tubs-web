@@ -1,6 +1,17 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineSet
 
-<h2>@ViewBag.Title</h2>
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create(Url.Action("List", "FishingSet", new { tripId = ViewBag.TripId }), "Sets"),
+        Tuple.Create("#", String.Format("Set {0} of {1}", ViewBag.CurrentSet, ViewBag.MaxSets))
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 @if (null == Model)
 {
@@ -8,21 +19,24 @@
 }
 else
 {
-    <p>
-    @{
-        if (ViewBag.CurrentSet > 1)
-        {
+    <ul class="pager">
+    @if (ViewBag.CurrentSet > 1)
+    {
+        <li>
             <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = ViewBag.CurrentSet - 1 })'>Previous Set</a>
-        }
-
-        if (ViewBag.MaxSets > ViewBag.CurrentSet)
-        {
-            <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = ViewBag.CurrentSet + 1 })'>Next Set</a>
-        }
+        </li>
     }
-    </p>
+    
+    @if (ViewBag.MaxSets > ViewBag.CurrentSet)
+    {
+        <li>
+            <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = ViewBag.CurrentSet + 1 })'>Next Set</a>
+        </li>
+    }
+    </ul>
+   
       
-    <table>
+    <table class="table table-bordered table-condensed table-striped">
         <thead>
             <tr>
                 <th>Skiff Off</th>
@@ -53,10 +67,3 @@ else
     </ul>
    
 }
-
-<p>
-    @Html.ActionLink("Back to Sets", "List", "FishingSet", new { tripId = ViewBag.TripId }, null) |
-    <a href='@Url.RouteUrl("TripDetails", new { tripId = ViewBag.TripId })'>Back to Trip</a>
-</p>
-
-
