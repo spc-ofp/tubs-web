@@ -116,6 +116,7 @@
     <Compile Include="Controllers\SuperController.cs" />
     <Compile Include="Core\KmlBuilder.cs" />
     <Compile Include="Core\KmlResult.cs" />
+    <Compile Include="Core\KmlStyleBuilder.cs" />
     <Compile Include="Core\NoSuchTripResult.cs" />
     <Compile Include="Core\RssResult.cs" />
     <Compile Include="Core\Security.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Models\GearUnits.cs" />
     <Compile Include="Models\Gen1ViewModel.cs" />
     <Compile Include="Models\Gen2ViewModel.cs" />
+    <Compile Include="Models\PositionAuditViewModel.cs" />
     <Compile Include="Models\TripClosureViewModel.cs" />
     <Compile Include="Models\TripHeaderViewModel.cs" />
     <Compile Include="Models\TubsExtensions.cs" />
@@ -150,6 +152,7 @@
     <Content Include="Content\images\feed-icon.png" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
+    <Content Include="Content\images\google-earth-16x16.png" />
     <Content Include="Content\KeyTips.css" />
     <Content Include="Content\KeyTips.min.css" />
     <Content Include="Content\popup-back.gif" />
@@ -432,6 +435,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Trip\MyTrips.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Trip\PositionAudit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\DisplayTemplates\TimeSpan.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

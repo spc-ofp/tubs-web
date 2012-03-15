@@ -23,6 +23,7 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.ServiceModel.Syndication;
     using System.Web.Mvc;
@@ -136,6 +137,13 @@ namespace TubsWeb.Controllers
                 return new NoSuchTripResult();
             }
 
+            var pushpins = tripId.Pushpins.ToList();
+            pushpins.Sort(
+                delegate(Pushpin p1, Pushpin p2)
+                {
+                    return Comparer<DateTime?>.Default.Compare(p1.Timestamp, p2.Timestamp);
+                });
+
             var tripDoc = KmlBuilder.Build(tripId.Pushpins);
             tripDoc.name = "All Trip Positions";
             tripDoc.description =
@@ -145,6 +153,34 @@ namespace TubsWeb.Controllers
                     DateTime.Now.ToShortDateString(),
                     this.HttpContext.Request.RawUrl);
             return new KmlResult(tripDoc);
+        }
+
+        public ActionResult PositionAudit(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            IList<PositionAuditViewModel> auditResults = new List<PositionAuditViewModel>(tripId.Pushpins.Count);
+            var pushpins = tripId.Pushpins.ToList();
+            pushpins.Sort(
+                delegate(Pushpin p1, Pushpin p2)
+                {
+                    return Comparer<DateTime?>.Default.Compare(p1.Timestamp, p2.Timestamp);
+                });
+
+            PositionAuditViewModel previous = PositionAuditViewModel.FromPushpin(pushpins.FirstOrDefault());
+            foreach (var pin in pushpins.Skip(1))
+            {
+                var current = PositionAuditViewModel.FromPushpin(pin);
+                auditResults.Add(PositionAuditViewModel.Diff(previous, current));
+                previous = current;
+            }
+
+            ViewBag.Title = String.Format("Position Audit for {0}", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+            return View(auditResults);
         }
 
         // GET: /Trip/Details/1

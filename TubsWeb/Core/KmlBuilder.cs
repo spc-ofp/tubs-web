@@ -4,15 +4,30 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-
 namespace TubsWeb.Core
 {
+    /*
+     * This file is part of TUBS.
+     *
+     * TUBS is free software: you can redistribute it and/or modify
+     * it under the terms of the GNU Affero General Public License as published by
+     * the Free Software Foundation, either version 3 of the License, or
+     * (at your option) any later version.
+     *  
+     * TUBS is distributed in the hope that it will be useful,
+     * but WITHOUT ANY WARRANTY; without even the implied warranty of
+     * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     * GNU Affero General Public License for more details.
+     *  
+     * You should have received a copy of the GNU Affero General Public License
+     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
+     */
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Spc.Ofp.Tubs.DAL.Entities;
-    using Google.Kml;
     using System.Text;
+    using Google.Kml;
+    using Spc.Ofp.Tubs.DAL.Entities;
     
     public static class KmlBuilder
     {
@@ -28,29 +43,41 @@ namespace TubsWeb.Core
 
         public static Placemark ToPlacemark(this Pushpin pushpin, string style)
         {
-            Placemark pm = new Placemark();
-            if (null != pushpin)
+            if (null == pushpin || !pushpin.Latitude.HasValue || !pushpin.Longitude.HasValue || !pushpin.Timestamp.HasValue)
             {
-                
+                return null;
             }
-            return pm;
+            return new Placemark()
+            {
+                name = pushpin.Description,
+                Geometry = new Point(new coordinates((double)pushpin.Latitude.Value, (double)pushpin.Longitude.Value)),
+                styleUrl = style,
+                TimePrimitive = new SimpleTimeStamp(pushpin.Timestamp.Value.ToString("s"))
+            };
         }
 
         public static string GetStyle(this Pushpin pushpin)
         {
-            string styleUrl = ShadedYellowDot;
-            if (null != pushpin)
-            {
-                if (pushpin.Description.Contains("Foo"))
-                {
-                    styleUrl = ShadedRedDot;
-                }
-                if (pushpin.Description.Contains("Bar"))
-                {
-                    styleUrl = ShadedBlueDot;
-                }
-            }
-            return styleUrl;
+            if (null == pushpin)
+                return ShadedYellowDot;
+
+            if ("GEN-6".Equals(pushpin.FormName.Trim(), StringComparison.InvariantCultureIgnoreCase))
+                return ShadedBrownDot;
+
+            if ("GEN-2".Equals(pushpin.FormName.Trim(), StringComparison.InvariantCultureIgnoreCase))
+                return ShadedGreenDot;
+
+            if ("GEN-1".Equals(pushpin.FormName.Trim(), StringComparison.InvariantCultureIgnoreCase))
+                return ShadedWhiteDot;
+
+            if (pushpin.Description.ToUpper().Contains("IN PORT"))
+                return ShadedBlueDot;
+
+            if ("Fishing".Equals(pushpin.Description.Trim(), StringComparison.InvariantCultureIgnoreCase))
+                return ShadedRedDot;
+
+            // Anything else
+            return ShadedYellowDot;
         }
 
         private static Folder BuildAllPositions(IEnumerable<Pushpin> positions)
@@ -71,7 +98,7 @@ namespace TubsWeb.Core
                 where p != null
                 select p.ToPlacemark(p.GetStyle());
 
-            allPositions.Features.AddRange(allPositionQuery);
+            allPositions.Features.AddRange(allPositionQuery.Where(p => p != null));
 
             return allPositions;
         }
@@ -92,7 +119,7 @@ namespace TubsWeb.Core
             foreach (var position in positions.Skip(1))
             {
                 linestringBuilder.AppendFormat(
-                    "{0},{1},{2},{3},0\n",
+                    "{0},{1},0,{2},{3},0\n",
                     previousPosition.Longitude,
                     previousPosition.Latitude,
                     position.Longitude,
@@ -118,7 +145,7 @@ namespace TubsWeb.Core
             {
                 id = Guid.NewGuid().ToString(),
                 name = "GEN-1 Transfers",
-                visibility = true,
+                visibility = false,
                 open = false,
                 description = "GEN-1 Transfers"
             };
@@ -128,7 +155,7 @@ namespace TubsWeb.Core
                 where p != null && "GEN-1".Equals(p.FormName) && p.Description.Contains("Transfer")
                 select p.ToPlacemark(ShadedWhiteDot);
 
-            folder.Features.AddRange(qry);
+            folder.Features.AddRange(qry.Where(p => p != null));
             return folder;
         }
 
@@ -138,7 +165,7 @@ namespace TubsWeb.Core
             {
                 id = Guid.NewGuid().ToString(),
                 name = "GEN-1 Sightings",
-                visibility = true,
+                visibility = false,
                 open = false,
                 description = "GEN-1 Sightings"
             };
@@ -148,7 +175,7 @@ namespace TubsWeb.Core
                 where p != null && "GEN-1".Equals(p.FormName) && p.Description.Contains("Sighting")
                 select p.ToPlacemark(ShadedWhiteDot);
 
-            folder.Features.AddRange(qry);
+            folder.Features.AddRange(qry.Where(p => p != null));
             return folder;
         }
 
@@ -158,7 +185,7 @@ namespace TubsWeb.Core
             {
                 id = Guid.NewGuid().ToString(),
                 name = "GEN-2 Special Species Interactions",
-                visibility = true,
+                visibility = false,
                 open = false,
                 description = "GEN-2 Special Species Interactions"
             };
@@ -168,7 +195,7 @@ namespace TubsWeb.Core
                 where p != null && "GEN-2".Equals(p.FormName)
                 select p.ToPlacemark(ShadedGreenDot);
 
-            folder.Features.AddRange(qry);
+            folder.Features.AddRange(qry.Where(p => p != null));
             return folder;
         }
 
@@ -178,7 +205,7 @@ namespace TubsWeb.Core
             {
                 id = Guid.NewGuid().ToString(),
                 name = "GEN-6 Pollution Incidents",
-                visibility = true,
+                visibility = false,
                 open = false,
                 description = "GEN-6 Pollution Incidents"
             };
@@ -188,7 +215,7 @@ namespace TubsWeb.Core
                 where p != null && "GEN-6".Equals(p.FormName)
                 select p.ToPlacemark(ShadedBrownDot);
 
-            folder.Features.AddRange(qry);
+            folder.Features.AddRange(qry.Where(p => p != null));
             return folder;
         }
         
@@ -227,6 +254,7 @@ namespace TubsWeb.Core
                 open = true
             };
             doc.Features.Add(root);
+            doc.StyleSelectors.AddRange(KmlStyleBuilder.BuildStyles());
             return doc;
         }
     }

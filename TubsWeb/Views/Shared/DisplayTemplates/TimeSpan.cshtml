@@ -1,0 +1,10 @@
+﻿@model TimeSpan?
+
+@{
+    string format = (string)ViewData["format"];
+    if (null == format || "".Equals(format.Trim())) {
+        format = "hh\\h\\ mm\\m";
+    }
+}
+
+@Html.Encode( Model.HasValue ? Model.Value.ToString(format) : "N/A")

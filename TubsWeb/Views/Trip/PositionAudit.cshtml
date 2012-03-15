@@ -1,0 +1,52 @@
+﻿@model IEnumerable<TubsWeb.Models.PositionAuditViewModel>
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create("#", "Position Audit")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<h4>Position Audit</h4>
+
+<p>
+<img src='@Url.Content("~/Content/images/google-earth-16x16.png")' alt="" />
+<a href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })'>View in Google Earth</a>
+</p>
+
+<p>
+Items highlighted in red below probably have observer or entry errors as the
+velocity between points exceeds 35 km/h (19 knots).
+</p>
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Latitude / Longitude</th>
+            <th>Event Description</th>
+            <th>Time From Last Position</th>
+            <th>Distance From Last Position (km)</th>
+            <th>Velocity From Last Position (km/h)</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        var styleString = (item.DeltaVelocity.HasValue && item.DeltaVelocity.Value > 35) ? " style='color:red;'" : String.Empty;
+        <tr @Html.Raw(styleString)>
+            <td>@Html.DisplayFor(m => item.Timestamp)</td>
+            <td>@Html.DisplayFor(m => item.Latitude) / @Html.DisplayFor(m => item.Longitude)</td>
+            <td>@Html.DisplayFor(m => item.Description)</td>
+            <td>@Html.DisplayFor(m => item.DeltaTime)</td>
+            <td>@Html.DisplayFor(m => item.DeltaPosition)</td>
+            <td>@Html.DisplayFor(m => item.DeltaVelocity)</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -6,10 +6,6 @@
 
 namespace TubsWeb.Controllers
 {
-    using System.Web.Mvc;
-    using TubsWeb.Core;
-    using Spc.Ofp.Tubs.DAL.Entities;
-
     /*
      * This file is part of TUBS.
      *
@@ -28,7 +24,9 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
+    using System.Web.Mvc;
+    using Spc.Ofp.Tubs.DAL.Entities;
+    using TubsWeb.Core;
 
     /// <summary>
     /// SuperController adds logging and user error reporting capabilities to the MVC3 Controller.
@@ -118,6 +116,7 @@ namespace TubsWeb.Controllers
             pills.Add(Tuple.Create("Days", Url.Action("List", "SeaDay", routeValues)));
             pills.Add(Tuple.Create("Sets", Url.Action("List", "FishingSet", routeValues)));
             pills.Add(Tuple.Create("Page Counts", Url.Action("Index", "PageCount", routeValues)));
+            pills.Add(Tuple.Create("Position Audit", Url.Action("PositionAudit", "Trip", routeValues)));
             if (!tripId.IsReadOnly)
             {
                 pills.Add(Tuple.Create("Close Trip", Url.Action("Close", "Trip", routeValues)));
