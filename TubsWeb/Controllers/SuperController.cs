@@ -24,6 +24,7 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Collections.Generic;
+    using System.Web.Configuration;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
@@ -45,6 +46,10 @@ namespace TubsWeb.Controllers
         public const string MINUMUM_DATE = "MinDate";
         public const string MAXIMUM_DATE = "MaxDate";
 
+        // Report names
+        public const string PSTripSummary = "PS-TripSummary";
+        public const string CoverPage = "CoverPage";
+
         protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(SuperController));
 
         /// <summary>
@@ -58,6 +63,12 @@ namespace TubsWeb.Controllers
         {
             ViewData["flash"] = message;
             ViewData["flash-level"] = level;
+        }
+
+        public string GetReportUrl(string reportName, int tripId)
+        {
+            string formatString = WebConfigurationManager.AppSettings["ReportingServicesFormatUrl"].ToString();
+            return String.Format(formatString, reportName, tripId);
         }
 
         /// <summary>
@@ -116,6 +127,13 @@ namespace TubsWeb.Controllers
             pills.Add(Tuple.Create("Days", Url.Action("List", "SeaDay", routeValues)));
             pills.Add(Tuple.Create("Sets", Url.Action("List", "FishingSet", routeValues)));
             pills.Add(Tuple.Create("Page Counts", Url.Action("Index", "PageCount", routeValues)));
+            
+            // It's possible that the scan didn't come with a registration cover page.  If not, TUBS has to create it
+            // This URL is outside the system
+            // TODO Figure out the best way to have this URL open in a new window.
+            string coverPageUrl = GetReportUrl(CoverPage, tripId.Id);
+            pills.Add(Tuple.Create("Cover Page", coverPageUrl));
+
             pills.Add(Tuple.Create("Position Audit", Url.Action("PositionAudit", "Trip", routeValues)));
             if (!tripId.IsReadOnly)
             {
