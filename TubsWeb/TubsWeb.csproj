@@ -149,10 +149,13 @@
     <Content Include="Content\datetimepicker.css" />
     <Content Include="Content\images\25px-Feed-icon.png" />
     <Content Include="Content\images\calendar-icon.png" />
+    <Content Include="Content\images\delete.gif" />
     <Content Include="Content\images\feed-icon.png" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
     <Content Include="Content\images\google-earth-16x16.png" />
+    <Content Include="Content\images\star.gif" />
+    <Content Include="Content\jquery.rating.css" />
     <Content Include="Content\KeyTips.css" />
     <Content Include="Content\KeyTips.min.css" />
     <Content Include="Content\popup-back.gif" />
@@ -225,6 +228,7 @@
     <Content Include="Scripts\jquery.jtruncate.pack.js" />
     <Content Include="Scripts\jquery.KeyTips.js" />
     <Content Include="Scripts\jquery.KeyTips.min.js" />
+    <Content Include="Scripts\jquery.rating.pack.js" />
     <Content Include="Scripts\jquery.sparkline.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />

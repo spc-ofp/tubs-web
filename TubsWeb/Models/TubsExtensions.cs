@@ -109,6 +109,7 @@ namespace TubsWeb.Models.ExtensionMethods
                 {
                     trip.ProgramCode = (ObserverProgram)Enum.Parse(typeof(ObserverProgram), thvm.ProgramCode);
                 }
+                trip.CountryCode = thvm.CountryCode;
 
                 if (Enum.IsDefined(typeof(WorkbookVersion), thvm.Version))
                 {

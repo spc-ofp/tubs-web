@@ -15,6 +15,7 @@
 @if (null == Model)
 {
     <p>No GEN-3 available for this trip.</p>
+    @Html.ActionLink("Add GEN-3", "Edit", new { tripId = ViewBag.TripId })
 }
 else
 {
@@ -144,11 +145,13 @@ else
         <td>
             @Html.DisplayFor(m => detail.DetailDate, new { format = "d" })
         </td>
-        <td>@detail.Comments</td>
+        <td><div class="large-text">@detail.Comments</div></td>
     </tr>                      
     }
     </tbody>
     </table>
+    
+    @Html.ActionLink("Edit", "Edit", new { tripId = ViewBag.TripId })
 }
 
 @section AdditionalScripts {

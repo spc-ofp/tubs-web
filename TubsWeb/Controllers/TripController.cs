@@ -203,13 +203,6 @@ namespace TubsWeb.Controllers
             return View(tripId);
         }
 
-        // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
-        [Authorize(Roles = Security.EditRoles)]
-        public ActionResult Create()
-        {           
-            return View(new TripHeaderViewModel());
-        }
-
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Close(Trip tripId)
         {
@@ -272,6 +265,13 @@ namespace TubsWeb.Controllers
                 Logger.Error("Error while closing trip", ex);
             }
             return View(tcvm);
+        }
+
+        // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Create()
+        {
+            return View(new TripHeaderViewModel());
         }
 
         //

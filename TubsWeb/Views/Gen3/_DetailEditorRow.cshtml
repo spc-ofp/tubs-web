@@ -22,11 +22,12 @@
     <input type="hidden" name="@idFieldName" value="@Model.Id" />
     @Html.LabelFor(m => Model.DetailDate)
     <input class="date" id="@dateFieldId" name="@dateFieldName" type="text" value="@Model.DetailDate" />
-    @* @Html.TextBoxFor(m => Model.DetailDate, new { @class = "date", id = System.Guid.NewGuid().ToString(), name = dateFieldName }) *@
     &nbsp;&nbsp;
     @Html.LabelFor(m => Model.Comments)
+    <textarea class="span6" style="height: 100px;" name="@commentFieldName">@Model.Comments</textarea>
+    @*
     <input style="width: 350px;" name="@commentFieldName" type="text" value="@Model.Comments" />
-    @* @Html.TextBoxFor(m => Model.Comments, new { style = "width: 300px;", name = commentFieldName }) *@
+    *@
 </div>
 
 @{ Html.RenderPartial("_DatePickerInit"); }
