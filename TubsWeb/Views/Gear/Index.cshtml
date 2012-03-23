@@ -5,7 +5,7 @@
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.Trip.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
         Tuple.Create("#", "Fishing Gear")
     };
 }
@@ -16,16 +16,19 @@
 {
     <p>No gear information available</p>
 }
-else if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear))
+else 
 {
-    var psgear = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear;
-    @Html.DisplayFor(m => psgear)
-}
-else
-{
-    <p>Not implemented</p>
+    if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear))
+    {
+        var psgear = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear;
+        @Html.DisplayFor(m => psgear)
+    }
+    else
+    {
+        <p>Not implemented</p>
+    }
+    <p>
+        @Html.ActionLink("Edit Gear", "Edit", "Gear", new { tripId = ViewBag.TripId }, null)
+    </p> 
 }
 
-<p>
-    @Html.ActionLink("Edit Gear", "Edit", "Gear", new { tripId = ViewBag.TripId }, null)
-</p>

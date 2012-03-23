@@ -1,13 +1,7 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Trip>
-@using System.Web.Configuration
            
 @{
     ViewBag.Title = "List of Trips";
-}
-
-@{
-    var baseMapUrl = WebConfigurationManager.AppSettings["BasePositionServiceUrl"].ToString();
-    var baseReportUrl = WebConfigurationManager.AppSettings["BaseReportingServiceUrl"].ToString();
 }
 
 <h2>@ViewBag.Title</h2>
@@ -16,20 +10,9 @@
 @* TODO Fix return and departure dates *@
 
 @{ 
-    //var grid = new WebGrid(source: Model, canSort:false, rowsPerPage: 15);
-
     var grid = new WebGrid(rowsPerPage: 15, canSort: false);
     grid.Bind(Model, rowCount: ViewBag.TotalRows);
 }
-
-@*
-   Html.Raw(String.Format("<a href='{0}{1}' target='_blank'>Report</a>", baseReportUrl, item.Id))
-
-   grid.Column(
-            header: "Trip Map",
-                    format: (item) => new HtmlString(String.Format("<a href='{0}{1}' target='_blank'>Positions</a>", baseMapUrl, item.Id))
-        ),
-*@
 
 <div id="tripgrid">
     @grid.GetHtml(
@@ -37,13 +20,11 @@
     columns: grid.Columns(
         grid.Column(
             format: (item) => 
-                new HtmlString(
-                Html.ActionLink("Edit", "Edit", new { tripId = item.Id }) + " | " +
-                Html.ActionLink("Details", "Details", new { tripId = item.Id }))
+                @Html.ActionLink("Details", "Details", new { tripId = item.Id })
         ),
         grid.Column("Id", "Trip Id"),
         grid.Column("ProgramCode", "Program"),
-        grid.Column("TripNumber", "Trip Number"), @* Reformat this to ABC / 10-01 ? *@
+        grid.Column("TripNumber", "Trip Number"), @* Reformat this to ABC / 10-01 *@
         grid.Column("Observer", "Observer"),
         grid.Column("Vessel", "Vessel"),
         grid.Column("DeparturePort", "Port of Departure"),
@@ -53,14 +34,24 @@
     ))
 </div>
 
-@{ if (ViewBag.HasPrevious)
-   {
-       @Html.ActionLink("<<", "Index", new { page = (ViewBag.CurrentPage - 1) })    
-   }   
+@* TODO When we get past about 20 pages (300 trips), this will get ugly *@
+@{
+    // Bootstrap will disable a link if the container has the class 'disabled'.
+    string classForPrevious = ViewBag.HasPrevious ? String.Empty : "disabled";
+    string classForNext = ViewBag.HasNext ? String.Empty : "disabled";
+    string actionName = ViewBag.ActionName ?? "Index";
 }
 
-@{ if (ViewBag.HasNext)
-   {
-       @Html.ActionLink(">>", "Index", new { page = (ViewBag.CurrentPage + 1) })    
-   }    
-}
+<div class="pagination">
+    <ul>
+        <li class="@classForPrevious"><a href='@Url.Action(actionName, new { page = (ViewBag.CurrentPage - 1) })'>&larr;</a></li>
+        @for (int i = 0; i < ViewBag.PageCount; i++)
+        {
+            string classForThis = i == ViewBag.CurrentPage ? "active" : String.Empty;
+            <li class="@classForThis">
+                @Html.ActionLink((i + 1).ToString(), actionName, new { page = i })
+            </li>
+        }
+        <li class="@classForNext"><a href='@Url.Action(actionName, new { page = (ViewBag.CurrentPage + 1) })'>&rarr;</a></li>
+    </ul>
+</div>

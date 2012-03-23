@@ -1,58 +1,42 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear
 @using Spc.Ofp.Tubs.DAL.Common
 
-@if (ViewData["flash"] != null)
-{
-    var alertLevel = ViewData["flash-level"] ?? "alert-error";
-<div class="alert @alertLevel">
-    @ViewData["flash"]
-</div>
-}
 
-@using (Html.BeginForm())
-{ 
-    @Html.ValidationSummary(true, "Save failed")
-    @* TODO Figure out which one of these we really need... *@
-    <input type="hidden" name="gearType" value="@typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear)" />
-    @Html.Hidden("gearType", typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear))
-    @Html.HiddenFor(m => m.Id)
-    <fieldset>
-        <legend>Powerblock</legend>
-        @Html.LabelFor(m => m.PowerblockMake)  @Html.EditorFor(m => m.PowerblockMake)  <br />
-        @Html.LabelFor(m => m.PowerblockModel) @Html.EditorFor(m => m.PowerblockModel) <br />
-        @Html.LabelFor(m => m.PowerblockPower) @Html.EditorFor(m => m.PowerblockPower) <br />
-        @Html.LabelFor(m => m.PowerblockSpeed) @Html.EditorFor(m => m.PowerblockSpeed)
-    </fieldset>
+@* TODO Figure out which one of these we really need... *@
+<input type="hidden" name="gearType" value="@typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear)" />
+@Html.Hidden("gearType", typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineGear))
+@Html.HiddenFor(m => m.Id)
+<fieldset>
+    <legend>Powerblock</legend>
+    @Html.LabelFor(m => m.PowerblockMake)  @Html.EditorFor(m => m.PowerblockMake)
+    @Html.LabelFor(m => m.PowerblockModel) @Html.EditorFor(m => m.PowerblockModel)
+    @Html.LabelFor(m => m.PowerblockPower) @Html.EditorFor(m => m.PowerblockPower)
+    @Html.LabelFor(m => m.PowerblockSpeed) @Html.EditorFor(m => m.PowerblockSpeed)
+</fieldset>
 
-    <fieldset>
-        <legend>Purse Winch</legend>
-        @Html.LabelFor(m => m.PurseWinchMake)  @Html.EditorFor(m => m.PurseWinchMake)  <br />
-        @Html.LabelFor(m => m.PurseWinchModel) @Html.EditorFor(m => m.PurseWinchModel) <br />
-        @Html.LabelFor(m => m.PurseWinchPower) @Html.EditorFor(m => m.PurseWinchPower) <br />
-        @Html.LabelFor(m => m.PurseWinchSpeed) @Html.EditorFor(m => m.PurseWinchSpeed)
-    </fieldset>
+<fieldset>
+    <legend>Purse Winch</legend>
+    @Html.LabelFor(m => m.PurseWinchMake)  @Html.EditorFor(m => m.PurseWinchMake)
+    @Html.LabelFor(m => m.PurseWinchModel) @Html.EditorFor(m => m.PurseWinchModel)
+    @Html.LabelFor(m => m.PurseWinchPower) @Html.EditorFor(m => m.PurseWinchPower)
+    @Html.LabelFor(m => m.PurseWinchSpeed) @Html.EditorFor(m => m.PurseWinchSpeed)
+</fieldset>
 
-    <fieldset>
-        <legend>Net</legend>
-        @Html.LabelFor(m => m.NetDepth) @Html.EditorFor(m => m.NetDepth)
-        @Html.DropDownListFor(m => m.NetDepthUnit, new SelectList(TubsWeb.Models.GearUnits.UnitOne, Model.NetDepthUnit), "Choose") <br />
-        @Html.LabelFor(m => m.NetLength) @Html.EditorFor(m => m.NetLength) 
-        @Html.DropDownListFor(m => m.NetLengthUnits, new SelectList(TubsWeb.Models.GearUnits.UnitOne, Model.NetLengthUnits), "Choose") <br />
-        @Html.LabelFor(m => m.NetStrips) @Html.EditorFor(m => m.NetStrips) <br />
-        @Html.LabelFor(m => m.MeshSize) @Html.EditorFor(m => m.MeshSize) 
-        @Html.DropDownListFor(m => m.MeshSizeUnits, new SelectList(TubsWeb.Models.GearUnits.UnitTwo, Model.MeshSizeUnits), "Choose")
-    </fieldset>
+<fieldset>
+    <legend>Net</legend>
+    @Html.LabelFor(m => m.NetDepth) @Html.EditorFor(m => m.NetDepth)
+    @Html.DropDownListFor(m => m.NetDepthUnit, new SelectList(TubsWeb.Models.GearUnits.UnitOne, Model.NetDepthUnit), "Choose")
+    @Html.LabelFor(m => m.NetLength) @Html.EditorFor(m => m.NetLength) 
+    @Html.DropDownListFor(m => m.NetLengthUnits, new SelectList(TubsWeb.Models.GearUnits.UnitOne, Model.NetLengthUnits), "Choose")
+    @Html.LabelFor(m => m.NetStrips) @Html.EditorFor(m => m.NetStrips)
+    @Html.LabelFor(m => m.MeshSize) @Html.EditorFor(m => m.MeshSize) 
+    @Html.DropDownListFor(m => m.MeshSizeUnits, new SelectList(TubsWeb.Models.GearUnits.UnitTwo, Model.MeshSizeUnits), "Choose")
+</fieldset>
 
-    <fieldset>
-        <legend>Brails</legend>
-        @Html.LabelFor(m => m.Brail1Size) @Html.EditorFor(m => m.Brail1Size) mT<br />
-        @Html.LabelFor(m => m.Brail2Size) @Html.EditorFor(m => m.Brail2Size) mT<br />
-        @Html.LabelFor(m => m.BrailType) <br />
-        @Html.TextAreaFor(m => m.BrailType, new { @cols = 80, @rows = 5 })
-    </fieldset>
-    
-    <p>
-        <input type="submit" value="Save" />
-        <input type="reset" value="Cancel" />
-    </p>
-}
+<fieldset>
+    <legend>Brails</legend>
+    @Html.LabelFor(m => m.Brail1Size) @Html.EditorFor(m => m.Brail1Size) mT
+    @Html.LabelFor(m => m.Brail2Size) @Html.EditorFor(m => m.Brail2Size) mT
+    @Html.LabelFor(m => m.BrailType)
+    @Html.TextAreaFor(m => m.BrailType, new { @cols = 80, @rows = 5 })
+</fieldset>

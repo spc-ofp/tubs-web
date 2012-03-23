@@ -12,8 +12,10 @@
 <td>@Html.TextBoxFor(m => Model.Nationality, new { style = "width: 50px;" })</td>
 @* TODO Change this to a hyperlink? *@
 <td>
-    <input type="Submit" value="Save" style="font-size: 1.0em;"/>
-    <input type="Reset" value="Undo" style="font-size: 1.0em;"/>
+    <div class="btn-group">
+        <input type="submit" name="Save" value="Save" class="btn-primary" />
+        <input type="reset" name="Cancel" />
+    </div>
 </td>
 
 

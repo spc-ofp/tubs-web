@@ -1,0 +1,68 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineVesselAttributes
+           
+@Html.HiddenFor(m => m.Id)
+
+<fieldset>
+<legend>Auxiliary Boats</legend>
+@Html.LabelFor(m => m.SpeedboatCount)
+@Html.TextBoxFor(m => m.SpeedboatCount)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.SpeedboatCount)</span>
+
+@Html.LabelFor(m => m.AuxiliaryBoatCount)
+@Html.TextBoxFor(m => m.AuxiliaryBoatCount)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.AuxiliaryBoatCount)</span>
+
+@Html.LabelFor(m => m.HasTenderBoats)
+@Html.EditorFor(m => m.HasTenderBoats)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.HasTenderBoats)</span>
+
+@Html.LabelFor(m => m.SkiffMake)
+@Html.TextBoxFor(m => m.SkiffMake)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.SkiffMake)</span>
+
+@Html.LabelFor(m => m.SkiffPower)
+@Html.TextBoxFor(m => m.SkiffPower)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.SkiffPower)</span>
+
+@Html.LabelFor(m => m.CruiseSpeed)
+@Html.TextBoxFor(m => m.CruiseSpeed)
+<span class="help-inline">@Html.ValidationMessageFor(m => m.CruiseSpeed)</span>
+</fieldset>
+
+<fieldset>
+<legend>Helicopter</legend>
+@Html.LabelFor(model => model.HelicopterMake)
+@Html.TextBoxFor(model => model.HelicopterMake)
+<span class="help-inline">@Html.ValidationMessageFor(model => model.HelicopterMake)</span>
+
+@Html.LabelFor(model => model.HelicopterModel)
+@Html.TextBoxFor(model => model.HelicopterModel)
+<span class="help-inline">@Html.ValidationMessageFor(model => model.HelicopterModel)</span>
+
+@Html.LabelFor(model => model.HelicopterRegistrationNumber)
+@Html.TextBoxFor(model => model.HelicopterRegistrationNumber)
+<span class="help-inline">@Html.ValidationMessageFor(model => model.HelicopterRegistrationNumber)</span>
+
+@Html.LabelFor(model => model.HelicopterRange)
+@Html.TextBoxFor(model => model.HelicopterRange)
+@Html.DropDownListFor(m => m.HelicopterRangeUnit, new SelectList(TubsWeb.Models.GearUnits.UnitFourLarge, Model.HelicopterRangeUnit), "Choose")
+<span class="help-inline">@Html.ValidationMessageFor(model => model.HelicopterRange)</span>
+
+@Html.LabelFor(model => model.HelicopterColor)
+@Html.TextBoxFor(model => model.HelicopterColor)
+<span class="help-inline">@Html.ValidationMessageFor(model => model.HelicopterColor)</span>
+
+@Html.LabelFor(model => model.HelicopterServiceOtherCount)
+@Html.TextBoxFor(model => model.HelicopterServiceOtherCount)
+<span class="help-inline">@Html.ValidationMessageFor(model => model.HelicopterServiceOtherCount)</span>
+
+</fieldset>
+
+
+
+@*
+@Html.LabelFor()
+@Html.TextBoxFor()
+<span class="help-inline">@Html.ValidationMessageFor()</span>
+*@
+

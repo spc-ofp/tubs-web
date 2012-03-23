@@ -128,28 +128,6 @@ namespace TubsWeb.Controllers
             */
         }
 
-        private static string Experience(int? years, int? months)
-        {
-            if (!years.HasValue && !months.HasValue)
-            {
-                return "None or unknown";
-            }
-            StringBuilder sb = new StringBuilder();
-            if (years.HasValue)
-            {
-                sb.Append(years.Value).Append(" years ");
-            }
-            if (months.HasValue)
-            {
-                if (sb.Length > 0)
-                {
-                    sb.Append("and ");
-                }
-                sb.Append(months.Value).Append(" months");
-            }
-            return sb.ToString();
-        }
-
         /// <summary>
         /// Find the first crewmember with the given job in the list of all crew for the trip.
         /// If there is no crewmember, create a new, empty object.
@@ -170,8 +148,7 @@ namespace TubsWeb.Controllers
                     Nationality = c.CountryCode,
                     Comments = c.Comments,
                     Years = c.YearsExperience,
-                    Months = c.MonthsExperience,
-                    Experience = Experience(c.YearsExperience, c.MonthsExperience)
+                    Months = c.MonthsExperience
                 }
             ).FirstOrDefault<CrewViewModel.CrewMemberModel>() ?? new CrewViewModel.CrewMemberModel(jobType);
         }
@@ -189,8 +166,7 @@ namespace TubsWeb.Controllers
                     Nationality = c.CountryCode,
                     Comments = c.Comments,
                     Years = c.YearsExperience,
-                    Months = c.MonthsExperience,
-                    Experience = Experience(c.YearsExperience, c.MonthsExperience)
+                    Months = c.MonthsExperience
                 };
         }
 
@@ -238,23 +214,6 @@ namespace TubsWeb.Controllers
             ViewBag.Title = String.Format("Edit crew list for {0}", tripId.ToString());
             return View(Fill(tripId));
         }
-
-        /*
-        [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
-        public ActionResult Edit(Trip tripId, CrewViewModel cvm)
-        {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-            
-            // Convert CrewViewModel back into list of crew for trip
-
-            // Add/Update as appropriate
-            return View(cvm);
-        }
-        */
 
         [HttpPost]
         [Authorize(Roles = Security.EditRoles)]

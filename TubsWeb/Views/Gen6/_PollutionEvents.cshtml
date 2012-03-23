@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.PollutionEvent>
+@using Spc.Ofp.Tubs.DAL.Common
+
+@helper SpeedAndDirection(int? speed, int? direction)
+    {
+        if (!speed.HasValue && !direction.HasValue)
+        {
+        <text>N/A</text> 
+        }
+        else
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.Append(speed.HasValue ? speed.Value.ToString() : "UNK");
+            sb.Append(" kts @ ");
+            sb.Append(direction.HasValue ? direction.Value.ToString() : "UNK");
+            sb.Append("&deg;");        
+        @Html.Raw(sb.ToString()) 
+        }
+}
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Date</th>
+            <th>Position (EEZ)</th>
+            <th>Wind Conditions</th>
+            <th>Sea Code</th>
+            <th>Activity</th>
+            <th>Vessel</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Select((x, i) => new { Data = x, Index = i }))
+    {
+        <tr>
+            <td>
+                @Html.ActionLink("Details", "Index", "Gen6", new { tripId = ViewBag.TripId, pageNumber = item.Index + 1 }, null)
+            </td>
+            <td>@Html.DisplayFor(m => item.Data.IncidentDate)</td>
+            <td>@item.Data.Latitude / @item.Data.Longitude (@item.Data.EezId)</td>
+            <td>@SpeedAndDirection(item.Data.WindSpeed, item.Data.WindDirection)</td>
+            <td>@item.Data.SeaCode</td>
+            <td>@item.Data.ActivityType.GetDescription()</td>
+            <td>@item.Data.VesselName</td>
+            <td>@item.Data.Comments</td>
+        </tr>
+    }
+    </tbody>
+</table>

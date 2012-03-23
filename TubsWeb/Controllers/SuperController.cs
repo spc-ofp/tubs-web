@@ -107,9 +107,6 @@ namespace TubsWeb.Controllers
 
             IList<Tuple<string, string>> pills = new List<Tuple<string, string>>(12);
 
-            // TODO Put the form that provides this data into the link title.
-            // e.g. "Days (PS-2)"
-
             if (typeof(PurseSeineTrip) == tripId.GetType())
             {
                 pills.Add(Tuple.Create("Auxiliaries", Url.Action("Index", "Auxiliaries", routeValues)));

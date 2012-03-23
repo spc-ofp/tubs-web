@@ -14,10 +14,12 @@
 
 @if (null == Model)
 {
-<p>
-    No details available for this vessel.
-    @Html.ActionLink("Add Vessel Details", "Create", "VesselDetails", new { tripId = ViewBag.TripId }, null)
-</p>
+    <p>
+        No details available for this vessel.        
+    </p>
+    <p>
+        @Html.ActionLink("Add Vessel Details", "Create", "VesselDetails", new { tripId = ViewBag.TripId }, null)
+    </p>
 } else {
 <fieldset>
     <legend>Vessel Details</legend>
@@ -29,8 +31,7 @@
     @Html.LabelFor(m => m.MasterCountryCode) @Html.DisplayFor(m => m.MasterCountryCode) <br />
     @Html.LabelFor(m => m.Comments) @Html.DisplayFor(m => m.Comments) <br />
 </fieldset>
-}
-
 <p>
     @Html.ActionLink("Edit Vessel Details", "Edit", "VesselDetails", new { tripId = ViewBag.TripId }, null)
 </p>
+}

@@ -1,4 +1,5 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineVesselAttributes
+@using Spc.Ofp.Tubs.DAL.Common
 
 @* For now, create this in the View. *@
 @{
@@ -22,29 +23,70 @@ else
 {
     <fieldset>
         <legend>Auxiliary Boats</legend>
-        @Html.LabelFor(m => m.SpeedboatCount) @Html.DisplayFor(m => m.SpeedboatCount) <br />
-        @Html.LabelFor(m => m.AuxiliaryBoatCount) @Html.DisplayFor(m => m.AuxiliaryBoatCount) <br />
-        @Html.LabelFor(m => m.HasTenderBoats) @Html.DisplayFor(m => m.HasTenderBoats) <br />
-        @Html.LabelFor(m => m.SkiffMake) @Html.DisplayFor(m => m.SkiffMake) 
-        @if (Model.SkiffPower.HasValue)
-        {
-            @Html.DisplayFor(m => m.SkiffPower) <text>hp</text>
-        }
-        <br />
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.SpeedboatCount)</div>
+            <div class="span2">@Html.DisplayFor(m => m.SpeedboatCount)</div>
+        </div>
+
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.AuxiliaryBoatCount)</div>
+            <div class="span2">@Html.DisplayFor(m => m.AuxiliaryBoatCount)</div>
+        </div>
+
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.HasTenderBoats)</div>
+            <div class="span2">@Html.DisplayFor(m => m.HasTenderBoats)</div>             
+        </div>
+
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.SkiffMake)</div>
+            <div class="span2">
+                @Html.DisplayFor(m => m.SkiffMake)
+                @if (Model.SkiffPower.HasValue)
+                {
+                    @Html.DisplayFor(m => m.SkiffPower) <text>hp</text>
+                }
+            </div>             
+        </div>
     </fieldset>
 
     <fieldset>
         <legend>Helicopter</legend>
-        @Html.LabelFor(m => m.HelicopterMake) @Html.DisplayFor(m => m.HelicopterMake) <br />
-        @Html.LabelFor(m => m.HelicopterModel) @Html.DisplayFor(m => m.HelicopterModel) <br />
-         @Html.LabelFor(m => m.HelicopterRegistrationNumber) @Html.DisplayFor(m => m.HelicopterRegistrationNumber) <br />
-        @Html.LabelFor(m => m.HelicopterRange) @Html.DisplayFor(m => m.HelicopterRange) 
-        @if (Model.HelicopterRange.HasValue)
-        {
-            @Html.DisplayFor(m => m.HelicopterRangeUnit)
-        }<br />
-        @Html.LabelFor(m => m.HelicopterColor) @Html.DisplayFor(m => m.HelicopterColor) <br />
-        @Html.LabelFor(m => m.HelicopterServiceOtherCount) @Html.DisplayFor(m => m.HelicopterServiceOtherCount) <br />
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.HelicopterMake)</div>
+            <div class="span2">@Html.DisplayFor(m => m.HelicopterMake)</div>
+        </div>
+
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.HelicopterModel)</div>
+            <div class="span2">@Html.DisplayFor(m => m.HelicopterModel)</div>
+        </div>
+
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.HelicopterRegistrationNumber)</div>
+            <div class="span2">@Html.DisplayFor(m => m.HelicopterRegistrationNumber)</div>
+        </div>
+
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.HelicopterRange)</div>
+            <div class="span2">
+                @Html.DisplayFor(m => m.HelicopterRange) 
+                @if (Model.HelicopterRange.HasValue)
+                {
+                    @Html.DisplayFor(m => m.HelicopterRangeUnit.GetDescription())
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.HelicopterColor)</div>
+            <div class="span2">@Html.DisplayFor(m => m.HelicopterColor)</div>
+        </div>
+
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.HelicopterServiceOtherCount)</div>
+            <div class="span2">@Html.DisplayFor(m => m.HelicopterServiceOtherCount)</div>
+        </div>
     </fieldset>
 
     <p>

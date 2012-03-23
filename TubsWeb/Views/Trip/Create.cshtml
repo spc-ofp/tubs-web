@@ -13,7 +13,7 @@
 </div>
 }
 
-@using (Html.BeginForm("Create", "Trip", FormMethod.Post, new { id = "createTripForm", @class = "well" }))
+@using (Html.BeginForm("Create", "Trip", FormMethod.Post, new { id = "createTripForm", @class = "well", autocomplete = "off" }))
 {
     @Html.ValidationSummary(true)
     <fieldset>

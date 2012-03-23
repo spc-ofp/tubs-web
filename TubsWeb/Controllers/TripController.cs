@@ -82,7 +82,9 @@ namespace TubsWeb.Controllers
             ViewBag.HasPrevious = trips.HasPrevious;
             ViewBag.HasNext = trips.HasNext;
             ViewBag.CurrentPage = (page ?? 0);
-            ViewBag.TotalRows = Math.Max(repo.All().Count() - 1, 0);
+            int tripCount = Math.Max(repo.All().Count() - 1, 0);
+            ViewBag.PageCount = (tripCount + itemsPerPage - 1) / itemsPerPage;
+            ViewBag.TotalRows = tripCount;
             return View(trips.Entities);
         }
 
@@ -94,9 +96,13 @@ namespace TubsWeb.Controllers
             ViewBag.HasPrevious = trips.HasPrevious;
             ViewBag.HasNext = trips.HasNext;
             ViewBag.CurrentPage = (page ?? 0);
-            ViewBag.TotalRows = Math.Max(repo.All().Count() - 1, 0);
+
+            int tripCount = Math.Max(repo.FilterBy(t => t.EnteredBy.ToUpper().Contains(filterCriteria)).Count() - 1, 0);
+            ViewBag.PageCount = (tripCount + itemsPerPage - 1) / itemsPerPage;
+            ViewBag.TotalRows = tripCount;
+            ViewBag.ActionName = "MyTrips";
             ViewBag.FilterCriteria = filterCriteria; // For debug use
-            return View(trips.Entities);
+            return View("Index", trips.Entities);
         }
 
         /// <summary>

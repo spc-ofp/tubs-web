@@ -1,11 +1,13 @@
 ﻿@model TubsWeb.Models.TripHeaderViewModel
 
+@* TODO Jazz this up with HTML5 features:  http://www.the-art-of-web.com/html/html5-form-validation/ *@
+
 @Html.HiddenFor(m => m.Id)
 
 @* Use a hidden field for the staff code -- the full name field is for actual entry *@
 @Html.LabelFor(m => m.ObserverCode)
 @Html.HiddenFor(m => m.ObserverCode)
-@Html.TextBoxFor(m => m.ObserverFullName)
+@Html.TextBoxFor(m => m.ObserverFullName, new { required = String.Empty, placeholder = "Enter the observer's name"})
 <span class="help-inline">@Html.ValidationMessageFor(m => m.ObserverCode)</span>
 
 @Html.LabelFor(m => m.TripNumber)

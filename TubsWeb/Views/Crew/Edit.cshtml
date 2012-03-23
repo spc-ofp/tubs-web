@@ -78,8 +78,8 @@
 @* TODO Change this to a modal dialog *@
 <fieldset>
     <legend>Add New Deckhand</legend>
-    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "deckHands", OnSuccess = String.Format("clearForm('#{0}')", "addHandForm") };  }
-    @using (Ajax.BeginForm("AddDeckHand", options))
+    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "deckHands", OnSuccess = "onAddSuccess", OnFailure = "onAddFail" };  }
+    @using (Ajax.BeginForm("AddDeckHand", null, options, new { @class = "well", id = "addHandForm" }))
     {
         @Html.ValidationSummary(false)
         var hand = new CrewViewModel.CrewMemberModel(Spc.Ofp.Tubs.DAL.Common.JobType.Crew);
@@ -88,20 +88,44 @@
         @Html.LabelFor(m => hand.Name)
         @Html.TextBoxFor(m => hand.Name)
         @Html.ValidationMessageFor(m => hand.Name)
-        <br />
+ 
         @Html.Label("Experience")
         @Html.TextBoxFor(m => hand.Years, new { style = "width: 50px;" }) <text>years</text> 
         @Html.TextBoxFor(m => hand.Months, new { style = "width: 50px;" }) <text>months</text>
         @Html.ValidationMessageFor(m => hand.Years)
         @Html.ValidationMessageFor(m => hand.Months)
-        <br />
+
         @Html.LabelFor(m => hand.Nationality)
         @Html.TextBoxFor(m => hand.Nationality, new { style = "width: 50px;" })
         @Html.ValidationMessageFor(m => hand.Nationality)
-        <br />
+
     
-        <p>
-            <input type="submit" name="Add" value="Add" />
-        </p>
+        <div class="btn-group">
+            <input type="submit" name="Add" value="Add" class="btn-primary" />
+            <input type="reset" name="Cancel" />
+        </div>
     }
 </fieldset>
+
+@section AdditionalScripts {
+    <script src="@Url.Content("~/Scripts/jquery.meow.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        function onAddFail(xhr, status, error) {
+            $.meow({
+                title: 'Failed to add crewmember',
+                message: error,
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+
+        function onAddSuccess(data, status, xhr) {
+            /* Better to clear the text boxes only...*/
+            clearForm('#addHandForm');
+            $.meow({
+                message: 'Crewmember added',
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+    </script>
+}

@@ -206,6 +206,15 @@ namespace TubsWeb
                 new { tripId = @"\d+" }
             );
 
+            // Although length samples are subordinate to Sets, they'll be available at a higher level
+            // for a more readable URL.
+            routes.MapRoute(
+                "LengthSamples",
+                "Trip/{tripId}/Samples/{setNumber}/Page/{pageNumber}",
+                new { controller = "LengthSample", action = "Index", pageNumber = UrlParameter.Optional },
+                new { tripId = @"\d+", setNumber = @"\d+", pageNumber = @"\d+" }
+            );
+
 
             // dayNumber is not an ID, it's a number between 1 and the number of sea days in the trip
             // FIXME:  Add another route that gets directly to SeaDay by Id

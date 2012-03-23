@@ -68,5 +68,9 @@ namespace TubsWeb.Controllers
             return View(tripId.PollutionEvents ?? new List<PollutionEvent>());
         }
 
+        // The following methods are for an investigation of this method of Ajax/Modal dialog
+        // http://xhalent.wordpress.com/2011/05/25/master-details-with-dialog-in-asp-net-mvc-and-unobstrusive-ajax/
+        // On further reflection, GEN-6 isn't a great candidate for this
+
     }
 }

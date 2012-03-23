@@ -14,13 +14,33 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@if (ViewBag.GearType == typeof(PurseSeineGear))
+@if (ViewData["flash"] != null)
 {
-    var gear = Model as PurseSeineGear;
-    @Html.EditorFor(m => gear);
+    var alertLevel = ViewData["flash-level"] ?? "alert-error";
+<div class="alert @alertLevel">
+    <a class="close" data-dismiss="alert">&times;</a>
+    @ViewData["flash"]
+</div>
 }
 
-@*  TODO Add other gear types as new trip types come online *@
+@using (Html.BeginForm("Edit", "Gear", FormMethod.Post, new { @class = "well" }))
+{ 
+    @Html.ValidationSummary(true)
+    if (ViewBag.GearType == typeof(PurseSeineGear))
+    {
+        var gear = Model as PurseSeineGear;
+        @Html.EditorFor(m => gear)
+    }
+
+    @*  TODO Add other gear types as new trip types come online *@
+    
+    <div class="btn-group">
+        <input type="submit" name="Save" value="Save" class="btn-primary" />
+        <input type="reset" name="Cancel" />
+    </div>
+}
+
+
     
 <p>
     @Html.ActionLink("Back to Gear", "Index", "Gear", new { tripId = ViewBag.TripId }, null) | 

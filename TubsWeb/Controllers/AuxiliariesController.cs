@@ -31,7 +31,7 @@ namespace TubsWeb.Controllers
     public class AuxiliariesController : SuperController
     {
 
-        private ActionResult Modify(Trip id, PurseSeineVesselAttributes aux, string viewName)
+        private ActionResult Modify(Trip id, PurseSeineVesselAttributes aux)
         {
             var trip = id as PurseSeineTrip;
             if (null == trip)
@@ -52,9 +52,10 @@ namespace TubsWeb.Controllers
                 {
                     repo.Update(aux, true);
                 }
-                return View("Index", aux);
+                return RedirectToAction("Index", new { tripId = trip.Id });
             }
-            return View(viewName, aux);
+            string actionName = this.ControllerContext.RouteData.GetRequiredString("action");
+            return View(actionName, aux);
         }
         
         //
@@ -105,7 +106,7 @@ namespace TubsWeb.Controllers
         {
             aux.EnteredDate = DateTime.Now;
             aux.EnteredBy = User.Identity.Name;
-            return Modify(tripId, aux, "Create");
+            return Modify(tripId, aux);
         }
 
         [Authorize(Roles = Security.EditRoles)]
@@ -134,7 +135,9 @@ namespace TubsWeb.Controllers
         {
             var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(tripId) as PurseSeineTrip;
             Logger.DebugFormat("TripId: {0}, Auxiliary Id: {1}", tripId, aux.Id);
-            return Modify(trip, aux, "Edit");
+            aux.UpdatedBy = User.Identity.Name;
+            aux.UpdatedDate = DateTime.Now;
+            return Modify(trip, aux);
         }
 
     }

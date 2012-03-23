@@ -33,15 +33,21 @@ namespace TubsWeb.Controllers
     {
         //
         // GET: /Gear/
-        public ActionResult Index(int tripId)
+        public ActionResult Index(Trip tripId)
         {
-            ViewBag.TripId = tripId;
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
             var repo = new TubsRepository<Gear>(MvcApplication.CurrentSession);
-            var gear = repo.FilterBy(g => g.Trip.Id == tripId).FirstOrDefault();
+            var gear = repo.FilterBy(g => g.Trip.Id == tripId.Id).FirstOrDefault();
+
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             ViewBag.Title =
                 null == gear ?
                     "No gear recorded for this trip" :
-                    String.Format("Gear for {0}", gear.Trip.ToString());
+                    String.Format("Gear for {0}", tripId.ToString());
 
             return View(gear);
         }
@@ -76,23 +82,20 @@ namespace TubsWeb.Controllers
         // FIXME Need to come up with a better way of doing this -- maybe a "Mutator" attribute
         // and an authorize filter?
         [Authorize(Roles = Security.EditRoles)]
-        public ActionResult Edit(int tripId)
+        public ActionResult Edit(Trip tripId)
         {
-            ViewBag.TripId = tripId;
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
 
             var repo = new TubsRepository<Gear>(MvcApplication.CurrentSession);
-            var gear = repo.FilterBy(g => g.Trip.Id == tripId).FirstOrDefault();
+            var gear = repo.FilterBy(g => g.Trip.Id == tripId.Id).FirstOrDefault();
             if (null == gear)
             {
-                var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(tripId);
-                if (null == trip)
-                {
-                    Flash("Can't add gear for a trip that doesn't exist");
-                    // TODO Need a better view for this...
-                    return View();
-                }
                 // This is a consequence of sharing an edit page for Create and Edit
-                gear = NewGearInstance(trip);
+                gear = NewGearInstance(tripId);
+                gear.Trip = tripId;
             }            
             ViewBag.GearType = gear.GetType();
             return View(gear);

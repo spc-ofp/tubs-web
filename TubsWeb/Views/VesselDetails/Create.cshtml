@@ -23,36 +23,22 @@
 }
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Create", "VesselDetails", FormMethod.Post, new { @class = "well" }))
 { 
     @Html.ValidationSummary(true, "Save failed")
     <fieldset>
         <legend>Vessel Details</legend>
-        <p>
-            @Html.LabelFor(m => m.Owner) @Html.EditorFor(m => m.Owner)
-        </p>
-        <p>
-            @Html.LabelFor(m => m.Captain) @Html.EditorFor(m => m.Captain)
-        </p>
-        <p>
-            @Html.LabelFor(m => m.CaptainCountryCode) @Html.TextBoxFor(m => m.CaptainCountryCode, new { @maxlength = "2", @size = "3", style = "width = 10px;" })
-        </p>
-        <p>
-            @Html.LabelFor(m => m.Licenses) @Html.EditorFor(m => m.Licenses) 
-        </p>
-        <p>
-            @Html.LabelFor(m => m.FishingMaster) @Html.EditorFor(m => m.FishingMaster)
-        </p>
-        <p>
-            @Html.LabelFor(m => m.MasterCountryCode) @Html.TextBoxFor(m => m.MasterCountryCode, new { @maxlength = "2", @size = "3", style = "width = 10px;" })
-        </p>
-        <p>
-            @Html.LabelFor(m => m.Comments) @Html.TextAreaFor(m => m.Comments, new { @cols = 100, @rows = 5 })
-        </p>
+        @Html.LabelFor(m => m.Owner) @Html.EditorFor(m => m.Owner)
+        @Html.LabelFor(m => m.Captain) @Html.EditorFor(m => m.Captain)
+        @Html.LabelFor(m => m.CaptainCountryCode) @Html.TextBoxFor(m => m.CaptainCountryCode, new { @maxlength = "2", @size = "3", style = "width = 10px;" })
+        @Html.LabelFor(m => m.Licenses) @Html.EditorFor(m => m.Licenses) 
+        @Html.LabelFor(m => m.FishingMaster) @Html.EditorFor(m => m.FishingMaster)
+        @Html.LabelFor(m => m.MasterCountryCode) @Html.TextBoxFor(m => m.MasterCountryCode, new { @maxlength = "2", @size = "3", style = "width = 10px;" })
+        @Html.LabelFor(m => m.Comments) @Html.TextAreaFor(m => m.Comments, new { @cols = 100, @rows = 5 })
     </fieldset>
     
     <div class="btn-group">
-            <input class="btn-primary" type="submit" value="Save" />
-            <input type="reset" value="Cancel" />
+        <input class="btn-primary" type="submit" value="Save" />
+        <input type="reset" value="Cancel" />
     </div>    
 }

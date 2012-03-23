@@ -21,7 +21,8 @@ namespace TubsWeb.Models
     *  
     * You should have received a copy of the GNU Affero General Public License
     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
-    */    
+    */
+    using System.Text;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Spc.Ofp.Tubs.DAL.Common;
@@ -88,7 +89,30 @@ namespace TubsWeb.Models
             [Range(0, 99)]
             public int? Months { get; set; }
 
-            public string Experience { get; set; }
+            public string Experience
+            {
+                get
+                {
+                    if (!this.Years.HasValue && !this.Months.HasValue)
+                        return "None or unknown";
+
+                    StringBuilder sb = new StringBuilder();
+                    if (this.Years.HasValue)
+                    {
+                        sb.Append(this.Years.Value).Append(" years");
+                    }
+
+                    if (this.Months.HasValue)
+                    {
+                        if (sb.Length > 0)
+                            sb.Append(" ");
+
+                        sb.Append(this.Months.Value).Append(" months");
+                    }
+
+                    return sb.ToString();
+                }
+            }
 
             public string Comments { get; set; }
         }
