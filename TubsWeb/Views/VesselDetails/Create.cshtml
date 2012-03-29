@@ -28,13 +28,26 @@
     @Html.ValidationSummary(true, "Save failed")
     <fieldset>
         <legend>Vessel Details</legend>
-        @Html.LabelFor(m => m.Owner) @Html.EditorFor(m => m.Owner)
-        @Html.LabelFor(m => m.Captain) @Html.EditorFor(m => m.Captain)
-        @Html.LabelFor(m => m.CaptainCountryCode) @Html.TextBoxFor(m => m.CaptainCountryCode, new { @maxlength = "2", @size = "3", style = "width = 10px;" })
-        @Html.LabelFor(m => m.Licenses) @Html.EditorFor(m => m.Licenses) 
-        @Html.LabelFor(m => m.FishingMaster) @Html.EditorFor(m => m.FishingMaster)
-        @Html.LabelFor(m => m.MasterCountryCode) @Html.TextBoxFor(m => m.MasterCountryCode, new { @maxlength = "2", @size = "3", style = "width = 10px;" })
-        @Html.LabelFor(m => m.Comments) @Html.TextAreaFor(m => m.Comments, new { @cols = 100, @rows = 5 })
+        @Html.LabelFor(m => m.Owner) 
+        @Html.EditorFor(m => m.Owner)
+
+        @Html.LabelFor(m => m.Captain) 
+        @Html.EditorFor(m => m.Captain)
+
+        @Html.LabelFor(m => m.CaptainCountryCode) 
+        @Html.TextBoxFor(m => m.CaptainCountryCode, new { @maxlength = "2", @size = "3", @class = "span1" })
+
+        @Html.LabelFor(m => m.Licenses) 
+        @Html.TextAreaFor(m => m.Licenses, new { @cols = 120, @rows = 6 }) 
+
+        @Html.LabelFor(m => m.FishingMaster) 
+        @Html.EditorFor(m => m.FishingMaster)
+
+        @Html.LabelFor(m => m.MasterCountryCode) 
+        @Html.TextBoxFor(m => m.MasterCountryCode, new { @maxlength = "2", @size = "3", @class = "span1" })
+
+        @Html.LabelFor(m => m.Comments) 
+        @Html.TextAreaFor(m => m.Comments, new { @cols = 120, @rows = 6 })
     </fieldset>
     
     <div class="btn-group">

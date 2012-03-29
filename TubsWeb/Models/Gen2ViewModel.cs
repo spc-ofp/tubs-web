@@ -21,9 +21,7 @@ namespace TubsWeb.Models
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System.Collections.Generic;
-    using Spc.Ofp.Tubs.DAL.Entities;
-    
+
     public class Gen2ViewModel
     {
     }

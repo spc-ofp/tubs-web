@@ -102,6 +102,13 @@ namespace TubsWeb.Controllers
         {
             // TODO Figure out how to get the Controller name from the ControllerContext
             // Until then, no active pill
+            // Okay, now we've got the controller name, but we need to figure out how to
+            // pass another value to the view showing which matches the current controller
+            // Probably best way to do this is to push the title, action name, and controller name into
+            // a List<Tuple<string, string, string>>
+            // Yet another thing to consider -- how to deal with PS or LL only views?
+            var controllerName = this.ControllerContext.RouteData.GetRequiredString("controller");
+            var routeName = this.ControllerContext.RouteData.GetRequiredString("action");
 
             var routeValues = new { tripId = tripId.Id };
 
@@ -110,13 +117,18 @@ namespace TubsWeb.Controllers
             if (typeof(PurseSeineTrip) == tripId.GetType())
             {
                 pills.Add(Tuple.Create("Auxiliaries", Url.Action("Index", "Auxiliaries", routeValues)));
+                // FIXME MVC routing only wants to give us this page with the following URL
+                // ~/WellContent/Index/?tripId=tripId.Id
+                string actionLink = Url.Content(String.Format("~/WellContent/Index/?tripId={0}", tripId.Id));
+                pills.Add(Tuple.Create("Well Content", actionLink));
+                //pills.Add(Tuple.Create("Well Content", Url.Action("Index", "WellContent", routeValues)));
             }
 
             pills.Add(Tuple.Create("Vessel", Url.Action("Index", "VesselDetails", routeValues)));
             pills.Add(Tuple.Create("Crew", Url.Action("Index", "Crew", routeValues)));
             pills.Add(Tuple.Create("Electronics", Url.Action("List", "Electronics", routeValues)));
             pills.Add(Tuple.Create("Safety Gear", Url.Action("Index", "SafetyInspection", routeValues)));
-            pills.Add(Tuple.Create("Fishing Gear", Url.Action("Index", "Gear", routeValues)));
+            pills.Add(Tuple.Create("Fishing Gear", Url.Action("Index", "Gear", routeValues)));            
             pills.Add(Tuple.Create("GEN-1", Url.Action("Index", "Gen1", routeValues)));
             pills.Add(Tuple.Create("GEN-2", Url.Action("List", "Gen2", routeValues)));
             pills.Add(Tuple.Create("GEN-3", Url.Action("Index", "Gen3", routeValues))); 

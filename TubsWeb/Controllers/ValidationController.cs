@@ -23,15 +23,10 @@ namespace TubsWeb.Controllers
     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
     */
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web.Mvc;
-    using Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Models;
-    using TubsWeb.Core;
     using System.Collections;
     using System.Text.RegularExpressions;
+    using System.Web.Mvc;
+    using Spc.Ofp.Tubs.DAL;
     
     /// <summary>
     /// ValidationController holds methods used for unobtrusive remote validation.

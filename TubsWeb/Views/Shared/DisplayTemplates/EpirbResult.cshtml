@@ -1,5 +1,14 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.EpirbResult
 
-@Html.LabelFor(m => m.BeaconType) @Html.DisplayFor(m => m.BeaconType) <br />
-@Html.LabelFor(m => m.Count) @Html.DisplayFor(m => m.Count) <br />
-@Html.LabelFor(m => m.Expiration) @Html.DisplayFor(m => m.Expiration)
+<div class="row">
+    <div class="span4">@Html.LabelFor(m => m.BeaconType)</div>
+    <div class="span2">@Html.DisplayFor(m => m.BeaconType)</div>
+</div>
+<div class="row">
+    <div class="span4">@Html.LabelFor(m => m.Count)</div>
+    <div class="span2">@Html.DisplayFor(m => m.Count)</div>
+</div>
+<div class="row">
+    <div class="span4">@Html.LabelFor(m => m.Expiration)</div>
+    <div class="span2">@Html.DisplayFor(m => m.Expiration)</div>
+</div>

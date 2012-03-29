@@ -1,0 +1,27 @@
+﻿@model TubsWeb.Models.ElectronicsViewModel.DeviceModel
+@using Spc.Ofp.Tubs.DAL.Common
+
+<td>
+    @Html.HiddenFor(m => Model.Id)
+    @Html.HiddenFor(m => Model.DeviceName)
+    @Model.DeviceName
+</td>
+<td>
+    @* TODO Change this to dropdown *@
+    @Html.TextBoxFor(m => Model.Installed)
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.Make)
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.Model)
+</td>
+<td>
+    @Html.TextBoxFor(m => Model.Comments)
+</td>
+<td>
+    <div class="btn-group">
+        <input type="submit" name="Save" value="Save" class="btn-primary" />
+        <input type="reset" name="Cancel" />
+    </div>
+</td>

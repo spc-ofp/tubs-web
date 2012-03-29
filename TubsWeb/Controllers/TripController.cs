@@ -123,15 +123,20 @@ namespace TubsWeb.Controllers
                     String.Format("Entered by {0}", trip.EnteredBy), 
                     new Uri(String.Format(formatString, trip.Id), UriKind.Relative))
                 {
-                    PublishDate = trip.EnteredDate.Value
+                    PublishDate = trip.EnteredDate.Value,                    
                 };
 
             SyndicationFeed feed =
                 new SyndicationFeed(
-                    "Latest TUBS Trips", 
-                    "http://nouofpweb01.corp.spc.int/tubs/Trip/Rss", 
+                    "Latest TUBS Trips",
+                    Url.Content("~/Trip/Rss"),                     
                     Request.Url, 
                     feedItems);
+            feed.Language = "en-US";
+            feed.Generator = "Tuna Observer System (TUBS)";
+            // TODO Set image
+            // The framework sets a single author into the managingEditor property.  More than one and they're all a10:author
+            feed.Authors.Add(new SyndicationPerson("coreyc@spc.int", "Corey Cole", "http://www.spc.int/oceanfish/en/ofpsection/data-management"));
 
             return new RssResult(feed);
         }

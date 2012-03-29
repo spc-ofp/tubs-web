@@ -48,11 +48,13 @@
             }
             else
             {
+                <!-- TODO:  Create named routes for these items or fixup an extension method to clear the RVD -->
+                @* http://stackoverflow.com/questions/780643/asp-net-mvc-html-actionlink-keeping-route-value-i-dont-want *@
                 <ul class="nav pull-left">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Trips<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("All Trips", "Index", "Trip")</li>
+                            <li>@Html.RouteLink("All Trips", "TripList")</li>
                             <li>@Html.ActionLink("My Trips", "MyTrips", "Trip")</li>
                             <li>@Html.ActionLink("Register New Trip", "Create", "Trip")</li>
                         </ul>

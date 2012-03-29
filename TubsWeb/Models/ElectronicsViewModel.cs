@@ -22,11 +22,8 @@ namespace TubsWeb.Models
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -39,8 +36,6 @@ namespace TubsWeb.Models
 
         // Necessary for navigation
         public int TripId { get; set; }
-
-        public string TripNumber { get; set; }
 
         // Devices for which Make, Model, and Comments are not collected
         public DeviceModel Gps { get; set; }
@@ -55,6 +50,7 @@ namespace TubsWeb.Models
         public DeviceModel EchoSoundingBuoy { get; set; }
         public DeviceModel NetDepthInstrumentation { get; set; }
         public DeviceModel DopplerCurrentMeter { get; set; }
+        public DeviceModel Vms { get; set; }
 
         // Anything else that's not in the above two categories
         public List<DeviceModel> OtherDevices { get; set; }
@@ -66,6 +62,7 @@ namespace TubsWeb.Models
                 DeviceName = deviceName;
             }
 
+            public int Id;
             public string DeviceName;
             public string Installed = "N/A";
             public string Usage = "N/A";

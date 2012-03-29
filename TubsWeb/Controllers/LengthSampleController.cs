@@ -22,13 +22,9 @@ namespace TubsWeb.Controllers
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System;
-    using System.Linq;
     using System.Web.Mvc;
-    using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Core;
-    
+
     public class LengthSampleController : SuperController
     {
         //

@@ -7,8 +7,7 @@
 namespace TubsWeb.Core
 {
     using System;
-    using System.Text;
-    
+
     public static class StringExtensions
     {
         public static string WithoutDomain(this string username)

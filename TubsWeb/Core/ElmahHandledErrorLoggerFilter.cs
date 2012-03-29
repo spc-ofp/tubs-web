@@ -1,10 +1,10 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TripClosureViewModel.cs" company="Secretariat of the Pacific Community">
+// <copyright file="ElmahHandledErrorLoggerFilter.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2012 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Models
+namespace TubsWeb.Core
 {
     /*
      * This file is part of TUBS.
@@ -22,18 +22,21 @@ namespace TubsWeb.Models
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System.ComponentModel.DataAnnotations;
-
+    using System.Web.Mvc;
+    using Elmah;
+    
     /// <summary>
-    /// Lightweight view model for closing trips.
+    /// ExceptionFilter for using ELMAH for logging exceptions that have allegedly been
+    /// handled.  Add to global filters <b>AHEAD OF</b> HandleErrorAttribute.
+    /// Implementation comes from Ivan Zlatev via StackOverflow
+    /// http://stackoverflow.com/questions/766610/how-to-get-elmah-to-work-with-asp-net-mvc-handleerror-attribute
     /// </summary>
-    public class TripClosureViewModel
+    public class ElmahHandledErrorLoggerFilter : IExceptionFilter
     {
-        [Display(Name = "Trip Id")]
-        public int? TripId { get; set; }
-
-        [Display(Name = "Entry Comments")]
-        [DataType(DataType.MultilineText)]
-        public string Comments { get; set; }
+        public void OnException(ExceptionContext context)
+        {
+            if (context.ExceptionHandled)
+                ErrorSignal.FromCurrentContext().Raise(context.Exception);
+        }
     }
 }

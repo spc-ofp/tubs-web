@@ -22,10 +22,22 @@ else
 {
     <fieldset>
         <legend>Lifejacket and Buoys</legend>
-        @Html.LabelFor(m => m.LifejacketProvided) @Html.DisplayFor(m => m.LifejacketProvided) <br />
-        @Html.LabelFor(m => m.LifejacketSizeOk) @Html.DisplayFor(m => m.LifejacketSizeOk) <br />
-        @Html.LabelFor(m => m.LifejacketAvailability) @Html.DisplayFor(m => m.LifejacketAvailability) <br />
-        @Html.LabelFor(m => m.BuoyCount) @Html.DisplayFor(m => m.BuoyCount) <br />
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.LifejacketProvided)</div>
+            <div class="span2">@Html.DisplayFor(m => m.LifejacketProvided)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.LifejacketSizeOk)</div>
+            <div class="span2">@Html.DisplayFor(m => m.LifejacketSizeOk)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.LifejacketAvailability)</div>
+            <div class="span2">@Html.DisplayFor(m => m.LifejacketAvailability)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.BuoyCount)</div>
+            <div class="span2">@Html.DisplayFor(m => m.BuoyCount)</div>
+        </div>
     </fieldset>
     <br />
     if (Model.Epirb1.BeaconType != null || Model.Epirb1.Expiration != null || Model.Epirb1.Count.HasValue)
@@ -53,7 +65,7 @@ else
     {
         <fieldset>
         <legend>Liferafts</legend>
-            <table style="width: auto;">
+            <table class="table table-striped table-bordered table-condensed" style="width: auto;">
                 <thead>
                     <tr>
                         <th>@Html.LabelFor(m => m.Raft1.Capacity)</th>

@@ -1,10 +1,10 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TripClosureViewModel.cs" company="Secretariat of the Pacific Community">
-// Copyright (C) 2012 Secretariat of the Pacific Community
+// <copyright file="WellContentController.cs" company="Secretariat of the Pacific Community">
+// Copyright (C) 2011 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Models
+namespace TubsWeb.Controllers
 {
     /*
      * This file is part of TUBS.
@@ -22,18 +22,27 @@ namespace TubsWeb.Models
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System.ComponentModel.DataAnnotations;
-
-    /// <summary>
-    /// Lightweight view model for closing trips.
-    /// </summary>
-    public class TripClosureViewModel
+    using System;
+    using System.Web.Mvc;
+    using Spc.Ofp.Tubs.DAL;
+    using Spc.Ofp.Tubs.DAL.Entities;
+    using TubsWeb.Core;
+    
+    public class WellContentController : SuperController
     {
-        [Display(Name = "Trip Id")]
-        public int? TripId { get; set; }
+        // TODO What about Longline trips?
+        public ActionResult Index(Trip tripId)
+        {
+            var trip = tripId as PurseSeineTrip;
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
 
-        [Display(Name = "Entry Comments")]
-        [DataType(DataType.MultilineText)]
-        public string Comments { get; set; }
+            AddTripNavbar(tripId);
+            ViewBag.Title = String.Format("Well content for trip {0}", tripId.ToString());
+            return View(trip);
+        }
+
     }
 }

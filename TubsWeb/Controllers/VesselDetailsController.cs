@@ -24,9 +24,9 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Web.Mvc;
+    using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
-    using Spc.Ofp.Tubs.DAL;
     
     public class VesselDetailsController : SuperController
     {

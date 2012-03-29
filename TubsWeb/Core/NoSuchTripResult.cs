@@ -22,6 +22,7 @@ namespace TubsWeb.Core
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System.Text;
     using System.Web.Mvc;
 
     public class NoSuchTripResult : ActionResult
@@ -31,7 +32,17 @@ namespace TubsWeb.Core
         public override void ExecuteResult(ControllerContext context)
         {
             context.HttpContext.Response.StatusCode = 404;
-            //FIXME Log some stuff here
+            Logger.WarnFormat(
+                "NoSuchTripResult for action [{0}] in controller [{1}]",
+                context.RouteData.GetRequiredString("controller"),
+                context.RouteData.GetRequiredString("action"));
+
+            StringBuilder builder = new StringBuilder(512);
+            foreach (var routeKey in context.RouteData.Values.Keys)
+            {
+                builder.AppendFormat("Key: {0}\tValue: {1}\n", routeKey, context.RouteData.Values[routeKey].ToString());
+            }
+            Logger.WarnFormat("RouteValueDictionary Contents:\n{0}", builder.ToString());
             new ViewResult { ViewName = "TripNotFound" }.ExecuteResult(context);
         }
     }

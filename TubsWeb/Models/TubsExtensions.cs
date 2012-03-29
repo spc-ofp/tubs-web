@@ -24,12 +24,11 @@ namespace TubsWeb.Models.ExtensionMethods
      */
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using NHibernate;
+    using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using Spc.Ofp.Tubs.DAL;
+    using System.ServiceModel.Syndication;
 
     public static class TubsExtensions
     {
@@ -70,6 +69,17 @@ namespace TubsWeb.Models.ExtensionMethods
                 trip.DeparturePort = portRepo.FindBy(thvm.DeparturePortCode);
                 trip.ReturnPort = portRepo.FindBy(thvm.ReturnPortCode);
             }
+        }
+
+        public static SyndicationItem ToFeedEntry(this Trip trip)
+        {
+            SyndicationItem entry = new SyndicationItem();
+            if (null != trip)
+            {
+                entry.Categories.Add(new SyndicationCategory("Purse Seine"));
+                entry.Title = new TextSyndicationContent(trip.ToString());
+            }
+            return entry;
         }
 
         public static Trip ToTrip(this TripHeaderViewModel thvm)

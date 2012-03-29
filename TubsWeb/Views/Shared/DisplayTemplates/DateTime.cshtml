@@ -7,4 +7,15 @@
     }
 }
 
+@*
+    Common format strings:
+    d: Short date pattern (year, month, and day only)
+    g: General date pattern (year, month, day, and time of day)
+    m: Month/day pattern (named month and numeric day only)
+    s: Sortable date pattern
+    t: Short time pattern (time of day only)
+    u: Universal date/time (not ISO 8601)
+    o: ISO 8601 format
+*@
+
 @Html.Encode( Model.HasValue ? Model.Value.ToString(format) : "N/A")

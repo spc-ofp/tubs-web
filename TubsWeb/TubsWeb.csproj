@@ -95,6 +95,7 @@
     <Compile Include="Controllers\PageCountController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Controllers\VesselDetailsController.cs" />
+    <Compile Include="Controllers\WellContentController.cs" />
     <Compile Include="Core\AbstractBindAttribute.cs" />
     <Compile Include="Controllers\CrewController.cs" />
     <Compile Include="Controllers\ElectronicsController.cs" />
@@ -104,6 +105,8 @@
     <Compile Include="Controllers\Gen2Controller.cs" />
     <Compile Include="Controllers\Gen3Controller.cs" />
     <Compile Include="Controllers\Gen6Controller.cs" />
+    <Compile Include="Core\CxmlResult.cs" />
+    <Compile Include="Core\ElmahHandledErrorLoggerFilter.cs" />
     <Compile Include="Core\HandleTransactionManuallyAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ObserverController.cs" />
@@ -422,6 +425,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Electronics\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\EditorTemplates\DeviceModel.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\WellContent\Index.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

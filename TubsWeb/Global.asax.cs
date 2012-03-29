@@ -88,6 +88,7 @@ namespace TubsWeb
         {
             //An authorize attribute filter takes the place of allow roles in web.config
             //filters.Add(new AuthorizeAttribute { Roles = @"NOUMEA\OFP Users" });
+            filters.Add(new ElmahHandledErrorLoggerFilter());
             filters.Add(new HandleErrorAttribute());
         }
 
@@ -253,15 +254,21 @@ namespace TubsWeb
                 new { tripId = @"\d+" }
             );
 
+            routes.MapRoute(
+                "WellContent",
+                "Trip/{tripId}/WellContent/{action}",
+                new { controller = "WellContent", action = "Index" },
+                new { tripId = @"\d+" }
+            );
+
             // Can this route replace the fairly generic routes?
-            /*
+            // Doesn't look like it...
             routes.MapRoute(
                 "TripDefault",
                 "Trip/{tripId}/{controller}/{action}",
                 new { action = "Index" },
                 new { tripId = @"\d+" }
             );
-            */
 
             /*
             routes.MapRoute(

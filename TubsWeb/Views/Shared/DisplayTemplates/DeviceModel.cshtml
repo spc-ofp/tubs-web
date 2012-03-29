@@ -1,10 +1,10 @@
 ﻿@model TubsWeb.Models.ElectronicsViewModel.DeviceModel
 
 <tr>
-    <td>@Model.DeviceName</td>
-    <td>@Model.Installed</td>
-    <td>@Model.Usage</td>
-    <td>@Model.Make</td>
-    <td>@Model.Model</td>
-    <td>@Model.Comments</td>
+    <td>@Html.DisplayFor(m => Model.DeviceName)</td>
+    <td>@Html.DisplayFor(m => Model.Installed)</td>
+    <td>@Html.DisplayFor(m => Model.Usage)</td>
+    <td>@Html.DisplayFor(m => Model.Make)</td>
+    <td>@Html.DisplayFor(m => Model.Model)</td>
+    <td>@Html.DisplayFor(m => Model.Comments)</td>
 </tr>

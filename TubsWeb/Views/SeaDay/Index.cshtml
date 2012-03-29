@@ -36,6 +36,7 @@ else if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay))
 {
     var psday = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay;
     <table class="table table-bordered table-condensed table-striped">
+      <caption><strong>Date:</strong> @Html.DisplayFor(m => Model.StartDateOnly, new { format = "d" })</caption>
       <thead>
           <tr>
             <th>Ship's Time</th>

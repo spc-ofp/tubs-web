@@ -25,7 +25,6 @@ namespace TubsWeb.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Web.Mvc;
 
     /// <summary>
     /// TripHeaderViewModel holds the minimum set of data required to consider an entity a Trip.

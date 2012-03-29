@@ -22,8 +22,8 @@ namespace TubsWeb.Models
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System.Collections.Generic;
-    using Spc.Ofp.Tubs.DAL.Entities;
     using Spc.Ofp.Tubs.DAL.Common;
+    using Spc.Ofp.Tubs.DAL.Entities;
     
     public class Gen1ViewModel
     {

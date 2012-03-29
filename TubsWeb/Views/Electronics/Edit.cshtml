@@ -1,0 +1,59 @@
+﻿@model TubsWeb.Models.ElectronicsViewModel
+@using TubsWeb.Models
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create(Url.Action("Index", "Electronics", new { tripId = ViewBag.TripId }), "Electronics"),
+        Tuple.Create("#", "Edit Electronics")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@{
+    IList<Tuple<string, ElectronicsViewModel.DeviceModel>> namedDevices = new List<Tuple<string, ElectronicsViewModel.DeviceModel>>()
+    {
+        Tuple.Create("GPS", Model.Gps),
+        Tuple.Create("Track Plotter", Model.TrackPlotter),
+        Tuple.Create("Depth Sounder", Model.DepthSounder),
+        Tuple.Create("SST Gauge", Model.SstGauge),
+        Tuple.Create("Bird Radar", Model.BirdRadar),
+        Tuple.Create("Sonar", Model.Sonar),
+        Tuple.Create("GPS Buoys", Model.GpsBuoys),
+        Tuple.Create("Echo Sounding Buoys", Model.EchoSoundingBuoy),
+        Tuple.Create("Net Depth Instrumentation", Model.NetDepthInstrumentation),
+        Tuple.Create("Doppler Current Meter", Model.DopplerCurrentMeter),
+        Tuple.Create("VMS", Model.Vms),
+    };
+}
+
+@* Use the namedDevices list *@
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+        <tr>
+            <th>Device Name</th>
+            <th>Installed</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Comments</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var namedDevice in namedDevices)
+    {
+        var rowId = System.Guid.NewGuid().ToString();
+        AjaxOptions options = new AjaxOptions { };
+        using (Ajax.BeginForm("EditSingle", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = rowId }))
+        {
+        <tr id="@rowId">
+        @Html.EditorFor(m => namedDevice.Item2) 
+        </tr>   
+        }    
+    }
+    </tbody>
+</table>
