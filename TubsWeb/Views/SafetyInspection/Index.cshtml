@@ -40,7 +40,7 @@ else
         </div>
     </fieldset>
     <br />
-    if (Model.Epirb1.BeaconType != null || Model.Epirb1.Expiration != null || Model.Epirb1.Count.HasValue)
+    if (Model.Epirb1 != null && (Model.Epirb1.BeaconType != null || Model.Epirb1.Expiration != null || Model.Epirb1.Count.HasValue))
     {
     <fieldset>
         <legend>EPIRB #1</legend>
@@ -48,7 +48,7 @@ else
     </fieldset>
     <br />
     }
-    if (Model.Epirb2.BeaconType != null || Model.Epirb2.Expiration != null || Model.Epirb2.Count.HasValue)
+    if (Model.Epirb2 != null && (Model.Epirb2.BeaconType != null || Model.Epirb2.Expiration != null || Model.Epirb2.Count.HasValue))
     {
     <fieldset>
         <legend>EPIRB #2</legend>
