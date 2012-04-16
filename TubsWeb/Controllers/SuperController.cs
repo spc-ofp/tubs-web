@@ -142,6 +142,8 @@ namespace TubsWeb.Controllers
             // TODO Figure out the best way to have this URL open in a new window.
             string coverPageUrl = GetReportUrl(CoverPage, tripId.Id);
             pills.Add(Tuple.Create("Cover Page", coverPageUrl));
+            string summaryReportUrl = GetReportUrl(PSTripSummary, tripId.Id);
+            pills.Add(Tuple.Create("Trip Summary", summaryReportUrl));
 
             pills.Add(Tuple.Create("Position Audit", Url.Action("PositionAudit", "Trip", routeValues)));
             if (!tripId.IsReadOnly)

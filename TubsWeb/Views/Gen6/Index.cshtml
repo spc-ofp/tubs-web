@@ -1,5 +1,6 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PollutionEvent
 @using Spc.Ofp.Tubs.DAL.Common
+@using Spc.Ofp.Tubs.DAL.Entities
 
 @helper SpeedAndDirection(int? speed, int? direction) {
     if (!speed.HasValue && !direction.HasValue) {
@@ -48,32 +49,62 @@
 }
 else
 {
-    @* TODO Change to label/value layout (like PurseSeineGear.cshtml) *@
     <fieldset>
         <legend>Incident Details</legend>
-         @* TODO Add current (knots and direction), observer's vessel activity, ircs, vessel type, and relative location *@
-        @Html.LabelFor(m => m.IncidentDate) @Html.DisplayFor(m => m.IncidentDate) <br />
-        @Html.Label("Position")
-        @Model.Latitude / @Model.Longitude (@Model.EezId) <br />
-        @Html.Label("Wind Conditions") @SpeedAndDirection(Model.WindSpeed, Model.WindDirection) <br />
-        @Html.LabelFor(m => m.SeaCode) @Html.DisplayFor(m => m.SeaCode) <br />
-        <label>Offending Vessel</label> @Html.DisplayFor(m => m.VesselName) <br />
-        <label>MARPOL Stickers/Posters on display?</label> @Html.DisplayFor(m => m.MarpolStickers) <br />
-        <label>Was captain aware of MARPOL Regulations?</label> @Html.DisplayFor(m => m.CaptainAware) <br />
-        <label>Was captain advised of MARPOL infringements?</label> @Html.DisplayFor(m => m.CaptainAdvised) <br />
-        <label>Were photos taken?</label>
-        @Html.DisplayFor(m => m.PhotosTaken)
-        @if (!String.IsNullOrEmpty(Model.PhotoFrames))
-        {
-            <text>(@Model.PhotoFrames)</text>
-        }
-        <br />
-        @Html.LabelFor(m => m.Comments) @Html.DisplayFor(m => m.Comments)
+        @* TODO Add current (knots and direction), observer's vessel activity, ircs, vessel type, and relative location *@
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.IncidentDate)</div>
+            <div class="span4">@Html.DisplayFor(m => m.IncidentDate)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.Label("Position")</div>
+            <div class="span4">@Model.Latitude / @Model.Longitude (@Model.EezId)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.Label("Wind Conditions")</div>
+            <div class="span4">@SpeedAndDirection(Model.WindSpeed, Model.WindDirection)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.SeaCode)</div>
+            <div class="span4">@Html.DisplayFor(m => m.SeaCode)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.Label("Offending Vessel")</div>
+            <div class="span4">@Html.DisplayFor(m => m.SeaCode)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.Label("MARPOL Stickers/Posters on display?")</div>
+            <div class="span4">@Html.DisplayFor(m => m.MarpolStickers)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.Label("Was captain aware of MARPOL Regulations?")</div>
+            <div class="span4">@Html.DisplayFor(m => m.CaptainAware)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.Label("Was captain advised of MARPOL infringements?")</div>
+            <div class="span4">@Html.DisplayFor(m => m.CaptainAdvised)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.Label("Were photos taken?")</div>
+            <div class="span4">@Html.DisplayFor(m => m.PhotosTaken)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.Label("Photo Frames")</div>
+            <div class="span4">@Html.DisplayFor(m => m.PhotoFrames)</div>
+        </div>
+        <div class="row">
+            <div class="span4">@Html.LabelFor(m => m.Comments)</div>
+        </div>
+        <div class="row">
+            <div class="span12">@Html.DisplayFor(m => m.Comments, new { @cols = 80, @rows = 5 })</div>
+        </div>
     </fieldset>
     
+    <hr />
+    
     @*  Create two additional fieldsets, one for waste dumped overboard and another for oil spills/leaks *@
-    var waste = from d in Model.Details where d.PollutionType == PollutionType.DumpedOverboard select d;
-    var spills = from d in Model.Details where d.PollutionType == PollutionType.SpillageOrLeakage select d;
+    var waste = from d in Model.Details where d.GetType() == typeof(WasteDetail) select d as WasteDetail;
+    var spills = from d in Model.Details where d.GetType() == typeof(SpillDetail) select d as SpillDetail;
 
     if (waste.Count() > 0)
     {
@@ -91,7 +122,7 @@ else
             @foreach (var item in waste)
             {
                 <tr>
-                    <td>@item.Material</td>
+                    <td>@item.Material.GetDescription()</td>
                     <td>@item.Description</td>
                     <td>@item.Quantity</td>
                 </tr>
@@ -99,6 +130,11 @@ else
             </tbody>
         </table>
     </fieldset>
+    }
+
+    if (waste.Count() > 0 && spills.Count() > 0)
+    {
+        <hr />
     }
 
     if (spills.Count() > 0)
@@ -117,7 +153,7 @@ else
             @foreach (var item in spills)
             {
                 <tr>
-                    <td>@item.Material</td>
+                    <td>@item.Source.GetDescription()</td>
                     <td>@item.Description</td>
                     <td>@item.Quantity</td>
                 </tr>

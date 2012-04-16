@@ -11,6 +11,15 @@
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
+      
+      /* Props for the pointer to Steven Sanderson */
+      /* http://blog.stevensanderson.com/2011/10/05/full-height-app-layouts-a-css-trick-to-make-it-easier/ */
+      .footer {
+          overflow: hidden;
+          position: absolute;
+          height: 50px;
+          bottom: 0;
+      }
     </style>
     <link href="@Url.Content("~/Content/bootstrap-responsive.min.css")" rel="stylesheet">
     <link href="@Url.Content("~/Content/themes/base/jquery.ui.all.css")" rel="stylesheet" type="text/css" />
@@ -59,8 +68,8 @@
                             <li>@Html.ActionLink("Register New Trip", "Create", "Trip")</li>
                         </ul>
                     </li>
-                  <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                  <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li><a href="@Url.Content("~/")">Home</a></li>
+                    <li>@Html.RouteLink("About", new { controller = "Home", action = "About" })</li>
                   @* Redundant for IE, but put it up there in the user's face... *@
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">RSS<b class="caret"></b></a>
@@ -84,9 +93,9 @@
 
     <div class="container">
       @RenderBody()
-      <footer>
+        <div class="footer">
             This is confidential data subject to a @Html.ActionLink("data disclosure policy", "Confidentiality", "Home")
-        </footer>
+        </div>
     </div> <!-- /container -->
 
     <!-- Le javascript
@@ -122,6 +131,17 @@
                 minTrail: 10
             });
         });
+
+        //
+        // This one doesn't clear hidden values
+        // http://weblogs.asp.net/haithamkhedre/archive/2010/11/22/blank-out-a-form-with-jquery.aspx
+        function clearFormEx(formName) {
+            $(':input', formName)
+                .not(':button, :submit, :reset, :hidden')
+                .val('')
+                .removeAttr('checked')
+                .removeAttr('selected');
+        }
 
         // Clear any form values
         // Used for the Ajax "add to table" archetype.
