@@ -15,6 +15,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>false</UseIISExpress>
+    <SilverlightApplicationList>{72D2ACAF-D995-41C4-930C-847A127486FE}|..\PivotViewerApp\PivotViewerApp.csproj|ClientBin|False</SilverlightApplicationList>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -141,15 +142,18 @@
     <Compile Include="Models\TripClosureViewModel.cs" />
     <Compile Include="Models\TripHeaderViewModel.cs" />
     <Compile Include="Models\TubsExtensions.cs" />
+    <Compile Include="Models\WellContents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="ClientBin\PivotViewerApp.xap" />
     <Content Include="Content\bootstrap-responsive.css" />
     <Content Include="Content\bootstrap-responsive.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\datetimepicker.css" />
+    <Content Include="Content\delete.gif" />
     <Content Include="Content\images\25px-Feed-icon.png" />
     <Content Include="Content\images\calendar-icon.png" />
     <Content Include="Content\images\delete.gif" />
@@ -160,10 +164,11 @@
     <Content Include="Content\images\nyan-cat.gif" />
     <Content Include="Content\images\star.gif" />
     <Content Include="Content\jquery.meow.css" />
-    <Content Include="Content\jquery.rating.css" />
     <Content Include="Content\KeyTips.css" />
     <Content Include="Content\KeyTips.min.css" />
     <Content Include="Content\popup-back.gif" />
+    <Content Include="Content\rateit.css" />
+    <Content Include="Content\star.gif" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -193,6 +198,7 @@
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\tubs-unobtrusive.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
@@ -205,12 +211,16 @@
     <Content Include="Scripts\jquery.KeyTips.js" />
     <Content Include="Scripts\jquery.KeyTips.min.js" />
     <Content Include="Scripts\jquery.meow.js" />
-    <Content Include="Scripts\jquery.rating.pack.js" />
+    <Content Include="Scripts\jquery.rateit.js" />
+    <Content Include="Scripts\jquery.rateit.min.js" />
     <Content Include="Scripts\jquery.sparkline.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\knockout.debug.js" />
+    <Content Include="Scripts\knockout.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\tubs.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -437,6 +447,24 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\WellContent\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\WellContent\_WellContent.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\WellContent\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SafetyInspection\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SeaDay\_SeaDays.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\EditorTemplates\EpirbResult.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\EditorTemplates\RaftResult.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

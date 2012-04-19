@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.PurseSeineWellContent>
+
+<table class="table table-bordered table-condensed table-striped" id="wellContentTable">
+    <thead>
+        <tr>
+            <th>Well Number</th>
+            <th>Location</th>
+            <th>Capacity (mT)</th>
+            <th>Contents</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var wellContent in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(m => wellContent.WellNumber)</td>
+            <td>@Html.DisplayFor(m => wellContent.WellLocation)</td>
+            <td>@Html.DisplayFor(m => wellContent.WellCapacity)</td>
+            <td>@Html.DisplayFor(m => wellContent.FuelOrWater)</td>
+            <td>@Html.DisplayFor(m => wellContent.Comments)</td>
+        </tr>
+    }
+    </tbody>
+</table>

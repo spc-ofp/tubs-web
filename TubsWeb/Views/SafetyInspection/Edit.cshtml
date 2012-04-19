@@ -1,0 +1,84 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.SafetyInspection
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Index", "SafetyInspection", new { tripId = ViewBag.TripId }), "Safety Inspection"),
+        Tuple.Create("#", "Edit Safety Inspection")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@using (Html.BeginForm("Edit", "SafetyInspection", FormMethod.Post, new { @class = "well" }))
+{
+    @Html.ValidationSummary(false)
+    @Html.HiddenFor(m => Model.Id)
+    @Html.HiddenFor(m => Model.EnteredBy)
+    @Html.HiddenFor(m => Model.EnteredDate)
+    <fieldset>
+        <legend>Lifejacket</legend>
+        @Html.LabelFor(m => m.LifejacketAvailability)
+        @Html.TextBoxFor(m => m.LifejacketAvailability)
+
+        @Html.LabelFor(m => m.LifejacketProvided)
+        @Html.EditorFor(m => m.LifejacketProvided)
+
+        @Html.LabelFor(m => m.LifejacketSizeOk)
+        @Html.EditorFor(m => m.LifejacketSizeOk)
+
+        @Html.LabelFor(m => m.BuoyCount)
+        @Html.TextBoxFor(m => m.BuoyCount)
+        @Html.ValidationMessageFor(m => m.BuoyCount)
+    </fieldset>
+    
+    <fieldset>
+        <legend>EPIRBs</legend>
+        @if (Model.Epirb1 != null)
+        {
+            <h4>Beacon #1</h4>
+            @Html.EditorFor(m => m.Epirb1)
+        }
+        @if (Model.Epirb2 != null)
+        {
+            <h4>Beacon #2</h4>
+            @Html.EditorFor(m => m.Epirb1)
+        }
+    </fieldset>
+    
+    <fieldset>
+        <legend>Life Rafts</legend>
+        @if (Model.Raft1 != null)
+        {
+            <h4>Raft #1</h4>
+            @Html.EditorFor(m => m.Raft1)
+        }
+        @if (Model.Raft2 != null)
+        {
+            <h4>Raft #2</h4>
+            @Html.EditorFor(m => m.Raft2)
+        }
+        @if (Model.Raft3 != null)
+        {
+            <h4>Raft #3</h4>
+            @Html.EditorFor(m => m.Raft3)
+        }
+        @if (Model.Raft4 != null)
+        {
+            <h4>Raft #4</h4>
+            @Html.EditorFor(m => m.Raft4)
+        }
+    </fieldset>
+   
+    <div class="btn-group">
+        <input type="submit" name="Save" value="Save" class="btn-primary" />
+        <input type="reset" name="Cancel" />
+    </div>
+}
+
+@section AdditionalScripts {
+    <script src="@Url.Content("~/Scripts/tubs-unobtrusive.js")" type="text/javascript"></script>
+}

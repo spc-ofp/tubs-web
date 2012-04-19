@@ -17,26 +17,3 @@
         <input type="reset" name="Cancel" />
     </div>
 </td>
-
-
-@* As noted in CrewController, jQuery and MVC have an integration problem with a partial view and embedded JavaScript. *@
-@* However, this works out okay, so stick with it for now. *@
-
-@if (ViewData.ContainsKey("modelSaved"))
-{
-    var modelSaved = (bool)ViewData["modelSaved"];
-    if (modelSaved)
-    {
-        <script type="text/javascript">
-            //alert('Save successful');
-            notify('Save successful');
-        </script>
-    }
-    else
-    {
-        <script type="text/javascript">
-            // TODO Add a different style
-            alert('Save failed.  Contact support.');
-        </script>
-    }
-}

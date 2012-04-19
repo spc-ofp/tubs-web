@@ -13,7 +13,8 @@
     @foreach (var hand in Model)
     {
         var updateTarget = System.Guid.NewGuid().ToString();
-        using (Ajax.BeginForm("EditSingleDeckhand", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = updateTarget }))
+        var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = updateTarget, OnSuccess = "onSaveSuccess", OnFailure = "onSaveFail" };
+        using (Ajax.BeginForm("EditSingleDeckhand", options))
         {
         <tr id='@updateTarget'>
             @{ Html.RenderPartial("~/Views/Crew/DeckHand.cshtml", hand); }

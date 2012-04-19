@@ -46,7 +46,7 @@ else
         <legend>EPIRB #1</legend>
         @Html.DisplayFor(m => m.Epirb1)       
     </fieldset>
-    <br />
+    <hr />
     }
     if (Model.Epirb2 != null && (Model.Epirb2.BeaconType != null || Model.Epirb2.Expiration != null || Model.Epirb2.Count.HasValue))
     {
@@ -54,7 +54,7 @@ else
         <legend>EPIRB #2</legend>
         @Html.DisplayFor(m => m.Epirb2)       
     </fieldset>
-    <br />
+    <hr />
     }
 
     if (0 == Model.LifeRafts.Count())

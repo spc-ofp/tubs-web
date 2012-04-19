@@ -14,6 +14,9 @@
 
 @{ Html.RenderPartial("_Crew"); }
 
+@if (!ViewBag.IsReadOnly)
+{
 <p>
     @Html.ActionLink("Edit Crew", "Edit")
 </p>
+}

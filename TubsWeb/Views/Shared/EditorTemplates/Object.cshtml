@@ -20,9 +20,11 @@
     }
     else
     {
+        <div class="control-group">
         @Html.Label(prop.PropertyName, prop.DisplayName ?? prop.PropertyName)
         @Html.Editor(prop.PropertyName)
         @* This isn't perfect, and what I'd rather have is a single span that works with Bootstrap and the Microsoft jQuery stuff *@
         <span class="help-inline">@Html.ValidationMessage(prop.PropertyName)</span>
+        </div>
     }
 }

@@ -117,11 +117,7 @@ namespace TubsWeb.Controllers
             if (typeof(PurseSeineTrip) == tripId.GetType())
             {
                 pills.Add(Tuple.Create("Auxiliaries", Url.Action("Index", "Auxiliaries", routeValues)));
-                // FIXME MVC routing only wants to give us this page with the following URL
-                // ~/WellContent/Index/?tripId=tripId.Id
-                string actionLink = Url.Content(String.Format("~/WellContent/Index/?tripId={0}", tripId.Id));
-                pills.Add(Tuple.Create("Well Content", actionLink));
-                //pills.Add(Tuple.Create("Well Content", Url.Action("Index", "WellContent", routeValues)));
+                pills.Add(Tuple.Create("Well Content", Url.Action("Index", "WellContent", routeValues)));
             }
 
             pills.Add(Tuple.Create("Vessel", Url.Action("Index", "VesselDetails", routeValues)));

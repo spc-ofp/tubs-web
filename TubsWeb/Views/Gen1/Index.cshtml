@@ -20,11 +20,17 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="1">
-        <p>@Html.ActionLink("Edit sightings", "EditSightings")</p>
+        @if(!ViewBag.IsReadOnly)
+        {
+            <p>@Html.ActionLink("Edit sightings", "EditSightings")</p>
+        }
         @{ Html.RenderPartial("_Sightings", Model.Sightings); }
         </div>
         <div class="tab-pane" id="2">
-        <p>@Html.ActionLink("Edit transfers", "EditTransfers")</p>        
+        @if(!ViewBag.IsReadOnly)
+        {
+            <p>@Html.ActionLink("Edit transfers", "EditTransfers")</p>
+        }     
         @{ Html.RenderPartial("_Transfers", Model.Transfers); }
         </div>
     </div>

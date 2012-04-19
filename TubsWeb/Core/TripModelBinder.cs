@@ -60,7 +60,11 @@ namespace TubsWeb.Core
             }
             // Set TripId in ViewBag regardless of existence of Trip.
             controllerContext.Controller.ViewBag.TripId = entityId;
-            return new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(entityId);
+            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(entityId);
+            // ReadOnly is nonsense for a non-existant trip, but for the sake of completeness, we want
+            // to ensure that IsReadOnly is present in the ViewBag
+            controllerContext.Controller.ViewBag.IsReadOnly = (null == trip) ? true : trip.IsReadOnly;
+            return trip;
         }
     }
 }

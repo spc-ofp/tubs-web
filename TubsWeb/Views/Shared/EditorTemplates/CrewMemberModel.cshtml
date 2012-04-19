@@ -17,35 +17,16 @@
     @Model.Job.GetDescription()
 </td>
 <td>@Html.TextBoxFor(m => Model.Name, new { style = "width: 95%" })</td>
-<td>@Html.TextBoxFor(m => Model.Years, new { style = "width: 50px;" }) years @Html.TextBoxFor(m => Model.Months, new { style = "width: 50px;" }) months</td>
-<td>@Html.TextBoxFor(m => Model.Nationality, new { style = "width: 50px;" })</td>
+<td>
+    @Html.TextBoxFor(m => Model.Years, new { style = "width: 40px;", maxlength = 2, @class="autotab" }) years 
+    @Html.TextBoxFor(m => Model.Months, new { style = "width: 40px;", maxlength = 2, @class = "autotab" }) months
+</td>
+<td>@Html.TextBoxFor(m => Model.Nationality, new { style = "width: 40px;", @class="autotab", maxlength = 2 })</td>
 <td>@Html.TextBoxFor(m => Model.Comments, new { style = "width: 95%" })</td>
 <td>
     <div class="btn-group">
         <input type="submit" name="Save" value="Save" class="btn-primary" />
-        <input type="reset" name="Cancel" />
+        <!-- Prevent the reset button from being tab navigable -->
+        <input type="reset" name="Cancel" tabindex="31000" />
     </div>
 </td>
-
-
-@* As noted in CrewController, jQuery and MVC have an integration problem with a partial view and embedded JavaScript. *@
-@* However, this works out okay, so stick with it for now. *@
-
-@if (ViewData.ContainsKey("modelSaved"))
-{
-    var modelSaved = (bool)ViewData["modelSaved"];
-    if (modelSaved)
-    {
-        <script type="text/javascript">
-            //alert('Save successful');
-            notify('Save successful');
-        </script>
-    }
-    else
-    {
-        <script type="text/javascript">
-            // TODO Add a different style
-            alert('Save failed.  Contact support.');
-        </script>
-    }
-}

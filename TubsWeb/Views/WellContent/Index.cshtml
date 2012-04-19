@@ -1,10 +1,6 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip
 @using Spc.Ofp.Tubs.DAL.Entities
 
-@{
-    Layout = "~/Views/Shared/_Fluid_Layout.cshtml";
-}
-
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
@@ -17,48 +13,15 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-<table class="table table-bordered table-condensed table-striped">
-    <thead>
-        <tr>
-            <th>Well Number</th>
-            <th>Location</th>
-            <th>Capacity (mT)</th>
-            <th>Contents</th>
-            <th>Comments</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var wellContent in Model.WellContent)
-    {
-        <tr>
-            <td>@Html.DisplayFor(m => wellContent.WellNumber)</td>
-            <td>@Html.DisplayFor(m => wellContent.WellLocation)</td>
-            <td>@Html.DisplayFor(m => wellContent.WellCapacity)</td>
-            <td>@Html.DisplayFor(m => wellContent.FuelOrWater)</td>
-            <td>@Html.DisplayFor(m => wellContent.Comments)</td>
-        </tr>
-    }
-    </tbody>
-</table>
-
+@{ Html.RenderPartial("_WellContent", Model.WellContent); }
 
 <div class="row">
     <div class="span4"><strong>Total Well Capacity</strong></div>
     <div class="span2">@Html.DisplayFor(m => Model.WellCapacity) mT</div>
 </div>
 
-
-
-
-
-@section Sidebar {
-
-@{
-    IEnumerable<Tuple<string, string>> navpills = ViewBag.NavPills;
-    if (null != navpills)
-    {
-        Html.RenderPartial("_VerticalTripNavBar", navpills);
-    }
+@if (!ViewBag.IsReadOnly)
+{
+    @Html.ActionLink("Edit Well Content", "Edit")
 }
 
-}

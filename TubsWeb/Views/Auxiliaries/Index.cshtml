@@ -89,7 +89,10 @@ else
         </div>
     </fieldset>
     <hr />
+    if (!ViewBag.IsReadOnly)
+    {
     <p>
         @Html.ActionLink("Edit Auxiliaries", "Edit", "Auxiliaries", new { tripId = ViewBag.TripId }, null)
     </p>
+    }
 }

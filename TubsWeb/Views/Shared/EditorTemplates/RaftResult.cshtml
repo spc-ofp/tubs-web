@@ -1,0 +1,17 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.RaftResult
+
+<div class="control-group">
+@Html.LabelFor(m => Model.Capacity)
+@Html.TextBoxFor(m => Model.Capacity)
+@Html.ValidationMessageFor(m => Model.Capacity)
+</div>
+<div class="control-group">
+@Html.LabelFor(m => Model.LastOrDue)
+@Html.TextBoxFor(m => Model.LastOrDue)
+@Html.ValidationMessageFor(m => Model.LastOrDue)
+</div>
+<div class="control-group">
+@Html.LabelFor(m => Model.InspectionDate)
+@Html.TextBoxFor(m => Model.InspectionDate)
+@Html.ValidationMessageFor(m => Model.InspectionDate)
+</div>

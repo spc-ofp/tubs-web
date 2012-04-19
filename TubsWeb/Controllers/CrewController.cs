@@ -89,42 +89,7 @@ namespace TubsWeb.Controllers
 
             bool modelSaved = false;
             cmm = SaveCrewmember(tripId, cmm, out modelSaved);
-            ViewData["modelSaved"] = modelSaved;
             return PartialView(partialName, cmm);
-
-            /*
-            // Ideally, we'd pass a status message back to the
-            // UI.  Unfortunately, jQuery and MVC3 are having issues
-            // with escaping data correctly
-            bool modelSaved = false;
-            if (ModelState.IsValid)
-            {
-                Crew crew = tripId.CreateCrew();
-                if (null != crew)
-                {
-                    cmm.CopyTo(crew);
-                    crew.Trip = tripId;
-                    var repo = new TubsRepository<Crew>(MvcApplication.CurrentSession);
-                    if (default(int) == crew.Id)
-                    {
-                        crew.EnteredBy = User.Identity.Name;
-                        crew.EnteredDate = DateTime.Now;
-                        repo.Add(crew);
-                        // Does this work?
-                        cmm.Id = crew.Id;
-                        modelSaved = true;
-                    }
-                    else
-                    {
-                        repo.Update(crew, true);
-                        modelSaved = true;
-                    }
-                }
-            }
-
-            ViewData["modelSaved"] = modelSaved;
-            return PartialView(partialName, cmm);
-            */
         }
 
         /// <summary>

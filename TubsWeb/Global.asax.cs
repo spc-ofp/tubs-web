@@ -241,6 +241,13 @@ namespace TubsWeb
             );
 
             routes.MapRoute(
+                "WellContents",
+                "Trip/{tripId}/WellContent/{action}",
+                new { controller = "WellContent", action = "Index" },
+                new { tripId = @"\d+" }
+            );
+
+            routes.MapRoute(
                 "PageCount",
                 "Trip/{tripId}/PageCount/{action}",
                 new { controller = "PageCount", action = "Index" },
@@ -254,13 +261,6 @@ namespace TubsWeb
                 new { tripId = @"\d+" }
             );
 
-            routes.MapRoute(
-                "WellContent",
-                "Trip/{tripId}/WellContent/{action}",
-                new { controller = "WellContent", action = "Index" },
-                new { tripId = @"\d+" }
-            );
-
             // Can this route replace the fairly generic routes?
             // Doesn't look like it...
             routes.MapRoute(
@@ -269,14 +269,6 @@ namespace TubsWeb
                 new { action = "Index" },
                 new { tripId = @"\d+" }
             );
-
-            /*
-            routes.MapRoute(
-                "Gear",
-                "Trip/Details/{id}/Gear/",
-                new { controller = "Gear", action = "Index" }
-            );
-            */
 
             routes.MapRoute(
                 "TripList",

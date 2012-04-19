@@ -34,7 +34,6 @@
     ))
 </div>
 
-@* TODO When we get past about 20 pages (300 trips), this will get ugly *@
 @{
     // Bootstrap will disable a link if the container has the class 'disabled'.
     string classForPrevious = ViewBag.HasPrevious ? String.Empty : "disabled";
@@ -42,10 +41,15 @@
     string actionName = ViewBag.ActionName ?? "Index";
 }
 
+@* TODO In the future, change this to 10 or 11 pages (fewer only if there are fewer than 10 pages) *@
 <div class="pagination">
     <ul>
         <li class="@classForPrevious"><a href='@Url.Action(actionName, new { page = (ViewBag.CurrentPage - 1) })'>&larr;</a></li>
-        @for (int i = 0; i < ViewBag.PageCount; i++)
+        @{
+            int minPage = Math.Max(0, (ViewBag.CurrentPage ?? 0) - 5);
+            int maxPage = Math.Min((ViewBag.CurrentPage ?? 0) + 5, ViewBag.PageCount);
+        }
+        @for (int i = minPage; i <= maxPage; i++)
         {
             string classForThis = i == ViewBag.CurrentPage ? "active" : String.Empty;
             <li class="@classForThis">

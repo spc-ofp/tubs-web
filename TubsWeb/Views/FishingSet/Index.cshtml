@@ -33,10 +33,10 @@ else
             <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = ViewBag.CurrentSet + 1 })'>Next Set</a>
         </li>
     }
-    </ul>
-   
+    </ul>   
       
     <table class="table table-bordered table-condensed table-striped">
+        <caption>Set Sequence Times</caption>
         <thead>
             <tr>
                 <th>Skiff Off</th>
@@ -58,6 +58,88 @@ else
             </tr>
         </tbody>
     </table>
+    
+    <table class="table table-bordered table-condensed table-striped">
+        <caption>Cumulative Catch Onboard (mT)</caption>
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Onboard Total</th>
+                <th>Retained This Set</th>
+                <th>New Onboard Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Observer</td>
+                <td>@Html.DisplayFor(m => Model.WeightOnboardObserved)</td>
+                <td>
+                    @Html.DisplayFor(m => Model.RetainedTonnageObserved)
+                    @* // Need a better means of display Only from this set? @Html.DisplayFor(m => Model.VesselTonnageOnlyFromThisSet)*@
+                </td>
+                <td>@Html.DisplayFor(m => Model.NewOnboardTotalObserved)</td>
+            </tr>
+            <tr>
+                <td>Vessel Log</td>
+                <td>@Html.DisplayFor(m => Model.WeightOnboardFromLog)</td>
+                <td>@Html.DisplayFor(m => Model.RetainedTonnageFromLog)</td>
+                <td>@Html.DisplayFor(m => Model.NewOnboardTotalFromLog)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="row">
+        <div class="span3">@Html.LabelFor(m => Model.SumOfBrail1)</div>
+        <div class="span2">@Html.DisplayFor(m => Model.SumOfBrail1)</div>
+    </div>
+    <div class="row">
+        <div class="span3">@Html.LabelFor(m => Model.SumOfBrail2)</div>
+        <div class="span2">@Html.DisplayFor(m => Model.SumOfBrail2)</div>
+    </div>
+    <div class="row">
+        <div class="span3">@Html.LabelFor(m => Model.TonsOfTunaObserved)</div>
+        <div class="span2">@Html.DisplayFor(m => Model.TonsOfTunaObserved)</div>
+    </div>
+   
+    <table class="table table-bordered table-condensed table-striped">
+        <caption>Target Species Totals</caption>
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>SKJ</th>
+                <th>YFT</th>
+                <th>BET</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>In Set</td>
+                <td>@Html.DisplayFor(m => Model.ContainsSkipjack)</td>
+                <td>@Html.DisplayFor(m => Model.ContainsYellowfin)</td>
+                <td>@Html.DisplayFor(m => Model.ContainsBigeye)</td>
+            </tr>
+            <tr>
+                <td>Approximate %</td>
+                <td>@Html.DisplayFor(m => Model.SkipjackPercentage)</td>
+                <td>@Html.DisplayFor(m => Model.YellowfinPercentage)</td>
+                <td>@Html.DisplayFor(m => Model.BigeyePercentage)</td>
+            </tr>
+            <tr>
+                <td>Observed Weight</td>
+                <td>@Html.DisplayFor(m => Model.TonsOfSkipjackObserved)</td>
+                <td>@Html.DisplayFor(m => Model.TonsOfYellowfinObserved)</td>
+                <td>@Html.DisplayFor(m => Model.TonsOfBigeyeObserved)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <hr />
+    <div class="row">
+        <div class="span3">Comments</div>
+    </div>
+    <div class="row">
+        <div class="span12">@Html.DisplayFor(m => Model.Comments)</div>
+    </div>
     
     <ul>
     @foreach (var sc in Model.CatchList)

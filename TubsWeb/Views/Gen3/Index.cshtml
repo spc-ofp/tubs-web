@@ -15,7 +15,10 @@
 @if (null == Model)
 {
     <p>No GEN-3 available for this trip.</p>
-    @Html.ActionLink("Add GEN-3", "Edit", new { tripId = ViewBag.TripId })
+    if (!ViewBag.IsReadOnly)
+    {
+        @Html.ActionLink("Add GEN-3", "Edit", new { tripId = ViewBag.TripId })
+    }
 }
 else
 {

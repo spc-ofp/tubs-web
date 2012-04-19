@@ -53,7 +53,8 @@
         <tbody>
         @foreach (var namedJob in namedJobs)
         {
-            using (Ajax.BeginForm("EditSingle", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = namedJob.Item1 }))
+            var njoptions = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = namedJob.Item1, OnSuccess = "onSaveSuccess", OnFailure = "onSaveFail" };
+            using (Ajax.BeginForm("EditSingle", njoptions))
             {
             <tr id='@namedJob.Item1'>
                 @Html.EditorFor(m => namedJob.Item2)
@@ -110,6 +111,21 @@
     <script src="@Url.Content("~/Scripts/jquery.meow.js")" type="text/javascript"></script>
 
     <script type="text/javascript">
+        function onSaveSuccess(data, status, xhr) {
+            $.meow({
+                message: 'Crewmember saved',
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+
+        function onSaveFail(xhr, status, error) {
+            $.meow({
+                title: 'Failed to save crewmember',
+                message: error,
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+
         function onAddFail(xhr, status, error) {
             $.meow({
                 title: 'Failed to add crewmember',
@@ -120,7 +136,8 @@
 
         function onAddSuccess(data, status, xhr) {
             /* Better to clear the text boxes only...*/
-            clearForm('#addHandForm');
+            clearFormEx('#addHandForm');
+            $('#hand_Name').focus();
             $.meow({
                 message: 'Crewmember added',
                 icon: '@Url.Content("~/Content/images/nyan-cat.gif")'

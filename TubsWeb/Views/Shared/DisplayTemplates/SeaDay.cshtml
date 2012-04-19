@@ -11,11 +11,7 @@
     var counter = (int)ViewData["counter"];
 }
 
-<tr @HasGen3(Model.Gen3Events) >
-    <td>
-        <a href="#foo">Edit</a> | @* FIXME Add an edit method *@
-        <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = Model.Trip.Id, dayNumber = counter })'>Activities</a>
-    </td>
+<tr @HasGen3(Model.Gen3Events) >   
     <td>@Html.DisplayFor(m => Model.StartOfDay)</td>
     <td>@Html.DisplayFor(m => Model.UtcStartOfDay)</td>
     <td>@Model.FloatingObjectsNoSchool</td>
@@ -24,4 +20,7 @@
     <td>@Model.FadsWithSchool</td>
     <td>@Model.FreeSchools</td>
     <td>@Html.DisplayFor(m => @Model.Gen3Events)</td>
+    <td>
+        <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = Model.Trip.Id, dayNumber = counter })'>Activities</a>
+    </td>
 </tr>

@@ -40,12 +40,11 @@ namespace TubsWeb.Controllers
             {
                 return new NoSuchTripResult();
             }
-            
-            ViewBag.IsReadOnly = tripId.IsReadOnly;
 
             var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);            
             // Push the projection into a List so that it's not the NHibernate collection implementation
             var days = repo.FilterBy(d => d.Trip.Id == tripId.Id).ToList<SeaDay>();
+            AddMinMaxDates(tripId);
             ViewBag.Title = String.Format("Sea days for {0}", tripId.ToString());
             ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
             return View(days);

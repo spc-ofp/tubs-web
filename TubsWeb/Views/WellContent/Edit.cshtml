@@ -1,0 +1,85 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip
+@using Spc.Ofp.Tubs.DAL.Entities
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Index", "WellContent", new { tripId = ViewBag.TripId }), "Well Content"),
+        Tuple.Create("#", "Edit Well Content")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@* TODO Change this to an editable table.  Change will also need to be reflected in controller method *@
+@{ Html.RenderPartial("_WellContent", Model.WellContent); }
+
+<fieldset>
+    <legend>Add Well</legend>
+    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "wellContentTable", OnSuccess = "onAddSuccess", OnFailure = "onAddFail" };  }
+    @using (Ajax.BeginForm("AddItem", null, options, new { @class = "well", id = "addWellForm" }))
+    {
+        var item = new PurseSeineWellContent();
+        @Html.ValidationSummary(false)
+        @Html.HiddenFor(m => item.Id)
+        @Html.LabelFor(m => item.WellNumber)
+        @Html.TextBoxFor(m => item.WellNumber)
+
+        @Html.LabelFor(m => item.WellLocation)
+        @Html.TextBoxFor(m => item.WellLocation)
+
+        @Html.LabelFor(m => item.WellCapacity)
+        @Html.TextBoxFor(m => item.WellCapacity)
+        @Html.ValidationMessageFor(m => item.WellCapacity)
+
+        @Html.LabelFor(m => item.FuelOrWater)
+        @Html.DropDownListFor(m => item.FuelOrWater, new SelectList(TubsWeb.Models.WellContents.ContentTypes, item.FuelOrWater), "Choose")
+
+        @Html.LabelFor(m => item.Comments)
+        @Html.TextBoxFor(m => item.Comments)
+        
+        @Html.Label("DCT Score")
+        <input type="range" min="0" max="3" value="0" step="1" id="item_DctScore" name="item.DctScore" tabindex="500" />
+        <div id="rateIt" class="rateit" data-rateit-backingfld="#item_DctScore"></div>       
+        
+        <div class="btn-group">
+            <input type="submit" name="Save" value="Save" class="btn-primary" />
+            <input type="reset" name="Cancel" />
+        </div>
+    }
+
+</fieldset>
+
+@section AdditionalScripts {
+    <script src="@Url.Content("~/Scripts/jquery.meow.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.rateit.min.js")" type="text/javascript"></script>   
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var tooltipvalues = [ 'Obvious Error', 'Uncertain about transcription', 'Follow Up'];
+            $('#rateIt').bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value-1]); });
+        });
+
+        function onAddFail(xhr, status, error) {
+            $.meow({
+                title: 'Failed to add well',
+                message: error,
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+
+        function onAddSuccess(data, status, xhr) {
+            /* Nothing hidden, so use the original 'clearForm' to leave the numeric Id hidden input */
+            clearForm('#addWellForm');
+
+            $('#item_WellNumber').focus();
+            $.meow({
+                message: 'Well added',
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+    </script>
+}

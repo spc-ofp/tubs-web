@@ -17,9 +17,12 @@
     <p>
         No details available for this vessel.        
     </p>
-    <p>
-        @Html.ActionLink("Add Vessel Details", "Create", "VesselDetails", new { tripId = ViewBag.TripId }, null)
-    </p>
+    if (!ViewBag.IsReadOnly)
+    {
+        <p>
+            @Html.ActionLink("Add Vessel Details", "Create", "VesselDetails", new { tripId = ViewBag.TripId }, null)
+        </p>
+    }
 } else {
 <fieldset>
     <legend>Vessel Details</legend>
@@ -63,7 +66,10 @@
     </div>
 </fieldset>
 <hr />
-<p>
-    @Html.ActionLink("Edit Vessel Details", "Edit", "VesselDetails", new { tripId = ViewBag.TripId }, null)
-</p>
+    if (!ViewBag.IsReadOnly)
+    {
+        <p>
+            @Html.ActionLink("Edit Vessel Details", "Edit", "VesselDetails", new { tripId = ViewBag.TripId }, null)
+        </p>
+    }
 }

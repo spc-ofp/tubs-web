@@ -25,6 +25,7 @@
     <link href="@Url.Content("~/Content/themes/base/jquery.ui.all.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/datetimepicker.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/jquery.meow.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/rateit.css")" rel="stylesheet" type="text/css" />
 
     <!-- Use Modernizr instead of html5shim / html5shiv, at least until it breaks -->
     <script src="@Url.Content("~/Scripts/modernizr-2.5.3.js")" type="text/javascript"></script>
@@ -93,9 +94,11 @@
 
     <div class="container">
       @RenderBody()
+        <!-- //Commented out until we can come up with a better sticky footer
         <div class="footer">
             This is confidential data subject to a @Html.ActionLink("data disclosure policy", "Confidentiality", "Home")
         </div>
+        -->
     </div> <!-- /container -->
 
     <!-- Le javascript
@@ -111,61 +114,7 @@
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
-
-
-    <script type="text/javascript">
-        String.prototype.endsWith = function(str) {return (this.match(str+"$")==str); }
-        
-        /*
-        // Add this to pages with tables that need zebra striping
-        $(document).ready(function () {
-        $("table > tbody tr:odd").css("background-color", "#FFFFCC");
-        });
-        */
-
-        // Use jTruncate jQuery plugin to automatically truncate large text
-        // http://www.jeremymartin.name/projects.php?project=jTruncate
-        $(document).ready(function () {
-            $('.large-text').jTruncate({
-                length: 50,
-                minTrail: 10
-            });
-        });
-
-        //
-        // This one doesn't clear hidden values
-        // http://weblogs.asp.net/haithamkhedre/archive/2010/11/22/blank-out-a-form-with-jquery.aspx
-        function clearFormEx(formName) {
-            $(':input', formName)
-                .not(':button, :submit, :reset, :hidden')
-                .val('')
-                .removeAttr('checked')
-                .removeAttr('selected');
-        }
-
-        // Clear any form values
-        // Used for the Ajax "add to table" archetype.
-        function clearForm(formName) {
-            $(':input', formName).each(function () {
-                var type = this.type.toLowerCase();
-                if (type == 'text' || type == 'password' || type == 'textarea') {
-                    this.value = "";
-                } else if (type == 'hidden') {
-                    // Fixes problem with clearing out numeric hidden values that map to not-nullable
-                    // properties in the data access layer
-                    if (this.name.endsWith(".Id")) {
-                        this.value = "0";
-                    } else {
-                        this.value = "";
-                    }
-                } else if (type == 'select-one' || type == 'select-multi') {
-                    this.selectedIndex = -1;
-                } else if (type == 'radio' || type == 'checkbox') {
-                    if (this.checked) { this.checked = false; }
-                }
-            });
-        }
-    </script>
+    <script src="@Url.Content("~/Scripts/tubs.js")" type="text/javascript"></script>
 
     @RenderSection("AdditionalScripts", false)
 </body>

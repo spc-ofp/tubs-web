@@ -27,6 +27,7 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
+    using System.Collections.Generic;
     
     public class WellContentController : SuperController
     {
@@ -39,9 +40,90 @@ namespace TubsWeb.Controllers
                 return new NoSuchTripResult();
             }
 
-            AddTripNavbar(tripId);
             ViewBag.Title = String.Format("Well content for trip {0}", tripId.ToString());
             return View(trip);
+        }
+
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Edit(Trip tripId)
+        {
+            var trip = tripId as PurseSeineTrip;
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            ViewBag.Title = String.Format("Well content for trip {0}", tripId.ToString());
+            return View(trip);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public ActionResult AddItem(Trip tripId, [Bind(Prefix = "item")] PurseSeineWellContent content)
+        {
+            var trip = tripId as PurseSeineTrip;
+            if (null == tripId)
+            {
+                return Json(new { error = true, message = "No trip found with given tripId"});
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Json(new { error = true, message = "TODO:  Fix this." });
+            }
+
+            content.Trip = trip;
+            var repo = new TubsRepository<PurseSeineWellContent>(MvcApplication.CurrentSession);
+            // Save the incoming content
+            if (default(int) == content.Id)
+            {
+                content.EnteredBy = User.Identity.Name;
+                content.EnteredDate = DateTime.Now;
+                repo.Add(content);
+            }
+            else
+            {
+                content.UpdatedBy = User.Identity.Name;
+                content.UpdatedDate = DateTime.Now;
+                repo.Update(content);
+            }
+
+            // Refresh table containing the well content
+            var contents = repo.FilterBy(c => c.Trip.Id == trip.Id);
+            return PartialView("_WellContent", contents);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public ActionResult EditItem(Trip tripId, PurseSeineWellContent content)
+        {
+            throw new NotImplementedException("TODO Implement this as part of editable grid");
+            //return PartialView("_EditWellContent", content);
+        }
+
+
+
+
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Edit(Trip tripId, IList<PurseSeineWellContent> wells)
+        {
+            var trip = tripId as PurseSeineTrip;
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            // Save the contents one by one
+            foreach (var content in wells)
+            {
+                content.Trip = trip;
+            }
+
+            return RedirectToAction("Index", new { tripId = tripId.Id });
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.SeaDay>
+@using Spc.Ofp.Tubs.DAL.Entities
 
 @* For now, create this in the View. *@
 @{
@@ -12,37 +13,7 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@* TODO Add vertical lines to header *@
-<table class="table table-bordered table-condensed table-striped">
-    <thead>
-        <tr>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-            <th colspan="2">Free floating objects</th>
-            <th colspan="2">Anchored floating objects</th>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-        </tr>
-        <tr>
-            <th>&nbsp;</th>
-            <th>Start of Day</th>
-            <th>Start of Day (UTC)</th>
-            <th>No school</th>
-            <th>With school</th>
-            <th>No school</th>
-            <th>With school</th>
-            <th>Free schools</th>
-            <th>GEN-3 Event?</th>
-        </tr>
-    </thead>
-<tbody>
-
-@foreach (var item in Model.Select((x, i) => new { Data = x, Index = i})) {
-    @Html.DisplayFor(m => item.Data, new { counter = item.Index + 1 })
-}
-</tbody>
-</table>
+@{ Html.RenderPartial("_SeaDays", Model); }
 
 @if (0 == Model.Count())
 {
@@ -55,9 +26,84 @@
     <div id="autoFillResults"></div>
     
 }
+else if (!ViewBag.IsReadOnly)
+{
+    // TODO Better test isn't .IsReadOnly, but .IsReadOnly and HasAllDays:  If there's a sea day for every day between the beginning and end, don't show this?
+    var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "seaDayTable", OnSuccess = "onAddSuccess", OnFailure = "onAddFail" };
+    using (Ajax.BeginForm("AddItem", null, options, new { @class = "well", id = "addDayForm" }))
+    {
+        @Html.ValidationSummary(false)
+        <fieldset>
+            <legend>Add Day</legend>
+            @{ var day = new PurseSeineSeaDay(); }
+            @Html.HiddenFor(d => day.Id)
 
-@section AdditionalScripts {   
+            @* TODO Autofill this and UTC for next day? *@
+            @Html.LabelFor(d => day.StartOfDay)
+            @Html.TextBoxFor(d => day.StartOfDay, new { @class="datetime" })
+
+            @Html.LabelFor(d => day.UtcStartOfDay)
+            @Html.TextBoxFor(d => day.UtcStartOfDay, new { @class = "datetime" })
+
+            @Html.LabelFor(d => day.FloatingObjectsNoSchool)
+            @Html.TextBoxFor(d => day.FloatingObjectsNoSchool)
+            @Html.ValidationMessageFor(d => day.FloatingObjectsNoSchool)
+
+            @Html.LabelFor(d => day.FloatingObjectsWithSchool)
+            @Html.TextBoxFor(d => day.FloatingObjectsWithSchool)
+            @Html.ValidationMessageFor(d => day.FloatingObjectsWithSchool)
+
+            @Html.LabelFor(d => day.FadsNoSchool)
+            @Html.TextBoxFor(d => day.FadsNoSchool)
+            @Html.ValidationMessageFor(d => day.FadsNoSchool)
+
+            @Html.LabelFor(d => day.FadsWithSchool)
+            @Html.TextBoxFor(d => day.FadsWithSchool)
+            @Html.ValidationMessageFor(d => day.FadsWithSchool)
+
+            @Html.LabelFor(d => day.FreeSchools)
+            @Html.TextBoxFor(d => day.FreeSchools)
+            @Html.ValidationMessageFor(d => day.FreeSchools)
+
+            @Html.LabelFor(d => day.Gen3Events)
+            @Html.TextBoxFor(d => day.Gen3Events)
+            @Html.ValidationMessageFor(d => day.Gen3Events)
+
+            @Html.LabelFor(d => day.DiaryPage)
+            @Html.TextBoxFor(d => day.DiaryPage)
+            @Html.ValidationMessageFor(d => day.DiaryPage)
+
+            <div class="btn-group">
+                <input type="submit" name="Save" value="Save" class="btn-primary" />
+                <input type="reset" name="Cancel" />
+            </div>
+        </fieldset>
+    }
+}
+
+@section AdditionalScripts {
+    @{ Html.RenderPartial("_DateTimePickerInit"); }
+
     <script type="text/javascript">
+        function onAddFail(xhr, status, error) {
+            $.meow({
+                title: 'Failed to add new day',
+                message: error,
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+
+        function onAddSuccess(data, status, xhr) {
+            /* Nothing hidden, so use the original 'clearForm' to leave the numeric Id hidden input */
+            clearForm('#addDayForm');
+
+            $('#day_StartOfDay').focus();
+            $.meow({
+                message: 'New day added',
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+
         function onAutoFail(xhr, status, error) {
             alert("Epic fail");
         }

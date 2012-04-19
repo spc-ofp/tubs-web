@@ -28,8 +28,11 @@ else
         <p>Not implemented</p>
     }
     <hr />
+}
+@if (!ViewBag.IsReadOnly)
+{
     <p>
         @Html.ActionLink("Edit Fishing Gear", "Edit", "Gear", new { tripId = ViewBag.TripId }, null)
-    </p> 
-}
+    </p>
+} 
 
