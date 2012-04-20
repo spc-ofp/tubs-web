@@ -1,12 +1,16 @@
 ﻿@model Spc.Ofp.Tubs.DAL.Entities.EpirbResult
-
+           
+<div class="control-group">
 @Html.LabelFor(m => Model.BeaconType)
 @Html.TextBoxFor(m => Model.BeaconType)
-
+</div>
+<div class="control-group">
 @Html.LabelFor(m => Model.Count)
 @Html.TextBoxFor(m => Model.Count)
 @Html.ValidationMessageFor(m => Model.Count)
-
+</div>
+<div class="control-group">
 @Html.LabelFor(m => Model.Expiration)
 @Html.TextBoxFor(m => Model.Expiration)
 @Html.ValidationMessageFor(m => Model.Expiration)
+</div>

@@ -45,7 +45,7 @@
         @if (Model.Epirb2 != null)
         {
             <h4>Beacon #2</h4>
-            @Html.EditorFor(m => m.Epirb1)
+            @Html.EditorFor(m => m.Epirb2)
         }
     </fieldset>
     
@@ -80,5 +80,5 @@
 }
 
 @section AdditionalScripts {
-    <script src="@Url.Content("~/Scripts/tubs-unobtrusive.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/tubs-unobtrusive.js")"></script>
 }

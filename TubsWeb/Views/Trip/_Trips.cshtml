@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Trip>
+           
+<table class="table table-bordered table-condensed table-striped" id="tripTable">
+    <thead>
+        <tr>
+            <th>Trip Id</th>
+            <th>Program</th>
+            <th>Trip Number</th>
+            <th>Vessel</th>
+            <th>Port of Departure</th>
+            <th>Departure Date</th>
+            <th>Return Port</th>
+            <th>Return Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(item.Id.ToString(), "Details", new { tripId = item.Id })
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.ProgramCode)
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.SpcTripNumber)
+            </td>
+            <td>
+                @if (!String.IsNullOrEmpty(item.Vessel.RegisteredCountryCode))
+                {
+                    var imgLink = String.Format("http://nouofputil01/~svcOFPUtil/member/media/flags/{0}.png", item.Vessel.RegisteredCountryCode.ToLower());
+                    <img src="@imgLink" alt="@item.Vessel.RegisteredCountryCode" title="@item.Vessel.RegisteredCountryCode" />
+                }
+                @Html.DisplayFor(i => item.Vessel.Name) @* TODO flag icon for vessel *@
+            </td>
+            <td>
+                @item.DeparturePort.ToString()
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.DepartureDate, new { format = "d" })
+            </td>
+            <td>
+                @item.ReturnPort.ToString()
+            </td>
+            <td>
+                @Html.DisplayFor(i => item.ReturnDate, new { format = "d" })
+            </td>
+        </tr>    
+    }
+    </tbody>
+</table>

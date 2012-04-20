@@ -133,6 +133,35 @@ else
         </tbody>
     </table>
     
+    <table class="table table-bordered table-condensed table-striped">
+        <caption>Catch Details</caption>
+        <thead>
+            <tr>
+                <th>Species</th>
+                <th>Fate</th>
+                <th>Observed Weight (mT)</th>
+                <th>Observed Count</th>
+                <th>Log Weight (mT)</th>
+                <th>Log Count</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var sc in Model.CatchList)
+        {
+            <tr>
+                <td>@Html.DisplayFor(s => sc.SpeciesCode)</td>
+                <td>@Html.DisplayFor(s => sc.FateCode)</td>
+                <td>@Html.DisplayFor(s => sc.MetricTonsObserved)</td>
+                <td>@Html.DisplayFor(s => sc.CountObserved)</td>
+                <td>@Html.DisplayFor(s => sc.MetricTonsFromLog)</td>
+                <td>@Html.DisplayFor(s => sc.CountFromLog)</td>
+                <td>@Html.DisplayFor(s => sc.Comments)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    
     <hr />
     <div class="row">
         <div class="span3">Comments</div>
@@ -140,12 +169,4 @@ else
     <div class="row">
         <div class="span12">@Html.DisplayFor(m => Model.Comments)</div>
     </div>
-    
-    <ul>
-    @foreach (var sc in Model.CatchList)
-    {
-        <li>@sc.SpeciesCode : @sc.MetricTonsObserved mT (@sc.FateCode)</li>
-    }
-    </ul>
-   
 }

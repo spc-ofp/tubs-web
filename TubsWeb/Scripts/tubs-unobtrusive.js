@@ -5,7 +5,7 @@
 
 $(document).ready(function () {
     var esettings = $.data($('form')[0], 'validator').settings;
-    // Store a handle to the original errorPlacement function
+    // Get a handle to the original errorPlacement function
     var originalFunction = esettings.errorPlacement;
     esettings.errorPlacement = function (error, inputElement) {
         // Although you have access to the form via $(this),

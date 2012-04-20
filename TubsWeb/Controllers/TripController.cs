@@ -105,6 +105,11 @@ namespace TubsWeb.Controllers
             return View("Index", trips.Entities);
         }
 
+        public ActionResult Search()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Publishes the last 10 trips as a simple RSS feed with the
         /// Spc trip number, DCT who opened it, and direct link to

@@ -6,33 +6,7 @@
 
 <h2>@ViewBag.Title</h2>
 
-@* TODO Add search capability *@
-@* TODO Fix return and departure dates *@
-
-@{ 
-    var grid = new WebGrid(rowsPerPage: 15, canSort: false);
-    grid.Bind(Model, rowCount: ViewBag.TotalRows);
-}
-
-<div id="tripgrid">
-    @grid.GetHtml(
-    tableStyle:"table table-striped table-bordered table-condensed",
-    columns: grid.Columns(
-        grid.Column(
-            format: (item) => 
-                @Html.ActionLink("Details", "Details", new { tripId = item.Id })
-        ),
-        grid.Column("Id", "Trip Id"),
-        grid.Column("ProgramCode", "Program"),
-        grid.Column("TripNumber", "Trip Number"), @* Reformat this to ABC / 10-01 *@
-        grid.Column("Observer", "Observer"),
-        grid.Column("Vessel", "Vessel"),
-        grid.Column("DeparturePort", "Port of Departure"),
-        grid.Column("DepartureDate", "Departure Date"),
-        grid.Column("ReturnPort", "Port of Return"),
-        grid.Column("ReturnDate", "Return Date")
-    ))
-</div>
+@{ Html.RenderPartial("_Trips", Model); }
 
 @{
     // Bootstrap will disable a link if the container has the class 'disabled'.
