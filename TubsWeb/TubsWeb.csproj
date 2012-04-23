@@ -231,8 +231,20 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\backbone.min.js" />
+    <Content Include="Scripts\g.bar-min.js" />
+    <Content Include="Scripts\g.bar.js" />
+    <Content Include="Scripts\g.dot-min.js" />
+    <Content Include="Scripts\g.dot.js" />
+    <Content Include="Scripts\g.line-min.js" />
+    <Content Include="Scripts\g.line.js" />
+    <Content Include="Scripts\g.pie-min.js" />
+    <Content Include="Scripts\g.pie.js" />
+    <Content Include="Scripts\g.raphael-min.js" />
+    <Content Include="Scripts\g.raphael.js" />
     <Content Include="Scripts\jquery-ui-1.8.19.js" />
     <Content Include="Scripts\jquery-ui-1.8.19.min.js" />
+    <Content Include="Scripts\raphael-min.js" />
+    <Content Include="Scripts\raphael.js" />
     <Content Include="Scripts\tubs-unobtrusive.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -506,6 +518,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Trip\_Trips.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\DisplayTemplates\Double.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

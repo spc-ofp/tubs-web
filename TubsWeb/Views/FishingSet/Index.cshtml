@@ -170,3 +170,13 @@ else
         <div class="span12">@Html.DisplayFor(m => Model.Comments)</div>
     </div>
 }
+
+@section AdditionalScripts {
+    <!--
+    http://blog.jeremi.info/entry/creating-a-chart-with-raphael-js-from-a-google-spreadsheet
+    https://github.com/kennyshen/g.raphael
+     -->
+    <script src="@Url.Content("~/Scripts/raphael-min.js")"></script>
+    <script src="@Url.Content("~/Scripts/g.raphael-min.js")"></script>
+    <script src="@Url.Content("~/Scripts/g.bar-min.js")"></script>
+}

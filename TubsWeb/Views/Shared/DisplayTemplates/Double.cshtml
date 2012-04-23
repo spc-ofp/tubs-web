@@ -1,0 +1,10 @@
+﻿@model System.Double?
+
+@{
+    string format = (string)ViewData["format"];
+    if (null == format || "".Equals(format.Trim())) {
+        format = "F4";
+    }
+}
+
+@Html.Encode( !Model.HasValue ? "N/A" : Model.Value.ToString(format))

@@ -21,19 +21,19 @@ namespace TubsWeb.Models
         public DateTime? Timestamp { get; set; }
 
         [Display(Name = "Latitude")]
-        public decimal? Latitude { get; set; }
+        public double? Latitude { get; set; }
 
         [Display(Name = "Longitude")]
-        public decimal? Longitude { get; set; }
+        public double? Longitude { get; set; }
 
         [Display(Name = "Time Difference From Last Position")]
         public TimeSpan? DeltaTime { get; set; }
 
         [Display(Name = "Distance From Last Position")]
-        public decimal? DeltaPosition { get; set; }
+        public double? DeltaPosition { get; set; }
 
         [Display(Name = "Velocity From Last Position")]
-        public decimal? DeltaVelocity { get; set; }
+        public double? DeltaVelocity { get; set; }
 
         [Display(Name = "Description")]
         public string Description { get; set; }
@@ -54,8 +54,8 @@ namespace TubsWeb.Models
             return new PositionAuditViewModel()
             {
                 Timestamp = pushpin.Timestamp,
-                Latitude = pushpin.Latitude,
-                Longitude = pushpin.Longitude,
+                Latitude = (double)pushpin.Latitude,
+                Longitude = (double)pushpin.Longitude,
                 Description = pushpin.Description
             };
         }
@@ -77,17 +77,16 @@ namespace TubsWeb.Models
 
             if (current.HasPosition && previous.HasPosition)
             {
-                pavm.DeltaPosition =
-                    (decimal)GreatCircleDistance(
-                        (double)current.Latitude.Value * DegreesToRadians,
-                        (double)current.Longitude.Value * DegreesToRadians,
-                        (double)previous.Latitude.Value * DegreesToRadians,
-                        (double)previous.Longitude.Value * DegreesToRadians);
+                pavm.DeltaPosition = GreatCircleDistance(
+                        current.Latitude.Value * DegreesToRadians,
+                        current.Longitude.Value * DegreesToRadians,
+                        previous.Latitude.Value * DegreesToRadians,
+                        previous.Longitude.Value * DegreesToRadians);
             }
 
             if (pavm.DeltaPosition.HasValue && pavm.DeltaTime.HasValue && pavm.DeltaTime.Value.TotalHours > 0)
             {
-                pavm.DeltaVelocity = pavm.DeltaPosition.Value / (decimal)Math.Abs(pavm.DeltaTime.Value.TotalHours);
+                pavm.DeltaVelocity = pavm.DeltaPosition.Value / Math.Abs(pavm.DeltaTime.Value.TotalHours);
             }
 
             return pavm;

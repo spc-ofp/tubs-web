@@ -44,8 +44,8 @@ velocity between points exceeds 35 km/h (19 knots).
             <td>@Html.DisplayFor(m => item.Latitude) / @Html.DisplayFor(m => item.Longitude)</td>
             <td>@Html.DisplayFor(m => item.Description)</td>
             <td>@Html.DisplayFor(m => item.DeltaTime)</td>
-            <td>@Html.DisplayFor(m => item.DeltaPosition)</td>
-            <td>@Html.DisplayFor(m => item.DeltaVelocity)</td>
+            <td>@Html.DisplayFor(m => item.DeltaPosition, new { format = "F2" })</td>
+            <td>@Html.DisplayFor(m => item.DeltaVelocity, new { format = "F2" })</td>
         </tr>
     }
     </tbody>
