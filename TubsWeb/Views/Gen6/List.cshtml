@@ -14,4 +14,7 @@
 
 @{ Html.RenderPartial("_PollutionEvents", Model); }
 
-@* TODO GEN-6 is complex enough that it needs to be entered on a new page *@
+@if (!ViewBag.IsReadOnly)
+{
+    @Html.ActionLink("Add GEN-6 Event", "Add", new { tripId = ViewBag.TripId })
+}

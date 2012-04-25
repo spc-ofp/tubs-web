@@ -185,9 +185,9 @@ namespace TubsWeb
             // TODO Change the default action to Index
             routes.MapRoute(
                 "Gen6",
-                "Trip/{tripId}/GEN-6/{action}",
-                new { controller = "Gen6", action = "List" },
-                new { tripId = @"\d+" }
+                "Trip/{tripId}/GEN-6/{action}/{pageNumber}",
+                new { controller = "Gen6", action = "List", pageNumber = UrlParameter.Optional },
+                new { tripId = @"\d+", pageNumber = @"\d+" }
             );
 
             // Even though Set is subordinate to day, allow link directly to list of sets

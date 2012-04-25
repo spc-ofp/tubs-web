@@ -1,0 +1,29 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PollutionEvent
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "Gen6", new { tripId = ViewBag.TripId }), "GEN-6 Events"),
+        Tuple.Create("#", "Add GEN-6 Event")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@using (Html.BeginForm("Add", "Gen6", new { tripId = ViewBag.TripId }, FormMethod.Post, new { @class="well" }))
+{
+    @Html.ValidationSummary(false)
+    @Html.EditorFor(m => Model)
+    <div class="btn-group">
+        <input type="submit" name="Save" value="Save" class="btn-primary" />
+        <input type="reset" name="Cancel" />
+    </div>
+}
+
+@section AdditionalScripts {
+    <script src="@Url.Content("~/Scripts/tubs-unobtrusive.js")"></script>
+    @{ Html.RenderPartial("_DateTimePickerInit"); }
+}

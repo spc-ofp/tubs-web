@@ -31,15 +31,8 @@ namespace TubsWeb.Controllers
     
     public class Gen6Controller : SuperController
     {
-        //
-        // GET: /Gen6/
-        public ActionResult Index(Trip tripId, int pageNumber)
+        private PollutionEvent FindByTripAndPageNumber(Trip tripId, int pageNumber)
         {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
             var events = tripId.PollutionEvents;
             int maxPages = events.Count();
             if (pageNumber > maxPages)
@@ -49,8 +42,21 @@ namespace TubsWeb.Controllers
 
             ViewBag.MaxPages = maxPages;
             ViewBag.CurrentPage = pageNumber;
-            ViewBag.Title = String.Format("GEN-6 page {0} of {1}", pageNumber, maxPages);
-            var pollutionEvent = events.Skip(pageNumber - 1).Take(1).FirstOrDefault();
+            return events.Skip(pageNumber - 1).Take(1).FirstOrDefault();
+        }
+        
+        
+        //
+        // GET: /Gen6/
+        public ActionResult Index(Trip tripId, int pageNumber)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            var pollutionEvent = FindByTripAndPageNumber(tripId, pageNumber);
+            ViewBag.Title = String.Format("GEN-6 page {0} of {1}", ViewBag.CurrentPage, ViewBag.MaxPages);
             return View(pollutionEvent);
         }
 
@@ -70,6 +76,37 @@ namespace TubsWeb.Controllers
         // The following methods are for an investigation of this method of Ajax/Modal dialog
         // http://xhalent.wordpress.com/2011/05/25/master-details-with-dialog-in-asp-net-mvc-and-unobstrusive-ajax/
         // On further reflection, GEN-6 isn't a great candidate for this
+
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Add(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            AddMinMaxDates(tripId);
+            ViewBag.Title = String.Format("Edit GEN-6 event for trip {0}", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+            var pevent = new PollutionEvent();
+            pevent.Trip = tripId;
+            return View(pevent);
+        }
+
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Edit(Trip tripId, int pageNumber)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            AddMinMaxDates(tripId);
+            ViewBag.Title = String.Format("Edit GEN-6 page {1} for trip {0}", tripId.ToString(), pageNumber);
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+            var pollutionEvent = FindByTripAndPageNumber(tripId, pageNumber);
+            return View(pollutionEvent);
+        }
 
     }
 }

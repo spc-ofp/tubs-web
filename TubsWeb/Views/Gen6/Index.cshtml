@@ -28,18 +28,22 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-<p>
+<ul class="pager">
 @{
     if (ViewBag.CurrentPage > 1) {
-        <a href='@Url.RouteUrl("Gen6Details", new { tripId = ViewBag.TripId, pageNumber = ViewBag.CurrentPage - 1 })'>Previous Page</a>
+        <li>
+            <a href='@Url.RouteUrl("Gen6Details", new { tripId = ViewBag.TripId, pageNumber = ViewBag.CurrentPage - 1 })'>Previous Page</a>
+        </li>
     }
 
     if (ViewBag.MaxPages > ViewBag.CurrentPage)
     {
-        <a href='@Url.RouteUrl("Gen6Details", new { tripId = ViewBag.TripId, pageNumber = ViewBag.CurrentPage + 1 })'>Next Page</a>
+        <li>
+            <a href='@Url.RouteUrl("Gen6Details", new { tripId = ViewBag.TripId, pageNumber = ViewBag.CurrentPage + 1 })'>Next Page</a>
+        </li>
     }
 }
-</p>
+</ul>
 
 @if (null == Model)
 {

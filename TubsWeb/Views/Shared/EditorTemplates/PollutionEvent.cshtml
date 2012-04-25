@@ -1,0 +1,109 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.PollutionEvent
+@using Spc.Ofp.Tubs.DAL.Entities
+@using Spc.Ofp.Tubs.DAL.Common
+           
+@{
+    // LINQ, SelectList, and enums FTW!
+    // http://stackoverflow.com/questions/388483/how-do-you-create-a-dropdownlist-from-an-enum-in-asp-net-mvc/5255108#5255108
+    var vesselTypes =
+        from SightedVesselType svt in Enum.GetValues(typeof(SightedVesselType))
+        select new { ID = svt, Name = svt.GetDescription() };
+
+    // Create a new SelectList thus
+    var sightedVesselList = new SelectList(vesselTypes, "ID", "Name", SightedVesselType.SinglePurseSeine);
+    
+}
+
+<div class="control-group">
+@Html.LabelFor(m => Model.IncidentDate)
+@Html.TextBoxFor(m => Model.IncidentDate, new { @class = "datetime" })
+@Html.ValidationMessageFor(m => Model.IncidentDate)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.Latitude)
+@Html.TextBoxFor(m => Model.Latitude)
+@Html.ValidationMessageFor(m => Model.Latitude)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.Longitude)
+@Html.TextBoxFor(m => Model.Longitude)
+@Html.ValidationMessageFor(m => Model.Longitude)
+</div>
+
+<div class="control-group">
+@Html.Label("EEZ/Harbour")
+@Html.TextBoxFor(m => Model.Location)
+@Html.ValidationMessageFor(m => Model.Location)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.WindDirection)
+@Html.TextBoxFor(m => Model.WindDirection)
+@Html.ValidationMessageFor(m => Model.WindDirection)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.WindSpeed)
+@Html.TextBoxFor(m => Model.WindSpeed)
+@Html.ValidationMessageFor(m => Model.WindSpeed)
+</div>
+
+@* TODO Dropdown *@
+<div class="control-group">
+@Html.LabelFor(m => Model.SeaCode)
+@Html.TextBoxFor(m => Model.SeaCode)
+@Html.ValidationMessageFor(m => Model.SeaCode)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.CurrentSpeed)
+@Html.TextBoxFor(m => Model.CurrentSpeed)
+@Html.ValidationMessageFor(m => Model.CurrentSpeed)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.CurrentDirection)
+@Html.TextBoxFor(m => Model.CurrentDirection)
+@Html.ValidationMessageFor(m => Model.CurrentDirection)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.VesselName)
+@Html.TextBoxFor(m => Model.VesselName)
+@Html.ValidationMessageFor(m => Model.VesselName)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.Ircs)
+@Html.TextBoxFor(m => Model.Ircs)
+@Html.ValidationMessageFor(m => Model.Ircs)
+</div>
+
+@* TODO Dropdown *@
+<div class="control-group">
+@Html.LabelFor(m => Model.VesselType)
+@Html.DropDownListFor(m => Model.VesselType, sightedVesselList)
+@Html.ValidationMessageFor(m => Model.VesselType)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.Bearing)
+@Html.TextBoxFor(m => Model.Bearing)
+@Html.ValidationMessageFor(m => Model.Bearing)
+</div>
+
+<div class="control-group">
+@Html.LabelFor(m => Model.Distance)
+@Html.TextBoxFor(m => Model.Distance)
+@Html.ValidationMessageFor(m => Model.Distance)
+</div>
+
+@*
+<div class="control-group">
+@Html.LabelFor()
+@Html.TextBoxFor()
+@Html.ValidationMessageFor()
+</div>
+*@

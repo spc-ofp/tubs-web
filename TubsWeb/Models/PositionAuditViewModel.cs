@@ -54,8 +54,8 @@ namespace TubsWeb.Models
             return new PositionAuditViewModel()
             {
                 Timestamp = pushpin.Timestamp,
-                Latitude = (double)pushpin.Latitude,
-                Longitude = (double)pushpin.Longitude,
+                Latitude = pushpin.Latitude.HasValue ? (double?)pushpin.Latitude.Value : null,
+                Longitude = pushpin.Longitude.HasValue ? (double?)pushpin.Longitude.Value : null,
                 Description = pushpin.Description
             };
         }
