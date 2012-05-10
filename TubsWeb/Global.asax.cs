@@ -97,6 +97,12 @@ namespace TubsWeb
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            // TODO Wire up JSON outputs in controllers and check that this is the route
+            routes.MapRoute(
+                "ApiRoute",
+                "api/{controller}/{action}/{id}"
+            );
+
             // TODO This should default to Index
             routes.MapRoute(
                 "Electronics",

@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Trip>
            
 <table class="table table-bordered table-condensed table-striped" id="tripTable">
+    <caption>@ViewBag.TotalRows Trips</caption>
     <thead>
         <tr>
             <th>Trip Id</th>
@@ -29,7 +30,7 @@
             <td>
                 @if (!String.IsNullOrEmpty(item.Vessel.RegisteredCountryCode))
                 {
-                    var imgLink = String.Format("http://nouofputil01/~svcOFPUtil/member/media/flags/{0}.png", item.Vessel.RegisteredCountryCode.ToLower());
+                    var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", item.Vessel.RegisteredCountryCode.ToLower()));
                     <img src="@imgLink" alt="@item.Vessel.RegisteredCountryCode" title="@item.Vessel.RegisteredCountryCode" />
                 }
                 @Html.DisplayFor(i => item.Vessel.Name) @* TODO flag icon for vessel *@

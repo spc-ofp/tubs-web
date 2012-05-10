@@ -6,6 +6,20 @@
 
 <h2>@ViewBag.Title</h2>
 
+@{ AjaxOptions searchOptions = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "tripTable" }; }
+@using(Ajax.BeginForm("Search", null, searchOptions, new { @class = "well form-inline" }))
+{
+    @Html.Label("staffCode", "Observer:")
+    @Html.TextBox("staffCode", String.Empty, new { @class = "input-small", placeholder = "Staff Code" })
+    @Html.Label("vessel", "Vessel:")
+    @Html.TextBox("vessel", String.Empty, new { placeholder = "Vessel Name" })
+    @Html.Label("program", "Program Code:")
+    @Html.DropDownList("program", new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose", new { @class = "span2" })
+    <button type="submit" class="btn">Search</button>
+    @* TODO Add a "Clear" button *@
+    @* TODO Hide paging controls on successful search *@
+}
+
 @{ Html.RenderPartial("_Trips", Model); }
 
 @{

@@ -17,6 +17,10 @@
     <p>
         No safety inspection details available for this trip.
     </p>
+    if (!ViewBag.IsReadOnly)
+    {
+        @Html.ActionLink("Add Inspection", "Edit", new { tripId = ViewBag.TripId })
+    }
 }
 else
 {
@@ -96,6 +100,10 @@ else
                 </tbody>
             </table>
         </fieldset>
+    }
+    if (!ViewBag.IsReadOnly)
+    {
+        @Html.ActionLink("Edit Inspection", "Edit", new { tripId = ViewBag.TripId })
     }
 }
 <br />

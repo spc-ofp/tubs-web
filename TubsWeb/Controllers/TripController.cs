@@ -32,6 +32,7 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
+    using System.Linq.Expressions;
 
     public class TripController : SuperController
     {
@@ -108,6 +109,68 @@ namespace TubsWeb.Controllers
         public ActionResult Search()
         {
             return View();
+        }
+
+        Expression<Func<T, bool>> AndAllEx<T>(IEnumerable<Expression<Func<T, bool>>> expressions)
+        {
+            if (null == expressions)
+                throw new ArgumentNullException("expression");
+
+            if (0 == expressions.Count())
+                return t => true;
+
+            Type delegateType = typeof(Func<,>)
+                                    .GetGenericTypeDefinition()
+                                    .MakeGenericType(new[] { typeof(T), typeof(bool) });
+
+            var combined = expressions
+                                    .Cast<Expression>()
+                                    .Aggregate((e1, e2) => Expression.AndAlso(e1, e2));
+            return (Expression<Func<T, bool>>)Expression.Lambda(delegateType, combined);
+        }
+
+        Expression<Func<Trip, bool>> AndAll<Trip>(IEnumerable<Expression<Func<Trip, bool>>> expressions)
+        {
+            if (null == expressions)
+                throw new ArgumentNullException("expression");
+
+            if (0 == expressions.Count())
+                return t => true;
+
+            Type delegateType = typeof(Func<Trip,bool>);
+            /*
+                                    .GetGenericTypeDefinition()
+                                    .MakeGenericType(new[] { typeof(T), typeof(bool) });
+            */
+
+            var combined = expressions
+                                    .Cast<Expression>()
+                                    .Aggregate((e1, e2) => Expression.AndAlso(e1, e2));
+            return (Expression<Func<Trip, bool>>)Expression.Lambda(delegateType, combined);
+        }
+
+        // TODO Add start/end year criteria
+        [HttpPost]
+        public PartialViewResult Search(string staffCode, string vessel, string program)
+        {
+            // If there are no criteria, we don't want to do anything.
+            if (String.IsNullOrEmpty(staffCode) && String.IsNullOrEmpty(vessel) && String.IsNullOrEmpty(program))
+                throw new Exception("No criteria, no can do.");
+
+            Expression<Func<Trip, bool>> IsMatch = trip =>
+                (String.IsNullOrEmpty(staffCode) || trip.Observer.StaffCode == staffCode) &&
+                (String.IsNullOrEmpty(vessel) || trip.Vessel.Name.ToUpper().Contains(vessel.ToUpper())) &&
+                (String.IsNullOrEmpty(program) || trip.ProgramCode.ToString() == program);
+
+            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var trips = repo.FilterBy(IsMatch);
+            ViewBag.HasPrevious = false;
+            ViewBag.HasNext = false;
+            ViewBag.CurrentPage = 0;
+            ViewBag.PageCount = 1;
+            ViewBag.TotalRows = trips.Count();
+            ViewBag.ActionName = "Search";
+            return PartialView("_Trips", trips);
         }
 
         /// <summary>

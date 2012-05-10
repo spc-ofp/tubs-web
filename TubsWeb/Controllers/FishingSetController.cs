@@ -82,5 +82,33 @@ namespace TubsWeb.Controllers
             return View(set);
         }
 
+        public JsonResult LengthFrequency(int id, string speciesCode)
+        {
+            var repo = new TubsRepository<PurseSeineSet>(MvcApplication.CurrentSession);
+            var fset = repo.FindBy(id);
+
+            var emptyList = (
+                from x in Enumerable.Range(10, 191)
+                select new int[]{ x, 1 }
+            ).ToList();
+
+            // Return a list with lengths but zero counts if no data
+            if (null == fset || null == fset.SamplingHeaders || 0 == fset.SamplingHeaders.Count)
+                return Json(emptyList, JsonRequestBehavior.AllowGet);            
+
+            var lengths =
+                from h in fset.SamplingHeaders
+                from d in h.Samples
+                where d.Length.HasValue && d.SpeciesCode == speciesCode
+                select d.Length.Value;
+
+            var grouped =
+                lengths.GroupBy(i => i).Select(i => new int[]{ i.Key, i.Count() });
+
+            var readyForJs = emptyList.Except(grouped).Concat(grouped);
+           
+            return Json(readyForJs.ToList(), JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

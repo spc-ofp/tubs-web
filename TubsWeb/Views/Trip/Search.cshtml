@@ -1,60 +1,10 @@
 ﻿
-<div class="visual_search"></div>
-
-@section AdditionalScripts {
-    <!-- jQuery and jQuery UI are already loaded via the layout -->
-    <script src="@Url.Content("~/Scripts/underscore.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/backbone.min.js")"></script>
-    <script src="@Url.Content("~/Scripts/visualsearch.js")"></script>
-    <script src="@Url.Content("~/Scripts/visualsearch_templates.js")"></script>
-    
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function () {
-            var visualSearch = VS.init({
-                container: $('.visual_search'),
-                query: '',
-                callbacks: {
-                    search: function (query, searchCollection) {
-                        alert(query);
-                    },
-                    facetMatches: function (callback) {
-                        callback([
-                            'program', 'flag', 'gear', 'port',
-                        ]);
-                    },
-                    valueMatches: function (facet, searchTerm, callback) {
-                        switch (facet) {
-                            case 'program':
-                                callback([
-                                    'AROB', 'ASOB', 'AUOB',
-                                    'CKOB', 'FAOB', 'FJOB',
-                                    'FMOB', 'HWOB', 'KIOB',
-                                    'MHOB', 'NCOB', 'NROB',
-                                    'NUOB', 'NZOB', 'PFOB',
-                                    'PGOB', 'PWOB', 'SBOB',
-                                    'SPOB', 'TOOB', 'TTOB',
-                                    'UNOB', 'VUOB', 'WFOB',
-                                    'WSOB'
-                                ]);
-                                break;
-                            case 'flag':
-                                callback([
-                                    'PG', 'CN', 'US', 'NC', 'VU', 'SI'
-                                ]);
-                                break;
-                            case 'gear':
-                                callback([
-                                    'PS', 'LL', 'PL'
-                                ]);
-                                break;
-                            case 'port':
-                                callback([
-                                    'PGLOR', 'PGMOR', 'NCNOU'
-                                ]);
-                        }
-                    }
-                }
-            });
-        });
-    </script> 
-}
+<form class="well form-inline">
+    <label for="observer">Staff Code:</label>
+    <input type="text" class="input-small" placeholder="Observer" id="observer" name="observer" />
+    <label for="vessel">Vessel:</label>
+    <input type="text" placeholder="Vessel" id="vessel" name="vessel" />
+    @Html.Label("program", "Program Code:")
+    @Html.DropDownList("program", new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose")
+    <button type="submit" class="btn">Search</button>
+</form>

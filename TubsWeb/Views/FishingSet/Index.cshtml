@@ -100,6 +100,14 @@ else
         <div class="span3">@Html.LabelFor(m => Model.TonsOfTunaObserved)</div>
         <div class="span2">@Html.DisplayFor(m => Model.TonsOfTunaObserved)</div>
     </div>
+    <div class="row">
+        <div class="span3">@Html.LabelFor(m => Model.TotalCatch)</div>
+        <div class="span2">@Html.DisplayFor(m => Model.TotalCatch)</div>
+    </div>
+    <div class="row">
+        <div class="span3">@Html.LabelFor(m => Model.RecoveredTagCount)</div>
+        <div class="span2">@Html.DisplayFor(m => Model.RecoveredTagCount)</div>
+    </div>
    
     <table class="table table-bordered table-condensed table-striped">
         <caption>Target Species Totals</caption>
@@ -162,6 +170,36 @@ else
         </tbody>
     </table>
     
+    <table class="table table-bordered table-condensed table-striped">
+        <caption>Large Tuna Catch (&gt; 80cm or &gt; 9kg)</caption>
+        <thead>
+            <tr>
+                <th>Species</th>
+                <th>Percentage of All Tuna</th>
+                <th>Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Html.DisplayFor(m => Model.LargeSpecies)</td>
+                <td>@Html.DisplayFor(m => Model.LargeSpeciesPercentage)</td>
+                <td>@Html.DisplayFor(m => Model.LargeSpeciesCount)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="row">
+        <div class="span3">
+            <div id="skj_length_frequency"></div>
+        </div>
+        <div class="span3">
+            <div id="yft_length_frequency"></div>
+        </div>
+        <div class="span3">
+            <div id="bet_length_frequency"></div>
+        </div>        
+    </div>
+
     <hr />
     <div class="row">
         <div class="span3">Comments</div>
@@ -179,4 +217,12 @@ else
     <script src="@Url.Content("~/Scripts/raphael-min.js")"></script>
     <script src="@Url.Content("~/Scripts/g.raphael-min.js")"></script>
     <script src="@Url.Content("~/Scripts/g.bar-min.js")"></script>
+
+    <script>
+        var g_skj = Raphael("skj_length_frequency");
+        g_skj.text(160, 10, "SKJ Length Frequency");
+        g_skj.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]);
+        var g_yft = Raphael("yft_length_frequency");
+        g_yft.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]);
+    </script>
 }

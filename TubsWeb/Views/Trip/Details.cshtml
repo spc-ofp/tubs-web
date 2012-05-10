@@ -20,6 +20,42 @@
 
 @{Html.RenderPartial("_TripSummary");}
 
+@{
+    string formatString = System.Web.Configuration.WebConfigurationManager.AppSettings["ReportingServicesFormatUrl"].ToString();
+}
+
+@* TODO Add downloads for CSV downloads of GEN-1, GEN-2, GEN-6, Days, and Sets *@
+@* TODO Better yet, figure out how to push this all into the controller.  This is too messy for Razor *@
+
+<h4>Downloads</h4>
+<div class="row">
+    <div class="span2"><strong>Cover Page</strong></div>
+    @{ 
+        string coverPageUrl = String.Format(formatString, "CoverPage", ViewBag.TripId);
+        if (!coverPageUrl.EndsWith("&rs:Format=PDF"))
+        {
+            coverPageUrl += "&rs:Format=PDF";
+        }
+    }
+    <div class="span2"><a href="@coverPageUrl" target="_blank"><img src="@Url.Content("~/Content/images/pdf-16x16.png")" alt="PDF" />&nbsp;PDF</a></div>
+</div>
+<div class="row">
+    <div class="span2"><strong>Trip Summary</strong></div>
+    @{ 
+        string tripSummaryUrl = String.Format(formatString, "PS-TripSummary", ViewBag.TripId);
+        string externalPdf = tripSummaryUrl + "&rs:Format=PDF";
+    }
+    <div class="span2"><a href="@externalPdf" target="_blank"><img src="@Url.Content("~/Content/images/pdf-16x16.png")" alt="PDF" />&nbsp;PDF</a></div>
+    <div class="span2"><a href="@tripSummaryUrl">Other Formats</a></div>
+</div>
+<div class="row">
+    <div class="span2"><strong>Trip Positions</strong></div>
+    <div class="span2"><a href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })'><img src='@Url.Content("~/Content/images/google-earth-16x16.png")' alt="" />KML</a></div>
+    <div class="span2"><a href="#">Other Formats</a></div>
+</div>
+
+
+
 @section Sidebar {
 
 @{
