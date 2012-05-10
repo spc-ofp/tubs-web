@@ -25,6 +25,7 @@ namespace TubsWeb.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.ServiceModel.Syndication;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
@@ -32,7 +33,6 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
-    using System.Linq.Expressions;
 
     public class TripController : SuperController
     {
@@ -109,44 +109,6 @@ namespace TubsWeb.Controllers
         public ActionResult Search()
         {
             return View();
-        }
-
-        Expression<Func<T, bool>> AndAllEx<T>(IEnumerable<Expression<Func<T, bool>>> expressions)
-        {
-            if (null == expressions)
-                throw new ArgumentNullException("expression");
-
-            if (0 == expressions.Count())
-                return t => true;
-
-            Type delegateType = typeof(Func<,>)
-                                    .GetGenericTypeDefinition()
-                                    .MakeGenericType(new[] { typeof(T), typeof(bool) });
-
-            var combined = expressions
-                                    .Cast<Expression>()
-                                    .Aggregate((e1, e2) => Expression.AndAlso(e1, e2));
-            return (Expression<Func<T, bool>>)Expression.Lambda(delegateType, combined);
-        }
-
-        Expression<Func<Trip, bool>> AndAll<Trip>(IEnumerable<Expression<Func<Trip, bool>>> expressions)
-        {
-            if (null == expressions)
-                throw new ArgumentNullException("expression");
-
-            if (0 == expressions.Count())
-                return t => true;
-
-            Type delegateType = typeof(Func<Trip,bool>);
-            /*
-                                    .GetGenericTypeDefinition()
-                                    .MakeGenericType(new[] { typeof(T), typeof(bool) });
-            */
-
-            var combined = expressions
-                                    .Cast<Expression>()
-                                    .Aggregate((e1, e2) => Expression.AndAlso(e1, e2));
-            return (Expression<Func<Trip, bool>>)Expression.Lambda(delegateType, combined);
         }
 
         // TODO Add start/end year criteria

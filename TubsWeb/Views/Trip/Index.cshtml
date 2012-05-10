@@ -6,7 +6,7 @@
 
 <h2>@ViewBag.Title</h2>
 
-@{ AjaxOptions searchOptions = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "tripTable" }; }
+@{ AjaxOptions searchOptions = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "tripTable", OnSuccess = "onSearchSuccess", OnFailure = "onSearchFail" }; }
 @using(Ajax.BeginForm("Search", null, searchOptions, new { @class = "well form-inline" }))
 {
     @Html.Label("staffCode", "Observer:")
@@ -16,8 +16,8 @@
     @Html.Label("program", "Program Code:")
     @Html.DropDownList("program", new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose", new { @class = "span2" })
     <button type="submit" class="btn">Search</button>
-    @* TODO Add a "Clear" button *@
-    @* TODO Hide paging controls on successful search *@
+    var buttonLink = @Url.RouteUrl("TripList");
+    <button id="btnClear" class="btn" style="display:none;" onClick="parent.location='@buttonLink'; return false;">Clear</button>
 }
 
 @{ Html.RenderPartial("_Trips", Model); }
@@ -30,7 +30,7 @@
 }
 
 @* TODO In the future, change this to 10 or 11 pages (fewer only if there are fewer than 10 pages) *@
-<div class="pagination">
+<div id="pager" class="pagination">
     <ul>
         <li class="@classForPrevious"><a href='@Url.Action(actionName, new { page = (ViewBag.CurrentPage - 1) })'>&larr;</a></li>
         @{
@@ -47,3 +47,21 @@
         <li class="@classForNext"><a href='@Url.Action(actionName, new { page = (ViewBag.CurrentPage + 1) })'>&rarr;</a></li>
     </ul>
 </div>
+
+@section AdditionalScripts {
+    <script src="@Url.Content("~/Scripts/jquery.meow.js")" type="text/javascript"></script>
+    <script>       
+        function onSearchSuccess(data, status, xhr) {
+            $('#pager').hide();
+            $('#btnClear').show();
+        }
+
+        function onSearchFail(xhr, status, error) {
+            $.meow({
+                title: 'Search Failed',
+                message: error,
+                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
+            });
+        }
+    </script>
+}
