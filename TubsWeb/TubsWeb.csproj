@@ -155,6 +155,7 @@
     <Content Include="Content\datetimepicker.css" />
     <Content Include="Content\delete.gif" />
     <Content Include="Content\images\25px-Feed-icon.png" />
+    <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\calendar-icon.png" />
     <Content Include="Content\images\delete.gif" />
     <Content Include="Content\images\embed\icons\cancel_search.png" />

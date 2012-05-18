@@ -4,6 +4,10 @@
 @* A possibly useful modification would be to jam the desired prefix into ViewData and pull it out, but this works for now *@
 @{ ViewData.TemplateInfo.HtmlFieldPrefix = String.Empty; }
 
+@* Take a look at this *@
+@* https://github.com/paultyng/Html5EditorTemplates/blob/master/src/html5Templates.Web/Views/Shared/EditorTemplates/Url.cshtml *@
+@* http://stackoverflow.com/questions/5824124/html5-placeholders-with-net-mvc-3-razor-editorfor-extension *@
+
 @foreach (var prop in ViewData.ModelMetadata.Properties.Where(pm => pm.ShowForEdit && !ViewData.TemplateInfo.Visited(pm)))
 {
     @*

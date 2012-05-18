@@ -15,10 +15,15 @@
     @Html.TextBox("vessel", String.Empty, new { placeholder = "Vessel Name" })
     @Html.Label("program", "Program Code:")
     @Html.DropDownList("program", new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose", new { @class = "span2" })
-    <button type="submit" class="btn">Search</button>
+    <button type="submit" class="btn" onclick="$('#progressBar').show();">Search</button>
     var buttonLink = @Url.RouteUrl("TripList");
-    <button id="btnClear" class="btn" style="display:none;" onClick="parent.location='@buttonLink'; return false;">Clear</button>
+    @* We're going to write HTML like it's 1999! *@
+    <button id="btnClear" class="btn" style="display:none;" onclick="parent.location='@buttonLink'; return false;">Clear</button>
 }
+
+<div id="progressBar" style="display:none;" class="span2 offset4">
+    <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading..." />
+</div>
 
 @{ Html.RenderPartial("_Trips", Model); }
 
@@ -53,10 +58,12 @@
     <script>       
         function onSearchSuccess(data, status, xhr) {
             $('#pager').hide();
+            $('#progressBar').hide();
             $('#btnClear').show();
         }
 
         function onSearchFail(xhr, status, error) {
+            $('#progressBar').hide();
             $.meow({
                 title: 'Search Failed',
                 message: error,

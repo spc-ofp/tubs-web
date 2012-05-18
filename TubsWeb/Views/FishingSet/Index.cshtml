@@ -188,17 +188,19 @@ else
         </tbody>
     </table>
     
+    @* Revisit this later...
     <div class="row">
-        <div class="span3">
+        <div class="span4">
             <div id="skj_length_frequency"></div>
         </div>
-        <div class="span3">
+        <div class="span4">
             <div id="yft_length_frequency"></div>
         </div>
-        <div class="span3">
+        <div class="span4">
             <div id="bet_length_frequency"></div>
         </div>        
     </div>
+    *@
 
     <hr />
     <div class="row">
@@ -209,6 +211,7 @@ else
     </div>
 }
 
+@*
 @section AdditionalScripts {
     <!--
     http://blog.jeremi.info/entry/creating-a-chart-with-raphael-js-from-a-google-spreadsheet
@@ -219,10 +222,27 @@ else
     <script src="@Url.Content("~/Scripts/g.bar-min.js")"></script>
 
     <script>
+        var yft_data = [];
+        jQuery.getJSON('@Url.RouteUrl("ApiRoute", new { controller = "FishingSet", action = "LengthFrequency", id = @Model.Id, speciesCode = "YFT" })', function (data) {
+            for (item in data) {
+                console.log("item: " + item);
+                var lfrecord = item[1];
+                console.log("lfrecord: " + lfrecord);
+                if (lfrecord) { yft_data.push(lfrecord); }
+            }
+        });
         var g_skj = Raphael("skj_length_frequency");
         g_skj.text(160, 10, "SKJ Length Frequency");
-        g_skj.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]);
+        g_skj.barchart(10, 10, 300, 200, [[55, 20, 13, 32, 5, 1, 2, 10]]);
+
         var g_yft = Raphael("yft_length_frequency");
-        g_yft.barchart(10, 10, 300, 220, [[55, 20, 13, 32, 5, 1, 2, 10]]);
+        g_yft.text(160, 10, "YFT Length Frequency");
+        g_yft.barchart(10, 10, 300, 200, [yft_data]);
+
+        var g_bet = Raphael("bet_length_frequency");
+        g_bet.text(160, 10, "BET Length Frequency");
+        g_bet.barchart(10, 10, 300, 200, [[55, 20, 13, 32, 5, 1, 2, 10]]);
+
     </script>
 }
+*@

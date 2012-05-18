@@ -82,19 +82,24 @@ namespace TubsWeb.Controllers
             return View(set);
         }
 
+        /*
+         * http://stackoverflow.com/questions/10472111/graphael-charts-with-dynamic-data-from-database-using-asp-net-mvc3
+         * Probably have to use HighCharts as Raphael just doesn't have any documentation
+         */
+
         public JsonResult LengthFrequency(int id, string speciesCode)
         {
             var repo = new TubsRepository<PurseSeineSet>(MvcApplication.CurrentSession);
             var fset = repo.FindBy(id);
 
-            var emptyList = (
+            var returnValue = (
                 from x in Enumerable.Range(10, 191)
-                select new int[]{ x, 1 }
+                select new int[]{ x, 0 }
             ).ToList();
 
             // Return a list with lengths but zero counts if no data
             if (null == fset || null == fset.SamplingHeaders || 0 == fset.SamplingHeaders.Count)
-                return Json(emptyList, JsonRequestBehavior.AllowGet);            
+                return Json(returnValue, JsonRequestBehavior.AllowGet);            
 
             var lengths =
                 from h in fset.SamplingHeaders
@@ -105,9 +110,12 @@ namespace TubsWeb.Controllers
             var grouped =
                 lengths.GroupBy(i => i).Select(i => new int[]{ i.Key, i.Count() });
 
-            var readyForJs = emptyList.Except(grouped).Concat(grouped);
-           
-            return Json(readyForJs.ToList(), JsonRequestBehavior.AllowGet);
+            foreach (var kvp in grouped.ToList())
+            {
+                returnValue[kvp[0]] = kvp;
+            }
+
+            return Json(returnValue, JsonRequestBehavior.AllowGet);
         }
 
     }
