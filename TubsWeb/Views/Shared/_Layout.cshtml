@@ -105,7 +105,17 @@
                 </ul>
             }
             <ul class="nav pull-right">
+                @if (!User.Identity.IsAuthenticated)
+                {
+                @* TODO Only display if Forms Authentication *@
+                <li><a href="@Url.Content("~/Account/LogOn")">Log On</a></li>
+                }
+                else
+                {
                 <li><a href="#">Welcome @User.Identity.Name</a></li>
+                @* TODO Only display if Forms Authentication *@
+                <li><a href="@Url.Content("~/Account/LogOff")">Log Off</a></li>
+                }
             </ul>
           </div><!--/.nav-collapse -->
         </div>
