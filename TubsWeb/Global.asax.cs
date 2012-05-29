@@ -22,6 +22,7 @@ namespace TubsWeb
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
     using System.Web;
     using System.Web.Mvc;
     using System.Web.Routing;
@@ -297,6 +298,8 @@ namespace TubsWeb
             AreaRegistration.RegisterAllAreas();
             // Trip is the only model worth binding.
             ModelBinderProviders.BinderProviders.Add(new TripModelBinderProvider());
+            // Turns out DateTime needs binding too for client workstation installed culture issues
+            //ModelBinders.Binders.Add(typeof(DateTime), new DateTimeModelBinder());
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
             // Hard to get Log4net working if you don't call this -- D'Oh!

@@ -29,16 +29,7 @@
     <link href="@Url.Content("~/Content/themes/base/jquery.ui.all.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/datetimepicker.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/jquery.meow.css")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/Content/rateit.css")" rel="stylesheet" type="text/css" />
-    <!-- Visual Search -->
-    <!--[if (!IE)|(gte IE 8)]><!-->
-    <link href="@Url.Content("~/Content/visualsearch-datauri.css")" rel="stylesheet" media="screen" type="text/css" />
-    <!--<![endif]-->
-    <!--[if lte IE 7]><!-->
-    <link href="@Url.Content("~/Content/visualsearch.css")" rel="stylesheet" media="screen" type="text/css" />
-    <!--<![endif]-->
-    
-    
+    <link href="@Url.Content("~/Content/rateit.css")" rel="stylesheet" type="text/css" />    
 
     <!-- Use Modernizr instead of html5shim / html5shiv, at least until it breaks -->
     <script src="@Url.Content("~/Scripts/modernizr-2.5.3.js")" type="text/javascript"></script>
@@ -104,19 +95,7 @@
                     *@              
                 </ul>
             }
-            <ul class="nav pull-right">
-                @if (!User.Identity.IsAuthenticated)
-                {
-                @* TODO Only display if Forms Authentication *@
-                <li><a href="@Url.Content("~/Account/LogOn")">Log On</a></li>
-                }
-                else
-                {
-                <li><a href="#">Welcome @User.Identity.Name</a></li>
-                @* TODO Only display if Forms Authentication *@
-                <li><a href="@Url.Content("~/Account/LogOff")">Log Off</a></li>
-                }
-            </ul>
+            @{ Html.RenderPartial("_UserWidget"); }
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -136,7 +115,7 @@
     <!-- Placed at the end of the document so the pages load faster -->   
     <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
     <script src="@Url.Content("~/Scripts/jquery.jtruncate.pack.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/jquery-ui-1.8.19.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.8.20.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery-ui-timepicker-addon.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.sparkline.min.js")" type="text/javascript"></script>
 

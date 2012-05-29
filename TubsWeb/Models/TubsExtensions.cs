@@ -23,12 +23,11 @@ namespace TubsWeb.Models.ExtensionMethods
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections.Generic;
+    using System.ServiceModel.Syndication;
     using NHibernate;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using System.ServiceModel.Syndication;
 
     public static class TubsExtensions
     {

@@ -79,9 +79,7 @@
                   </li>
                 </ul>
             }
-            <ul class="nav pull-right">
-                <li><a href="#">Welcome @User.Identity.Name</a></li>
-            </ul>
+            @{ Html.RenderPartial("_UserWidget"); }
           </div><!--/.nav-collapse -->
         </div>
       </div>

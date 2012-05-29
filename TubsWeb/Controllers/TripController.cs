@@ -106,11 +106,6 @@ namespace TubsWeb.Controllers
             return View("Index", trips.Entities);
         }
 
-        public ActionResult Search()
-        {
-            return View();
-        }
-
         // TODO Add start/end year criteria
         [HttpPost]
         public PartialViewResult Search(string staffCode, string vessel, string program)

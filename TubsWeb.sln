@@ -9,16 +9,21 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Release-Forms-Security|Any CPU = Release-Forms-Security|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Release-Forms-Security|Any CPU.ActiveCfg = Release-Forms-Security|Any CPU
+		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Release-Forms-Security|Any CPU.Build.0 = Release-Forms-Security|Any CPU
 		{72D2ACAF-D995-41C4-930C-847A127486FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{72D2ACAF-D995-41C4-930C-847A127486FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72D2ACAF-D995-41C4-930C-847A127486FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72D2ACAF-D995-41C4-930C-847A127486FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72D2ACAF-D995-41C4-930C-847A127486FE}.Release-Forms-Security|Any CPU.ActiveCfg = Release-Forms-Security|Any CPU
+		{72D2ACAF-D995-41C4-930C-847A127486FE}.Release-Forms-Security|Any CPU.Build.0 = Release-Forms-Security|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
