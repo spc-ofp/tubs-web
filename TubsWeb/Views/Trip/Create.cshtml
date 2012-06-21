@@ -26,73 +26,141 @@
     </fieldset>  
 }
 
-@section AdditionalScripts {
-    
-    @*  JavaScript for Ajax lookups and date/time pickers *@
+<ul id="tlyPageGuide" data-tourtitle="Detailed data entry instructions">
+    <li class="tlypageguide_left" data-tourtarget="#ObserverFullName">
+        <div>
+            Enter the observer's name.  TUBS will filter the list based on what you enter.
+            Select the correct observer from the list and use the "Tab" key to move to the next
+            field.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#DeparturePortName">
+        <div>
+            Enter the port name.  TUBS will filter the list based on what you enter.
+            Select the correct port from the list and use the "Tab" key to move to the next
+            field.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#DepartureDate">
+        <div>
+            Enter the departure date.  The format for date is dd-mm-yy HH:mm.
+            This means that day of the month and month should have a leading zero
+            if the value is less than 9 (for example, "09" instead of "9").
+            Time of day uses the 24-hour clock.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#TripNumber">
+        <div>
+            Enter the numeric portion of the trip number.  For example, if the
+            trip number is "DJB 11-01", enter "11-01".
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#ReturnPortName">
+        <div>
+            Enter the port name.  TUBS will filter the list based on what you enter.
+            Select the correct port from the list and use the "Tab" key to move to the next
+            field.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#ReturnDate">
+        <div>
+            Enter the departure date.  The format for date is dd-mm-yy HH:mm.
+            This means that day of the month and month should have a leading zero
+            if the value is less than 9 (for example, "09" instead of "9").
+            Time of day uses the 24-hour clock.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#VesselName">
+        <div>
+            Enter the vessel name.  TUBS will filter the list based on what you enter.
+            Select the correct vessel from the list and use the "Tab" key to move to the next
+            field.  The gear type for the vessel is filled automatically.  If it isn't, or the
+            type is incorrect, re-enter the vessel's name.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#GearCode">
+        <div>
+            Gear code should be filled automatically when vessel was selected.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#ProgramCode">
+        <div>
+            Enter the program code for the organization that arranged this observer trip.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#CountryCode">
+        <div>
+            Enter the ISO A2 code for the country for which the trip was undertaken.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#Version">
+        <div>
+            Select the workbook version.
+        </div>
+    </li>
+</ul>
 
+@section AdditionalScripts {
+    <script src="@Url.Content("~/Scripts/pageguide.min.js")" type="text/javascript"></script>
+    @*  JavaScript for Ajax lookups and date/time pickers *@
     <script>
         $(function () {
             // Observer workbooks don't fly into our hands, so starting 6 months back is probably a good bet.
+            // Make entry a bit quicker:  Switch dateFormat from 'dd/mm/yy' to 'dd-mm-y'
+            // with an alternate format for the backend
             var sixMonthsAgo = new Date();
             sixMonthsAgo.setDate(sixMonthsAgo.getDate() - 180);
             $(".datetime").datetimepicker({
                 showOn: "button",
                 buttonImage: '@Url.Content("~/Content/images/calendar-icon.png")',
                 buttonImageOnly: true,
-                dateFormat: 'dd/mm/yy',
+                dateFormat: 'dd-mm-y',
+                altFormat: 'yy-mm-dd', // This is what gets sent on the back end
                 timeFormat: 'hh:mm',
                 numberOfMonths: 2,
-                defaultDate: sixMonthsAgo 
+                defaultDate: sixMonthsAgo
             });
-        });
 
-        $(function () {
-            var autocompleteUrl = '@Url.Action("Find", "Vessel")';
             $("#VesselName").autocomplete({
                 minLength: 2,
-                source: autocompleteUrl,
+                source: '@Url.Action("Find", "Vessel")',
                 select: function (event, ui) {
                     $("#VesselName").val(ui.item.label);
                     $("#VesselId").val(ui.item.id);
                     $("#GearCode").val(ui.item.GearType);
                 }
             });
-        });
 
-        $(function () {
-            var autocompleteUrl = '@Url.Action("Find", "Observer")';
             $("#ObserverFullName").autocomplete({
                 minLength: 2,
-                source: autocompleteUrl,
+                source: '@Url.Action("Find", "Observer")',
                 select: function (event, ui) {
                     $("#ObserverFullName").val(ui.item.label);
                     $("#ObserverCode").val(ui.item.id);
                 }
             });
-        });
 
-        $(function () {
-            var autocompleteUrl = '@Url.Action("Find", "Port")';
+            var portAutoComplete = '@Url.Action("Find", "Port")';
             $("#DeparturePortName").autocomplete({
                 minLength: 2,
-                source: autocompleteUrl,
+                source: portAutoComplete,
                 select: function (event, ui) {
                     $("#DeparturePortName").val(ui.item.label);
                     $("#DeparturePortCode").val(ui.item.id);
                 }
             });
-        });
 
-        $(function () {
-            var autocompleteUrl = '@Url.Action("Find", "Port")';
             $("#ReturnPortName").autocomplete({
                 minLength: 2,
-                source: autocompleteUrl,
+                source: portAutoComplete,
                 select: function (event, ui) {
                     $("#ReturnPortName").val(ui.item.label);
                     $("#ReturnPortCode").val(ui.item.id);
                 }
             });
+
+            /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
+            tl.pg.init();
         });
     </script>
 

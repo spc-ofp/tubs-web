@@ -435,9 +435,13 @@
     <Content Include="Content\images\nyan-cat.gif" />
     <Content Include="Content\images\pdf-16x16.png" />
     <Content Include="Content\images\star.gif" />
+    <Content Include="Content\images\tlyguide\tlyguide_arrow.png" />
+    <Content Include="Content\images\tlyguide\tlyguide_icon.png" />
     <Content Include="Content\jquery.meow.css" />
     <Content Include="Content\KeyTips.css" />
     <Content Include="Content\KeyTips.min.css" />
+    <Content Include="Content\pageguide.css" />
+    <Content Include="Content\pageguide.min.css" />
     <Content Include="Content\popup-back.gif" />
     <Content Include="Content\rateit.css" />
     <Content Include="Content\star.gif" />
@@ -499,6 +503,8 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-ui-1.8.20.js" />
     <Content Include="Scripts\jquery-ui-1.8.20.min.js" />
+    <Content Include="Scripts\pageguide.js" />
+    <Content Include="Scripts\pageguide.min.js" />
     <Content Include="Scripts\tubs-search.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

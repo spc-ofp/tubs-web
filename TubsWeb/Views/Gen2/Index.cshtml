@@ -163,7 +163,7 @@ else if ("I".Equals(Model.SgType))
                     <tr>
                         <td class="label">Condition At Start:</td>
                         <td>
-                            @if (null == startItem)
+                            @if (null != startItem)
                             { <text>@startItem.ConditionCode</text> }
                             else
                             { <text>Unknown</text> }
@@ -172,7 +172,7 @@ else if ("I".Equals(Model.SgType))
                     <tr>
                         <td class="label">Description At Start:</td>
                         <td>
-                            @if (null == startItem)
+                            @if (null != startItem)
                             { <text>@startItem.Description</text> }
                             else
                             { <text>Unknown</text> }
@@ -181,7 +181,7 @@ else if ("I".Equals(Model.SgType))
                     <tr>
                         <td class="label">Condition At End:</td>
                         <td>
-                            @if (null == endItem)
+                            @if (null != endItem)
                             { <text>@endItem.ConditionCode</text> }
                             else
                             { <text>Unknown</text> }
@@ -190,7 +190,7 @@ else if ("I".Equals(Model.SgType))
                     <tr>
                         <td class="label">Description At End:</td>
                         <td>
-                            @if (null == endItem)
+                            @if (null != endItem)
                             { <text>@endItem.Description</text> }
                             else
                             { <text>Unknown</text> }

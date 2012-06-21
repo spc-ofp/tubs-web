@@ -19,7 +19,8 @@
                     showOn: "button",
                     buttonImage: '@Url.Content("~/Content/images/calendar-icon.png")',
                     buttonImageOnly: true,
-                    dateFormat: 'dd/mm/yy', 
+                    dateFormat: 'dd-mm-y',
+                    altFormat: 'yy-mm-dd', // This is what gets sent on the back end 
                     timeFormat: 'hh:mm', 
                     numberOfMonths: 2, 
                     defaultDate: depDate, 
@@ -34,7 +35,8 @@
                     showOn: "button",
                     buttonImage: '@Url.Content("~/Content/images/calendar-icon.png")',
                     buttonImageOnly: true,
-                    dateFormat: 'dd/mm/yy', 
+                    dateFormat: 'dd-mm-y',
+                    altFormat: 'yy-mm-dd', // This is what gets sent on the back end
                     timeFormat: 'hh:mm', 
                     numberOfMonths: 2});
             });

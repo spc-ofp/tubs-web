@@ -27,6 +27,7 @@ namespace TubsWeb.Controllers
     using System.Linq;
     using System.Linq.Expressions;
     using System.ServiceModel.Syndication;
+    using System.Web.Configuration;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
@@ -307,7 +308,15 @@ namespace TubsWeb.Controllers
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Create()
         {
-            return View(new TripHeaderViewModel());
+            // Drive program code and country code if this is an in-country installation
+            string defaultProgramCode = WebConfigurationManager.AppSettings["DefaultProgramCode"];
+            string defaultCountryCode = WebConfigurationManager.AppSettings["DefaultCountryCode"];
+            var thvm = new TripHeaderViewModel()
+            {
+                ProgramCode = defaultProgramCode,
+                CountryCode = defaultCountryCode
+            };
+            return View(thvm);
         }
 
         //

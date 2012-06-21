@@ -105,14 +105,23 @@ namespace TubsWeb.Models.ExtensionMethods
                     break;
             }
 
+            // It's not correct to assume that DepartureDate and ReturnDate have values.
+            // Yes, they are required, but the caller may pass us an invalid structure
+            // here.  Bleah!
             if (null != trip)
             {
                 trip.DepartureDate = thvm.DepartureDate;
-                trip.DepartureTimeOnly = trip.DepartureDate.Value.ToString("HHmm");
-                trip.DepartureDateOnly = thvm.DepartureDate.Value.Subtract(thvm.DepartureDate.Value.TimeOfDay);
+                if (trip.DepartureDate.HasValue)
+                {
+                    trip.DepartureTimeOnly = trip.DepartureDate.Value.ToString("HHmm");
+                    trip.DepartureDateOnly = thvm.DepartureDate.Value.Subtract(thvm.DepartureDate.Value.TimeOfDay);
+                }
                 trip.ReturnDate = thvm.ReturnDate;
-                trip.ReturnTimeOnly = trip.ReturnDate.Value.ToString("HHmm");
-                trip.ReturnDateOnly = thvm.ReturnDate.Value.Subtract(thvm.ReturnDate.Value.TimeOfDay);
+                if (trip.ReturnDate.HasValue)
+                {
+                    trip.ReturnTimeOnly = trip.ReturnDate.Value.ToString("HHmm");
+                    trip.ReturnDateOnly = thvm.ReturnDate.Value.Subtract(thvm.ReturnDate.Value.TimeOfDay);
+                }
                 trip.TripNumber = thvm.TripNumber;
                 if (Enum.IsDefined(typeof(ObserverProgram), thvm.ProgramCode))
                 {

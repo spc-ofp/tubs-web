@@ -15,13 +15,18 @@
 </p>
 <p>
     @Html.ActionLink("List of Trips", "Index", "Trip") | @Html.ActionLink("Register New Trip", "Create", "Trip")
+    @* Don't publicise the Access front-end for users that don't need it *@
+    @if (@User.IsInRole("Editor"))
+    {
+     <text>| <a href="@Url.Content("~/tubs.accdb")">Download TUBS Entry Application</a></text>
+    }  
 </p>
 
 
 @section AdditionalScripts {
-<script type="text/javascript">
-    $(function () {
-        $('.inlinesparkline').sparkline('html', {height: '50px', width: '200px'});
-    });
-</script>
+    <script type="text/javascript">
+        $(function () {
+            $('.inlinesparkline').sparkline('html', {height: '50px', width: '200px'});
+        });
+    </script>
 }
