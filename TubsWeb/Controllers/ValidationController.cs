@@ -40,6 +40,10 @@ namespace TubsWeb.Controllers
     /// 
     /// See this site:
     /// http://xhalent.wordpress.com/2011/01/21/arbitrary-client-side-validation-in-asp-net-mvc-3/
+    /// 
+    /// TODO:  Evaluate FluentValidation:
+    /// https://github.com/JeremySkinner/FluentValidation
+    /// http://fluentvalidation.codeplex.com/documentation
     /// </summary>
     public class ValidationController : SuperController
     {

@@ -37,7 +37,6 @@ namespace TubsWeb.Controllers
 
     public class TripController : SuperController
     {
-        
         /// <summary>
         /// Check that the required dependent objects are present.
         /// </summary>
@@ -79,6 +78,8 @@ namespace TubsWeb.Controllers
         // GET: /Trip/
         public ActionResult Index(int? page, int itemsPerPage = 15)
         {
+            // TODO Convert this to Troy Goode's PagedList implementation
+            // https://github.com/TroyGoode/PagedList
             var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
             var trips = repo.GetPagedList((page ?? 0) * itemsPerPage, itemsPerPage);
             ViewBag.HasPrevious = trips.HasPrevious;

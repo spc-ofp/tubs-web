@@ -70,11 +70,11 @@ namespace TubsWeb.Models
         [Editable(false)]
         public string ObserverCode { get; set; }
 
-        [Display(Name = "Observer")]
+        [Display(Name = "Observer Name")]
         public string ObserverFullName { get; set; }
 
         [Required]
-        [Display(Name = "Trip Number")]
+        [Display(Name = "Observer Trip ID Number")]
         public string TripNumber { get; set; }
 
         [Required]
@@ -114,7 +114,7 @@ namespace TubsWeb.Models
         public DateTime? ReturnDate { get; set; }
 
         [Required]
-        [Display(Name = "Version")]
+        [Display(Name = "Workbook Version")]
         public string Version { get; set; }
 
         // AutoGenerateField will keep this from showing up in the editor template
