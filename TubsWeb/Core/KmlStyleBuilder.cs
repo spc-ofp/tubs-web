@@ -160,7 +160,45 @@ namespace TubsWeb.Core
                     Key = StyleMap.StyleState.Highlight,
                     StyleUrl = "#" + shId
                 });
+                styles.Add(sm);
             }
+
+            // Add line styles
+            // Normal VMS track
+            styles.Add(new Style()
+            {
+                id = "vms_track",
+                LineStyle = new LineStyle()
+                {
+                    color = new Color("ff77fff5"),
+                    width = 1.5F
+                }
+            });
+
+            // Highlighted VMS track
+            styles.Add(new Style()
+            {
+                id = "vms_track_hl",
+                LineStyle = new LineStyle()
+                {
+                    color = new Color("ff00aaa5"),
+                    width = 1.5F
+                }
+            });
+
+
+            StyleMap vmsStyleMap = new StyleMap("msn_vms");
+            vmsStyleMap.Pairs.Add(new StyleMap.StyleMapEntry()
+            {
+                Key = StyleMap.StyleState.Normal,
+                StyleUrl = "#vms_track"
+            });
+            vmsStyleMap.Pairs.Add(new StyleMap.StyleMapEntry()
+            {
+                Key = StyleMap.StyleState.Highlight,
+                StyleUrl = "#vms_track_hl"
+            });
+            styles.Add(vmsStyleMap);
             return styles;
         }
     }
