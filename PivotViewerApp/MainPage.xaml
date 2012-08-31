@@ -3,11 +3,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:pivot="clr-namespace:System.Windows.Pivot;assembly=System.Windows.Pivot"
+    xmlns:pivot="clr-namespace:System.Windows.Controls.Pivot;assembly=System.Windows.Controls.Pivot"
     mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="400">
+    d:DesignHeight="300" d:DesignWidth="400"
+    DataContext="{Binding Main, Source={StaticResource Locator}}">
+
     <Grid x:Name="LayoutRoot" Background="White">
-        <pivot:PivotViewer Name="PivotViewerControl" Grid.Column="0" ItemDoubleClicked="PivotViewerControl_ItemDoubleClicked">
+        <pivot:PivotViewer>
             
         </pivot:PivotViewer>
     </Grid>

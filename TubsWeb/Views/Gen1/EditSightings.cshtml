@@ -35,14 +35,87 @@
         <legend>Add Sighting</legend>
         @{ var sighting = new Sighting(); }
         @Html.EditorFor(s => sighting)
-        <div class="btn-group">
-            <input type="submit" name="Save" value="Save" class="btn-primary" />
-            <input type="reset" name="Cancel" />
-        </div>
+        <p>
+            <input type="submit" name="Save" value="Save" class="btn btn-primary" />
+            <input type="reset" name="Cancel" class="btn" />
+        </p>
     </fieldset>
 }
 
+<ul id="tlyPageGuide" data-tourtitle="Instructions for adding a sighting">
+    <li class="tlypageguide_left" data-tourtarget="input[name='sighting.EventTime']">
+        <div>
+            Enter the time of the sighting.  The format for date is dd-mm-yy HH:mm.
+            This means that day of the month and month should have a leading zero
+            if the value is less than 9 (for example, "09" instead of "9").
+            Time of day uses the 24-hour clock.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_Latitude">
+        <div>
+            Enter the latitude of your vessel during the sighting.  The format for
+            latitude is ddmm.mmmS or ddmm.mmmN.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_Longitude">
+        <div>
+            Enter the longitude of your vessel during the sighting.  The format for
+            latitude is dddmm.mmmE or dddmm.mmmW.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_VesselName">
+        <div>
+            Enter the name of the sighted vessel.  If the entire name can't be
+            recorded, write down what is visible.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_Ircs">
+        <div>
+            Enter the IRCS of the sighted vessel.  If the entire call sign can't be
+            recorded, write down what is visible.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_VesselType">
+        <div>
+            Select the type of the sighted vessel.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_Bearing">
+        <div>
+            Enter the compass bearing from your vessel to the sighted vessel.
+            This value must be between 0 and 360.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_Distance">
+        <div>
+            Enter the distance (in nautical miles) from your vessel to the sighted vessel.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_ActionType">
+        <div>
+            Select the action code corresponding to the activity that the sighted vessel is performing.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_PhotoNumber">
+        <div>
+            If a photo of the sighted vessel was taken, enter the photo frame number.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#sighting_Comments">
+        <div>
+            Enter any additional comments about the sighting or the sighted vessel here.
+        </div>
+    </li>
+</ul>
+
 @section AdditionalScripts {
     @{ Html.RenderPartial("_DateTimePickerInit"); }
+    <script src="@Url.Content("~/Scripts/pageguide.min.js")" type="text/javascript"></script>
+    <script>
+        $(function () {
+            /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
+            tl.pg.init();
+        });
+    </script>
 }
 

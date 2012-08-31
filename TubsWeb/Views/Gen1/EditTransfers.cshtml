@@ -36,17 +36,94 @@
         <legend>Add Transfer</legend>
         @{ var transfer = new Transfer(); }
         @Html.EditorFor(t => transfer)
-        <div class="btn-group">
-            <input type="submit" name="Save" value="Save" class="btn-primary" />
-            <input type="reset" name="Cancel" />
-        </div>
+        <p>
+            <input type="submit" name="Save" value="Save" class="btn btn-primary" />
+            <input type="reset" name="Cancel" class="btn" />
+        </p>
     </fieldset>
 }
+
+<ul id="tlyPageGuide" data-tourtitle="Instructions for adding a transfer">
+    <li class="tlypageguide_left" data-tourtarget="input[name='transfer.TransferTime']">
+        <div>
+            Enter the time of the transfer.  The format for date is dd-mm-yy HH:mm.
+            This means that day of the month and month should have a leading zero
+            if the value is less than 9 (for example, "09" instead of "9").
+            Time of day uses the 24-hour clock.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_Latitude">
+        <div>
+            Enter the latitude of your vessel during the transfer.  The format for
+            latitude is ddmm.mmmS or ddmm.mmmN.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_Longitude">
+        <div>
+            Enter the longitude of your vessel during the transfer.  The format for
+            latitude is dddmm.mmmE or dddmm.mmmW.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_VesselName">
+        <div>
+            Enter the name of the other vessel participating in the transfer.  If the entire name can't be
+            recorded, write down what is visible.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_Ircs">
+        <div>
+            Enter the IRCS of the other vessel participating in the transfer.  If the entire call sign can't be
+            recorded, write down what is visible.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_VesselType">
+        <div>
+            Select the type of the other vessel participating in the transfer.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_TonsOfSkipjack">
+        <div>
+            Enter the amount (in metric tonnes) of transferred skipjack tuna.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_TonsOfYellowfin">
+        <div>
+            Enter the amount (in metric tonnes) of transferred yellowfin tuna.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_TonsOfBigeye">
+        <div>
+            Enter the amount (in metric tonnes) of transferred bigeye tuna.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_TonsOfMixed">
+        <div>
+            Enter the amount (in metric tonnes) of the mixed species transfer.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_ActionType">
+        <div>
+            Select the action code representing the activity of the host vessel.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#transfer_Comments">
+        <div>
+            Enter any additional comments about the transfer.
+        </div>
+    </li>
+</ul>
 
 
 
 @section AdditionalScripts {
     @{ Html.RenderPartial("_DateTimePickerInit"); }
+    <script src="@Url.Content("~/Scripts/pageguide.min.js")" type="text/javascript"></script>
+    <script>
+        $(function () {
+            /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
+            tl.pg.init();
+        });
+    </script>
 }
 
 @* TODO Wire up Ajax on vessel name field *@

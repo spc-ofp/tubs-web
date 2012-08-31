@@ -15,7 +15,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>false</UseIISExpress>
-    <SilverlightApplicationList>{72D2ACAF-D995-41C4-930C-847A127486FE}|..\PivotViewerApp\PivotViewerApp.csproj|ClientBin|False</SilverlightApplicationList>
+    <SilverlightApplicationList>{5980C976-9BA4-481D-9727-D50670C3A02B}|..\PivotViewerApp\PivotViewerApp.csproj|ClientBin|False</SilverlightApplicationList>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -508,6 +508,8 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="PivotViewerAppTestPage.aspx" />
+    <Content Include="PivotViewerAppTestPage.html" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Highcharts-2.2.1\js\adapters\mootools-adapter.js" />
@@ -547,6 +549,7 @@
     <Content Include="Scripts\jquery.sparkline.min.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Scripts\tubs.js" />
+    <Content Include="Silverlight.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

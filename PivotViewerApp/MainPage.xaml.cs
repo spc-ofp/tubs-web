@@ -18,10 +18,5 @@ namespace PivotViewerApp
         {
             InitializeComponent();
         }
-
-        private void PivotViewerControl_ItemDoubleClicked(object sender, System.Windows.Pivot.ItemEventArgs e)
-        {
-
-        }
     }
 }
