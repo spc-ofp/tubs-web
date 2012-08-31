@@ -2,31 +2,33 @@
     ViewBag.Title = "Home Page";
 }
 
-<h2>@ViewBag.Message</h2>
-<p>
-    @ViewBag.TripsEnteredSince trips entered in the last 30 days.
+<div class="hero-unit">
+    <img src="@Url.Content("~/Content/images/app_logo.png")" alt="Application logo" style="float:left; margin-right: 10px; margin-left: 10px;" />
+    <h2>Tuna Observer Data System (TUBS)</h2>
+    <br />
+    <p>@ViewBag.TripsEnteredSince trips entered in the last 30 days.</p>
+    <p>You have entered @ViewBag.TripsInLastWeek trip(s) in the last 7 days.</p>
+    <p>
+        Trips by year
+        <br />
+        <span class="inlinesparkline" style="height: 2em;">@ViewBag.TripsByYear</span>
+    </p>
+    <br />
+    <p>
+        @Html.ActionLink("List of Trips", "Index", "Trip") | @Html.ActionLink("Register New Trip", "Create", "Trip")
+        @* Don't publicise the Access front-end for users that don't need it *@
+        @if (@User.IsInRole("Editor"))
+        {
+            <text>| <a href="@Url.Content("~/tubs.accdb")">Download TUBS Entry Application</a></text>
+        }  
 </p>
-<p>
-    You have entered @ViewBag.TripsInLastWeek trip(s) in the last 7 days.
-</p>
-<p>
-    Trips by year
-    <span class="inlinesparkline" style="height: 2em;">@ViewBag.TripsByYear</span>
-</p>
-<p>
-    @Html.ActionLink("List of Trips", "Index", "Trip") | @Html.ActionLink("Register New Trip", "Create", "Trip")
-    @* Don't publicise the Access front-end for users that don't need it *@
-    @if (@User.IsInRole("Editor"))
-    {
-     <text>| <a href="@Url.Content("~/tubs.accdb")">Download TUBS Entry Application</a></text>
-    }  
-</p>
-
+</div>
 
 @section AdditionalScripts {
     <script type="text/javascript">
         $(function () {
-            $('.inlinesparkline').sparkline('html', {height: '50px', width: '200px'});
+            $('.inlinesparkline').sparkline('html', { height: '50px', width: '200px' });
+            $("#accordion").accordion();
         });
     </script>
 }

@@ -17,10 +17,9 @@
 {
     @Html.ValidationSummary(false)
     @Html.EditorFor(m => Model)
-    <div class="btn-group">
-        <input type="submit" name="Save" value="Save" class="btn-primary" />
-        <input type="reset" name="Cancel" />
-    </div>
+    
+    <input type="submit" name="Save" value="Save" class="btn btn-primary" />
+    <input type="reset" name="Cancel" class="btn" />
 }
 
 @section AdditionalScripts {

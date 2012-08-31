@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TubsExtensions.cs" company="Secretariat of the Pacific Community">
+// <copyright file="StringExtensions.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2012 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
@@ -23,6 +23,11 @@ namespace TubsWeb.Core
             }
             int slash = username.IndexOf(@"\");
             return username.Substring(slash + 1);
+        }
+
+        public static string NullSafeToUpper(this string stringValue)
+        {
+            return null == stringValue ? null : stringValue.ToUpper();
         }
     }
 }

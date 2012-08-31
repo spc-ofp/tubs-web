@@ -73,6 +73,45 @@ namespace TubsWeb.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        private IQueryable<Trip> SearchImpl(SearchCriteria criteria)
+        {
+            Expression<Func<Trip, bool>> IsMatch = trip =>
+                (String.IsNullOrEmpty(criteria.ObserverName) ||
+                    (
+                        trip.Observer.StaffCode.ToUpper().Contains(criteria.ObserverName.NullSafeToUpper()) ||
+                        trip.Observer.FirstName.Contains(criteria.ObserverName.NullSafeToUpper()) ||
+                        trip.Observer.LastName.Contains(criteria.ObserverName.NullSafeToUpper())
+                    )
+                ) && (
+                String.IsNullOrEmpty(criteria.DeparturePort) ||
+                   (
+                        trip.DeparturePort.Name.ToUpper().Contains(criteria.DeparturePort.NullSafeToUpper()) ||
+                        trip.DeparturePort.PortCode.ToUpper().Contains(criteria.DeparturePort.NullSafeToUpper())
+                   )
+                ) && (
+                String.IsNullOrEmpty(criteria.ReturnPort) ||
+                   (
+                        trip.ReturnPort.Name.ToUpper().Contains(criteria.ReturnPort.NullSafeToUpper()) ||
+                        trip.ReturnPort.PortCode.ToUpper().Contains(criteria.ReturnPort.NullSafeToUpper())
+                   )
+                ) && (
+                String.IsNullOrEmpty(criteria.VesselName) || trip.Vessel.Name.ToUpper().Contains(criteria.VesselName.NullSafeToUpper())
+                ) && (
+                String.IsNullOrEmpty(criteria.ProgramCode) || trip.ProgramCode.ToString() == criteria.ProgramCode
+                ) && (
+                !criteria.StartDate.HasValue || (trip.DepartureDate >= criteria.StartDate.Value)
+                ) && (
+                !criteria.EndDate.HasValue || (trip.ReturnDate >= criteria.EndDate.Value)
+                );
+            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            return repo.FilterBy(IsMatch);
+        }
+
 
         //
         // GET: /Trip/
@@ -91,6 +130,7 @@ namespace TubsWeb.Controllers
             return View(trips.Entities);
         }
 
+        // TODO Order by EnteredDate descending
         public ActionResult MyTrips(int? page, int itemsPerPage = 15)
         {
             string filterCriteria = User.Identity.Name.WithoutDomain().ToUpper();
@@ -130,6 +170,33 @@ namespace TubsWeb.Controllers
             ViewBag.TotalRows = trips.Count();
             ViewBag.ActionName = "Search";
             return PartialView("_Trips", trips);
+        }
+
+        /// <summary>
+        /// For now, this is for TUFMAN/VMS reconciliation.  Might be 
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult ReconciliationSearch(SearchCriteria criteria)
+        {
+            if (null == criteria || !criteria.IsValid())
+            {
+                return Json("No criteria, no can do.");
+            }
+
+            var slimList =
+                from r in SearchImpl(criteria)
+                select new SearchResult
+                {
+                   DetailUrl = Url.Action("Details", "Trip", new { tripId = r.Id }),
+                   VesselName = r.Vessel.Name,
+                   DeparturePort = r.DeparturePort.Name,
+                   StartDate = r.DepartureDate.Value,
+                   ReturnPort = r.ReturnPort.Name,
+                   ReturnDate = r.ReturnDate.Value
+                };
+            return Json(slimList);
         }
 
         /// <summary>

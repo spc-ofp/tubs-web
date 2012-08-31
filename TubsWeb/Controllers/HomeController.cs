@@ -38,6 +38,11 @@ namespace TubsWeb.Controllers
           group by DATEPART(yy, dep_date) 
           order by DATEPART(yy, dep_date) ASC";
 
+        /// <summary>
+        /// TripsByYear returns a string representation
+        /// of the count of trips by year.
+        /// </summary>
+        /// <returns></returns>
         private string TripsByYear()
         {
             var tripsByYear = TubsDataService.Execute(CountByYear);

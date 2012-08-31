@@ -98,13 +98,7 @@ namespace TubsWeb
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
-            // TODO Wire up JSON outputs in controllers and check that this is the route
-            routes.MapRoute(
-                "ApiRoute",
-                "api/{controller}/{action}/{id}"
-            );
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");            
 
             // TODO This should default to Index
             routes.MapRoute(
@@ -148,7 +142,6 @@ namespace TubsWeb
                 new { controller = "VesselDetails", action = "Index" },
                 new { tripId = @"\d+" }
             );
-
 
             routes.MapRoute(
                 "Gen1",
@@ -201,7 +194,6 @@ namespace TubsWeb
 
             // Even though Set is subordinate to day, allow link directly to list of sets
             // and to a particular set number
-            // TODO Add a route constraint that setNumber must be numeric
             routes.MapRoute(
                 "SetDetails",
                 "Trip/{tripId}/Sets/{setNumber}",
@@ -283,6 +275,13 @@ namespace TubsWeb
                 "TripList",
                 "Trip/",
                 new { controller = "Trip", action = "Index" }
+            );
+
+            // TODO Wire up JSON outputs in controllers
+            routes.MapRoute(
+                "ApiRoute",
+                "api/{controller}/{action}",
+                new { controller = "Trip", action = "Index" } // Parameter defaults
             );
 
             routes.MapRoute(
