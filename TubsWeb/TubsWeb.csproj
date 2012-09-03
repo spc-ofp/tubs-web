@@ -156,6 +156,7 @@
     <Compile Include="Controllers\TripController.cs" />
     <Compile Include="Core\TripModelBinder.cs" />
     <Compile Include="Core\TripModelBinderProvider.cs" />
+    <Compile Include="Core\UseStatelessSessionsAttribute.cs" />
     <Compile Include="Core\UseTransactionsByDefaultAttribute.cs" />
     <Compile Include="Controllers\VesselController.cs" />
     <Compile Include="Global.asax.cs">

@@ -24,9 +24,9 @@
 <td>@Html.TextBoxFor(m => Model.Nationality, new { style = "width: 40px;", @class="autotab", maxlength = 2 })</td>
 <td>@Html.TextBoxFor(m => Model.Comments, new { style = "width: 95%" })</td>
 <td>
-    <div class="btn-group">
-        <input type="submit" name="Save" value="Save" class="btn-primary" />
+    <p>
+        <input type="submit" name="Save" value="Save" class="btn btn-primary" />
         <!-- Prevent the reset button from being tab navigable -->
-        <input type="reset" name="Cancel" tabindex="31000" />
-    </div>
+        <input type="reset" name="Cancel" tabindex="31000" class="btn" />
+    </p>
 </td>

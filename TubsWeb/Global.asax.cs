@@ -37,6 +37,7 @@ namespace TubsWeb
     {
         // Use the following string keys for stashing objects in the current request
         public const string ISessionKey = "current.session";
+        public const string IStatelessSessionKey = "current.stateless-session";
         public const string ITransactionKey = "current.transaction";
         public const string IsEnrolledInTransactionKey = "current.transaction-enrolled";
 
@@ -48,6 +49,10 @@ namespace TubsWeb
              * Essentially, what happens is that each Request gets a new Session on creation,
              * and when the request is finished, the Session is disposed of.  NHibernate Sessions
              * are very lightweight, so there's no significant overhead to this.
+             * Updated 03/09/2012:
+             * Add a second, stateless session to each request.  There's still only one transaction
+             * but we have the option of using stateless or stateful sessions depending on
+             * use case.
              */
             BeginRequest += delegate
             {
@@ -55,15 +60,25 @@ namespace TubsWeb
                 {
                     CurrentSession = TubsDataService.GetSession();
                 }
+                if (!HttpContext.Current.Items.Contains(IStatelessSessionKey))
+                {
+                    CurrentStatelessSession = TubsDataService.GetStatelessSession();
+                }
             };
             EndRequest += delegate
             {
                 if (null != CurrentSession)
                 {
                     CurrentSession.Dispose();
-                    HttpContext.Current.Items.Remove(ITransactionKey);
+                    //HttpContext.Current.Items.Remove(ITransactionKey);
                     HttpContext.Current.Items.Remove(ISessionKey);
                 }
+                if (null != CurrentStatelessSession)
+                {
+                    CurrentStatelessSession.Dispose();
+                    HttpContext.Current.Items.Remove(IStatelessSessionKey);
+                }
+                HttpContext.Current.Items.Remove(ITransactionKey);
             };
         }
 
@@ -71,6 +86,12 @@ namespace TubsWeb
         {
             get { return (ISession)HttpContext.Current.Items[ISessionKey]; }
             set { HttpContext.Current.Items[ISessionKey] = value; }
+        }
+
+        public static IStatelessSession CurrentStatelessSession
+        {
+            get { return (IStatelessSession)HttpContext.Current.Items[IStatelessSessionKey]; }
+            set { HttpContext.Current.Items[IStatelessSessionKey] = value; }
         }
 
         public static ITransaction CurrentTransaction

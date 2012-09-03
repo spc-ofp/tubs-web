@@ -6,10 +6,6 @@
 
 namespace TubsWeb.Core
 {
-    using System;
-    using System.Web.Mvc;
-    using NHibernate;
-
     /*
      * This file is part of TUBS.
      *
@@ -26,6 +22,9 @@ namespace TubsWeb.Core
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
+    using System.Web.Mvc;
+    using NHibernate;
 
     /// <summary>
     /// Much of the ideas behind this implementation come from Scott Kirkland
@@ -44,6 +43,12 @@ namespace TubsWeb.Core
             return attrs.Length > 0;
         }
 
+        private static bool IsUsingStatelessSession(ActionExecutingContext filterContext)
+        {
+            var attrs = filterContext.ActionDescriptor.GetCustomAttributes(typeof(UseStatelessSessionsAttribute), false);
+            return attrs.Length > 0;
+        }
+
         // TODO It should be possible to accomplish this by implementing IActionFilter and IResultFilter
         // Method implementation is the same, but filters could be globally hooked so that users don't need
         // to extend SuperController
@@ -59,8 +64,12 @@ namespace TubsWeb.Core
             if (!shouldDelegate)
             {
                 Logger.Debug("Creating transaction...");
-                ISession session = MvcApplication.CurrentSession;
-                MvcApplication.CurrentTransaction = session.BeginTransaction();
+                MvcApplication.CurrentTransaction =
+                    IsUsingStatelessSession(filterContext) ?
+                        MvcApplication.CurrentStatelessSession.BeginTransaction() :
+                        MvcApplication.CurrentSession.BeginTransaction();
+                //ISession session = MvcApplication.CurrentSession;
+                //MvcApplication.CurrentTransaction = session.BeginTransaction();
             }
 
             Logger.Debug("Passing execution to base");
