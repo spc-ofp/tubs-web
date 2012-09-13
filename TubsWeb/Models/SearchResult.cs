@@ -1,10 +1,10 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SearchCriteria.cs" company="Secretariat of the Pacific Community">
-// Copyright (C) 2012 Secretariat of the Pacific Community
+// <copyright file="SearchResult.cs" company="Secretariat of the Pacific Community">
+// Copyright (C) 2011 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Core
+namespace TubsWeb.Models
 {
     /*
      * This file is part of TUBS.
@@ -24,38 +24,6 @@ namespace TubsWeb.Core
      */
     using System;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SearchCriteria
-    {
-        public string ObserverName { get; set; }
-
-        public string ProgramCode { get; set; }
-        
-        public string VesselName { get; set; }
-
-        public DateTime? StartDate { get; set; }
-
-        public string DeparturePort { get; set; }
-
-        public DateTime? EndDate { get; set; }
-
-        public string ReturnPort { get; set; }
-
-        public bool IsValid()
-        {
-            return
-                !string.IsNullOrEmpty(this.ObserverName) ||
-                !string.IsNullOrEmpty(this.ProgramCode) ||
-                !string.IsNullOrEmpty(this.VesselName) ||
-                !string.IsNullOrEmpty(this.DeparturePort) ||
-                !string.IsNullOrEmpty(this.ReturnPort) ||
-                this.StartDate.HasValue ||
-                this.EndDate.HasValue;
-        }
-    }
-
     public class SearchResult
     {
         public string DetailUrl { get; set; }
@@ -64,10 +32,10 @@ namespace TubsWeb.Core
 
         public string DeparturePort { get; set; }
 
-        public DateTime? StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         public string ReturnPort { get; set; }
 
-        public DateTime? ReturnDate { get; set; }
+        public DateTime ReturnDate { get; set; }
     }
 }

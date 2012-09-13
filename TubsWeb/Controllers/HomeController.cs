@@ -22,10 +22,12 @@ namespace TubsWeb.Controllers
     * You should have received a copy of the GNU Affero General Public License
     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
     */
+    using System;
     using System.Linq;
     using System.Text;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
+    using TubsWeb.Models;
 
     public class HomeController : SuperController
     {
@@ -121,6 +123,14 @@ namespace TubsWeb.Controllers
         public ActionResult Confidentiality()
         {
             return View();
+        }
+
+        public ActionResult SeaDays()
+        {
+            var sdvm = new SeaDayViewModel();
+            sdvm.ShipsDate = DateTime.Now;
+            sdvm.HasGen3Event = false;
+            return View(sdvm);
         }
     }
 }

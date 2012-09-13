@@ -80,36 +80,7 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         private IQueryable<Trip> SearchImpl(SearchCriteria criteria)
         {
-            Expression<Func<Trip, bool>> IsMatch = trip =>
-                (String.IsNullOrEmpty(criteria.ObserverName) ||
-                    (
-                        trip.Observer.StaffCode.ToUpper().Contains(criteria.ObserverName.NullSafeToUpper()) ||
-                        trip.Observer.FirstName.Contains(criteria.ObserverName.NullSafeToUpper()) ||
-                        trip.Observer.LastName.Contains(criteria.ObserverName.NullSafeToUpper())
-                    )
-                ) && (
-                String.IsNullOrEmpty(criteria.DeparturePort) ||
-                   (
-                        trip.DeparturePort.Name.ToUpper().Contains(criteria.DeparturePort.NullSafeToUpper()) ||
-                        trip.DeparturePort.PortCode.ToUpper().Contains(criteria.DeparturePort.NullSafeToUpper())
-                   )
-                ) && (
-                String.IsNullOrEmpty(criteria.ReturnPort) ||
-                   (
-                        trip.ReturnPort.Name.ToUpper().Contains(criteria.ReturnPort.NullSafeToUpper()) ||
-                        trip.ReturnPort.PortCode.ToUpper().Contains(criteria.ReturnPort.NullSafeToUpper())
-                   )
-                ) && (
-                String.IsNullOrEmpty(criteria.VesselName) || trip.Vessel.Name.ToUpper().Contains(criteria.VesselName.NullSafeToUpper())
-                ) && (
-                String.IsNullOrEmpty(criteria.ProgramCode) || trip.ProgramCode.ToString() == criteria.ProgramCode
-                ) && (
-                !criteria.StartDate.HasValue || (trip.DepartureDate >= criteria.StartDate.Value)
-                ) && (
-                !criteria.EndDate.HasValue || (trip.ReturnDate >= criteria.EndDate.Value)
-                );
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            return repo.FilterBy(IsMatch);
+            return TubsDataService.Search(MvcApplication.CurrentStatelessSession, criteria);
         }
 
 

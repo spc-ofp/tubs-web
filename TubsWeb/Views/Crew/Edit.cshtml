@@ -89,11 +89,9 @@
         @Html.TextBoxFor(m => hand.Name)
         @Html.ValidationMessageFor(m => hand.Name)
  
-        @Html.Label("Experience")
-        @Html.TextBoxFor(m => hand.Years, new { style = "width: 50px;" }) <text>years</text> 
-        @Html.TextBoxFor(m => hand.Months, new { style = "width: 50px;" }) <text>months</text>
+        @Html.Label("Years Experience")
+        @Html.TextBoxFor(m => hand.Years, new { style = "width: 50px;" }) 
         @Html.ValidationMessageFor(m => hand.Years)
-        @Html.ValidationMessageFor(m => hand.Months)
 
         @Html.LabelFor(m => hand.Nationality)
         @Html.TextBoxFor(m => hand.Nationality, new { style = "width: 50px;" })

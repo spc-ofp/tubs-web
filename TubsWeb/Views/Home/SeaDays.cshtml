@@ -1,0 +1,100 @@
+﻿@model TubsWeb.Models.SeaDayViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout_Large.cshtml";
+    ViewBag.Title = "Sea Days";
+}
+
+@* 
+  Although it would be possible to create this functionality with a mix of MVC and Knockout.js,
+  it's more consistent (and easier to debug) to use a single technology.
+  TODO:  Use enter to advance fields
+  http://stackoverflow.com/questions/4649604/jquery-select-next-text-field-on-enter-key-press
+  TODO:  Use Ctrl+S to save (submit) form
+  http://www.openjs.com/scripts/events/keyboard_shortcuts/
+*@
+
+<form class="form-inline well">
+    <legend>Start of Day</legend>
+    <label for="shipsDate">Ship's Date:</label>
+    <input id="shipsDate" type="datetime" data-bind="value: shipsTime" class="input-mini" />
+    <label for="utcTime">UTC Date:</label>
+    <input id="utcTime" type="datetime" data-bind="value: utcTime" class="input-mini" />
+</form>
+
+<fieldset>
+    <legend>Activities</legend>
+    <table class="table table-bordered table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Time</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>EEZ Code</th>
+                <th>Activity Code</th>
+                <th>Wind Speed (kts)</th>
+                <th>Wind Direction</th>
+                <th>Sea Code</th>
+                <th>How Detected</th>
+                <th>School Assoc.</th>
+                <th>FAD / Payao #</th>
+                <th>Buoy #</th>
+                <th>Comments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: lineItems">
+            <tr>
+                <td>
+                    <a href="#" data-bind="click: $root.removeLineItem" rel="tooltip" title="Click to remove row">
+                        <i class="icon-remove"></i>
+                    </a>
+                </td>
+                <td><input data-bind="hasfocus: isNew, value: time" class="input-mini" /></td>
+                <td><input data-bind="value: latitude" class="input-mini"/></td>
+                <td><input data-bind="value: longitude" class="input-mini"/></td>
+                <td><input data-bind="value: eezCode" class="input-mini"/></td>
+                <td><input data-bind="value: activityCode" class="input-mini"/></td>
+                <td><input data-bind="value: windSpeed" class="input-mini"/></td>
+                <td><input data-bind="value: windDirection" class="input-mini"/></td>
+                <td><input data-bind="value: seaCode" class="input-mini"/></td>
+                <td><input data-bind="value: detectionCode" class="input-mini"/></td>
+                <td><input data-bind="value: associationCode" class="input-mini"/></td>
+                <td><input data-bind="value: fadNumber" class="input-small"/></td>
+                <td><input data-bind="value: buoyNumber" class="input-small"/></td>
+                <td><input data-bind="value: comments" /></td>
+                <td>
+                    <a href="#" data-bind="click: $root.addLineItem" rel="tooltip" title="Click to add row">
+                        <i class="icon-plus"></i>
+                    </a>
+                </td>
+                @* It would be tres chic to add an icon-plus here that added a new line item, but _only_ for the last row. *@
+            </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-primary" data-bind="click: addLineItem">Add another event</button>
+</fieldset>
+
+<br />
+
+<form class="form-inline well">
+    <fieldset>
+        <legend>Floating Object and School Sightings</legend>
+        <label for="anchoredWithNoSchool">Anchored (No School):</label>
+        <input id="anchoredWithNoSchool" type="number" data-bind="value: anchoredWithNoSchool" class="input-mini" />
+        <label for="anchoredWithSchool">Anchored (With School):</label>
+        <input id="anchoredWithSchool" type="number" data-bind="value: anchoredWithSchool" class="input-mini" />
+    </fieldset>
+</form>
+
+<hr />
+
+<textarea>
+@Json.Encode(Model)
+</textarea>
+
+@section AdditionalScripts {
+    <script src="@Url.Content("~/Scripts/knockout-2.1.0.js")"></script>
+    <script src="@Url.Content("~/Scripts/tubs-ko.js")"></script>
+}

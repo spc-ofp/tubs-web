@@ -23,8 +23,9 @@ namespace TubsWeb.Core
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Web.Mvc;
 
-    public class UseStatelessSessionsAttribute
+    public class UseStatelessSessionsAttribute : ActionFilterAttribute
     {
     }
 }

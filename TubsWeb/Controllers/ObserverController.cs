@@ -27,6 +27,7 @@ namespace TubsWeb.Controllers
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
+    using TubsWeb.Core;
 
 
     /// <summary>
@@ -42,9 +43,10 @@ namespace TubsWeb.Controllers
             return null == observer ? String.Empty : observer.ToString();
         }
 
+        [UseStatelessSessions]
         public JsonResult Find(string term)
         {
-            var repo = new TubsRepository<Observer>(MvcApplication.CurrentSession);
+            var repo = TubsDataService.GetRepository<Observer>(MvcApplication.CurrentStatelessSession);
             var observers = (
                 from observer in repo.FilterBy(o => o.FirstName.Contains(term) || o.LastName.Contains(term))
                 select new

@@ -27,7 +27,7 @@ namespace TubsWeb.Controllers
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
-    
+    using TubsWeb.Core;
     
     /// <summary>
     /// Lookup-only controller for adding Ajax autocomplete capabilities.
@@ -42,9 +42,10 @@ namespace TubsWeb.Controllers
             return null == port ? String.Empty : String.Format("{0} ({1})", port.Name.Trim(), port.CountryCode);
         }
 
+        [UseStatelessSessions]
         public JsonResult Find(string term)
         {
-            var repo = new TubsRepository<Port>(MvcApplication.CurrentSession);
+            var repo = TubsDataService.GetRepository<Port>(MvcApplication.CurrentStatelessSession);
             var ports = (
                 from port in repo.FilterBy(p => p.Name.Contains(term))
                 where port.PortCode != null

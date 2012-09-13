@@ -299,11 +299,13 @@ namespace TubsWeb
             );
 
             // TODO Wire up JSON outputs in controllers
+            /*
             routes.MapRoute(
                 "ApiRoute",
                 "api/{controller}/{action}",
                 new { controller = "Trip", action = "Index" } // Parameter defaults
             );
+            */
 
             routes.MapRoute(
                 "Default", // Route name
