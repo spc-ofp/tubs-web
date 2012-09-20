@@ -1,6 +1,6 @@
 .meows {
   position: fixed;
-  top: 20; /* Changed from 0 to 20 to account for fixed Navbar in bootstrap */
+  top: 40; /* Changed from 0 to 40 to account for fixed Navbar in bootstrap */
   right: 0;
 }
 .meow {

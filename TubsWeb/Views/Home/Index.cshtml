@@ -15,7 +15,9 @@
     </p>
     <br />
     <p>
-        @Html.ActionLink("List of Trips", "Index", "Trip") | @Html.ActionLink("Register New Trip", "Create", "Trip")
+        @Html.RouteLink("My Open Trips", "MyOpenTrips") | 
+        @Html.ActionLink("List of Trips", "Index", "Trip") | 
+        @Html.ActionLink("Register New Trip", "Create", "Trip")
         @* Don't publicise the Access front-end for users that don't need it *@
         @if (@User.IsInRole("Editor"))
         {
@@ -28,7 +30,7 @@
     <script type="text/javascript">
         $(function () {
             $('.inlinesparkline').sparkline('html', { height: '50px', width: '200px' });
-            $("#accordion").accordion();
+            //$("#accordion").accordion();
         });
     </script>
 }

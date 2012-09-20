@@ -1,10 +1,6 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Trip>
-           
-@{
-    ViewBag.Title = "List of Trips";
-}
 
-<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Title</h3>
 
 @{ AjaxOptions searchOptions = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "tripTable", OnSuccess = "onSearchSuccess", OnFailure = "onSearchFail" }; }
 @using(Ajax.BeginForm("Search", null, searchOptions, new { @class = "well form-inline" }))
@@ -17,7 +13,7 @@
     @Html.DropDownList("program", new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose", new { @class = "span2" })
     <button type="submit" class="btn" onclick="$('#progressBar').show();">Search</button>
     var buttonLink = @Url.RouteUrl("TripList");
-    @* We're going to write HTML like it's 1999! *@
+    /* We're going to write HTML like it's 1999! */
     <button id="btnClear" class="btn" style="display:none;" onclick="parent.location='@buttonLink'; return false;">Clear</button>
 }
 
@@ -54,7 +50,7 @@
 </div>
 
 @section AdditionalScripts {
-    <script src="@Url.Content("~/Scripts/jquery.meow.js")" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.meow.js" type="text/javascript"></script>
     <script>       
         function onSearchSuccess(data, status, xhr) {
             $('#pager').hide();

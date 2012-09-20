@@ -23,6 +23,8 @@ namespace TubsWeb.Models.ExtensionMethods
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.ServiceModel.Syndication;
     using NHibernate;
     using Spc.Ofp.Tubs.DAL;
@@ -145,10 +147,40 @@ namespace TubsWeb.Models.ExtensionMethods
                 crew.Job = cmm.Job;
                 crew.Name = cmm.Name;
                 crew.YearsExperience = cmm.Years;
-                crew.MonthsExperience = cmm.Months;
                 crew.CountryCode = cmm.Nationality;
                 crew.Comments = cmm.Comments;
             }
+        }
+
+        // TODO:  This is hard-coded for Purse Seine crew, something that needs fixing...
+        public static Crew AsCrew(this CrewViewModel.CrewMemberModel cmm, JobType job)
+        {
+            Crew crew = null;
+            if (null != cmm && cmm.IsFilled)
+            {
+                crew = new PurseSeineCrew();
+                cmm.CopyTo(crew);
+                if (!crew.Job.HasValue)
+                    crew.Job = job;
+            }
+            return crew;
+        }
+
+        public static IList<Crew> AsCrewList(this CrewViewModel cvm)
+        {
+            var crewlist = new List<Crew>(16);
+            crewlist.Add(cvm.Captain.AsCrew(JobType.Captain));
+            crewlist.Add(cvm.Navigator.AsCrew(JobType.NavigatorOrMaster));
+            crewlist.Add(cvm.Mate.AsCrew(JobType.Mate));
+            crewlist.Add(cvm.ChiefEngineer.AsCrew(JobType.ChiefEngineer));
+            crewlist.Add(cvm.AssistantEngineer.AsCrew(JobType.AssistantEngineer));
+            crewlist.Add(cvm.DeckBoss.AsCrew(JobType.DeckBoss));
+            crewlist.Add(cvm.Cook.AsCrew(JobType.Cook));
+            crewlist.Add(cvm.HelicopterPilot.AsCrew(JobType.HelicopterPilot));
+            crewlist.Add(cvm.SkiffMan.AsCrew(JobType.SkiffMan));
+            crewlist.Add(cvm.WinchMan.AsCrew(JobType.WinchMan));           
+            crewlist.AddRange(cvm.Hands.Select(c => c.AsCrew(JobType.Crew)));
+            return crewlist.Where(c => c != null).ToList();
         }
 
         public static Crew CreateCrew(this Trip trip)
@@ -187,6 +219,68 @@ namespace TubsWeb.Models.ExtensionMethods
             }
 
             return day;
+        }
+
+        public static SeaDayViewModel AsViewModel(this PurseSeineSeaDay day)
+        {
+            SeaDayViewModel sdvm = new SeaDayViewModel();
+            if (null != day)
+            {
+                sdvm.TripId = day.Trip.Id;
+                sdvm.DayId = day.Id;
+                sdvm.TripNumber = day.Trip.SpcTripNumber ?? "This Trip";
+                sdvm.VersionNumber = day.Trip.Version == WorkbookVersion.v2009 ? 2009 : 2007;
+                sdvm.ActivityCodes = 
+                    sdvm.VersionNumber == 2009 ? 
+                        SeaDayViewModel.v2009ActivityCodes : 
+                        SeaDayViewModel.v2007ActivityCodes;
+                
+                // Start of Day
+                sdvm.ShipsDate = day.StartDateOnly;
+                sdvm.ShipsTime = day.StartTimeOnly;
+                sdvm.UtcDate = day.UtcDateOnly;
+                sdvm.UtcTime = day.UtcTimeOnly;
+
+                // Floating object and school sightings
+                sdvm.AnchoredWithNoSchool = day.FadsNoSchool;
+                sdvm.AnchoredWithSchool = day.FadsWithSchool;
+                sdvm.FreeFloatingWithNoSchool = day.FloatingObjectsNoSchool;
+                sdvm.FreeFloatingWithSchool = day.FloatingObjectsWithSchool;
+                sdvm.FreeSchool = day.FreeSchools;
+                sdvm.HasGen3Event = day.Gen3Events;
+                sdvm.DiaryPage = day.DiaryPage;
+
+                // Line items
+                if (null != day.Activities && day.Activities.Count > 0)
+                {
+                    var lineItems =
+                        from a in day.Activities
+                        select new SeaDayViewModel.SeaDayEvent
+                        {
+                            EventId = a.Id,
+                            Time = a.LocalTime.HasValue ? a.LocalTime.Value.ToString("HHmm") : string.Empty,
+                            Latitude = a.Latitude,
+                            Longitude = a.Longitude,
+                            EezCode = a.EezCode,
+                            ActivityCode = a.ActivityType.ToString(), // TODO Change this to activity code from form
+                            WindSpeed = a.WindSpeed,
+                            WindDirection = a.WindDirection,
+                            SeaCode = a.SeaCode.HasValue ? a.SeaCode.ToString() : null,
+                            DetectionCode = a.DetectionMethod.HasValue ? (int)a.DetectionMethod : (int?)null,
+                            AssociationCode = a.SchoolAssociation.HasValue ? (int)a.SchoolAssociation : (int?)null,
+                            FadNumber = a.Payao,
+                            BuoyNumber = a.Beacon,
+                            Comments = a.Comments
+                        };
+                    foreach (var e in lineItems) { sdvm.Events.Add(e); }
+                }
+                else
+                {
+                    // Ensure there's at least one event
+                    sdvm.Events.Add(new SeaDayViewModel.SeaDayEvent());
+                }
+            }
+            return sdvm;
         }
     }
 }

@@ -1,0 +1,184 @@
+﻿@model TubsWeb.Models.SeaDayViewModel
+@using TubsWeb.Models
+
+@{
+    // Switch to full width layout
+    ViewBag.UseFluid = true;
+    // Placeholders are nice...
+    ViewBag.UseChromeFrame = true;
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "SeaDay", new { tripId = ViewBag.TripId }), "Sea Days"),
+        Tuple.Create("#", String.Format("Day {0} of {1}", ViewBag.CurrentDay, ViewBag.MaxDays))
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+
+<form id="seaDayForm">
+    @* 
+     * Experimentation has determined that this is the best way to manage this.
+     * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+     * when the first 'dirtying' change occurs.
+     *@
+    <p>
+        <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button type="button" class="btn btn-warning" data-bind="visible: $root.isDirty, click: $root.reload">Reload</button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
+    <hr />
+    <fieldset>
+        <legend>Start of Day</legend>
+        <div class="row-fluid">
+            <div class="span1">
+                @Html.LabelFor(m => Model.ShipsDate)
+                @Html.TextBoxFor(m => Model.ShipsDate, new { data_bind = "date: $root.ShipsDate()", @type = "text", @class = "input-mini" })
+            </div>
+            <div class="span1">
+                @Html.LabelFor(m => Model.ShipsTime)
+                @Html.TextBoxFor(m => Model.ShipsTime, new { data_bind = "value: $root.ShipsTime", @class = "input-mini" })
+            </div>
+            <div class="span1">
+                @Html.LabelFor(m => Model.UtcDate)
+                @Html.TextBoxFor(m => Model.UtcDate, new { data_bind = "date: $root.UtcDate()", @type = "text", @class = "input-mini" })
+            </div>
+            <div class="span1">
+                @Html.LabelFor(m => Model.UtcTime)
+                @Html.TextBoxFor(m => Model.UtcTime, new { data_bind = "value: $root.UtcTime", @class = "input-mini" })
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Activities</legend>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Time</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>EEZ Code</th>
+                    <th>Activity Code</th>
+                    <th>Wind Speed</th>
+                    <th>Wind Direction</th>
+                    <th>Sea Code</th>
+                    <th>How Detect</th>
+                    <th>School Assoc</th>
+                    @if (Model.VersionNumber != 2009)
+                    {
+                    <th>FAD / Payao #</th>
+                    <th>Buoy</th>
+                    }
+                    <th>Comments</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: $root.Events" class="ps2events">
+                <tr>
+                    <td>
+                        <button class="removeItem btn btn-mini btn-danger" rel="tooltip" title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                    </td>
+                    <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini" type="text" required /></td>
+                    <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small" type="text" required /></td>
+                    <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small" type="text" required /></td>
+                    <td><input data-bind="value: EezCode, uniqueName: true" class="input-mini" type="text" /></td>
+                    <td><input data-bind="value: ActivityCode, uniqueName: true" class="required input-mini" type="text" required /></td>
+                    <td><input data-bind="value: WindSpeed, uniqueName: true" class="input-mini" type="number" /></td>
+                    <td><input data-bind="value: WindDirection, uniqueName: true" class="input-mini" type="number" /></td>
+                    <td><select data-bind="options: $root.SeaCodes, value: SeaCode" class="input-mini"></select></td>
+                    <td><select data-bind="options: $root.DetectionCodes, value: DetectionCode" class="input-mini"></select></td>
+                    <td><select data-bind="options: $root.AssociationCodes, value: AssociationCode" class="input-mini"></select></td>
+                    @if (Model.VersionNumber != 2009)
+                    {
+                    <td><input data-bind="value: FadNumber, uniqueName: true" class="input-small" type="text" /></td>
+                    <td><input data-bind="value: BuoyNumber, uniqueName: true" class="input-mini" type="text" /></td>
+                    <td><input data-bind="value: Comments, uniqueName: true" class="input-large" type="text" placeholder="And Set No. from PS-3"/></td>
+                    }
+                    else
+                    {
+                    @* 2009 version removed 2 columns, so make up for it by expanding the comments input block *@
+                    <td><input data-bind="value: Comments, uniqueName: true" class="input-xlarge" type="text" placeholder="And Set No. from PS-3" /></td>
+                    }
+                    <td>
+                        <button class="addItem btn btn-mini btn-info" rel="tooltip" title="Click to add row"><i class="icon-plus icon-white"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+    <fieldset>
+        <legend>Floating Object and School Sightings</legend>
+            <div class="span2">
+                <label>Anchored<br />with NO school</label>
+                @Html.TextBoxFor(m => Model.AnchoredWithNoSchool, new { data_bind = "value: $root.AnchoredWithNoSchool", @type = "number", @class = "input-mini" })
+            </div>
+            <div class="span2">
+                <label>Anchored<br />with school</label>
+                @Html.TextBoxFor(m => Model.AnchoredWithSchool, new { data_bind = "value: $root.AnchoredWithSchool", @type = "number", @class = "input-mini" })
+            </div>
+            <div class="span2">
+                <label>Free floating<br />with NO school</label>
+                @Html.TextBoxFor(m => Model.FreeFloatingWithNoSchool, new { data_bind = "value: $root.FreeFloatingWithNoSchool", @type = "number", @class = "input-mini" })
+            </div>
+            <div class="span2">
+                <label>Free floating<br />with school</label>
+                @Html.TextBoxFor(m => Model.FreeFloatingWithSchool, new { data_bind = "value: $root.FreeFloatingWithSchool", @type = "number", @class = "input-mini" })
+            </div>
+            <div class="span1">
+                @Html.LabelFor(m => Model.FreeSchool)
+                @Html.TextBoxFor(m => Model.FreeSchool, new { data_bind = "value: $root.FreeSchool", @type = "number", @class = "input-mini" })
+            </div>
+            <div class="span1">
+                @Html.LabelFor(m => Model.HasGen3Event)
+                @Html.TextBoxFor(m => Model.HasGen3Event, new { data_bind = "value: $root.HasGen3Event", @class = "input-mini" })
+            </div>
+            <div class="span1">
+                @Html.LabelFor(m => Model.DiaryPage)
+                @Html.TextBoxFor(m => Model.DiaryPage, new { data_bind = "value: $root.DiaryPage", @type = "number", @class = "input-mini" })
+            </div>
+    </fieldset>
+</form>
+
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
+@section AdditionalScripts {
+    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+    <script src="~/Scripts/App/vm.seaday.js"></script>
+    @{ var modelAsJson = Html.Raw(Json.Encode(Model)); }
+    @{ var endpointUrl = Request.Url.AbsoluteUri; }
+    <script>
+        amplify.request.define("getSeaDay", "ajax", {
+            url: '@endpointUrl',
+            dataType: "json",
+            type: "GET"
+        });
+
+        amplify.request.define("saveSeaDay", "ajax", {
+            url: '@endpointUrl',
+            dataType: "json",
+            contentType: "application/json",
+            type: "POST"
+        });
+
+        $(document).ready(function () {
+            var viewModel = new tubs.psSeaDay(@modelAsJson);
+            ko.applyBindings(viewModel);
+            $(".ps2events").on("click", ".removeItem", function() {
+                // TODO Store off Id for this event for later deletion...
+                viewModel.removeEvent(ko.dataFor(this));
+            });
+            $(".ps2events").on("click", ".addItem", function() {
+                viewModel.addEvent();
+            });
+        });
+    </script>
+}

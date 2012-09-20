@@ -13,33 +13,13 @@
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
-
-@{
-    IList<Tuple<string, CrewViewModel.CrewMemberModel>> namedJobs = new List<Tuple<string, CrewViewModel.CrewMemberModel>>()
-    {
-        Tuple.Create("Captain", Model.Captain),
-        Tuple.Create("Navigator", Model.Navigator),
-        Tuple.Create("Mate", Model.Mate),
-        Tuple.Create("ChiefEngineer", Model.ChiefEngineer),
-        Tuple.Create("AssistantEngineer", Model.AssistantEngineer),
-        Tuple.Create("DeckBoss", Model.DeckBoss),
-        Tuple.Create("Cook", Model.Cook),
-        Tuple.Create("HelicopterPilot", Model.HelicopterPilot),
-        Tuple.Create("SkiffMan", Model.SkiffMan),
-        Tuple.Create("WinchMan", Model.WinchMan),
-    };
-}
-
-@*  TODO Still need to add a UI surface for the unobtrusive validation *@
-@*  Looks like I'll have to hook form submit per here: 
-    http://weblogs.asp.net/imranbaloch/archive/2011/03/05/unobtrusive-client-side-validation-with-dynamic-contents-in-asp-net-mvc.aspx 
-    See also this StackOverflow:  http://stackoverflow.com/questions/8538082/asp-net-mvc-3-required-steps-for-unobtrusive-client-side-validation-of-dynamic
-*@
-
-<!-- Named crew -->
+<form id="crewForm">
 <fieldset>
     <legend>Senior Crew</legend>
-    <table class="table table-striped table-bordered table-condensed">
+    @* Knockout version *@
+    @* TODO: If there's a pending edit, change the row class to "warning" *@
+    <em>Use Ctrl-Z to undo any unsaved edits.</em>
+    <table class="table table-condensed">
         <thead>
             <tr>
                 <th>Job</th>
@@ -47,66 +27,142 @@
                 <th>Experience</th>
                 <th>Nationality</th>
                 <th>Comments</th>
-                <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
-        @foreach (var namedJob in namedJobs)
-        {
-            var njoptions = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = namedJob.Item1, OnSuccess = "onSaveSuccess", OnFailure = "onSaveFail" };
-            using (Ajax.BeginForm("EditSingle", njoptions))
-            {
-            <tr id='@namedJob.Item1'>
-                @Html.EditorFor(m => namedJob.Item2)
-            </tr>
-            }
-        }
+            @* MVC partial makes for less copy/paste noise, although it does mean more stuff needs to be in the author/debugger's head *@
+            @Html.Partial("_SeniorCrew", Model.Captain, new ViewDataDictionary { { "bindingSource", "$root.Captain()" }, { "jobTitle", "Captain" } })
+            @Html.Partial("_SeniorCrew", Model.Navigator, new ViewDataDictionary { { "bindingSource", "$root.Navigator()" }, { "jobTitle", "Navigator/Master" } })
+            @Html.Partial("_SeniorCrew", Model.Mate, new ViewDataDictionary { { "bindingSource", "$root.Mate()" }, { "jobTitle", "Mate" } })
+            @Html.Partial("_SeniorCrew", Model.ChiefEngineer, new ViewDataDictionary { { "bindingSource", "$root.ChiefEngineer()" }, { "jobTitle", "Chief Engineer" } })
+            @Html.Partial("_SeniorCrew", Model.AssistantEngineer, new ViewDataDictionary { { "bindingSource", "$root.AssistantEngineer()" }, { "jobTitle", "Assistant Engineer" } })
+            @Html.Partial("_SeniorCrew", Model.DeckBoss, new ViewDataDictionary { { "bindingSource", "$root.DeckBoss()" }, { "jobTitle", "Deck Boss" } })
+            @Html.Partial("_SeniorCrew", Model.Cook, new ViewDataDictionary { { "bindingSource", "$root.Cook()" }, { "jobTitle", "Cook" } })
+            @Html.Partial("_SeniorCrew", Model.HelicopterPilot, new ViewDataDictionary { { "bindingSource", "$root.HelicopterPilot()" }, { "jobTitle", "Helicopter Pilot" } })
+            @Html.Partial("_SeniorCrew", Model.SkiffMan, new ViewDataDictionary { { "bindingSource", "$root.SkiffMan()" }, { "jobTitle", "Skiff Man" } })
+            @Html.Partial("_SeniorCrew", Model.WinchMan, new ViewDataDictionary { { "bindingSource", "$root.WinchMan()" }, { "jobTitle", "Winch Man" } })
         </tbody>
     </table>
 </fieldset>
-
-<br />
-
-@*  See this link about adding an HTML5 confirm prompt: *@
-@* http://forums.asp.net/t/1652312.aspx/1?MVC+3+razor+grid+using+edit+and+delete+buttons *@
-<!-- The rest of the hands -->
 <fieldset>
     <legend>Other Crew</legend>
-    @{ Html.RenderPartial("~/Views/Crew/OtherCrew.cshtml", Model.Hands); }
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Experience</th>
+                <th>Nationality</th>
+                <th>Comments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: $root.Hands">
+            <tr>
+                @*
+                <td>
+                    <a href="#" data-bind="click: $root.removeHand" rel="tooltip" title="Click to remove row">
+                        <i class="icon-remove"></i>
+                    </a>
+                </td>
+                *@
+                <td>
+                    <button class="removeItem btn btn-mini btn-danger" rel="tooltip" title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                </td>
+                <td><input data-bind="hasfocus: NeedsFocus, value: Name, uniqueName: true" class="required" type="text" /></td>
+                <td><input data-bind="value: Years, uniqueName: true" class="input-mini number" type="number" /></td>
+                <td><input data-bind="value: Nationality, uniqueName: true" class="input-mini" type="text" /></td>
+                <td><input data-bind="value: Comments, uniqueName: true" class="input-xxlarge" type="text" /></td>
+                @*
+                <td>
+                    <a href="#" data-bind="click: $root.addHand" rel="tooltip" title="Click to add row">
+                        <i class="icon-plus"></i>
+                    </a>
+                </td>
+                *@
+                <td>
+                    <button class="addItem btn btn-mini btn-info" rel="tooltip" title="Click to add row"><i class="icon-plus icon-white"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </fieldset>
+<p>
+    Pending changes? <b data-bind="text: tracker().somethingHasChanged() ? 'YES' : 'NO'"></b>
+</p>
+<p>
+    <button type="submit" class="btn btn-primary" data-bind="click: save">Save</button>
+    @* TODO: IE is quirky with knockout when reloading, so we'll need a 'Reload' button *@
+</p>
+</form>
 
-@* TODO Change this to a modal dialog *@
-<fieldset>
-    <legend>Add New Deckhand</legend>
-    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "deckHands", OnSuccess = "onAddSuccess", OnFailure = "onAddFail" };  }
-    @using (Ajax.BeginForm("AddDeckHand", null, options, new { @class = "well", id = "addHandForm" }))
-    {
-        @Html.ValidationSummary(false)
-        var hand = new CrewViewModel.CrewMemberModel(Spc.Ofp.Tubs.DAL.Common.JobType.Crew);
-        @Html.HiddenFor(m => hand.Id)
-        @Html.HiddenFor(m => hand.Job)
-        @Html.LabelFor(m => hand.Name)
-        @Html.TextBoxFor(m => hand.Name)
-        @Html.ValidationMessageFor(m => hand.Name)
- 
-        @Html.Label("Years Experience")
-        @Html.TextBoxFor(m => hand.Years, new { style = "width: 50px;" }) 
-        @Html.ValidationMessageFor(m => hand.Years)
 
-        @Html.LabelFor(m => hand.Nationality)
-        @Html.TextBoxFor(m => hand.Nationality, new { style = "width: 50px;" })
-        @Html.ValidationMessageFor(m => hand.Nationality)
+@section AdditionalScripts {   
+    <script src="~/Scripts/App/crew.js"></script>
 
+    <!-- Knockout work --> 
+    @{ var serviceUrl = Url.RouteUrl(TubsWeb.RouteConfig.Crew, new { tripId = ViewBag.TripId }); }   
+    @{ var modelAsJson = Html.Raw(Json.Encode(Model)); }
+    <script type="text/javascript">
+        // TODO Move viewModel stuff elsewhere, as we need to be able to add
+        // some methods to it (add deck hand, save, reload, etc.
+        /*
+        getCrew = function () {
+            $.ajax({
+                url: '@serviceUrl',
+                dataType: "json",
+                success: function (result) {
+                    var viewModel = ko.mapping.fromJS(result);
+                    ko.applyBindings(viewModel);
+                },
+                error: function (xhr, status, error) {
+                    $.meow({
+                        title: 'Error loading crew',
+                        message: error,
+                        icon: "~/Content/images/nyan-cat.gif"
+                    });
+                }
+            });
+        }
+        */
+
+        // http://jsfiddle.net/b3ky5/
+        function changeTracker(objectToTrack, hashFunction) {    
+            hashFunction = hashFunction || ko.toJSON;
+            var lastCleanState = ko.observable(hashFunction(objectToTrack));
     
-        <p>
-            <input type="submit" name="Add" value="Add" class="btn btn-primary" />
-            <input type="reset" name="Cancel" class="btn" />
-        </p>
-    }
-</fieldset>
-
-@section AdditionalScripts {
-    <script src="@Url.Content("~/Scripts/jquery.meow.js")" type="text/javascript"></script>
+            var result = {
+                somethingHasChanged : ko.dependentObservable(function() {
+                    return hashFunction(objectToTrack) != lastCleanState()
+                }),
+                markCurrentStateAsClean : function() {
+                    lastCleanState(hashFunction(objectToTrack));   
+                }
+            };
+    
+            return function() { return result }
+        }
+        
+        $(document).ready(function () {
+            //getCrew();
+            var content = @modelAsJson;
+            var vm = new tubsCrew.PSCrewViewModel(content);
+            vm.tracker = new changeTracker(vm);
+            ko.applyBindings(vm);
+            $(".crewForm").on("click", ".removeItem", function() {
+                // TODO Store off Id for this event for later deletion...
+                vm.removeHand(ko.dataFor(this));
+            });
+            $(".crewForm").on("click", ".addItem", function() {
+                vm.addHand();
+            });
+            // http://blog.stevensanderson.com/2010/07/12/editing-a-variable-length-list-knockout-style/
+            $("#crewForm").validate({ submitHandler: function() { 
+                    vm.save() 
+                } 
+            });
+        });       
+    </script>
 
     <script type="text/javascript">
         function onSaveSuccess(data, status, xhr) {

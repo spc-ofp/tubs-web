@@ -23,9 +23,9 @@ namespace TubsWeb.Models
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Text;
     using Spc.Ofp.Tubs.DAL.Common;
     
     /// <summary>
@@ -79,43 +79,43 @@ namespace TubsWeb.Models
 
             public JobType? Job { get; set; }
 
+            [StringLength(50, ErrorMessage = "Name must 50 or fewer characters")]
             public string Name { get; set; }
 
-            [StringLength(2)]
-            public string Nationality { get; set; }
-
-            [Range(0, 99)]
+            [Range(0, 99, ErrorMessage = "Experience must be between 0 and 99 years")]
             public int? Years { get; set; }
 
-            [Range(0, 99)]
-            public int? Months { get; set; }
+            [StringLength(2, ErrorMessage = "Nationality code must be 2 characters")]
+            public string Nationality { get; set; }
+
+            public string Comments { get; set; }
+
+            public bool? IsDirty { get; set; }
+
+            public bool IsFilled
+            {
+                get
+                {
+                    // At some point in the future, might want to make this more
+                    // complex for senior crew...
+                    return !string.IsNullOrWhiteSpace(this.Name);
+                }
+            }
 
             public string Experience
             {
                 get
                 {
-                    if (!this.Years.HasValue && !this.Months.HasValue)
-                        return "None or unknown";
-
-                    StringBuilder sb = new StringBuilder();
-                    if (this.Years.HasValue)
-                    {
-                        sb.Append(this.Years.Value).Append(" years");
-                    }
-
-                    if (this.Months.HasValue)
-                    {
-                        if (sb.Length > 0)
-                            sb.Append(" ");
-
-                        sb.Append(this.Months.Value).Append(" months");
-                    }
-
-                    return sb.ToString();
+                    return
+                        this.Years.HasValue ?
+                            this.Years.Value == 1 ?
+                            String.Format("{0} year", this.Years.Value) :
+                            String.Format("{0} years", this.Years.Value) :
+                            "None or unknown";
                 }
             }
 
-            public string Comments { get; set; }
+            
         }
     }
 

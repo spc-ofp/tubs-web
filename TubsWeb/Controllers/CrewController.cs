@@ -25,7 +25,9 @@ namespace TubsWeb.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Web.Mvc;
+    using NHibernate;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
@@ -99,7 +101,7 @@ namespace TubsWeb.Controllers
         /// <param name="crewlist"></param>
         /// <param name="jobType"></param>
         /// <returns></returns>
-        private static CrewViewModel.CrewMemberModel GetCrewmember(IQueryable<Crew> crewlist, JobType jobType)
+        internal static CrewViewModel.CrewMemberModel GetCrewmember(IQueryable<Crew> crewlist, JobType jobType)
         {
             return (
                 from c in crewlist
@@ -111,13 +113,12 @@ namespace TubsWeb.Controllers
                     Name = c.Name,
                     Nationality = c.CountryCode,
                     Comments = c.Comments,
-                    Years = c.YearsExperience,
-                    Months = c.MonthsExperience
+                    Years = c.YearsExperience
                 }
             ).FirstOrDefault<CrewViewModel.CrewMemberModel>() ?? new CrewViewModel.CrewMemberModel(jobType);
         }
 
-        private static IEnumerable<CrewViewModel.CrewMemberModel> GetDeckHands(IQueryable<Crew> crew)
+        internal static IEnumerable<CrewViewModel.CrewMemberModel> GetDeckHands(IQueryable<Crew> crew)
         {
             return 
                 from c in crew
@@ -129,17 +130,17 @@ namespace TubsWeb.Controllers
                     Name = c.Name,
                     Nationality = c.CountryCode,
                     Comments = c.Comments,
-                    Years = c.YearsExperience,
-                    Months = c.MonthsExperience
+                    Years = c.YearsExperience
                 };
         }
 
-        private CrewViewModel Fill(Trip tripId)
-        {            
+        internal static CrewViewModel Fill(IStatelessSession session, int tripId)
+        {
             CrewViewModel cvm = new CrewViewModel();
-            cvm.TripId = tripId.Id;
-            cvm.TripNumber = tripId.SpcTripNumber ?? "This Trip";
-            var crewlist = new TubsRepository<Crew>(MvcApplication.CurrentSession).FilterBy(c => c.Trip.Id == tripId.Id);
+            cvm.TripId = tripId;
+            // Without a Trip, we can't meaningfully set TripNumber
+            cvm.TripNumber = "This Trip";
+            var crewlist = TubsDataService.GetRepository<Crew>(session).FilterBy(c => c.Trip.Id == tripId);
             cvm.Hands.AddRange(GetDeckHands(crewlist));
             // Get named crew members
             cvm.Captain = GetCrewmember(crewlist, JobType.Captain);
@@ -155,6 +156,13 @@ namespace TubsWeb.Controllers
             return cvm;
         }
 
+        private CrewViewModel Fill(Trip tripId)
+        {            
+            CrewViewModel cvm = Fill(MvcApplication.CurrentStatelessSession, tripId.Id);
+            cvm.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+            return cvm;
+        }
+
         //
         // GET: /Crew/
         public ActionResult Index(Trip tripId)
@@ -165,7 +173,11 @@ namespace TubsWeb.Controllers
             }
 
             ViewBag.Title = String.Format("Crew list for {0}", tripId.ToString());
-            return View(Fill(tripId));
+            var cvm = Fill(tripId);
+            
+            if (IsApiRequest())
+                return Json(cvm, JsonRequestBehavior.AllowGet);
+            return View(cvm);
         }
 
         [Authorize(Roles = Security.EditRoles)]
@@ -177,6 +189,45 @@ namespace TubsWeb.Controllers
             }
             ViewBag.Title = String.Format("Edit crew list for {0}", tripId.ToString());
             return View(Fill(tripId));
+        }
+
+        // This should only ever be hit by the Knockout function, but we'll still probably want
+        // to cater for straight up HTML Forms
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Edit(Trip tripId, CrewViewModel cvm)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+            if (!ModelState.IsValid)
+            {
+                if (IsApiRequest())
+                {
+                    return ModelErrorsResponse();
+                }
+                ViewBag.Title = String.Format("Edit crew list for {0}", tripId.ToString());
+                return View(cvm);
+            }
+
+            // Two approaches:  We can save what we can save, or we do this as an all or nothing
+            // deal.  For now, we'll do all or nothing...
+            var crewlist = cvm.AsCrewList(); // AsCrewList strips out any crew without any details
+            // Set the Trip relationship for each crewmember
+            crewlist.ToList().ForEach(c => c.Trip = tripId);
+            IRepository<Crew> repo = TubsDataService.GetRepository<Crew>(MvcApplication.CurrentSession);                
+            repo.Add(crewlist);
+            // TODO:  If there are crew that aren't in the list, then those crew members need to be deleted
+            if (IsApiRequest())
+            {
+                Response.StatusCode = (int)HttpStatusCode.NoContent;
+                return null;
+            }
+            else
+            {
+                return RedirectToAction("Index", "Crew", new { tripId = tripId.Id });
+            }
         }
 
         [HttpPost]

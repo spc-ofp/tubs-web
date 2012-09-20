@@ -112,9 +112,31 @@ namespace TubsWeb.Controllers
             ViewBag.CurrentPage = (page ?? 0);
 
             int tripCount = Math.Max(repo.FilterBy(t => t.EnteredBy.ToUpper().Contains(filterCriteria)).Count() - 1, 0);
+            ViewBag.Title = "My Trips";
             ViewBag.PageCount = (tripCount + itemsPerPage - 1) / itemsPerPage;
             ViewBag.TotalRows = tripCount;
             ViewBag.ActionName = "MyTrips";
+            ViewBag.FilterCriteria = filterCriteria; // For debug use
+            return View("Index", trips.Entities);
+        }
+
+        public ActionResult MyOpenTrips(int? page, int itemsPerPage = 15)
+        {
+            string filterCriteria = User.Identity.Name.WithoutDomain().ToUpper();
+            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var trips = repo.GetPagedList(
+                t => t.EnteredBy.ToUpper().Contains(filterCriteria) && !t.ClosedDate.HasValue, 
+                (page ?? 0) * itemsPerPage, 
+                itemsPerPage);
+            ViewBag.HasPrevious = trips.HasPrevious;
+            ViewBag.HasNext = trips.HasNext;
+            ViewBag.CurrentPage = (page ?? 0);
+
+            int tripCount = Math.Max(repo.FilterBy(t => t.EnteredBy.ToUpper().Contains(filterCriteria)).Count() - 1, 0);
+            ViewBag.Title = "My Open Trips";
+            ViewBag.PageCount = (tripCount + itemsPerPage - 1) / itemsPerPage;
+            ViewBag.TotalRows = tripCount;
+            ViewBag.ActionName = "MyOpenTrips";
             ViewBag.FilterCriteria = filterCriteria; // For debug use
             return View("Index", trips.Entities);
         }

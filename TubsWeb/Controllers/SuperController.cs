@@ -24,13 +24,15 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Configuration;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
+    using System.Net;
 
     /// <summary>
-    /// SuperController adds logging and user error reporting capabilities to the MVC3 Controller.
+    /// SuperController adds logging and user error reporting capabilities to the Controller.
     /// </summary>
     [UseTransactionsByDefault]
     [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
@@ -51,6 +53,32 @@ namespace TubsWeb.Controllers
         public const string CoverPage = "CoverPage";
 
         protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(SuperController));
+
+        // This is here until I can find a better way to manage this.
+        protected bool IsApiRequest()
+        {
+            return null != Request.AcceptTypes && Request.AcceptTypes.Contains("application/json");
+        }
+
+        protected ActionResult InvalidTripResponse()
+        {
+            if (IsApiRequest())
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json("Missing or invalid trip", JsonRequestBehavior.AllowGet);
+            }
+            return new NoSuchTripResult();
+        }
+
+        protected JsonResult ModelErrorsResponse()
+        {
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(
+                ModelState
+                    .Where(s => s.Value.Errors.Count > 0)
+                    .Select(s => new KeyValuePair<string, string>(s.Key, s.Value.Errors.First().ErrorMessage)),
+                JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// Flash stores an alert message and level into ViewData.
@@ -116,8 +144,15 @@ namespace TubsWeb.Controllers
 
             if (typeof(PurseSeineTrip) == tripId.GetType())
             {
-                pills.Add(Tuple.Create("Auxiliaries", Url.Action("Index", "Auxiliaries", routeValues)));
-                pills.Add(Tuple.Create("Well Content", Url.Action("Index", "WellContent", routeValues)));
+                var pstrip = tripId as PurseSeineTrip;
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.VesselAttributes != null))
+                {
+                    pills.Add(Tuple.Create("Auxiliaries", Url.Action("Index", "Auxiliaries", routeValues)));
+                }
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.WellContent.Count > 0))
+                {
+                    pills.Add(Tuple.Create("Well Content", Url.Action("Index", "WellContent", routeValues)));
+                }
             }
 
             pills.Add(Tuple.Create("Vessel", Url.Action("Index", "VesselDetails", routeValues)));

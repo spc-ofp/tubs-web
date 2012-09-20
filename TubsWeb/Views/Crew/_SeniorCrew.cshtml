@@ -1,0 +1,32 @@
+﻿@model TubsWeb.Models.CrewViewModel.CrewMemberModel
+@{
+    string bindingSource = ViewData["bindingSource"] as string;
+    string jobTitle = ViewData["jobTitle"] as string;
+    // Using this means the field names _should_ work with the default model binder in MVC
+    var prefix = bindingSource.Replace("$root.", String.Empty).Replace("()", String.Empty);
+    ViewData.TemplateInfo.HtmlFieldPrefix = prefix;
+}
+
+<tr>
+    <td>@jobTitle</td>
+    <td>
+        <div class="control-group">
+            @Html.TextBoxFor(m => Model.Name, new { data_bind = string.Format("value: {0}.Name", bindingSource) })
+        </div>
+    </td>
+    <td>
+        <div class="control-group">
+            @Html.TextBoxFor(m => Model.Years, new { data_bind = string.Format("value: {0}.Years", bindingSource), @class = "input-mini number", @type = "number" })
+        </div>
+    </td>
+    <td>
+        <div class="control-group">
+            @Html.TextBoxFor(m => Model.Nationality, new { data_bind = string.Format("value: {0}.Nationality", bindingSource), @class = "input-mini" })
+        </div>
+    </td>
+    <td>
+        <div class="control-group">
+            @Html.TextBoxFor(m => Model.Comments, new { data_bind = string.Format("value: {0}.Comments", bindingSource), @class = "input-xxlarge" })
+        </div>
+    </td>
+</tr>
