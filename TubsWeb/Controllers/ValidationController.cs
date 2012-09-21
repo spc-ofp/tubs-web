@@ -74,12 +74,11 @@ namespace TubsWeb.Controllers
                 IList results = TubsDataService.Execute(SpeciesValidationQuery, speciesCode);
                 if (1 == results.Count)
                 {
-                    return Json(true, JsonRequestBehavior.AllowGet);
+                    return GettableJsonNetData(true);
                 }
             }
-            return Json(
-                String.Format("{0} is not a valid species code", speciesCode),
-                JsonRequestBehavior.AllowGet);
+            return GettableJsonNetData(
+                String.Format("{0} is not a valid species code", speciesCode));
         }
 
     }

@@ -32,6 +32,11 @@ namespace TubsWeb.Models
     /// DON'T USE ARRAYS IN A VIEW MODEL!!!!!
     /// The default model binder freaks out when it trys to fill an array, and the
     /// stack trace is worthless.
+    /// 
+    /// Second Note:  Dates are crazy in MVC when you don't use WebApi
+    /// Although this has been fixed for now, here's a note about using attributes to control JSON
+    /// serialization.
+    /// http://stackoverflow.com/questions/10527001/asp-net-mvc-controller-json-datetime-serialization-vs-newtonsoft-json-datetime-s
     /// </summary>
     public class SeaDayViewModel
     {
@@ -91,9 +96,8 @@ namespace TubsWeb.Models
         public SeaDayViewModel()
         {
             Events = new List<SeaDayEvent>(8);
-            DeletedEvents = new List<int>();
-            DetectionCodes = new List<string>() { string.Empty, "1", "2", "3", "4", "5", "6", "7" };
-            AssociationCodes = new List<string>() { string.Empty, "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+            DetectionCodes = new List<int?>() { null, 1, 2, 3, 4, 5, 6, 7 };
+            AssociationCodes = new List<int?>() { null, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             SeaCodes = new List<string>() { string.Empty, "C", "S", "M", "R", "V" };
         }
 
@@ -103,14 +107,12 @@ namespace TubsWeb.Models
         public bool HasPrevious { get; set; }
         public int VersionNumber { get; set; }
 
-        public IList<int> DeletedEvents { get; set; }
-
         // This is dynamic, as the list changes based on version
         public IList<string> ActivityCodes { get; set; }
 
         // No change between 2007 and 2009
-        public IList<string> DetectionCodes { get; set; }
-        public IList<string> AssociationCodes { get; set; }
+        public IList<int?> DetectionCodes { get; set; }
+        public IList<int?> AssociationCodes { get; set; }
         public IList<string> SeaCodes { get; set; }
 
         public int TripId { get; set; }
@@ -170,6 +172,9 @@ namespace TubsWeb.Models
         public class SeaDayEvent
         {
             public int EventId { get; set; }
+
+            // Re-use the RoR integration in Knockout
+            public bool _destroy { get; set; }
             
             [Required]
             [RegularExpression(
@@ -215,6 +220,8 @@ namespace TubsWeb.Models
             public string Comments { get; set; }
 
             public bool NeedsFocus { get; set; }
+
+            public bool HasSet { get; set; }
         }
     }
 }

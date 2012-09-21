@@ -65,12 +65,12 @@ namespace TubsWeb.Controllers
             var trip = tripId as PurseSeineTrip;
             if (null == tripId)
             {
-                return Json(new { error = true, message = "No trip found with given tripId"});
+                return GettableJsonNetData(new { error = true, message = "No trip found with given tripId" });
             }
 
             if (!ModelState.IsValid)
             {
-                return Json(new { error = true, message = "TODO:  Fix this." });
+                return GettableJsonNetData(new { error = true, message = "TODO:  Fix this." });
             }
 
             content.Trip = trip;

@@ -221,6 +221,117 @@ namespace TubsWeb.Models.ExtensionMethods
             return day;
         }
 
+        public static int? ToFormValue(this DetectionMethod? detectionMethod)
+        {
+            if (!detectionMethod.HasValue || detectionMethod.Value == DetectionMethod.None)
+                return null;
+
+            switch (detectionMethod.Value)
+            {
+                case DetectionMethod.SeenFromVessel:
+                    return 1;
+                case DetectionMethod.SeenFromHelicopter:
+                    return 2;
+                case DetectionMethod.MarkedWithBeacon:
+                    return 3;
+                case DetectionMethod.BirdRadar:
+                    return 4;
+                case DetectionMethod.Sonar:
+                    return 5;
+                case DetectionMethod.InfoFromOtherVessel:
+                    return 6;
+                case DetectionMethod.Anchored:
+                    return 7;
+                default:
+                    return null;
+            }
+        }
+
+        public static int? ToFormValue(this SchoolAssociation? association)
+        {
+            if (!association.HasValue || association.Value == SchoolAssociation.None)
+                return null;
+
+            switch (association.Value)
+            {
+                case SchoolAssociation.Unassociated:
+                    return 1;
+                case SchoolAssociation.FeedingOnBaitfish:
+                    return 2;
+                case SchoolAssociation.DriftingLog:
+                    return 3;
+                case SchoolAssociation.DriftingRaft:
+                    return 4;
+                case SchoolAssociation.AnchoredRaft:
+                    return 5;
+                case SchoolAssociation.LiveWhale:
+                    return 6;
+                case SchoolAssociation.LiveWhaleShark:
+                    return 7;
+                case SchoolAssociation.Other:
+                    return 8;
+                case SchoolAssociation.NoTuna:
+                    return 9;
+                
+                default:
+                    return null;
+            }
+        }
+
+        public static string ToFormValue(this ActivityType? activity)
+        {
+            if (!activity.HasValue || activity.Value == ActivityType.None)
+                return null;
+
+            switch (activity.Value)
+            {
+                case ActivityType.Fishing:
+                    return "1";
+                case ActivityType.Searching:
+                    return "2";
+                case ActivityType.Transit:
+                    return "3";
+                case ActivityType.NoFishingBreakdown:
+                    return "4";
+                case ActivityType.NoFishingBadWeather:
+                    return "5";
+                case ActivityType.InPort:
+                    return "6";
+                case ActivityType.NetCleaningSet:
+                    return "7";
+                case ActivityType.InvestigateFreeSchool:
+                    return "8";
+                case ActivityType.InvestigateFloatingObject:
+                    return "9";
+                case ActivityType.DeployFad:
+                    return "10D";
+                case ActivityType.RetrieveFad:
+                    return "10R";
+                case ActivityType.NoFishingDriftingAtDaysEnd:
+                    return "11";
+                case ActivityType.NoFishingDriftingWithFloatingObject:
+                    return "12";
+                case ActivityType.NoFishingOther:
+                    return "13";
+                case ActivityType.DriftingWithLights:
+                    return "14";
+                case ActivityType.RetrieveRadioBuoy:
+                    return "15R";
+                case ActivityType.DeployRadioBuoy:
+                    return "15D";
+                case ActivityType.TransshippingOrBunkering:
+                    return "16";
+                case ActivityType.ServicingFad:
+                    return "17";
+                case ActivityType.HelicopterTakesOffToSearch:
+                    return "H1";
+                case ActivityType.HelicopterReturnsFromSearch:
+                    return "H2";
+                default:
+                    return null;
+            }
+        }
+
         public static SeaDayViewModel AsViewModel(this PurseSeineSeaDay day)
         {
             SeaDayViewModel sdvm = new SeaDayViewModel();
@@ -259,18 +370,19 @@ namespace TubsWeb.Models.ExtensionMethods
                         {
                             EventId = a.Id,
                             Time = a.LocalTime.HasValue ? a.LocalTime.Value.ToString("HHmm") : string.Empty,
-                            Latitude = a.Latitude,
-                            Longitude = a.Longitude,
-                            EezCode = a.EezCode,
-                            ActivityCode = a.ActivityType.ToString(), // TODO Change this to activity code from form
+                            Latitude = a.Latitude.NullSafeTrim(),
+                            Longitude = a.Longitude.NullSafeTrim(),
+                            EezCode = a.EezCode.NullSafeTrim(),
+                            ActivityCode = a.ActivityType.ToFormValue(),
                             WindSpeed = a.WindSpeed,
                             WindDirection = a.WindDirection,
                             SeaCode = a.SeaCode.HasValue ? a.SeaCode.ToString() : null,
-                            DetectionCode = a.DetectionMethod.HasValue ? (int)a.DetectionMethod : (int?)null,
-                            AssociationCode = a.SchoolAssociation.HasValue ? (int)a.SchoolAssociation : (int?)null,
-                            FadNumber = a.Payao,
-                            BuoyNumber = a.Beacon,
-                            Comments = a.Comments
+                            DetectionCode = a.DetectionMethod.ToFormValue(),
+                            AssociationCode = a.SchoolAssociation.ToFormValue(),
+                            FadNumber = a.Payao.NullSafeTrim(),
+                            BuoyNumber = a.Beacon.NullSafeTrim(),
+                            Comments = a.Comments.NullSafeTrim(),
+                            HasSet = (Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing == a.ActivityType && a.FishingSet != null)
                         };
                     foreach (var e in lineItems) { sdvm.Events.Add(e); }
                 }

@@ -1,5 +1,6 @@
 ﻿@model TubsWeb.Models.SeaDayViewModel
 @using TubsWeb.Models
+@using Newtonsoft.Json
 
 @{
     // Switch to full width layout
@@ -21,16 +22,14 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-
 <form id="seaDayForm">
     @* 
-     * Experimentation has determined that this is the best way to manage this.
      * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
      * when the first 'dirtying' change occurs.
      *@
     <p>
         <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        <button type="button" class="btn btn-warning" data-bind="visible: $root.isDirty, click: $root.reload">Reload</button>
+        <button type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">Reload</button>
         <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
     </p>
     <hr />
@@ -38,7 +37,7 @@
         <legend>Start of Day</legend>
         <div class="row-fluid">
             <div class="span1">
-                @Html.LabelFor(m => Model.ShipsDate)
+                @Html.LabelFor(m => Model.ShipsDate, new { data_bind = ""})
                 @Html.TextBoxFor(m => Model.ShipsDate, new { data_bind = "date: $root.ShipsDate()", @type = "text", @class = "input-mini" })
             </div>
             <div class="span1">
@@ -81,15 +80,20 @@
                 </tr>
             </thead>
             <tbody data-bind="foreach: $root.Events" class="ps2events">
-                <tr>
+                <tr data-bind="css: { warning: (isDirty() || EventId() == 0) }">
                     <td>
-                        <button class="removeItem btn btn-mini btn-danger" rel="tooltip" title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                        @* For now, hide the button for entries with a set *@
+                        @* TODO Change the command to something else (that allows for a positive action) if HasSet() is true *@
+                        <button data-bind="visible: !HasSet()" class="removeItem btn btn-mini btn-danger" rel="tooltip" title="Click to remove row"><i class="icon-remove icon-white"></i></button>
                     </td>
                     <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini" type="text" required /></td>
-                    <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small" type="text" required /></td>
+                    <td><input data-bind="value: Latitude, valueUpdate: 'afterkeydown', uniqueName: true" class="required input-small" type="text" required /></td>
                     <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small" type="text" required /></td>
                     <td><input data-bind="value: EezCode, uniqueName: true" class="input-mini" type="text" /></td>
+                    @*
                     <td><input data-bind="value: ActivityCode, uniqueName: true" class="required input-mini" type="text" required /></td>
+                    *@
+                    <td><select data-bind="options: $root.ActivityCodes, value: ActivityCode, attr: { disabled: HasSet() }" class="input-mini"></select></td>
                     <td><input data-bind="value: WindSpeed, uniqueName: true" class="input-mini" type="number" /></td>
                     <td><input data-bind="value: WindDirection, uniqueName: true" class="input-mini" type="number" /></td>
                     <td><select data-bind="options: $root.SeaCodes, value: SeaCode" class="input-mini"></select></td>
@@ -99,7 +103,7 @@
                     {
                     <td><input data-bind="value: FadNumber, uniqueName: true" class="input-small" type="text" /></td>
                     <td><input data-bind="value: BuoyNumber, uniqueName: true" class="input-mini" type="text" /></td>
-                    <td><input data-bind="value: Comments, uniqueName: true" class="input-large" type="text" placeholder="And Set No. from PS-3"/></td>
+                    <td><input data-bind="value: Comments, uniqueName: true" class="input-large" type="text" /></td>
                     }
                     else
                     {
@@ -141,7 +145,7 @@
             </div>
             <div class="span1">
                 @Html.LabelFor(m => Model.DiaryPage)
-                @Html.TextBoxFor(m => Model.DiaryPage, new { data_bind = "value: $root.DiaryPage", @type = "number", @class = "input-mini" })
+                @Html.TextBoxFor(m => Model.DiaryPage, new { data_bind = "value: $root.DiaryPage", @class = "input-mini" })
             </div>
     </fieldset>
 </form>
@@ -153,7 +157,9 @@
 @section AdditionalScripts {
     <script src="~/Scripts/knockout.custom-bindings.js"></script>
     <script src="~/Scripts/App/vm.seaday.js"></script>
-    @{ var modelAsJson = Html.Raw(Json.Encode(Model)); }
+    @* TODO  Look into validation:  http://blog.duc.as/tag/mvc-4/ *@
+    @* After much tail-chasing, the best way to handle VMs with dates is to ash-can the Microsoft converter and use NewtonSoft's *@
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
     @{ var endpointUrl = Request.Url.AbsoluteUri; }
     <script>
         amplify.request.define("getSeaDay", "ajax", {
@@ -169,8 +175,11 @@
             type: "POST"
         });
 
+        
+
         $(document).ready(function () {
             var viewModel = new tubs.psSeaDay(@modelAsJson);
+            viewModel.clearDirtyFlag();
             ko.applyBindings(viewModel);
             $(".ps2events").on("click", ".removeItem", function() {
                 // TODO Store off Id for this event for later deletion...

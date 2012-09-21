@@ -6,22 +6,27 @@
 // Using answer provided by Mike Ward
 // Updated to handle null or invalid values
 ko.bindingHandlers.date = {
-    update: function (element, valueAccessor) {
+    init: function (element, valueAccessor) {
+
+    },
+
+    update: function (element, valueAccessor, allBindingsAccessor) {
         var value = valueAccessor();
+        var allBindings = allBindingsAccessor();
+        // I'm using day/month/year as a default.  Don't like it?  Set formatString in your binding!
+        var formatString = allBindings.formatString || 'DD/MM/YY';
+
+        // Convert the value using moment.js
         var date = moment(value);
+
+        // Use a blank string if moment.js couldn't figure it out
+        var dateString = date ? date.format(formatString) : '';
+
         var isInput = (element instanceof HTMLInputElement);
-        if (element instanceof HTMLInputElement) {
-            if (date) {
-                $(element).val(date.format("DD/MM/YY"));
-            } else {
-                $(element).val('');
-            }
+        if (isInput) {
+            $(element).val(dateString);
         } else {
-            if (date) {
-                $(element).text(date.format("DD/MM/YY"));
-            } else {
-                $(element).text('');
-            }
+            $(element).text(dateString);
         }
     }
 };

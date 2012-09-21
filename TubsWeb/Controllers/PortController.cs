@@ -56,7 +56,7 @@ namespace TubsWeb.Controllers
                     value = Format(port)
                 }
             );
-            return Json(ports.ToList(), JsonRequestBehavior.AllowGet);
+            return GettableJsonNetData(ports.ToList());
         }
     }
 }

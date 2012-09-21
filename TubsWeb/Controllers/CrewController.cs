@@ -176,7 +176,7 @@ namespace TubsWeb.Controllers
             var cvm = Fill(tripId);
             
             if (IsApiRequest())
-                return Json(cvm, JsonRequestBehavior.AllowGet);
+                return GettableJsonNetData(cvm);
             return View(cvm);
         }
 

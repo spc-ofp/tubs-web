@@ -25,11 +25,11 @@ namespace TubsWeb.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Web.Configuration;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
-    using System.Net;
 
     /// <summary>
     /// SuperController adds logging and user error reporting capabilities to the Controller.
@@ -65,19 +65,35 @@ namespace TubsWeb.Controllers
             if (IsApiRequest())
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json("Missing or invalid trip", JsonRequestBehavior.AllowGet);
+                return GettableJsonNetData("Missing or invalid trip");
             }
             return new NoSuchTripResult();
+        }
+
+        /// <summary>
+        /// After much hair-pulling, this seems like the best way to manage replacing the
+        /// crappy JSON serializer in MVC with the Newtonsoft version.
+        /// NOTE:  MVC4 uses the Newtonsoft library, but only on the WebApi side of the
+        /// house.  If you're still here in MVC, you're SOL
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected JsonResult GettableJsonNetData(object data)
+        {
+            return new JsonNetResult
+            {
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                Data = data
+            };
         }
 
         protected JsonResult ModelErrorsResponse()
         {
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return Json(
+            return GettableJsonNetData(
                 ModelState
                     .Where(s => s.Value.Errors.Count > 0)
-                    .Select(s => new KeyValuePair<string, string>(s.Key, s.Value.Errors.First().ErrorMessage)),
-                JsonRequestBehavior.AllowGet);
+                    .Select(s => new KeyValuePair<string, string>(s.Key, s.Value.Errors.First().ErrorMessage)));
         }
 
         /// <summary>

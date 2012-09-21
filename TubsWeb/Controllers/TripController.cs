@@ -175,7 +175,7 @@ namespace TubsWeb.Controllers
         {
             if (null == criteria || !criteria.IsValid())
             {
-                return Json("No criteria, no can do.");
+                return GettableJsonNetData("No criteria, no can do.");
             }
 
             var slimList =
@@ -189,7 +189,7 @@ namespace TubsWeb.Controllers
                    ReturnPort = r.ReturnPort.Name,
                    ReturnDate = r.ReturnDate.Value
                 };
-            return Json(slimList);
+            return GettableJsonNetData(slimList);
         }
 
         /// <summary>

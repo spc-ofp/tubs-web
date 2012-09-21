@@ -48,7 +48,7 @@ namespace TubsWeb.Controllers
                     GearType = TubsExtensions.GearCodeFromVesselType(vessel.TypeCode)
                 }
             );
-            return Json(vessels.ToList(), JsonRequestBehavior.AllowGet);
+            return GettableJsonNetData(vessels.ToList());
         }
 
     }

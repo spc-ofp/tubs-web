@@ -75,7 +75,7 @@ namespace TubsWeb.Controllers
             if (IsApiRequest())
             {
                 var sdvm = (day as PurseSeineSeaDay).AsViewModel();
-                return Json(sdvm, JsonRequestBehavior.AllowGet);
+                return GettableJsonNetData(sdvm);
             }
             return View(day);
         }
@@ -94,7 +94,9 @@ namespace TubsWeb.Controllers
             // So there's a small problem here.  If this is a new day, the ViewModel is too empty
             var sdvm = day.AsViewModel();
             if (IsApiRequest())
-                return Json(sdvm, JsonRequestBehavior.AllowGet);
+            {
+                return GettableJsonNetData(sdvm);
+            }
             return View(sdvm);
         }
 
@@ -108,7 +110,7 @@ namespace TubsWeb.Controllers
             if (null == trip)
             {
                 if (IsApiRequest())
-                    return Json("No such trip", JsonRequestBehavior.AllowGet);
+                    return GettableJsonNetData("No such trip");
                 return new NoSuchTripResult();
             }
 
@@ -126,13 +128,23 @@ namespace TubsWeb.Controllers
                 }
             }
 
-            // TODO Validate non-null events to check that codes are in the correct
-            // ranges given the version
+            // Entries to be deleted will have a '_destroy' property of true
+            var keepers = sdvm.Events.Where(e => e != null && !e._destroy);
+            // We don't particularly care which control has these, since the drop downs should prevent the user
+            // from actually changing these.  This is here to guard against a rogue API
+            var invalidSeaCodes = keepers.Select(e => e.SeaCode).Where(c => !sdvm.SeaCodes.Contains(c)).Distinct();
+            if (invalidSeaCodes.Count() > 0)
+                ModelState["SeaCode"].Errors.Add(String.Format("Invalid Sea Code(s): [{0}]", string.Join(",", invalidSeaCodes)));
 
-            // Remove any entrys from DeletedEvents that have invalid values (e.g. less than 1)
-            var vde = sdvm.DeletedEvents.Where(c => c > 0);
-            sdvm.DeletedEvents = vde.ToList();
+            var invalidDetectionCodes = keepers.Select(e => e.DetectionCode).Where(c => !sdvm.DetectionCodes.Contains(c)).Distinct();
+            if (invalidDetectionCodes.Count() > 0)
+                ModelState["DetectionCode"].Errors.Add(String.Format("Invalid Detection Code(s): [{0}]", string.Join(",", invalidDetectionCodes)));
 
+            var invalidAssociationCodes = keepers.Select(e => e.AssociationCode).Where(c => !sdvm.AssociationCodes.Contains(c)).Distinct();
+            if (invalidAssociationCodes.Count() > 0)
+                ModelState["AssociationCode"].Errors.Add(String.Format("Invalid Association Code(s): [{0}]", string.Join(",", invalidAssociationCodes)));
+
+            var
             // TODO:  Check to see if any of the still-valid Ids in DeletedEvents has associated
             // set.  If so, don't allow the delete (we'll have to work out how to delete bad ones later)
             // Also, if there is a set, don't allow the activity to change.
@@ -158,7 +170,7 @@ namespace TubsWeb.Controllers
             if (IsApiRequest())
             {
                 // Return JSON for debug only
-                //return Json(sdvm, JsonRequestBehavior.AllowGet);
+                //return GettableJsonNetData(sdvm);
                 Response.StatusCode = (int)HttpStatusCode.NoContent;
                 return null;
             }

@@ -22,15 +22,19 @@ namespace TubsWeb
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System.Linq;
     using System.Web;
     using System.Web.Http;
     using System.Web.Mvc;
+    using System.Web.Optimization;
     using System.Web.Routing;
     using NHibernate;
     using Spc.Ofp.Tubs.DAL;
     using TubsWeb.Core;
-    using System.Web.Optimization;
-    
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
+    using System.Net.Http.Formatting;
+
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
@@ -124,6 +128,14 @@ namespace TubsWeb
             ModelBinderProviders.BinderProviders.Add(new TripModelBinderProvider());
             // Turns out DateTime needs binding too for client workstation installed culture issues
             //ModelBinders.Binders.Add(typeof(DateTime), new DateTimeModelBinder());
+            // Requires WebApi package(s)
+            // Install-Package Microsoft.AspNet.WebApi.WebHost
+            var f = GlobalConfiguration.Configuration.Formatters.OfType<JsonMediaTypeFormatter>().First();
+            f.SerializerSettings.Converters.Add(new IsoDateTimeConverter());
+            var json = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
+            json.UseDataContractJsonSerializer = false;
+            json.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat;
+
             RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

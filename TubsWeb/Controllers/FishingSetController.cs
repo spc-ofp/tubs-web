@@ -99,7 +99,7 @@ namespace TubsWeb.Controllers
 
             // Return a list with lengths but zero counts if no data
             if (null == fset || null == fset.SamplingHeaders || 0 == fset.SamplingHeaders.Count)
-                return Json(returnValue, JsonRequestBehavior.AllowGet);            
+                return GettableJsonNetData(returnValue);         
 
             var lengths =
                 from h in fset.SamplingHeaders
@@ -115,7 +115,7 @@ namespace TubsWeb.Controllers
                 returnValue[kvp[0]] = kvp;
             }
 
-            return Json(returnValue, JsonRequestBehavior.AllowGet);
+            return GettableJsonNetData(returnValue);
         }
 
     }
