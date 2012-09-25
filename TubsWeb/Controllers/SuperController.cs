@@ -142,6 +142,11 @@ namespace TubsWeb.Controllers
             }
         }
 
+        protected string CurrentAction()
+        {
+            return this.ControllerContext.RouteData.GetRequiredString("action");
+        }
+
         protected void AddTripNavbar(Trip tripId)
         {
             // TODO Figure out how to get the Controller name from the ControllerContext
@@ -152,7 +157,7 @@ namespace TubsWeb.Controllers
             // a List<Tuple<string, string, string>>
             // Yet another thing to consider -- how to deal with PS or LL only views?
             var controllerName = this.ControllerContext.RouteData.GetRequiredString("controller");
-            var routeName = this.ControllerContext.RouteData.GetRequiredString("action");
+            var routeName = CurrentAction();
 
             var routeValues = new { tripId = tripId.Id };
 

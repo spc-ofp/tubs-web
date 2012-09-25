@@ -25,6 +25,9 @@ namespace TubsWeb.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// ViewModel for PS-2 data.
@@ -37,6 +40,10 @@ namespace TubsWeb.Models
     /// Although this has been fixed for now, here's a note about using attributes to control JSON
     /// serialization.
     /// http://stackoverflow.com/questions/10527001/asp-net-mvc-controller-json-datetime-serialization-vs-newtonsoft-json-datetime-s
+    /// 
+    /// Third Note:  Properties added/removed from root level view model are automatically managed
+    /// by knockout.mapping plugin.  Properties added to SeaDayEvent are _NOT_ managed and need
+    /// to be reflected in the vm.seaday.js file.  Failure to do so will result in LINQ errors
     /// </summary>
     public class SeaDayViewModel
     {
@@ -104,8 +111,23 @@ namespace TubsWeb.Models
         // UX state
         public string TripNumber { get; set; }
         public bool HasNext { get; set; }
+        public int PreviousDay { get; set; }
         public bool HasPrevious { get; set; }
+        public int NextDay { get; set; }
         public int VersionNumber { get; set; }
+
+        // Again UX state, to let the display path know if
+        // this object exists in the database.
+        [JsonIgnore]
+        public bool IsEmpty
+        {
+            get
+            {
+                return
+                    (null == Events) || (Events.Count == 0) &&
+                    !ShipsDate.HasValue;
+            }
+        }
 
         // This is dynamic, as the list changes based on version
         public IList<string> ActivityCodes { get; set; }
@@ -117,6 +139,8 @@ namespace TubsWeb.Models
 
         public int TripId { get; set; }
         public int DayId { get; set; }
+        public int DayNumber { get; set; }
+        public int MaxDays { get; set; }
         
         [Required]
         [Display(Name = "Ship's Date")]
@@ -159,12 +183,36 @@ namespace TubsWeb.Models
         public int? FreeSchool { get; set; }
 
         [Display(Name = "GEN-3 Event?")]
-        public bool? HasGen3Event { get; set; }
+        public string HasGen3Event { get; set; }
 
         [Display(Name = "Diary Page")]
         public string DiaryPage { get; set; }
 
         public IList<SeaDayEvent> Events { get; protected set; }
+
+        public bool NeedsDates()
+        {
+            return !this.ShipsDate.HasValue || !this.UtcDate.HasValue;
+        }
+
+        // Entries to be deleted will have a '_destroy' property of true
+        [JsonIgnore]
+        public IEnumerable<SeaDayEvent> Keepers
+        {
+            get
+            {
+                return this.Events.Where(e => (e != null && !e._destroy));
+            }
+        }
+
+        [JsonIgnore]
+        public IEnumerable<SeaDayEvent> Deleted
+        {
+            get
+            {
+                return this.Events.Where(e => (e != null && e._destroy));
+            }
+        }
 
         /// <summary>
         /// ViewModel for PS-2 line item.
@@ -219,9 +267,29 @@ namespace TubsWeb.Models
 
             public string Comments { get; set; }
 
+            // TODO Add JsonIgnore?
             public bool NeedsFocus { get; set; }
 
             public bool HasSet { get; set; }
+
+            public string CanDeleteAnswer { get; set; }
+
+            // Display only, so no need to include in JSON
+            [JsonIgnore]
+            public string ActivityIconPath { get; set; }
+
+            // Display only, so no need to include in JSON
+            [JsonIgnore]
+            public string SpeedAndDirection
+            {
+                get
+                {
+                    return string.Format(
+                        "{0} kts @ {1} &deg;",
+                        (this.WindSpeed.HasValue ? this.WindSpeed.Value.ToString() : "UNK"),
+                            (this.WindDirection.HasValue ? this.WindDirection.Value.ToString() : "UNK"));
+                }
+            }
         }
     }
 }

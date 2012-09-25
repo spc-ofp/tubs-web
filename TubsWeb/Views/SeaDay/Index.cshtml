@@ -1,42 +1,83 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.SeaDay
+﻿@model TubsWeb.Models.SeaDayViewModel
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.Trip.SpcTripNumber ?? "This Trip"),
-        Tuple.Create(Url.Action("List", "SeaDay", new { tripId = ViewBag.TripId }), "Sea Days"),
-        Tuple.Create("#", String.Format("Day {0} of {1}", ViewBag.CurrentDay, ViewBag.MaxDays))
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "SeaDay", new { tripId = Model.TripId }), "Sea Days"),
+        Tuple.Create("#", String.Format("Day {0} of {1}", Model.DayNumber, Model.MaxDays))
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 <ul class="pager">
-    @if (ViewBag.CurrentDay > 1) {
+    @if (Model.HasPrevious) {
         <li>
-            <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = ViewBag.TripId, dayNumber = ViewBag.CurrentDay - 1 })'>Previous Day</a>
+            <a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.TripId, dayNumber = Model.PreviousDay, action = "Index" })'>Previous Day</a>
         </li>
     }
     
-    @if(ViewBag.MaxDays > ViewBag.CurrentDay) {
+    @if(Model.HasNext) {
         <li>
-            <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = ViewBag.TripId, dayNumber = ViewBag.CurrentDay + 1 })'>Next Day</a>
+            <a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.TripId, dayNumber = Model.NextDay, action = "Index" })'>Next Day</a>
         </li>
     }
 </ul>
 
 <!-- Add Sea days and sets for PS trips -->
-@if (null == Model)
+@if (Model.IsEmpty)
 {
-    <text>No day found</text>
+    <text>No PS-2 data for this day and trip.</text>
 }
-else if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay))
+else
 {
-    var psday = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay;
+    <fieldset>
+        <legend>Start of Day</legend>
+        <div class="row">
+            <div class="span3">
+                <strong>Ship's Date:</strong> @Html.DisplayFor(m => Model.ShipsDate, new { format = "d" })
+            </div>
+            <div class="span3">
+                <strong>Ship's Time:</strong> @Model.ShipsTime
+            </div>
+        </div>
+        <div class="row">
+            <div class="span3">
+                <strong>UTC Date:</strong> @Html.DisplayFor(m => Model.UtcDate, new { format = "d" })
+            </div>
+            <div class="span3">
+                <strong>UTC Time:</strong> @Model.UtcTime
+            </div>
+        </div>
+    </fieldset>
+    <br />
+    <fieldset>
+        <legend>Floating Object and School Sightings</legend>
+        <div class="row">
+            <div class="span4">Anchored objects <strong>NO</strong> school: @Html.DisplayFor(m => Model.AnchoredWithNoSchool)</div>
+            <div class="span4">Anchored objects <strong>with</strong> school: @Html.DisplayFor(m => Model.AnchoredWithSchool)</div>
+        </div>
+        <div class="row">
+            <div class="span4">Floating objects <strong>NO</strong> school: @Html.DisplayFor(m => Model.FreeFloatingWithNoSchool)</div>
+            <div class="span4">Floating objects <strong>with</strong> school: @Html.DisplayFor(m => Model.FreeFloatingWithSchool)</div>
+        </div>
+        <div class="row">
+            <div class="span4">Free schools: @Html.DisplayFor(m => Model.FreeSchool)</div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>GEN-3 Events</legend>
+        <div class="row">
+            <div class="span4">Observed event recorded on GEN-3? @Html.DisplayFor(m => Model.HasGen3Event)</div>
+            <div class="span4">Diary Page: @(Model.DiaryPage ?? "N/A")</div>
+        </div>
+    </fieldset>
+    <br />
+    @* TODO:  It would be nice to fix the widths of the columns *@
     <table class="table table-bordered table-condensed table-striped">
-      <caption><strong>Date:</strong> @Html.DisplayFor(m => Model.StartDateOnly, new { format = "d" })</caption>
       <thead>
           <tr>
             <th>Ship's Time</th>
@@ -51,20 +92,13 @@ else if (Model.GetType() == typeof(Spc.Ofp.Tubs.DAL.Entities.PurseSeineSeaDay))
           </tr>
       </thead>
       <tbody>
-      @foreach (var entry in psday.Activities)
+      @foreach (var entry in Model.Events)
       {
           @Html.DisplayFor(m => entry)
       }
       </tbody>
     </table>
     
-    <p>TODO:  Add color coded dots to the activity column that match the pins in the map?  Or just color code the rows for significant events?</p>
-    <p>TODO:  Add in a hideable map for just this day.  Bonus points for overlaying observer, VMS, and logsheet data.</p>
-}
-else
-{
-    <p>
-        Start of day: @Html.DisplayFor(m => Model.StartOfDay) <br />
-        Start of day (UTC): @Html.DisplayFor(m => Model.UtcStartOfDay)
-    </p>
+    @*TODO:  Add color coded dots to the activity column that match the pins in the map?  Or just color code the rows for significant events?*@
+    @*TODO:  Add in a hideable map for just this day.  Bonus points for overlaying observer, VMS, and logsheet data.*@
 }

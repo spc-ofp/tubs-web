@@ -214,8 +214,22 @@ namespace TubsWeb.Controllers
             // Two approaches:  We can save what we can save, or we do this as an all or nothing
             // deal.  For now, we'll do all or nothing...
             var crewlist = cvm.AsCrewList(); // AsCrewList strips out any crew without any details
-            // Set the Trip relationship for each crewmember
-            crewlist.ToList().ForEach(c => c.Trip = tripId);
+            // This is where it would be handy to have an extension that sets the audit trail...
+            foreach (var c in crewlist)
+            {
+                if (default(int) == c.Id)
+                {
+                    c.EnteredBy = User.Identity.Name;
+                    c.EnteredDate = DateTime.Now;
+                }
+                else
+                {
+                    c.UpdatedBy = User.Identity.Name;
+                    c.UpdatedDate = DateTime.Now;
+                }
+                c.Trip = tripId;
+            }
+            //crewlist.ToList().ForEach(c => c.Trip = tripId);
             IRepository<Crew> repo = TubsDataService.GetRepository<Crew>(MvcApplication.CurrentSession);                
             repo.Add(crewlist);
             // TODO:  If there are crew that aren't in the list, then those crew members need to be deleted

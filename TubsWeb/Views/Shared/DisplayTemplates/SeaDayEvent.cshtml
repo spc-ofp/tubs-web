@@ -1,0 +1,13 @@
+﻿@model TubsWeb.Models.SeaDayViewModel.SeaDayEvent
+
+<tr>
+    <td>@Model.Time</td>
+    <td>@Model.Latitude / @Model.Longitude</td>
+    <td>@Model.EezCode</td>
+    <td>@Model.ActivityCode</td>
+    <td>@Html.Raw(Model.SpeedAndDirection)</td>
+    <td>@Model.SeaCode</td>
+    <td>@Model.DetectionCode</td>
+    <td>@Model.AssociationCode</td>
+    <td>@Model.Comments</td>
+</tr>

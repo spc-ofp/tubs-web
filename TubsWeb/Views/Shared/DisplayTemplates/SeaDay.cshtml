@@ -21,6 +21,6 @@
     <td>@Model.FreeSchools</td>
     <td>@Html.DisplayFor(m => @Model.Gen3Events)</td>
     <td>
-        <a href='@Url.RouteUrl("SeaDayDetails", new { tripId = Model.Trip.Id, dayNumber = counter })'>Activities</a>
+        <a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.Trip.Id, dayNumber = counter, action = "Index" })'>Activities</a>
     </td>
 </tr>

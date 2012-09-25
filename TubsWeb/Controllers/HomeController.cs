@@ -124,13 +124,5 @@ namespace TubsWeb.Controllers
         {
             return View();
         }
-
-        public ActionResult SeaDays()
-        {
-            var sdvm = new SeaDayViewModel();
-            sdvm.ShipsDate = DateTime.Now;
-            sdvm.HasGen3Event = false;
-            return View(sdvm);
-        }
     }
 }

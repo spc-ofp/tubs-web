@@ -38,9 +38,9 @@ tubs.psSeaDayMapping = {
 tubs.psEvent = function (eventData) {
     var self = this;
     self.EventId = ko.observable(eventData.EventId || 0);
-    self.Time = ko.observable(eventData.Time || '').extend({ required: true, pattern: '^[0-2]\d[0-5]\d$' });
-    self.Latitude = ko.observable(eventData.Latitude || '').extend({ pattern: '^[0-8]\d{3}\.?\d{3}[NnSs]$' });
-    self.Longitude = ko.observable(eventData.Longitude || '').extend({ pattern: '^[0-1]\d{4}\.?\d{3}[EeWw]$' });
+    self.Time = ko.observable(eventData.Time || '').extend({ required: true, pattern: '^[0-2][0-9][0-5][0-9]$' });
+    self.Latitude = ko.observable(eventData.Latitude || '').extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
+    self.Longitude = ko.observable(eventData.Longitude || '').extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
     self.EezCode = ko.observable(eventData.EezCode || '').extend({ minLength: 2, maxLength: 2 });
     self.ActivityCode = ko.observable(eventData.ActivityCode || '');
     self.WindSpeed = ko.observable(eventData.WindSpeed || '').extend({ min: 0 }); // No negative wind speeds
@@ -58,6 +58,10 @@ tubs.psEvent = function (eventData) {
     self.Comments = ko.observable(eventData.Comments || '');
     self.HasSet = ko.observable(eventData.HasSet || false);
     self.NeedsFocus = ko.observable(eventData.NeedsFocus || false);
+    // If there's an associated set, force the user to affirm that
+    // the activity should be deleted.
+    self.CanDeleteAnswer = ko.observable(eventData.CanDeleteAnswer || '');
+    self._destroy = ko.observable(eventData._destroy || false);
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.Time,

@@ -77,7 +77,8 @@ namespace TubsWeb.Models.ExtensionMethods
             SyndicationItem entry = new SyndicationItem();
             if (null != trip)
             {
-                entry.Categories.Add(new SyndicationCategory("Purse Seine"));
+                string categoryText = (trip is PurseSeineTrip) ? "Purse Seine" : "Longline";
+                entry.Categories.Add(new SyndicationCategory(categoryText));
                 entry.Title = new TextSyndicationContent(trip.ToString());
             }
             return entry;
@@ -221,130 +222,65 @@ namespace TubsWeb.Models.ExtensionMethods
             return day;
         }
 
-        public static int? ToFormValue(this DetectionMethod? detectionMethod)
+        public static IList<PurseSeineActivity> AsActivities(this SeaDayViewModel sdvm)
         {
-            if (!detectionMethod.HasValue || detectionMethod.Value == DetectionMethod.None)
-                return null;
-
-            switch (detectionMethod.Value)
-            {
-                case DetectionMethod.SeenFromVessel:
-                    return 1;
-                case DetectionMethod.SeenFromHelicopter:
-                    return 2;
-                case DetectionMethod.MarkedWithBeacon:
-                    return 3;
-                case DetectionMethod.BirdRadar:
-                    return 4;
-                case DetectionMethod.Sonar:
-                    return 5;
-                case DetectionMethod.InfoFromOtherVessel:
-                    return 6;
-                case DetectionMethod.Anchored:
-                    return 7;
-                default:
-                    return null;
-            }
+            if (null == sdvm || null == sdvm.Events || 0 == sdvm.Events.Count)
+                return new List<PurseSeineActivity>();
+            return (
+                from evt in sdvm.Events
+                where !string.IsNullOrEmpty(evt.Time) && !evt._destroy
+                select new PurseSeineActivity()
+                {
+                    LocalTime = sdvm.ShipsDate.Merge(evt.Time),
+                    LocalTimeDateOnly = sdvm.ShipsDate,
+                    LocalTimeTimeOnly = evt.Time,
+                    ActivityType = evt.ActivityCode.ActivityFromForm(),
+                    Beacon = evt.BuoyNumber,
+                    Comments = evt.Comments,
+                    DetectionMethod = evt.DetectionCode.DetectionFromForm(),
+                    EezCode = evt.EezCode,
+                    Latitude = evt.Latitude,
+                    Longitude = evt.Longitude,
+                    Payao = evt.FadNumber,
+                    SchoolAssociation = evt.AssociationCode.AssociationFromForm(),
+                    SeaCode = evt.SeaCode.SeaCodeFromForm(),
+                    WindDirection = evt.WindDirection,
+                    WindSpeed = evt.WindSpeed,
+                }
+            ).ToList();
         }
 
-        public static int? ToFormValue(this SchoolAssociation? association)
+        public static PurseSeineSeaDay AsEntity(this SeaDayViewModel sdvm)
         {
-            if (!association.HasValue || association.Value == SchoolAssociation.None)
-                return null;
-
-            switch (association.Value)
+            PurseSeineSeaDay pssd = new PurseSeineSeaDay();
+            if (null != sdvm)
             {
-                case SchoolAssociation.Unassociated:
-                    return 1;
-                case SchoolAssociation.FeedingOnBaitfish:
-                    return 2;
-                case SchoolAssociation.DriftingLog:
-                    return 3;
-                case SchoolAssociation.DriftingRaft:
-                    return 4;
-                case SchoolAssociation.AnchoredRaft:
-                    return 5;
-                case SchoolAssociation.LiveWhale:
-                    return 6;
-                case SchoolAssociation.LiveWhaleShark:
-                    return 7;
-                case SchoolAssociation.Other:
-                    return 8;
-                case SchoolAssociation.NoTuna:
-                    return 9;
-                
-                default:
-                    return null;
+                pssd.Id = sdvm.DayId;
+                pssd.StartOfDay = sdvm.ShipsDate.Merge(sdvm.ShipsTime);
+                pssd.StartDateOnly = sdvm.ShipsDate;
+                pssd.StartTimeOnly = sdvm.ShipsTime;
+                pssd.UtcStartOfDay = sdvm.UtcDate.Merge(sdvm.UtcTime);
+                pssd.UtcDateOnly = sdvm.UtcDate;
+                pssd.UtcTimeOnly = sdvm.UtcTime;
+                pssd.FadsNoSchool = sdvm.AnchoredWithNoSchool;
+                pssd.FadsWithSchool = sdvm.AnchoredWithSchool;
+                pssd.FloatingObjectsNoSchool = sdvm.FreeFloatingWithNoSchool;
+                pssd.FloatingObjectsWithSchool = sdvm.FreeFloatingWithSchool;
+                pssd.FreeSchools = sdvm.FreeSchool;
+                pssd.Gen3Events =
+                    string.IsNullOrEmpty(sdvm.HasGen3Event) ? (bool?)null :
+                    "YES".Equals(sdvm.HasGen3Event, StringComparison.InvariantCultureIgnoreCase) ? true : false;
+                pssd.DiaryPage = sdvm.DiaryPage;
             }
-        }
-
-        public static string ToFormValue(this ActivityType? activity)
-        {
-            if (!activity.HasValue || activity.Value == ActivityType.None)
-                return null;
-
-            switch (activity.Value)
-            {
-                case ActivityType.Fishing:
-                    return "1";
-                case ActivityType.Searching:
-                    return "2";
-                case ActivityType.Transit:
-                    return "3";
-                case ActivityType.NoFishingBreakdown:
-                    return "4";
-                case ActivityType.NoFishingBadWeather:
-                    return "5";
-                case ActivityType.InPort:
-                    return "6";
-                case ActivityType.NetCleaningSet:
-                    return "7";
-                case ActivityType.InvestigateFreeSchool:
-                    return "8";
-                case ActivityType.InvestigateFloatingObject:
-                    return "9";
-                case ActivityType.DeployFad:
-                    return "10D";
-                case ActivityType.RetrieveFad:
-                    return "10R";
-                case ActivityType.NoFishingDriftingAtDaysEnd:
-                    return "11";
-                case ActivityType.NoFishingDriftingWithFloatingObject:
-                    return "12";
-                case ActivityType.NoFishingOther:
-                    return "13";
-                case ActivityType.DriftingWithLights:
-                    return "14";
-                case ActivityType.RetrieveRadioBuoy:
-                    return "15R";
-                case ActivityType.DeployRadioBuoy:
-                    return "15D";
-                case ActivityType.TransshippingOrBunkering:
-                    return "16";
-                case ActivityType.ServicingFad:
-                    return "17";
-                case ActivityType.HelicopterTakesOffToSearch:
-                    return "H1";
-                case ActivityType.HelicopterReturnsFromSearch:
-                    return "H2";
-                default:
-                    return null;
-            }
-        }
+            return pssd;
+        }      
 
         public static SeaDayViewModel AsViewModel(this PurseSeineSeaDay day)
         {
             SeaDayViewModel sdvm = new SeaDayViewModel();
             if (null != day)
             {
-                sdvm.TripId = day.Trip.Id;
                 sdvm.DayId = day.Id;
-                sdvm.TripNumber = day.Trip.SpcTripNumber ?? "This Trip";
-                sdvm.VersionNumber = day.Trip.Version == WorkbookVersion.v2009 ? 2009 : 2007;
-                sdvm.ActivityCodes = 
-                    sdvm.VersionNumber == 2009 ? 
-                        SeaDayViewModel.v2009ActivityCodes : 
-                        SeaDayViewModel.v2007ActivityCodes;
                 
                 // Start of Day
                 sdvm.ShipsDate = day.StartDateOnly;
@@ -358,7 +294,9 @@ namespace TubsWeb.Models.ExtensionMethods
                 sdvm.FreeFloatingWithNoSchool = day.FloatingObjectsNoSchool;
                 sdvm.FreeFloatingWithSchool = day.FloatingObjectsWithSchool;
                 sdvm.FreeSchool = day.FreeSchools;
-                sdvm.HasGen3Event = day.Gen3Events;
+                sdvm.HasGen3Event =
+                    !day.Gen3Events.HasValue ? string.Empty :
+                    day.Gen3Events.Value ? "YES" : "NO";
                 sdvm.DiaryPage = day.DiaryPage;
 
                 // Line items
@@ -385,11 +323,6 @@ namespace TubsWeb.Models.ExtensionMethods
                             HasSet = (Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing == a.ActivityType && a.FishingSet != null)
                         };
                     foreach (var e in lineItems) { sdvm.Events.Add(e); }
-                }
-                else
-                {
-                    // Ensure there's at least one event
-                    sdvm.Events.Add(new SeaDayViewModel.SeaDayEvent());
                 }
             }
             return sdvm;

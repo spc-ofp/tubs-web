@@ -26,8 +26,9 @@ namespace TubsWeb
         public static string SetDetails = "SetDetails";
         public static string Sets = "Sets";
         public static string LengthSamples = "LengthSamples";
-        public static string SeaDayDetails = "SeaDayDetails";
-        public static string SeaDayViewModel = "SeaDayViewModel"; // TODO Come up with a better route name
+        //public static string SeaDayDetails = "SeaDayDetails";
+        //public static string SeaDayViewModel = "SeaDayViewModel"; // TODO Come up with a better route name
+        public static string SeaDayById = "SeaDayById";
         public static string SeaDays = "SeaDays";
         public static string Gear = "Gear";
         public static string WellContents = "WellContents";
@@ -182,7 +183,7 @@ namespace TubsWeb
                 new { tripId = @"\d+", setNumber = @"\d+", pageNumber = @"\d+" }
             );
 
-
+            /*
             // dayNumber is not an ID, it's a number between 1 and the number of sea days in the trip
             // FIXME:  Add another route that gets directly to SeaDay by Id
             routes.MapRoute(
@@ -205,6 +206,26 @@ namespace TubsWeb
                 new { controller = "SeaDay", action = "List" },
                 new { tripId = @"\d+" }
             );
+            */
+            routes.MapRoute(
+                name: SeaDays,
+                url: "Trip/{tripId}/Days/{dayNumber}/{action}",
+                defaults: new { controller = "SeaDay", action = "List", dayNumber = UrlParameter.Optional},
+                constraints: new { tripId = @"\d+", dayNumber = @"\d+" }
+            );
+
+            routes.MapRoute(
+                name: SeaDayById,
+                url: "Trip/{tripId}/DayById/{dayId}/{action}",
+                defaults: new { controller = "SeaDay", action = "Index" },
+                constraints: new { tripId = @"\d+", dayId = @"\d+" }
+            );
+
+            // Trip/{tripId}/Days/{dayNumber}/{action}
+            // action in (Index, Edit, Add)
+
+            // Trip/{tripId}/DayById/{dayId}/{action}
+            // action in (Index, Edit)
 
             routes.MapRoute(
                 Gear,

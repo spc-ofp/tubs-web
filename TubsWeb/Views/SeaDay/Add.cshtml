@@ -1,0 +1,67 @@
+﻿@model TubsWeb.Models.SeaDayViewModel
+@using Newtonsoft.Json
+
+@{
+    // Switch to full width layout
+    ViewBag.UseFluid = true;
+    // Placeholders are nice...
+    ViewBag.UseChromeFrame = true;
+    // No longer set in controller
+    ViewBag.Title = String.Format("Adding Day {0}", Model.DayNumber);
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "SeaDay", new { tripId = Model.TripId }), "Sea Days"),
+        Tuple.Create("#", ViewBag.Title)
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@{ Html.RenderPartial("_SeaDayEditor", Model); }
+
+@* TODO Render script as partial too, since it's the same for add & edit *@
+
+@section AdditionalScripts {
+    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+    <script src="~/Scripts/App/vm.seaday.js"></script>
+    @* TODO  Look into validation:  http://blog.duc.as/tag/mvc-4/ *@
+    @* After much tail-chasing, the best way to handle VMs with dates is to ash-can the Microsoft converter and use NewtonSoft's *@
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    @{ var endpointUrl = Request.Url.AbsoluteUri; }
+    <script>
+        amplify.request.define("getSeaDay", "ajax", {
+            url: '@endpointUrl',
+            dataType: "json",
+            type: "GET"
+        });
+
+        amplify.request.define("saveSeaDay", "ajax", {
+            url: '@endpointUrl',
+            dataType: "json",
+            contentType: "application/json",
+            type: "POST"
+        });
+
+        $(document).ready(function () {
+            var viewModel = new tubs.psSeaDay(@modelAsJson);
+            viewModel.clearDirtyFlag();
+            ko.applyBindings(viewModel);
+            $(".ps2events").on("click", ".removeItem", function() {
+                viewModel.removeEvent(ko.dataFor(this));
+            });
+            $(".ps2events").on("click", ".addItem", function() {
+                viewModel.addEvent();
+            });
+            /* For some reason I was getting a call to the add event just during the evaluation of this binding... */
+            $("#btnAddWhenEmpty").on("click", function () {
+                viewModel.addEvent();
+            });
+        });
+    </script>
+}
