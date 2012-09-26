@@ -56,11 +56,12 @@ tubs.psEvent = function (eventData) {
     self.FadNumber = ko.observable(eventData.FadNumber || '');
     self.BuoyNumber = ko.observable(eventData.BuoyNumber || '');
     self.Comments = ko.observable(eventData.Comments || '');
+    // IsLocked has two functions:  On the UI side, it notifies the user
+    // that the activity can't be deleted.  On the database side, it will be our
+    // okay to delete associated data.
+    self.IsLocked = ko.observable(eventData.IsLocked || false);
     self.HasSet = ko.observable(eventData.HasSet || false);
     self.NeedsFocus = ko.observable(eventData.NeedsFocus || false);
-    // If there's an associated set, force the user to affirm that
-    // the activity should be deleted.
-    self.CanDeleteAnswer = ko.observable(eventData.CanDeleteAnswer || '');
     self._destroy = ko.observable(eventData._destroy || false);
 
     self.dirtyFlag = new ko.DirtyFlag([
@@ -82,6 +83,10 @@ tubs.psEvent = function (eventData) {
     self.isDirty = ko.computed(function () {
         return self.dirtyFlag().isDirty();
     });
+
+    self.toggleUnlock = function () {
+        self.IsLocked(!self.IsLocked());
+    };
 
     return self;
 };
@@ -115,12 +120,17 @@ tubs.psSeaDay = function (data) {
         // Avoid iterating over the events if the header
         // has changed
         if (self.dirtyFlag().isDirty()) { return true; }
-        // TODO It might be better to for-each this and bail
-        // out of the loop on the first dirty element
-        var dirtyEvents = $.grep(self.Events(), function (n, i) {
-            return (!n.isDirty());
+
+        // Check each child event, bailing on the first
+        // dirty child.
+        var hasDirtyChild = false;
+        $.each(self.Events(), function (i, evt) {
+            if (evt.isDirty()) {
+                hasDirtyChild = true;
+                return false;
+            }
         });
-        return dirtyEvents.length === 0;
+        return hasDirtyChild;
     });
 
     // Clear the dirty flag for the this entity, plus all the

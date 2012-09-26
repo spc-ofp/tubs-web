@@ -27,39 +27,5 @@
 @{ Html.RenderPartial("_SeaDayEditor", Model); }
 
 @section AdditionalScripts {
-    <script src="~/Scripts/knockout.custom-bindings.js"></script>
-    <script src="~/Scripts/App/vm.seaday.js"></script>
-    @* TODO  Look into validation:  http://blog.duc.as/tag/mvc-4/ *@
-    @* After much tail-chasing, the best way to handle VMs with dates is to ash-can the Microsoft converter and use NewtonSoft's *@
-    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
-    @{ var endpointUrl = Request.Url.AbsoluteUri; }
-    <script>
-        amplify.request.define("getSeaDay", "ajax", {
-            url: '@endpointUrl',
-            dataType: "json",
-            type: "GET"
-        });
-
-        amplify.request.define("saveSeaDay", "ajax", {
-            url: '@endpointUrl',
-            dataType: "json",
-            contentType: "application/json",
-            type: "POST"
-        });
-
-        
-
-        $(document).ready(function () {
-            var viewModel = new tubs.psSeaDay(@modelAsJson);
-            viewModel.clearDirtyFlag();
-            ko.applyBindings(viewModel);
-            $(".ps2events").on("click", ".removeItem", function() {
-                // TODO Store off Id for this event for later deletion...
-                viewModel.removeEvent(ko.dataFor(this));
-            });
-            $(".ps2events").on("click", ".addItem", function() {
-                viewModel.addEvent();
-            });
-        });
-    </script>
+    @{ Html.RenderPartial("_SeaDayEditorScripts", Model); }
 }

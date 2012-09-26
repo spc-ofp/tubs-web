@@ -267,12 +267,19 @@ namespace TubsWeb.Models
 
             public string Comments { get; set; }
 
-            // TODO Add JsonIgnore?
-            public bool NeedsFocus { get; set; }
+            // With the new GEN-5 form, it's possible
+            // to have other records associated with
+            // an activity.  So just use a generic
+            // 'IsLocked' param.
+            // Changing this to 'false' is enough
+            // of a positive action
+            public bool IsLocked { get; set; }
 
             public bool HasSet { get; set; }
 
-            public string CanDeleteAnswer { get; set; }
+            // TODO:  Add any other dependent data record flags
+
+            public bool NeedsFocus { get; set; }
 
             // Display only, so no need to include in JSON
             [JsonIgnore]

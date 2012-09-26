@@ -248,12 +248,13 @@ namespace TubsWeb.Controllers
             if (invalidAssociationCodes.Count() > 0)
                 ModelState["AssociationCode"].Errors.Add(String.Format("Invalid Association Code(s): [{0}]", string.Join(",", invalidAssociationCodes)));
 
-            // TODO:  Don't allow deletes where a set was associated _and_ there isn't some form of positive action response
-            // from the user acknowledging that the delete was requested
+            var invalidDeletes = sdvm.Deleted.Where(e => e.HasSet && e.IsLocked);
+            if (invalidDeletes.Count() > 0)
+                ModelState["ActivityCode"].Errors.Add("Can't delete set activity without confirmation");
 
             // In this case, we're trusting the UI to send us good information.  If that turns into a problem, we can
             // bounce the IDs off the database instead
-            var invalidActivities = sdvm.Keepers.Where(e => e.HasSet && "2".Equals(e.ActivityCode));
+            var invalidActivities = sdvm.Keepers.Where(e => e.HasSet && !"1".Equals(e.ActivityCode));
             if (invalidActivities.Count() > 0)
                 ModelState["ActivityCode"].Errors.Add("Can't change Activity Code with associated set");
 

@@ -254,6 +254,7 @@
     <Content Include="Content\delete.gif" />
     <Content Include="Content\images\25px-Feed-icon.png" />
     <Content Include="Content\images\ajax-loader.gif" />
+    <Content Include="Content\images\appbar.unlock.png" />
     <Content Include="Content\images\calendar-icon.png" />
     <Content Include="Content\images\delete.gif" />
     <Content Include="Content\images\feed-icon.png" />
@@ -920,6 +921,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\DisplayTemplates\SeaDayEvent.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SeaDay\_SeaDayEditorScripts.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

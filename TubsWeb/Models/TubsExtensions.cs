@@ -273,7 +273,24 @@ namespace TubsWeb.Models.ExtensionMethods
                 pssd.DiaryPage = sdvm.DiaryPage;
             }
             return pssd;
-        }      
+        }
+
+        public static string GetTime(this Activity activity)
+        {
+            if (null == activity)
+                return string.Empty;
+
+            // Prefer using the value in the _dtime column
+            if (activity.LocalTime.HasValue)
+                return activity.LocalTime.Value.ToString("HHmm");
+
+            // I would hope this isn't the case, but legacy data is screwy...
+            if (!string.IsNullOrEmpty(activity.LocalTimeTimeOnly.NullSafeTrim()))
+                return activity.LocalTimeTimeOnly;
+
+            // No idea!
+            return string.Empty;
+        }
 
         public static SeaDayViewModel AsViewModel(this PurseSeineSeaDay day)
         {
@@ -307,7 +324,7 @@ namespace TubsWeb.Models.ExtensionMethods
                         select new SeaDayViewModel.SeaDayEvent
                         {
                             EventId = a.Id,
-                            Time = a.LocalTime.HasValue ? a.LocalTime.Value.ToString("HHmm") : string.Empty,
+                            Time = a.GetTime(),
                             Latitude = a.Latitude.NullSafeTrim(),
                             Longitude = a.Longitude.NullSafeTrim(),
                             EezCode = a.EezCode.NullSafeTrim(),
@@ -319,8 +336,10 @@ namespace TubsWeb.Models.ExtensionMethods
                             AssociationCode = a.SchoolAssociation.ToFormValue(),
                             FadNumber = a.Payao.NullSafeTrim(),
                             BuoyNumber = a.Beacon.NullSafeTrim(),
-                            Comments = a.Comments.NullSafeTrim(),
-                            HasSet = (Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing == a.ActivityType && a.FishingSet != null)
+                            Comments = a.Comments.NullSafeTrim(),                            
+                            HasSet = (Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing == a.ActivityType && a.FishingSet != null),
+                            /* TODO: At some point we'll have to add an extension method to check this */
+                            IsLocked = (Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing == a.ActivityType && a.FishingSet != null)
                         };
                     foreach (var e in lineItems) { sdvm.Events.Add(e); }
                 }

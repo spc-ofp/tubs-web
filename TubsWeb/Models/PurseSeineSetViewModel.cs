@@ -78,6 +78,19 @@ namespace TubsWeb.Models
 
         // TODO Much more here, and it will be different for different
         // form versions
+        public decimal? ObservedOnboardBeforeSet { get; set; }
+        public decimal? LoggedOnboardBeforeSet { get; set; }
+
+        public decimal? ObservedTonnageRetainedThisSet { get; set; }
+        public decimal? LoggedTonnageRetainedThisSet { get; set; }
+
+        public decimal? ObservedNewOnboardTotal { get; set; }
+        public decimal? LoggedNewOnboardTotal { get; set; }
+
+        public decimal? ObservedTotalTunaThisSet { get; set; }
+
+        public decimal? SumOfBrail1 { get; set; }
+        public decimal? SumOfBrail2 { get; set; }
 
         public IList<SetCatch> ByCatch { get; set; }
         public IList<SetCatch> SkjCatch { get; set; }
@@ -90,6 +103,7 @@ namespace TubsWeb.Models
         public class SetCatch
         {
             public int Id { get; set; }
+            public bool _destroy { get; set; }
             public string SpeciesCode { get; set; }
             public string FateCode { get; set; }
             public decimal? ObservedWeight { get; set; }

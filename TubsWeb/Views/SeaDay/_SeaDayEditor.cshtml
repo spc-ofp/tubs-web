@@ -79,20 +79,24 @@
             <tbody data-bind="foreach: $root.Events" class="ps2events">
                 <tr data-bind="css: { warning: (isDirty() || EventId() == 0) }">
                     <td>
-                        @* For now, hide the button for entries with a set *@
-                        @* TODO Change the command to something else (that allows for a positive action) if HasSet() is true *@
                         @* Delete button is taken out of the tab order to prevent accidents *@
-                        <button data-bind="visible: !HasSet()" 
+                        <button data-bind="visible: !IsLocked()" 
                                 tabindex="3000"
                                 class="removeItem btn btn-mini btn-danger" 
                                 rel="tooltip" 
                                 title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                        <button data-bind="visible: IsLocked, event: { click: toggleUnlock }"
+                                class="btn btn-mini btn-info unlockItem"
+                                rel="tooltip"
+                                title="Click to unlock row">
+                                <img src="~/Content/images/appbar.unlock.png" width="16" height="16" alt="Unlock"/>
+                        </button>
                     </td>
                     <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini" type="text" required /></td>
                     <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small" type="text" required /></td>
                     <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small" type="text" required /></td>
                     <td><input data-bind="value: EezCode, uniqueName: true" class="input-mini" type="text" /></td>
-                    <td><select data-bind="options: $root.ActivityCodes, value: ActivityCode, attr: { disabled: HasSet() }" class="input-mini"></select></td>
+                    <td><select data-bind="options: $root.ActivityCodes, value: ActivityCode, attr: { disabled: IsLocked() }" class="input-mini"></select></td>
                     <td><input data-bind="value: WindSpeed, uniqueName: true" class="input-mini" type="number" /></td>
                     <td><input data-bind="value: WindDirection, uniqueName: true" class="input-mini" type="number" /></td>
                     <td><select data-bind="options: $root.SeaCodes, value: SeaCode" class="input-mini"></select></td>
