@@ -7,7 +7,7 @@
     ViewData.TemplateInfo.HtmlFieldPrefix = prefix;
 }
 
-<tr>
+<tr data-bind="css: { warning: ($data.isDirty() || 0 === $data.Id) }">
     <td>@jobTitle</td>
     <td>
         <div class="control-group">

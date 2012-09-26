@@ -1,5 +1,6 @@
 ﻿@model TubsWeb.Models.CrewViewModel
 @using TubsWeb.Models
+@using Newtonsoft.Json
 
 @* For now, create this in the View. *@
 @{
@@ -14,6 +15,13 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 <form id="crewForm">
+<p>
+    <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
 <fieldset>
     <legend>Senior Crew</legend>
     @* Knockout version *@
@@ -44,6 +52,7 @@
         </tbody>
     </table>
 </fieldset>
+<button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Hands().length == 0">Add Hand</button>
 <fieldset>
     <legend>Other Crew</legend>
     <table class="table table-condensed">
@@ -58,14 +67,7 @@
             </tr>
         </thead>
         <tbody data-bind="foreach: $root.Hands">
-            <tr>
-                @*
-                <td>
-                    <a href="#" data-bind="click: $root.removeHand" rel="tooltip" title="Click to remove row">
-                        <i class="icon-remove"></i>
-                    </a>
-                </td>
-                *@
+            <tr data-bind="css: { warning: ($data.isDirty() || 0 === $data.Id) }">
                 <td>
                     <button class="removeItem btn btn-mini btn-danger" rel="tooltip" title="Click to remove row"><i class="icon-remove icon-white"></i></button>
                 </td>
@@ -73,13 +75,6 @@
                 <td><input data-bind="value: Years, uniqueName: true" class="input-mini number" type="number" /></td>
                 <td><input data-bind="value: Nationality, uniqueName: true" class="input-mini" type="text" /></td>
                 <td><input data-bind="value: Comments, uniqueName: true" class="input-xxlarge" type="text" /></td>
-                @*
-                <td>
-                    <a href="#" data-bind="click: $root.addHand" rel="tooltip" title="Click to add row">
-                        <i class="icon-plus"></i>
-                    </a>
-                </td>
-                *@
                 <td>
                     <button class="addItem btn btn-mini btn-info" rel="tooltip" title="Click to add row"><i class="icon-plus icon-white"></i></button>
                 </td>
@@ -88,114 +83,66 @@
     </table>
 </fieldset>
 <p>
-    Pending changes? <b data-bind="text: tracker().somethingHasChanged() ? 'YES' : 'NO'"></b>
-</p>
-<p>
-    <button type="submit" class="btn btn-primary" data-bind="click: save">Save</button>
-    @* TODO: IE is quirky with knockout when reloading, so we'll need a 'Reload' button *@
+    <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
 </p>
 </form>
 
+@*<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>*@
+
 
 @section AdditionalScripts {   
-    <script src="~/Scripts/App/crew.js"></script>
+    <script src="~/Scripts/App/vm.crew.js"></script>
+ 
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    @{ var endpointUrl = Request.Url.AbsoluteUri; }
+    <script>
+        @* TODO:  Probably want to pull all the amplify requests into a single script and use params... *@
+        amplify.request.define("getCrew", "ajax", {
+            url: '@endpointUrl',
+            dataType: "json",
+            type: "GET"
+        });
 
-    <!-- Knockout work --> 
-    @{ var serviceUrl = Url.RouteUrl(TubsWeb.RouteConfig.Crew, new { tripId = ViewBag.TripId }); }   
-    @{ var modelAsJson = Html.Raw(Json.Encode(Model)); }
-    <script type="text/javascript">
-        // TODO Move viewModel stuff elsewhere, as we need to be able to add
-        // some methods to it (add deck hand, save, reload, etc.
-        /*
-        getCrew = function () {
-            $.ajax({
-                url: '@serviceUrl',
-                dataType: "json",
-                success: function (result) {
-                    var viewModel = ko.mapping.fromJS(result);
-                    ko.applyBindings(viewModel);
-                },
-                error: function (xhr, status, error) {
-                    $.meow({
-                        title: 'Error loading crew',
-                        message: error,
-                        icon: "~/Content/images/nyan-cat.gif"
-                    });
-                }
-            });
-        }
-        */
-
-        // http://jsfiddle.net/b3ky5/
-        function changeTracker(objectToTrack, hashFunction) {    
-            hashFunction = hashFunction || ko.toJSON;
-            var lastCleanState = ko.observable(hashFunction(objectToTrack));
-    
-            var result = {
-                somethingHasChanged : ko.dependentObservable(function() {
-                    return hashFunction(objectToTrack) != lastCleanState()
-                }),
-                markCurrentStateAsClean : function() {
-                    lastCleanState(hashFunction(objectToTrack));   
-                }
-            };
-    
-            return function() { return result }
-        }
-        
+        amplify.request.define("saveCrew", "ajax", {
+            url: '@endpointUrl',
+            dataType: "json",
+            contentType: "application/json",
+            type: "POST"
+        });
+           
         $(document).ready(function () {
-            //getCrew();
-            var content = @modelAsJson;
-            var vm = new tubsCrew.PSCrewViewModel(content);
-            vm.tracker = new changeTracker(vm);
-            ko.applyBindings(vm);
-            $(".crewForm").on("click", ".removeItem", function() {
-                // TODO Store off Id for this event for later deletion...
-                vm.removeHand(ko.dataFor(this));
+            var viewModel = new tubs.psCrewViewModel(@modelAsJson);
+            viewModel.clearDirtyFlag();
+            ko.applyBindings(viewModel);
+
+            $(".addItem").on("click", function () {
+                viewModel.addHand();
             });
-            $(".crewForm").on("click", ".addItem", function() {
-                vm.addHand();
+            $(".removeItem").on("click", function () {
+                viewModel.removeHand(ko.dataFor(this));
             });
-            // http://blog.stevensanderson.com/2010/07/12/editing-a-variable-length-list-knockout-style/
-            $("#crewForm").validate({ submitHandler: function() { 
-                    vm.save() 
-                } 
+            $("#btnAddWhenEmpty").on("click", function () {
+                viewModel.addHand();
             });
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function(e) {
+                if (viewModel.isDirty())
+                {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };   
         });       
-    </script>
-
-    <script type="text/javascript">
-        function onSaveSuccess(data, status, xhr) {
-            $.meow({
-                message: 'Crewmember saved',
-                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
-            });
-        }
-
-        function onSaveFail(xhr, status, error) {
-            $.meow({
-                title: 'Failed to save crewmember',
-                message: error,
-                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
-            });
-        }
-
-        function onAddFail(xhr, status, error) {
-            $.meow({
-                title: 'Failed to add crewmember',
-                message: error,
-                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
-            });
-        }
-
-        function onAddSuccess(data, status, xhr) {
-            /* Better to clear the text boxes only...*/
-            clearFormEx('#addHandForm');
-            $('#hand_Name').focus();
-            $.meow({
-                message: 'Crewmember added',
-                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
-            });
-        }
     </script>
 }

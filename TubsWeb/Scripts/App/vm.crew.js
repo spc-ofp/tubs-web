@@ -19,7 +19,7 @@ var tubs = tubs || {};
 
 tubs.CrewMember = function (data) {
     var self = this;
-    self.Id = ko.observable(data.Id);
+    self.Id = ko.observable(data.Id || 0);
     self.Job = ko.observable(data.Job); // Numeric enum value, not string description
     self.Name = ko.observable(data.Name);
     self.Nationality = ko.observable(data.Nationality);
@@ -62,7 +62,7 @@ tubs.psCrewViewModel = function (data) {
     // Other Crew
     var tmpHands = [];
     $.map(data.Hands, function (n, i) {
-        tmpHands.push(new tubsCrew.CrewMember(n));
+        tmpHands.push(new tubs.CrewMember(n));
     });
     self.Hands = ko.observableArray(tmpHands);
 
@@ -84,12 +84,14 @@ tubs.psCrewViewModel = function (data) {
         // Avoid iterating over the events if the header
         // has changed
         if (self.dirtyFlag().isDirty()) { return true; }
-        // TODO It might be better to for-each this and bail
-        // out of the loop on the first dirty element
-        var dirtyHands = $.grep(self.Hands(), function (n, i) {
-            return (!n.isDirty());
+        var hasDirtyChild = false;
+        $.each(self.Hands(), function (i, evt) {
+            if (evt.isDirty()) {
+                hasDirtyChild = true;
+                return false;
+            }
         });
-        return dirtyHands.length === 0;
+        return hasDirtyChild;
     });
 
     // Clear the dirty flag for the this entity, plus all the
@@ -122,7 +124,7 @@ tubs.psCrewViewModel = function (data) {
     // we wouldn't want to ship garbage data back to the server and complicate
     // the validation.
     self.removeHand = function (hand) {
-        if (hand && evt.Id()) { self.Hands.destroy(hand); }
+        if (hand && hand.Id()) { self.Hands.destroy(hand); }
         else { self.Hands.remove(hand); }
     };
 
