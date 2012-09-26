@@ -104,13 +104,13 @@ namespace TubsWeb.Models
         [Required]
         [Display(Name = "Departure Date")]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode=true, DataFormatString = "{0:dd-MM-yy HH:mm")]
+        //[DisplayFormat(ApplyFormatInEditMode=true, DataFormatString = "{0:dd-MM-yy HH:mm")]
         public DateTime? DepartureDate { get; set; }
 
         [Required]
         [Display(Name = "Return Date")]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yy HH:mm")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yy HH:mm")]
         public DateTime? ReturnDate { get; set; }
 
         [Required]

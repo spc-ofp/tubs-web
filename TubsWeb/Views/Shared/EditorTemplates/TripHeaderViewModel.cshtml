@@ -8,50 +8,72 @@
 @Html.LabelFor(m => m.ObserverCode)
 @Html.HiddenFor(m => m.ObserverCode)
 @Html.TextBoxFor(m => m.ObserverFullName, new { placeholder = "Enter the observer's name"})
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.ObserverCode)</span>
+*@
 
 @Html.LabelFor(m => m.DeparturePortCode)
 @Html.HiddenFor(m => m.DeparturePortCode)
 @Html.TextBoxFor(m => m.DeparturePortName, new { placeholder = "Enter departure port code" })
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.DeparturePortCode)</span>
+*@
 
 @Html.LabelFor(m => m.DepartureDate, "Departure Date (dd-mm-yy HH:mm)")
 @Html.TextBoxFor(m => m.DepartureDate, new { @class = "datetime", required = String.Empty })
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.DepartureDate)</span>
+*@
 
 @Html.LabelFor(m => m.TripNumber)
 @Html.TextBoxFor(m => m.TripNumber, new { required = String.Empty })
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.TripNumber)</span>
+*@
 
 @Html.LabelFor(m => m.ReturnPortCode)
 @Html.HiddenFor(m => m.ReturnPortCode)
 @Html.TextBoxFor(m => m.ReturnPortName, new { placeholder = "Enter return port code" })
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.ReturnPortCode)</span>
+*@
 
 @Html.LabelFor(m => m.ReturnDate, "Return Date (dd-mm-yy HH:mm)")
 @Html.TextBoxFor(m => m.ReturnDate, new { @class = "datetime", required = String.Empty })
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.ReturnDate)</span>
+*@
 
 @* Use a hidden field for the vessel Id -- the vessel name field is for actual entry *@
 @Html.LabelFor(m => m.VesselId)
 @Html.HiddenFor(m => m.VesselId)
 @Html.TextBoxFor(m => m.VesselName)
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.VesselId)</span>
+*@
 
 @Html.LabelFor(m => m.GearCode)
 @Html.DropDownListFor(m => m.GearCode, new SelectList(TubsWeb.Models.TripHeaderViewModel.GearTypes, "Code", "Label"), "Choose")
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.GearCode)</span>
+*@
 
 
 @* TODO Add default values for ProgramCode and CountryCode for in-country installations *@
 @Html.LabelFor(m => m.ProgramCode)
 @Html.DropDownListFor(m => m.ProgramCode, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.ObserverProgram))), "Choose")
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.ProgramCode)</span>
+*@
 
 @Html.LabelFor(m => m.CountryCode)
 @Html.TextBoxFor(m => m.CountryCode, new { required = String.Empty })
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.CountryCode)</span>
+*@
 
 @Html.LabelFor(m => m.Version)
 @Html.DropDownListFor(m => m.Version, new SelectList(Enum.GetValues(typeof(Spc.Ofp.Tubs.DAL.Common.WorkbookVersion))), "Choose")
+@*
 <span class="help-inline">@Html.ValidationMessageFor(m => m.Version)</span>
+*@

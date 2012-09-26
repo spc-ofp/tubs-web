@@ -91,6 +91,30 @@ tubs.psEvent = function (eventData) {
     return self;
 };
 
+// This is a dirty, dirty hack!
+// Convert the Knockout object to JSON string
+// Then, convert the JSON string into an object
+// (These two steps strip the 'observable' stuff off the object)
+// Pull the last value off the end of the object
+// (This assumes that .Events() is the last entity in the dirtyFlag list
+// of objects to track)
+// For each entity, delete an existing value of 'IsLocked'
+// Then put the modified array back
+// Finally, convert it to a string so it can be compared.
+// Bleah!
+tubs.hashFunction = function (trackedObject) {
+    var stringVal = ko.toJSON(trackedObject);
+    var workingCopy = JSON.parse(stringVal);
+    var events = workingCopy.pop();
+    $.each(events, function (index, value) {
+        delete value['IsLocked'];
+    });
+    workingCopy.push(events);
+    stringVal = JSON.stringify(workingCopy);
+    console.log(stringVal);
+    return stringVal;
+};
+
 // This is the actual Purse Seine Sea Day view model
 // Any functions/properties/etc. that belong on the view model
 // are defined here.
@@ -114,13 +138,12 @@ tubs.psSeaDay = function (data) {
         self.HasGen3Event,
         self.DiaryPage,
         self.Events // This is only for the add/remove
-    ], false);
+    ], false, tubs.hashFunction);
 
     self.isDirty = ko.computed(function () {
         // Avoid iterating over the events if the header
         // has changed
         if (self.dirtyFlag().isDirty()) { return true; }
-
         // Check each child event, bailing on the first
         // dirty child.
         var hasDirtyChild = false;

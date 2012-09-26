@@ -226,6 +226,7 @@ namespace TubsWeb.Models.ExtensionMethods
         {
             if (null == sdvm || null == sdvm.Events || 0 == sdvm.Events.Count)
                 return new List<PurseSeineActivity>();
+
             return (
                 from evt in sdvm.Events
                 where !string.IsNullOrEmpty(evt.Time) && !evt._destroy

@@ -15,7 +15,7 @@
 
 @using (Html.BeginForm("Create", "Trip", FormMethod.Post, new { id = "createTripForm", @class = "well", autocomplete = "off" }))
 {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     <fieldset>
         <legend>Register New Trip</legend>
         @Html.EditorFor(m => Model)

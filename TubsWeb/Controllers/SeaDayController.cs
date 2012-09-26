@@ -190,9 +190,9 @@ namespace TubsWeb.Controllers
                     if (null != yesterday)
                     {
                         if (!sdvm.UtcDate.HasValue && yesterday.UtcStartOfDay.HasValue)
-                            sdvm.UtcDate = yesterday.UtcStartOfDay.Value.AddDays(1);
+                            sdvm.UtcDate = yesterday.UtcDateOnly.Value.AddDays(1);
                         if (!sdvm.ShipsDate.HasValue && yesterday.StartOfDay.HasValue)
-                            sdvm.ShipsDate = yesterday.StartOfDay.Value.AddDays(1);
+                            sdvm.ShipsDate = yesterday.StartDateOnly.Value.AddDays(1);
                     }
                 }
             }
@@ -229,6 +229,9 @@ namespace TubsWeb.Controllers
             // TODO Check the dayNumber?
 
             // No start of day should be before the trip start date
+            Logger.Info("ShipsDate: " + sdvm.ShipsDate);
+            Logger.Info("ShipsTime: " + sdvm.ShipsTime);
+            Logger.Info("shipStartOfDay: " + shipStartOfDay);
             if (shipStartOfDay.HasValue && shipStartOfDay.Value.CompareTo(tripId.DepartureDate) < 0)
             {
                 ModelState["ShipsDate"].Errors.Add("Start of day can't be before the trip departure date");
@@ -308,6 +311,8 @@ namespace TubsWeb.Controllers
                 if (addSet)
                 {
                     var fset = new PurseSeineSet();
+                    fset.BeginBrailing = activity.LocalTime;
+                    fset.BeginBrailingTimeOnly = activity.LocalTimeTimeOnly;
                     fset.Activity = activity;
                     fset.EnteredBy = User.Identity.Name;
                     fset.EnteredDate = DateTime.Now;

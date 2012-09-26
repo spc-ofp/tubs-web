@@ -37,7 +37,7 @@ namespace TubsWeb
             // 3rd Party JavaScript files
             bundles.Add(new ScriptBundle("~/bundles/jsextlibs")
                 .Include(
-                    "~/Scripts/json2.js", // IE7 needs this
+                    "~/Scripts/json2.js", // This is now required as it's part of dirty checking
                     "~/Scripts/bootstrap.js",
 
                     // jQuery plugins

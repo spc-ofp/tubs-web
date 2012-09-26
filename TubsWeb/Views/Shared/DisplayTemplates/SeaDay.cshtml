@@ -22,5 +22,9 @@
     <td>@Html.DisplayFor(m => @Model.Gen3Events)</td>
     <td>
         <a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.Trip.Id, dayNumber = counter, action = "Index" })'>Activities</a>
+        @if (!ViewBag.IsReadOnly)
+        {
+           <text>| </text><a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.Trip.Id, dayNumber = counter, action = "Edit" })'>Edit</a>
+        }
     </td>
 </tr>
