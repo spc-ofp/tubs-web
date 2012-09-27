@@ -591,9 +591,9 @@
     <Content Include="Scripts\App\vm.seaday.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\jquery-1.8.1-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.8.1.js" />
-    <Content Include="Scripts\jquery-1.8.1.min.js" />
+    <Content Include="Scripts\jquery-1.8.2-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.8.2.js" />
+    <Content Include="Scripts\jquery-1.8.2.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.23.js" />
     <Content Include="Scripts\jquery-ui-1.8.23.min.js" />
     <Content Include="Scripts\jquery-ui-timepicker-addon.min.js" />
@@ -622,6 +622,7 @@
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pageguide.js" />
     <Content Include="Scripts\pageguide.min.js" />
+    <Content Include="Scripts\spc.utilities.js" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\tubs-ko.js" />
     <Content Include="Scripts\tubs-search.js" />

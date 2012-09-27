@@ -7,26 +7,31 @@
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber),
-        Tuple.Create(Url.Action("Index", "Crew", new { tripId = ViewBag.TripId }), "Crew"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
+        Tuple.Create(Url.Action("Index", "Crew", new { tripId = Model.TripId }), "Crew"),
         Tuple.Create("#", "Edit Crew")
     };
 }
 
+<!-- Experiment with data-confirm and unobtrusive javascript -->
+@*
+<button type="button" class="btn btn-info" data-confirm="Yo Dawg">Click me</button>
+*@
+
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+@* TODO:  Add a Knockout submit binding to the form? *@
 <form id="crewForm">
 <p>
-    <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-    <button type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
         <i class="icon-refresh icon-white"></i>&nbsp;Reload
     </button>
     <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
 </p>
 <fieldset>
-    <legend>Senior Crew</legend>
+    <legend id="seniorCrew">Senior Crew</legend>
     @* Knockout version *@
     @* TODO: If there's a pending edit, change the row class to "warning" *@
-    <em>Use Ctrl-Z to undo any unsaved edits.</em>
     <table class="table table-condensed">
         <thead>
             <tr>
@@ -54,7 +59,7 @@
 </fieldset>
 <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Hands().length == 0">Add Hand</button>
 <fieldset>
-    <legend>Other Crew</legend>
+    <legend id="otherCrew">Other Crew</legend>
     <table class="table table-condensed">
         <thead>
             <tr>
@@ -69,7 +74,12 @@
         <tbody data-bind="foreach: $root.Hands">
             <tr data-bind="css: { warning: ($data.isDirty() || 0 === $data.Id) }">
                 <td>
-                    <button class="removeItem btn btn-mini btn-danger" rel="tooltip" title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                    <button class="removeItem btn btn-mini btn-danger" 
+                            rel="tooltip" 
+                            data-confirm="Delete this crewmember?"
+                            title="Click to remove row">
+                        <i class="icon-remove icon-white"></i>
+                    </button>
                 </td>
                 <td><input data-bind="hasfocus: NeedsFocus, value: Name, uniqueName: true" class="required" type="text" /></td>
                 <td><input data-bind="value: Years, uniqueName: true" class="input-mini number" type="number" /></td>
@@ -87,11 +97,97 @@
 </p>
 </form>
 
+<ul id="tlyPageGuide" data-tourtitle="Detailed crew entry instructions">
+    <li class="tlypageguide_top" data-tourtarget="#saveButton">
+        <div>
+            The save button will only be active if there are unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#reloadButton">
+        <div>
+            Use the reload button to discard any unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#seniorCrew">
+        <div>
+            This space is provided for the entry of senior crew, such as the captain, deck boss, or helicopter
+            pilot.  If a job title has been entered that doesn't appear below, use the 'Other Crew' section
+            and use the provided comments field for the job title.
+
+            Instructions are given for entering the captain's data, but the entry process is similar for all the
+            senior crew.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Captain_Name">
+        <div>
+            Enter the captain's full name here.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Captain_Years">
+        <div>
+            Enter the captain's years of experience here.  Round to the nearest year.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Captain_Nationality">
+        <div>
+            Enter the two character ISO code for the captain's nationality here.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Captain_Comments">
+        <div>
+            Enter any comments about the captain here.  This usually includes the captain's
+            license number(s).
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#otherCrew">
+        <div>
+            This space is provided for the entry of fishing hands.  
+            As with the senior crew, use the two character ISO code for nationality.
+        </div>
+    </li>
+</ul>
+
+@*
+<!-- Twitter Bootstrap modal dialog. -->
+<div id="modalTemplate" class="modal hide fade">
+    <div class="modal-header">
+        <h3>Confirm</h3>
+    </div>
+    <div id="modalBody" class="modal-body">    
+    </div>
+    <div class="modal-footer">
+        <a id="modal-yes" href="#" class="btn">Close</a>
+        <a id="modal-no" href="#" class="btn btn-primary">Save changes</a>
+    </div>
+</div>
+*@
+
 @*<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>*@
 
 
 @section AdditionalScripts {   
     <script src="~/Scripts/App/vm.crew.js"></script>
+    <!-- ClickHandler function for opening/closing Twitter modal dialog. -->
+    @*
+    <script>
+        var confirmClickHandler = function (event) {
+            if ($(event.currentTarget).data('isConfirming')) return;
+            var message = event.currentTarget.attributes['data-confirm'].value;
+            event.preventDefault();
+            $('#modalBody').html(message);
+            $('#modal-yes').on("click", function () {
+                $('#modalTemplate').modal('hide');
+                $(event.currentTarget).data('isConfirming', true);
+                event.currentTarget.click();
+                $(event.currentTarget).data('isConfirming', null);
+            });
+            $('#modal-no').on("click", function () {
+                $('#modalTemplate').modal('hide');
+            });
+            $('#modalTemplate').modal('show');
+        }; 
+    </script>
+    *@
  
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
     @{ var endpointUrl = Request.Url.AbsoluteUri; }
@@ -111,6 +207,8 @@
         });
            
         $(document).ready(function () {
+            //Doesn't work with Knockout.  Will need some work, but that can come later...
+            //$("body").delegate("[data-confirm]", "click", confirmClickHandler);
             var viewModel = new tubs.psCrewViewModel(@modelAsJson);
             viewModel.clearDirtyFlag();
             ko.applyBindings(viewModel);
@@ -142,7 +240,10 @@
 
                     return "Leaving the page will discard unsaved changes.";
                 }
-            };   
+            };  
+            
+            // PageGuide initialization
+            tl.pg.init(); 
         });       
     </script>
 }

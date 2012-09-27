@@ -101,9 +101,40 @@
 </ul>
 
 @section AdditionalScripts {
-    <script src="@Url.Content("~/Scripts/pageguide.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/spc.utilities.js")"></script>
+
     @*  JavaScript for Ajax lookups and date/time pickers *@
     <script>
+
+        var vesselUpdater = function (label, data) {
+            $("#VesselName").val(label);
+            $("#VesselId").val(data.id);
+            $("#GearCode").val(data.GearType);
+        };
+
+        var vta = new spc.typeAheadFactory('@Url.Action("Find", "Vessel")', vesselUpdater);
+
+        var observerUpdater = function (label, data) {
+            $("#ObserverFullName").val(label);
+            $("#ObserverCode").val(data.id);
+        };
+
+        var ota = new spc.typeAheadFactory('@Url.Action("Find", "Observer")', observerUpdater);
+
+        var departurePortUpdater = function (label, data) {
+            $("#DeparturePortName").val(label);
+            $("#DeparturePortCode").val(data.id);
+        };
+
+        var dpta = new spc.typeAheadFactory('@Url.Action("Find", "Port")', departurePortUpdater);
+
+        var returnPortUpdater = function (label, data) {
+            $("#ReturnPortName").val(label);
+            $("#ReturnPortCode").val(data.id);
+        };
+
+        var rpta = new spc.typeAheadFactory('@Url.Action("Find", "Port")', returnPortUpdater);
+
         $(function () {
             // Observer workbooks don't fly into our hands, so starting 6 months back is probably a good bet.
             // Make entry a bit quicker:  Switch dateFormat from 'dd/mm/yy' to 'dd-mm-y'
@@ -121,43 +152,10 @@
                 defaultDate: sixMonthsAgo
             });
 
-            $("#VesselName").autocomplete({
-                minLength: 2,
-                source: '@Url.Action("Find", "Vessel")',
-                select: function (event, ui) {
-                    $("#VesselName").val(ui.item.label);
-                    $("#VesselId").val(ui.item.id);
-                    $("#GearCode").val(ui.item.GearType);
-                }
-            });
-
-            $("#ObserverFullName").autocomplete({
-                minLength: 2,
-                source: '@Url.Action("Find", "Observer")',
-                select: function (event, ui) {
-                    $("#ObserverFullName").val(ui.item.label);
-                    $("#ObserverCode").val(ui.item.id);
-                }
-            });
-
-            var portAutoComplete = '@Url.Action("Find", "Port")';
-            $("#DeparturePortName").autocomplete({
-                minLength: 2,
-                source: portAutoComplete,
-                select: function (event, ui) {
-                    $("#DeparturePortName").val(ui.item.label);
-                    $("#DeparturePortCode").val(ui.item.id);
-                }
-            });
-
-            $("#ReturnPortName").autocomplete({
-                minLength: 2,
-                source: portAutoComplete,
-                select: function (event, ui) {
-                    $("#ReturnPortName").val(ui.item.label);
-                    $("#ReturnPortCode").val(ui.item.id);
-                }
-            });
+            $('#VesselName').typeahead(vta);
+            $('#ObserverFullName').typeahead(ota);
+            $('#DeparturePortName').typeahead(dpta);
+            $('#ReturnPortName').typeahead(rpta);
 
             /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
             tl.pg.init();

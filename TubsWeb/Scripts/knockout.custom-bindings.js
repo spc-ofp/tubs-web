@@ -22,7 +22,9 @@ ko.bindingHandlers.date = {
         // Use a blank string if moment.js couldn't figure it out
         var dateString = date ? date.format(formatString) : '';
 
-        var isInput = (element instanceof HTMLInputElement);
+        // http://www.theextremewebdesigns.com/blog/jquery-check-element-type-check-element-type-div-input-etc/
+        // We can pretty much assume the existence of jQuery, so might as well make it easy.
+        var isInput = $(element).is("input");
         if (isInput) {
             $(element).val(dateString);
         } else {

@@ -3,7 +3,7 @@
  * Knockout.js ViewModel for editing a PS-2 Daily Log
  * Depends on:
  * jquery
- * json2 (for down-level browser support)
+ * json2
  * knockout
  * knockout.mapping (automatically maps JSON)
  * knockout.asyncCommand (makes it easier to show user activity)
@@ -111,7 +111,6 @@ tubs.hashFunction = function (trackedObject) {
     });
     workingCopy.push(events);
     stringVal = JSON.stringify(workingCopy);
-    console.log(stringVal);
     return stringVal;
 };
 
