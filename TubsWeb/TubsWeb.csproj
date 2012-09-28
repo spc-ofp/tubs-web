@@ -586,6 +586,7 @@
     <Content Include="Scripts\amplify.js" />
     <Content Include="Scripts\amplify.min.js" />
     <Content Include="Scripts\App\crew.js" />
+    <Content Include="Scripts\App\datacontext.js" />
     <Content Include="Scripts\App\seaday.js" />
     <Content Include="Scripts\App\vm.crew.js" />
     <Content Include="Scripts\App\vm.seaday.js" />

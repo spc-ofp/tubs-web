@@ -99,6 +99,11 @@ else
       </tbody>
     </table>
     
+    if (!ViewBag.IsReadOnly)
+    {
+        @Html.ActionLink("Edit daily log", "Edit", "SeaDay", new { tripId = ViewBag.TripId, dayNumber = Model.DayNumber }, null)
+    }
+    
     @*TODO:  Add color coded dots to the activity column that match the pins in the map?  Or just color code the rows for significant events?*@
     @*TODO:  Add in a hideable map for just this day.  Bonus points for overlaying observer, VMS, and logsheet data.*@
 }

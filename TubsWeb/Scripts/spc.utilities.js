@@ -66,3 +66,29 @@ spc.typeAheadFactory = function (sourceUrl, onSelect) {
         minLength: 2
     };
 };
+
+/*
+ * Extend the JavaScript String object with a
+ * hashCode implementation.
+ * This is the Daniel Bernstein djb2 implementation
+ */
+String.prototype.hashCode = function () {
+    var hash = 5381;
+    if (this) {
+        for (i = 0; i < this.length; i++) {
+            char = this.charCodeAt(i);
+            hash = ((hash << 5) + hash) + char; /* hash * 33 + c */
+        }
+    }
+    return hash;
+};
+
+/*
+ * Date hashCode uses Josh Bloch's guidance
+ * for long values.
+ */
+Date.prototype.hashCode = function () {
+    if (!this) { return 0; }
+    var ticks = this.getTime();
+    return ticks ^ (ticks >>> 32);
+};

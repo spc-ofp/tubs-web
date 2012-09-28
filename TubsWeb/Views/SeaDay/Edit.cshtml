@@ -6,12 +6,13 @@
     // Switch to full width layout
     ViewBag.UseFluid = true;
     // Placeholders are nice...
-    ViewBag.UseChromeFrame = true;
+    //ViewBag.UseChromeFrame = true;
     // No longer set in controller
     ViewBag.Title = String.Format("Editing Day {0} of {1}", Model.DayNumber, Model.MaxDays);
 }
 
 @* For now, create this in the View. *@
+@* TODO Maybe add a link back to the index view for this day? *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {

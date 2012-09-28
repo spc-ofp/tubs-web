@@ -18,14 +18,14 @@
             <i class="icon-backward icon-white"></i>&nbsp;Previous Day
         </a>
         }
-        <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        <button type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
             <i class="icon-refresh icon-white"></i>&nbsp;Reload
         </button>
         <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
         @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
         @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-        <a href='@nextPage' class="btn btn-info">
+        <a href='@nextPage' id="nextDayButton" class="btn btn-info">
             Next Day&nbsp;<i class="icon-forward icon-white"></i>
         </a>
     </p>
@@ -34,8 +34,8 @@
         <legend>Start of Day</legend>
         <div class="row-fluid">
             <div class="span1">
-                @Html.LabelFor(m => Model.ShipsDate, new { data_bind = "" })
-                @Html.TextBoxFor(m => Model.ShipsDate, new { data_bind = "date: $root.ShipsDate()", @type = "text", @class = "input-mini" })
+                @Html.LabelFor(m => Model.ShipsDate)
+                @Html.TextBoxFor(m => Model.ShipsDate, new { data_bind = "value: ShipsDate.formattedDate", @class = "input-mini" })
             </div>
             <div class="span1">
                 @Html.LabelFor(m => Model.ShipsTime)
@@ -43,7 +43,7 @@
             </div>
             <div class="span1">
                 @Html.LabelFor(m => Model.UtcDate)
-                @Html.TextBoxFor(m => Model.UtcDate, new { data_bind = "date: $root.UtcDate()", @type = "text", @class = "input-mini" })
+                @Html.TextBoxFor(m => Model.UtcDate, new { data_bind = "value: UtcDate.formattedDate", @class = "input-mini" })
             </div>
             <div class="span1">
                 @Html.LabelFor(m => Model.UtcTime)
@@ -167,6 +167,52 @@
         </a>
     </p>
 </form>
+
+<ul id="tlyPageGuide" data-tourtitle="Detailed PS-2 entry instructions">
+    <li class="tlypageguide_top" data-tourtarget="#saveButton">
+        <div>
+            The save button will only be active if there are unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#reloadButton">
+        <div>
+            Use the reload button to discard any unsaved changes.
+        </div>
+    </li>
+    <!-- UtcDate, UtcTime -->
+    <li class="tlypageguide_top" data-tourtarget="#nextDayButton">
+        <div>
+            Use this button to move to the next day.  If the PS-2 for
+            the next day has not yet been entered, this will start a new entry form.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#ShipsDate">
+        <div>
+            Enter the date portion of the ship's start of day.  Entry must be of
+            the form dd/mm/yy.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#ShipsTime">
+        <div>
+            Enter the time portion of the ship's start of day.  Entry must be of
+            the form HHmm.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#UtcDate">
+        <div>
+            Enter the date portion of the UTC start of day.  Entry must be of
+            the form dd/mm/yy.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#UtcTime">
+        <div>
+            Enter the time portion of the UTC start of day.  Entry must be of
+            the form HHmm.
+        </div>
+    </li>
+    <!-- TODO:  Figure out how to add pageguide to Knockout bound items -->
+    @* We can probably put some entities in here and add the appropriate class after the list has one item...*@
+</ul>
 
 
 <!-- TODO Add a debug param so that this can be displayed for troubleshooting -->

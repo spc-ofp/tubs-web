@@ -170,6 +170,8 @@
     <!-- ClickHandler function for opening/closing Twitter modal dialog. -->
     @*
     <script>
+        // From here
+        // http://stackoverflow.com/questions/8105556/how-do-i-explicitly-execute-default-action-from-jquery-event/8135983#8135983
         var confirmClickHandler = function (event) {
             if ($(event.currentTarget).data('isConfirming')) return;
             var message = event.currentTarget.attributes['data-confirm'].value;

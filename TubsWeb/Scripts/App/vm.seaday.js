@@ -12,11 +12,12 @@
  * amplify (local storage and Ajax mapping
  * toastr (user notification)
  * knockout.custom-bindings (date binding)
+ * spc.utilities (String hashCode)
  */
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-
+"use strict";
 // This mapping is used to override the default
 // JSON mapper for the named property (or properties).
 // In this case, the 'Events' property of the mapped JSON
@@ -27,8 +28,21 @@ tubs.psSeaDayMapping = {
         create: function (options) {
             return new tubs.psEvent(options.data);
         }
+    },
+    'ShipsDate': {
+        create: function (options) {
+            return ko.observable(options.data).extend({ isoDate: 'DD/MM/YY' });
+        }
+    },
+    'UtcDate': {
+        create: function (options) {
+            return ko.observable(options.data).extend({ isoDate: 'DD/MM/YY' });
+        }
     }
 };
+
+// TODO:  Add draft auto-save via AmplifyJS
+// http://craigcav.wordpress.com/2012/05/16/simple-client-storage-for-view-models-with-amplifyjs-and-knockout/
 
 //
 // Adding validation is much easier via manual mapping
@@ -43,8 +57,8 @@ tubs.psEvent = function (eventData) {
     self.Longitude = ko.observable(eventData.Longitude || '').extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
     self.EezCode = ko.observable(eventData.EezCode || '').extend({ minLength: 2, maxLength: 2 });
     self.ActivityCode = ko.observable(eventData.ActivityCode || '');
-    self.WindSpeed = ko.observable(eventData.WindSpeed || '').extend({ min: 0 }); // No negative wind speeds
-    self.WindDirection = ko.observable(eventData.WindDirection || '').extend({ min: 0, max: 360 });
+    self.WindSpeed = ko.observable(eventData.WindSpeed || null).extend({ min: 0 }); // No negative wind speeds
+    self.WindDirection = ko.observable(eventData.WindDirection || null).extend({ min: 0, max: 360 });
     self.SeaCode = ko.observable(eventData.SeaCode || '');
     // NOTE:  Knockout is very sensitive to data types
     // If the value is coerced to a string, that will count as a 'change'
@@ -91,29 +105,6 @@ tubs.psEvent = function (eventData) {
     return self;
 };
 
-// This is a dirty, dirty hack!
-// Convert the Knockout object to JSON string
-// Then, convert the JSON string into an object
-// (These two steps strip the 'observable' stuff off the object)
-// Pull the last value off the end of the object
-// (This assumes that .Events() is the last entity in the dirtyFlag list
-// of objects to track)
-// For each entity, delete an existing value of 'IsLocked'
-// Then put the modified array back
-// Finally, convert it to a string so it can be compared.
-// Bleah!
-tubs.hashFunction = function (trackedObject) {
-    var stringVal = ko.toJSON(trackedObject);
-    var workingCopy = JSON.parse(stringVal);
-    var events = workingCopy.pop();
-    $.each(events, function (index, value) {
-        delete value['IsLocked'];
-    });
-    workingCopy.push(events);
-    stringVal = JSON.stringify(workingCopy);
-    return stringVal;
-};
-
 // This is the actual Purse Seine Sea Day view model
 // Any functions/properties/etc. that belong on the view model
 // are defined here.
@@ -123,7 +114,7 @@ tubs.psSeaDay = function (data) {
     // the options in psSeaDayMapping
     ko.mapping.fromJS(data, tubs.psSeaDayMapping, self);
 
-    // Define the fields that are watched to determine the 'dirty' state
+    // Define the fields that are watched to determine the 'dirty' state   
     self.dirtyFlag = new ko.DirtyFlag([
         self.ShipsDate,
         self.ShipsTime,
@@ -185,31 +176,21 @@ tubs.psSeaDay = function (data) {
         else { self.Events.remove(evt); }
     }
 
-    self.reload = function () {
-        amplify.request("getSeaDay", function (data) {
-            // http://jsfiddle.net/jearles/wgZ59/49/
-            // NOTE:  This only works if the entity is mappable from JSON
-            // Even then, there might still be some issues
-            // TODO:  Test the hell out of this!
-            ko.mapping.fromJS(data, tubs.psSeaDayMapping, self);
-            self.clearDirtyFlag();
-        });
-    }
-
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
-            amplify.request({
-                resourceId: "getSeaDay",
-                success: function (result) {
+            tubs.getSeaDay(
+                self.TripId(),
+                self.DayNumber(),
+                function (result) {
                     ko.mapping.fromJS(result, tubs.psSeaDayMapping, self);
                     self.clearDirtyFlag();
+                    toastr.info('Reloaded daily log');
                     complete();
                 },
-                error: function (xhr, status, error) {
+                function (xhr, status, error) {
                     toastr.error(error, 'Failed to reload daily log');
                     complete();
-                }
-            });
+                });
         },
 
         canExecute: function (isExecuting) {
@@ -219,19 +200,20 @@ tubs.psSeaDay = function (data) {
 
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
-            amplify.request({
-                resourceId: "saveSeaDay",
-                data: ko.toJSON(self),
-                success: function (result) {
+            tubs.saveSeaDay(
+                self.TripId(),
+                self.DayNumber(),
+                self,
+                function (result) {
+                    ko.mapping.fromJS(result, tubs.psSeaDayMapping, self);
                     self.clearDirtyFlag();
                     toastr.success('Daily log saved');
                     complete();
                 },
-                error: function (xhr, status, error) {
+                function (xhr, status, error) {
                     toastr.error(error, 'Failed to save daily log');
                     complete();
-                }
-            });
+                });
         },
 
         canExecute: function (isExecuting) {
@@ -240,3 +222,37 @@ tubs.psSeaDay = function (data) {
     });
     return self;
 };
+
+/*
+ * ko.toJS (and ko.toJSON) both accept the same arguments
+ * as JSON.stringify().
+ * This function is passed in and will ignore properties
+ * that are UI state related.
+ * At present (2012-09-28), it's flat and doesn't take
+ * into account the owning entity. 
+ */
+tubs.psSeaDayReplacer = function (key, value) {
+    // Opt-out version of replacer.
+    // If an opt-in version was desired, this function should
+    // only return the value for keys that we're interested in using
+    // for 'hashing'
+    // http://stackoverflow.com/questions/4910567/json-stringify-how-to-exclude-certain-fields-from-the-json-string
+    if (key == "IsLocked") {
+        return undefined;
+    }
+    return value;
+};
+
+//
+// After much yak-shaving, it looks like this is the easiest way
+// to manage this.
+// Write the state of the watched fields (set up in trackedObject)
+// to JSON, using the tubs.psSeaDayReplacer function to remove any
+// fields down at the Event level that we don't consider
+// when marking the whole day as 'dirty'.
+// 
+//
+tubs.hashFunction = function (trackedObject) {
+    return ko.toJSON(trackedObject, tubs.psSeaDayReplacer);
+};
+

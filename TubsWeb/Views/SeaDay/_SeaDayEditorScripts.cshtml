@@ -6,25 +6,13 @@
     (like jQuery, knockout, knockout extensions, etc.)
 *@
 <script src="~/Scripts/knockout.custom-bindings.js"></script>
+<script src="~/Scripts/spc.utilities.js"></script>
+<script src="~/Scripts/App/datacontext.js"></script>
 <script src="~/Scripts/App/vm.seaday.js"></script>
 @* TODO  Look into validation:  http://blog.duc.as/tag/mvc-4/ *@
 @* After much tail-chasing, the best way to handle VMs with dates is to ash-can the Microsoft converter and use NewtonSoft's *@
 @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
-@{ var endpointUrl = Request.Url.AbsoluteUri; }
 <script>
-    amplify.request.define("getSeaDay", "ajax", {
-        url: '@endpointUrl',
-        dataType: "json",
-        type: "GET"
-    });
-
-    amplify.request.define("saveSeaDay", "ajax", {
-        url: '@endpointUrl',
-        dataType: "json",
-        contentType: "application/json",
-        type: "POST"
-    });
-
     $(document).ready(function () {
         var viewModel = new tubs.psSeaDay(@modelAsJson);
         viewModel.clearDirtyFlag();
@@ -35,26 +23,13 @@
         $(".ps2events").on("click", ".addItem", function() {
             viewModel.addEvent();
         });
-        /*
-        $('.unlockItem').click(function() {
-            var evt = ko.dataFor(this);
-            evt.IsLocked(false);
-        });
-        */
-        /*
-        $(".ps2events").on("click", ".unlockItem", function() {
-            var evt = ko.dataFor(this);
-            console.log(evt);
-            var toggledValue = !evt.IsLocked();
-            console.log("IsLocked: " + evt.IsLocked());
-            console.log("toggledValue: " + toggledValue);
-            evt.IsLocked(false);
-        });
-        */
         /* For some reason I was getting a call to the add event just during the evaluation of this binding... */
         $("#btnAddWhenEmpty").on("click", function () {
             viewModel.addEvent();
         });
+
+        // PageGuide initialization
+        tl.pg.init();
 
         /* TODO: Extract this into a common script for the whole application */
         window.onbeforeunload = function(e) {
