@@ -323,15 +323,21 @@ namespace TubsWeb.Models.ExtensionMethods
                 fsvm.TotalCatch = fset.TotalCatch;
                 fsvm.RecoveredTagCount = fset.RecoveredTagCount;
 
-                fsvm.ContainsSkipjack = fset.ContainsSkipjack;
-                fsvm.ContainsYellowfin = fset.ContainsYellowfin;
-                fsvm.ContainsBigeye = fset.ContainsBigeye;
+                // SKJ
+                fsvm.ContainsSkipjack = fset.ContainsSkipjack.ToYesNoFormValue();
                 fsvm.SkipjackPercentage = fset.SkipjackPercentage;
-                fsvm.YellowfinPercentage = fset.YellowfinPercentage;
-                fsvm.BigeyePercentage = fset.BigeyePercentage;
-
                 fsvm.TonsOfSkipjackObserved = fset.TonsOfSkipjackObserved;
+
+                // YFT
+                fsvm.ContainsYellowfin = fset.ContainsYellowfin.ToYesNoFormValue();
+                fsvm.ContainsLargeYellowfin = fset.ContainsLargeYellowfin.ToYesNoFormValue();
+                fsvm.YellowfinPercentage = fset.YellowfinPercentage;
                 fsvm.TonsOfYellowfinObserved = fset.TonsOfYellowfinObserved;
+
+                // BET
+                fsvm.ContainsBigeye = fset.ContainsBigeye.ToYesNoFormValue();
+                fsvm.ContainsLargeBigeye = fset.ContainsLargeBigeye.ToYesNoFormValue();
+                fsvm.BigeyePercentage = fset.BigeyePercentage;
                 fsvm.TonsOfBigeyeObserved = fset.TonsOfBigeyeObserved;
 
                 // Yes, this is duplication.  Memory is cheap

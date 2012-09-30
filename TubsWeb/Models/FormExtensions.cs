@@ -287,5 +287,22 @@ namespace TubsWeb.Models
                     return null;
             }
         }
+
+        public static string ToYesNoFormValue(this bool? dbValue)
+        {
+            if (!dbValue.HasValue)
+                return String.Empty;
+
+            return dbValue.Value ? "YES" : "NO";
+        }
+
+        public static bool? FromYesNoFormValue(this string formValue)
+        {
+            formValue = formValue.NullSafeTrim();
+            if (String.IsNullOrEmpty(formValue))
+                return null;
+
+            return "YES".Equals(formValue, StringComparison.InvariantCultureIgnoreCase);
+        }
     }
 }

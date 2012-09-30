@@ -86,8 +86,6 @@ namespace TubsWeb.Models
         [RegularExpression(@"^[0-2]\d[0-5]\d$")]
         public string EndOfSetTimeOnly { get; set; }
 
-        // TODO Much more here, and it will be different for different
-        // form versions
         public decimal? WeightOnboardObserved { get; set; }
         public decimal? WeightOnboardFromLog { get; set; }
 
@@ -113,17 +111,21 @@ namespace TubsWeb.Models
         [Display(Name = "Total Catch")]
         public decimal? TotalCatch { get; set; }
 
-        public bool? ContainsSkipjack { get; set; }
-        public bool? ContainsYellowfin { get; set; }
-        public bool? ContainsBigeye { get; set; }
+        public string ContainsSkipjack { get; set; }
+        public string ContainsYellowfin { get; set; }
+        public string ContainsLargeYellowfin { get; set; }
+        public string ContainsBigeye { get; set; }
+        public string ContainsLargeBigeye { get; set; }
 
         public int? SkipjackPercentage { get; set; }
 
         public int? YellowfinPercentage { get; set; }
         public int? LargeYellowfinPercentage { get; set; }
+        public int? LargeYellowfinCount { get; set; }
 
         public int? BigeyePercentage { get; set; }
         public int? LargeBigeyePercentage { get; set; }
+        public int? LargeBigeyeCount { get; set; }
 
         public decimal? TonsOfSkipjackObserved { get; set; }
         public decimal? TonsOfYellowfinObserved { get; set; }
