@@ -157,7 +157,7 @@ namespace TubsWeb.Models.ExtensionMethods
         public static Crew AsCrew(this CrewViewModel.CrewMemberModel cmm, JobType job)
         {
             Crew crew = null;
-            if (null != cmm && cmm.IsFilled)
+            if (null != cmm && !cmm._destroy && cmm.IsFilled)
             {
                 crew = new PurseSeineCrew();
                 cmm.CopyTo(crew);
@@ -291,6 +291,98 @@ namespace TubsWeb.Models.ExtensionMethods
 
             // No idea!
             return string.Empty;
+        }
+
+        public static PurseSeineSetViewModel AsViewModel(this PurseSeineSet fset)
+        {
+            var fsvm = new PurseSeineSetViewModel();
+            if (null != fset)
+            {
+                fsvm.SkiffOff = fset.SkiffOff;
+                fsvm.SkiffOffTimeOnly = fset.SkiffOffTimeOnly;
+                fsvm.WinchOnTimeOnly = fset.WinchOnTimeOnly;
+                fsvm.RingsUpTimeOnly = fset.RingsUpTimeOnly;
+                fsvm.BeginBrailingTimeOnly = fset.BeginBrailingTimeOnly;
+                fsvm.EndBrailingTimeOnly = fset.EndBrailingTimeOnly;
+                fsvm.EndOfSetTimeOnly = fset.EndOfSetTimeOnly;
+                fsvm.LogbookDate = fset.StartOfSetFromLog; // TODO Strip to date only portion
+                fsvm.LogbookTime = "1234"; // TODO format date
+                fsvm.SetNumber = fset.SetNumber.HasValue ? fset.SetNumber.Value : default(Int32);
+
+                // Weights
+                fsvm.WeightOnboardFromLog = fset.WeightOnboardFromLog;
+                fsvm.WeightOnboardObserved = fset.WeightOnboardObserved;
+                fsvm.RetainedTonnageObserved = fset.RetainedTonnageObserved;
+
+                fsvm.NewOnboardTotalObserved = fset.NewOnboardTotalObserved;
+                fsvm.RetainedTonnageFromLog = fset.RetainedTonnageFromLog;
+                fsvm.NewOnboardTotalFromLog = fset.NewOnboardTotalFromLog;
+                fsvm.SumOfBrail1 = fset.SumOfBrail1;
+                fsvm.SumOfBrail2 = fset.SumOfBrail2;
+                fsvm.TonsOfTunaObserved = fset.TonsOfTunaObserved;
+                fsvm.TotalCatch = fset.TotalCatch;
+                fsvm.RecoveredTagCount = fset.RecoveredTagCount;
+
+                fsvm.ContainsSkipjack = fset.ContainsSkipjack;
+                fsvm.ContainsYellowfin = fset.ContainsYellowfin;
+                fsvm.ContainsBigeye = fset.ContainsBigeye;
+                fsvm.SkipjackPercentage = fset.SkipjackPercentage;
+                fsvm.YellowfinPercentage = fset.YellowfinPercentage;
+                fsvm.BigeyePercentage = fset.BigeyePercentage;
+
+                fsvm.TonsOfSkipjackObserved = fset.TonsOfSkipjackObserved;
+                fsvm.TonsOfYellowfinObserved = fset.TonsOfYellowfinObserved;
+                fsvm.TonsOfBigeyeObserved = fset.TonsOfBigeyeObserved;
+
+                // Yes, this is duplication.  Memory is cheap
+                var all = fset.CatchList.Where(sc => sc != null);
+                fsvm.AllCatch.AddRange(all.AsViewModelSetCatch());
+
+                var bet = fset.CatchList.Where(sc => sc != null && sc.SpeciesCode == "BET");
+                fsvm.BetCatch.AddRange(bet.AsViewModelSetCatch());
+
+                var yft = fset.CatchList.Where(sc => sc != null && sc.SpeciesCode == "YFT");
+                fsvm.YftCatch.AddRange(yft.AsViewModelSetCatch());
+
+                var skj = fset.CatchList.Where(sc => sc != null && sc.SpeciesCode == "SKJ");
+                fsvm.SkjCatch.AddRange(skj.AsViewModelSetCatch());
+
+                var bycatch =
+                    from sc in fset.CatchList
+                    where
+                        sc != null &&
+                        sc.SpeciesCode != "BET" &&
+                        sc.SpeciesCode != "YFT" &&
+                        sc.SpeciesCode != "SKJ"
+                    select sc;
+                fsvm.ByCatch.AddRange(bycatch.AsViewModelSetCatch());
+
+                fsvm.LargeSpecies = fset.LargeSpecies;
+                fsvm.LargeSpeciesPercentage = fset.LargeSpeciesPercentage;
+                fsvm.LargeSpeciesCount = fset.LargeSpeciesCount;
+                fsvm.Comments = fset.Comments;
+            }
+            return fsvm;
+        }
+
+        public static IEnumerable<PurseSeineSetViewModel.SetCatch> AsViewModelSetCatch(
+            this IEnumerable<PurseSeineSetCatch> catchlist)
+        {
+            if (null == catchlist)
+                return Enumerable.Empty<PurseSeineSetViewModel.SetCatch>();
+            return
+                from sc in catchlist
+                select new PurseSeineSetViewModel.SetCatch
+                {
+                    SpeciesCode = sc.SpeciesCode,
+                    FateCode = sc.FateCode,
+                    ObservedWeight = sc.MetricTonsObserved,
+                    ObservedCount = sc.CountObserved,
+                    LogbookWeight = sc.MetricTonsFromLog,
+                    LogbookCount = sc.CountFromLog,
+                    Comments = sc.Comments
+                };
+            
         }
 
         public static SeaDayViewModel AsViewModel(this PurseSeineSeaDay day)

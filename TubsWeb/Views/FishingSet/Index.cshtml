@@ -1,42 +1,44 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineSet
+﻿@model TubsWeb.Models.PurseSeineSetViewModel
 
+@{
+    ViewBag.Title = String.Format(
+        "Set {0} of {1} for {2}", 
+        Model.SetNumber, 
+        Model.MaxSets, 
+        Model.TripNumber);
+}
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
-        Tuple.Create(Url.Action("List", "FishingSet", new { tripId = ViewBag.TripId }), "Sets"),
-        Tuple.Create("#", String.Format("Set {0} of {1}", ViewBag.CurrentSet, ViewBag.MaxSets))
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
+        Tuple.Create(Url.Action("List", "FishingSet", new { tripId = Model.TripId }), "Sets"),
+        Tuple.Create("#", String.Format("Set {0} of {1}", Model.SetNumber, Model.MaxSets))
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@if (null == Model)
+<ul class="pager">
+@if (Model.HasPrevious)
 {
-    <text>No such set number</text>
+    <li>
+        <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.PreviousSet, action = "Index" })'>Previous Set</a>
+    </li>
 }
-else
-{
-    <ul class="pager">
-    @if (ViewBag.CurrentSet > 1)
-    {
-        <li>
-            <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = ViewBag.CurrentSet - 1 })'>Previous Set</a>
-        </li>
-    }
     
-    @if (ViewBag.MaxSets > ViewBag.CurrentSet)
-    {
-        <li>
-            <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = ViewBag.CurrentSet + 1 })'>Next Set</a>
-        </li>
-    }
-    </ul>   
-      
+@if (Model.HasNext)
+{
+    <li>
+        <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.NextSet, action = "Index" })'>Next Set</a>
+    </li>
+}
+</ul>   
+ 
+<fieldset>
+    <legend>Set Sequence Times</legend>     
     <table class="table table-bordered table-condensed table-striped">
-        <caption>Set Sequence Times</caption>
         <thead>
             <tr>
                 <th>Skiff Off</th>
@@ -49,16 +51,19 @@ else
         </thead>
         <tbody>
             <tr>
-                <td>@Html.DisplayFor(m => Model.SkiffOff)</td>
-                <td>@Html.DisplayFor(m => Model.WinchOn, new { format = "t" })</td>
-                <td>@Html.DisplayFor(m => Model.RingsUp, new { format = "t" })</td>
-                <td>@Html.DisplayFor(m => Model.BeginBrailing, new { format = "t" })</td>
-                <td>@Html.DisplayFor(m => Model.EndBrailing, new { format = "t" })</td>
-                <td>@Html.DisplayFor(m => Model.EndOfSet, new { format = "t" })</td>
+                <td>@Html.DisplayFor(m => Model.SkiffOff, new { format = "dd/MM/yy HHmm" })</td>
+                <td>@Html.DisplayFor(m => Model.WinchOnTimeOnly)</td>
+                <td>@Html.DisplayFor(m => Model.RingsUpTimeOnly)</td>
+                <td>@Html.DisplayFor(m => Model.BeginBrailingTimeOnly)</td>
+                <td>@Html.DisplayFor(m => Model.EndBrailingTimeOnly)</td>
+                <td>@Html.DisplayFor(m => Model.EndOfSetTimeOnly)</td>
             </tr>
         </tbody>
     </table>
+</fieldset>
     
+<fieldset>
+    <legend>Catch Summary</legend>
     <table class="table table-bordered table-condensed table-striped">
         <caption>Cumulative Catch Onboard (mT)</caption>
         <thead>
@@ -140,9 +145,11 @@ else
             </tr>
         </tbody>
     </table>
+</fieldset>
     
+<fieldset>
+    <legend>Catch Details</legend>
     <table class="table table-bordered table-condensed table-striped">
-        <caption>Catch Details</caption>
         <thead>
             <tr>
                 <th>Species</th>
@@ -155,15 +162,15 @@ else
             </tr>
         </thead>
         <tbody>
-        @foreach (var sc in Model.CatchList)
+        @foreach (var sc in Model.AllCatch)
         {
             <tr>
                 <td>@Html.DisplayFor(s => sc.SpeciesCode)</td>
                 <td>@Html.DisplayFor(s => sc.FateCode)</td>
-                <td>@Html.DisplayFor(s => sc.MetricTonsObserved)</td>
-                <td>@Html.DisplayFor(s => sc.CountObserved)</td>
-                <td>@Html.DisplayFor(s => sc.MetricTonsFromLog)</td>
-                <td>@Html.DisplayFor(s => sc.CountFromLog)</td>
+                <td>@Html.DisplayFor(s => sc.ObservedWeight)</td>
+                <td>@Html.DisplayFor(s => sc.ObservedCount)</td>
+                <td>@Html.DisplayFor(s => sc.LogbookWeight)</td>
+                <td>@Html.DisplayFor(s => sc.LogbookCount)</td>
                 <td>@Html.DisplayFor(s => sc.Comments)</td>
             </tr>
         }
@@ -204,12 +211,13 @@ else
 
     <hr />
     <div class="row">
-        <div class="span3">Comments</div>
+        <div class="span3"><strong>Comments</strong></div>
     </div>
     <div class="row">
         <div class="span12">@Html.DisplayFor(m => Model.Comments)</div>
     </div>
-}
+</fieldset>
+
 
 @*
 @section AdditionalScripts {

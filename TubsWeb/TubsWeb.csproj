@@ -193,6 +193,7 @@
     <Compile Include="Controllers\Gen6Controller.cs" />
     <Compile Include="Core\CxmlResult.cs" />
     <Compile Include="Core\DateTimeModelBinder.cs" />
+    <Compile Include="Core\DateUtilities.cs" />
     <Compile Include="Core\ElmahHandledErrorLoggerFilter.cs" />
     <Compile Include="Core\HandleTransactionManuallyAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -249,6 +250,7 @@
     <Content Include="Content\bootstrap-sticky-footer.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\datepicker.css" />
     <Content Include="Content\datetimepicker.css" />
     <Content Include="Content\debug.html" />
     <Content Include="Content\delete.gif" />
@@ -589,7 +591,9 @@
     <Content Include="Scripts\App\datacontext.js" />
     <Content Include="Scripts\App\seaday.js" />
     <Content Include="Scripts\App\vm.crew.js" />
+    <Content Include="Scripts\App\vm.fishingset.js" />
     <Content Include="Scripts\App\vm.seaday.js" />
+    <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.8.2-vsdoc.js" />
@@ -601,6 +605,7 @@
     <Content Include="Scripts\jquery.rateit.js" />
     <Content Include="Scripts\jquery.rateit.min.js" />
     <Content Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.dates.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -747,12 +752,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\EditorTemplates\CrewMemberModel.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Crew\DeckHand.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Crew\OtherCrew.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Gen1\EditSightings.cshtml" />
@@ -926,6 +925,27 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\SeaDay\_SeaDayEditorScripts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FishingSet\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FishingSet\_CumulativeCatch.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FishingSet\_SetCatchDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FishingSet\_SetSequenceTimes.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FishingSet\_TargetCatch.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FishingSet\_CatchBreakdown.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FishingSet\_ByCatch.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

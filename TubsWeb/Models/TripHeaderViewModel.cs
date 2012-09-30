@@ -101,17 +101,21 @@ namespace TubsWeb.Models
         [Display(Name = "Return Port")]
         public string ReturnPortName { get; set; }
 
-        [Required]
         [Display(Name = "Departure Date")]
         [DataType(DataType.DateTime)]
-        //[DisplayFormat(ApplyFormatInEditMode=true, DataFormatString = "{0:dd-MM-yy HH:mm")]
         public DateTime? DepartureDate { get; set; }
 
-        [Required]
+        public string DepartureDateOnly { get; set; }
+
+        public string DepartureTimeOnly { get; set; }
+
         [Display(Name = "Return Date")]
         [DataType(DataType.DateTime)]
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yy HH:mm")]
         public DateTime? ReturnDate { get; set; }
+
+        public string ReturnDateOnly { get; set; }
+
+        public string ReturnTimeOnly { get; set; }
 
         [Required]
         [Display(Name = "Workbook Version")]

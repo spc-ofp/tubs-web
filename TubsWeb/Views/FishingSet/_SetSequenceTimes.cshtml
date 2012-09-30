@@ -1,0 +1,75 @@
+﻿@model TubsWeb.Models.PurseSeineSetViewModel
+
+<fieldset>
+    <legend>Set Sequence Times</legend>
+    <div class="row-fluid">
+        <div class="span2">
+            <label>Skiff Off</label>
+            <div class="input-append">
+                @Html.TextBoxFor(
+                    m => Model.SkiffOffTimeOnly, 
+                    new { 
+                        data_bind = "value: SkiffOffTimeOnly", // TODO Date
+                        @class = "input-mini",
+                        uneditable_input = string.Empty})
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label>Winch On</label>
+            <div class="input-append">
+                @Html.TextBoxFor(
+                    m => Model.WinchOnTimeOnly, 
+                    new { 
+                        data_bind = "value: WinchOnTimeOnly", 
+                        @class = "input-mini" })
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label>Rings Up</label>
+            <div class="input-append">
+                @Html.TextBoxFor(
+                    m => Model.RingsUpTimeOnly, 
+                    new {
+                        data_bind = "value: RingsUpTimeOnly", 
+                        @class = "input-mini" })
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label>Begin Brailing</label>
+            <div class="input-append">
+                @Html.TextBoxFor(
+                    m => Model.BeginBrailingTimeOnly, 
+                    new {
+                        data_bind = "value: BeginBrailingTimeOnly", 
+                        @class = "input-mini" })
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label>End Brailing</label>
+            <div class="input-append">
+                @Html.TextBoxFor(
+                    m => Model.EndBrailingTimeOnly, 
+                    new {
+                        data_bind = "value: EndBrailingTimeOnly", 
+                        @class = "input-mini" })
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label>End Of Set</label>
+            <div class="input-append">
+                @Html.TextBoxFor(
+                    m => Model.EndOfSetTimeOnly, 
+                    new {
+                        data_bind = "value: EndOfSetTimeOnly", 
+                        @class = "input-mini" })
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+    </div>
+</fieldset>
+

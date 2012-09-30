@@ -186,6 +186,7 @@ namespace TubsWeb.Controllers
             pills.Add(Tuple.Create("GEN-3", Url.Action("Index", "Gen3", routeValues))); 
             pills.Add(Tuple.Create("GEN-6", Url.Action("List", "Gen6", routeValues)));
             pills.Add(Tuple.Create("Days", Url.Action("List", "SeaDay", routeValues)));
+            // TODO Use the route for this so that the name looks right
             pills.Add(Tuple.Create("Sets", Url.Action("List", "FishingSet", routeValues)));
             pills.Add(Tuple.Create("Page Counts", Url.Action("Index", "PageCount", routeValues)));
             

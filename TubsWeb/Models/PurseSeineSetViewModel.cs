@@ -25,15 +25,17 @@ namespace TubsWeb.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Newtonsoft.Json;
 
     public class PurseSeineSetViewModel
     {
         public PurseSeineSetViewModel()
         {
-             ByCatch = new List<SetCatch>();
-             SkjCatch = new List<SetCatch>();
-             YftCatch = new List<SetCatch>();
-             BetCatch = new List<SetCatch>();
+             ByCatch = new List<SetCatch>(8);
+             SkjCatch = new List<SetCatch>(8);
+             YftCatch = new List<SetCatch>(8);
+             BetCatch = new List<SetCatch>(8);
+             AllCatch = new List<SetCatch>(32);
         }
         
         // UX state
@@ -49,55 +51,101 @@ namespace TubsWeb.Models
         public int TripId { get; set; }
         public int SetId { get; set; }
 
+        // Sequence of this set during the trip
+        public int SetNumber { get; set; }
+        public int MaxSets { get; set; }
+        public int NextSet { get; set; }
+        public int PreviousSet { get; set; }
+
         public DateTime? LogbookDate { get; set; }
-        public DateTime? LogbookTime { get; set; }
+        public string LogbookTime { get; set; }
+
+        public DateTime? SkiffOff { get; set; }
 
         [Display(Name = "Start of Set")]
         [RegularExpression(@"^[0-2]\d[0-5]\d$")]
-        public string SkiffOff { get; set; }
+        public string SkiffOffTimeOnly { get; set; }
 
         [Display(Name = "Begin Pursing")]
         [RegularExpression(@"^[0-2]\d[0-5]\d$")]
-        public string WinchOn { get; set; }
+        public string WinchOnTimeOnly { get; set; }
 
         [Display(Name = "End Pursing")]
         [RegularExpression(@"^[0-2]\d[0-5]\d$")]
-        public string RingsUp { get; set; }
+        public string RingsUpTimeOnly { get; set; }
 
         [Display(Name = "Begin Brailing")]
         [RegularExpression(@"^[0-2]\d[0-5]\d$")]
-        public string BeginBrailing { get; set; }
+        public string BeginBrailingTimeOnly { get; set; }
 
         [Display(Name = "End Brailing")]
         [RegularExpression(@"^[0-2]\d[0-5]\d$")]
-        public string EndBrailing { get; set; }
+        public string EndBrailingTimeOnly { get; set; }
 
         [Display(Name = "End of Set")]
         [RegularExpression(@"^[0-2]\d[0-5]\d$")]
-        public string SkiffOnBoard { get; set; }
+        public string EndOfSetTimeOnly { get; set; }
 
         // TODO Much more here, and it will be different for different
         // form versions
-        public decimal? ObservedOnboardBeforeSet { get; set; }
-        public decimal? LoggedOnboardBeforeSet { get; set; }
+        public decimal? WeightOnboardObserved { get; set; }
+        public decimal? WeightOnboardFromLog { get; set; }
 
-        public decimal? ObservedTonnageRetainedThisSet { get; set; }
-        public decimal? LoggedTonnageRetainedThisSet { get; set; }
+        public decimal? RetainedTonnageObserved { get; set; }
+        public decimal? RetainedTonnageFromLog { get; set; }
 
-        public decimal? ObservedNewOnboardTotal { get; set; }
-        public decimal? LoggedNewOnboardTotal { get; set; }
+        public decimal? NewOnboardTotalObserved { get; set; }
+        public decimal? NewOnboardTotalFromLog { get; set; }
 
-        public decimal? ObservedTotalTunaThisSet { get; set; }
+        [Display(Name = "Tons of Tuna")]
+        public decimal? TonsOfTunaObserved { get; set; }
 
+        [Display(Name = "Sum of Brail 1")]
         public decimal? SumOfBrail1 { get; set; }
+
+        [Display(Name = "Sum of Brail 2")]
         public decimal? SumOfBrail2 { get; set; }
 
-        public IList<SetCatch> ByCatch { get; set; }
-        public IList<SetCatch> SkjCatch { get; set; }
-        public IList<SetCatch> YftCatch { get; set; }
-        public IList<SetCatch> BetCatch { get; set; }
+        // Used to help with calculation/validation
+        public int SizeOfBrail1 { get; set; }
+        public int SizeOfBrail2 { get; set; }
 
-        public int? TagCount { get; set; }
+        [Display(Name = "Total Catch")]
+        public decimal? TotalCatch { get; set; }
+
+        public bool? ContainsSkipjack { get; set; }
+        public bool? ContainsYellowfin { get; set; }
+        public bool? ContainsBigeye { get; set; }
+
+        public int? SkipjackPercentage { get; set; }
+
+        public int? YellowfinPercentage { get; set; }
+        public int? LargeYellowfinPercentage { get; set; }
+
+        public int? BigeyePercentage { get; set; }
+        public int? LargeBigeyePercentage { get; set; }
+
+        public decimal? TonsOfSkipjackObserved { get; set; }
+        public decimal? TonsOfYellowfinObserved { get; set; }
+        public decimal? TonsOfBigeyeObserved { get; set; }
+
+        // This is from old form versions.  2009 form versions have
+        // more detailed information
+        public string LargeSpecies { get; set; }
+        public int? LargeSpeciesPercentage { get; set; }
+        public int? LargeSpeciesCount { get; set; }
+
+        public List<SetCatch> ByCatch { get; set; }
+        public List<SetCatch> SkjCatch { get; set; }
+        public List<SetCatch> YftCatch { get; set; }
+        public List<SetCatch> BetCatch { get; set; }
+
+        // Memory is cheap except on the client
+        [JsonIgnore]
+        public List<SetCatch> AllCatch { get; set; }
+
+        [Display(Name = "Recovered Tag Count")]
+        public int? RecoveredTagCount { get; set; }
         public string Comments { get; set; }
 
         public class SetCatch

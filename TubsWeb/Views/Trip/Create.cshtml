@@ -13,7 +13,7 @@
 </div>
 }
 
-@using (Html.BeginForm("Create", "Trip", FormMethod.Post, new { id = "createTripForm", @class = "well", autocomplete = "off" }))
+@using (Html.BeginForm("Create", "Trip", FormMethod.Post, new { id = "createTripForm", autocomplete = "off" }))
 {
     @Html.ValidationSummary(false)
     <fieldset>
@@ -26,6 +26,16 @@
     </fieldset>  
 }
 
+@*
+Date validation:
+http://byatool.com/ui/jquery-validate-datecheck-if-is-date/
+http://blog.jsfmp.com/post/7888992470/jquery-date-validation-really-valid-dates
+http://christierney.com/2011/06/30/jquery-validate-better-date-method/
+http://keith-wood.name/uiDatepickerValidation.html
+http://docs.jquery.com/Plugins/Validation/Methods/date
+*@
+
+@* TODO: Reorder the items to match the revised form *@
 <ul id="tlyPageGuide" data-tourtitle="Detailed data entry instructions">
     <li class="tlypageguide_left" data-tourtarget="#ObserverFullName">
         <div>
@@ -101,7 +111,17 @@
 </ul>
 
 @section AdditionalScripts {
-    <script src="@Url.Content("~/Scripts/spc.utilities.js")"></script>
+    <script src="~/Scripts/spc.utilities.js"></script>
+
+    @*http://keith-wood.name/uiDatepickerValidation.html*@
+    @*Instead of patching jquery validator file, replace the function*@
+    @*http://forums.asp.net/t/1744540.aspx/1*@
+    @*
+    $.validator.methods.date = function (value, element) {
+    return this.optional(element) || ( /^\d{1,2}[\/-]\d{1,2}[\/-]\d{4}(\s\d{2}:\d{2}(:\d{2})?)?$/.test(value)
+            && !/Invalid|NaN/.test(new Date(value.substr(6, 4) + '-' + value.substr(3, 2) + '-' + value.substr(0, 2))));
+    }
+    *@
 
     @*  JavaScript for Ajax lookups and date/time pickers *@
     <script>
@@ -136,21 +156,7 @@
         var rpta = new spc.typeAheadFactory('@Url.Action("Find", "Port")', returnPortUpdater);
 
         $(function () {
-            // Observer workbooks don't fly into our hands, so starting 6 months back is probably a good bet.
-            // Make entry a bit quicker:  Switch dateFormat from 'dd/mm/yy' to 'dd-mm-y'
-            // with an alternate format for the backend
-            var sixMonthsAgo = new Date();
-            sixMonthsAgo.setDate(sixMonthsAgo.getDate() - 180);
-            $(".datetime").datetimepicker({
-                showOn: "button",
-                buttonImage: '@Url.Content("~/Content/images/calendar-icon.png")',
-                buttonImageOnly: true,
-                dateFormat: 'dd-mm-y',
-                altFormat: 'yy-mm-dd', // This is what gets sent on the back end
-                timeFormat: 'hh:mm',
-                numberOfMonths: 2,
-                defaultDate: sixMonthsAgo
-            });
+            $('.datepicker').datepicker();
 
             $('#VesselName').typeahead(vta);
             $('#ObserverFullName').typeahead(ota);

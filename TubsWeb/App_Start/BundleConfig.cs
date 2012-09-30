@@ -39,11 +39,10 @@ namespace TubsWeb
                 .Include(
                     "~/Scripts/json2.js", // This is now required as it's part of dirty checking
                     "~/Scripts/bootstrap.js",
+                    "~/Scripts/bootstrap-datepicker.js", // jQuery UI doesn't work well with Bootstrap
 
                     // jQuery plugins
-                    "~/Scripts/jquery-ui-{version}.js",
                     "~/Scripts/activity-indicator-{version}.js",
-                    "~/Scripts/jquery-ui-timepicker-addon.js",
                     "~/Scripts/jquery.rateit.js",
                     "~/Scripts/jquery.sparkline.min.js",
                     "~/Scripts/jquery.validate.js",
@@ -65,12 +64,11 @@ namespace TubsWeb
                     "~/Scripts/toastr.js"
                  ));
 
-            // TODO Add another bundle for jQuery UI
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap-responsive.css",
                 "~/Content/bootstrap.css",
                 "~/Content/bootstrap-sticky-footer.css", // Custom for sticky footer
-                "~/Content/datetimepicker.css",
+                "~/Content/datepicker.css", // Bootstrap datepicker
                 "~/Content/pageguide.css",
                 "~/Content/rateit.css",
                 "~/Content/toastr.css",

@@ -1,0 +1,47 @@
+﻿@model TubsWeb.Models.PurseSeineSetViewModel
+
+<fieldset>
+    <legend>By-Catch</legend>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Species<br />Code</th>
+                <th>Fate<br />Code</th>
+                <th>Observer<br />Weight</th>
+                <th>Observer<br />Count</th>
+                <th>Vessel<br />Weight</th>
+                <th>Vessel<br />Count</th>
+                <th>Comments</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <button  
+                            tabindex="3000"
+                            class="removeItem btn btn-mini btn-danger" 
+                            rel="tooltip" 
+                            title="Click to remove row">
+                        <i class="icon-remove icon-white"></i>
+                    </button>
+                </td>
+                <td>PLS</td>
+                <td>RCC</td>
+                <td>0.002</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>Xyzzy</td>
+                <td>
+                    <button class="addItem btn btn-mini btn-info" 
+                            rel="tooltip" 
+                            title="Click to add row">
+                        <i class="icon-plus icon-white"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>

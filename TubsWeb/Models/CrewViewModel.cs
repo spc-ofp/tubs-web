@@ -6,7 +6,7 @@
 
 namespace TubsWeb.Models
 {
-    
+
     /*
      * This file is part of TUBS.
      *
@@ -26,6 +26,8 @@ namespace TubsWeb.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using Newtonsoft.Json;
     using Spc.Ofp.Tubs.DAL.Common;
     
     /// <summary>
@@ -62,7 +64,22 @@ namespace TubsWeb.Models
 
         public CrewMemberModel WinchMan { get; set; }
 
+        // List, and not IList because we want to use AddRange
+        // elsewhere
         public List<CrewMemberModel> Hands { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<CrewMemberModel> Deleted
+        {
+            get
+            {
+                return this.Hands.Where(c =>
+                    c != null &&
+                    c.Id != default(Int32) && // Ignore entities with a zero for Id, as they're not in the database
+                    (c._destroy || !c.IsFilled) // If someone blanked the name (or name && comments), we'll count that as a delete
+                );
+            }
+        }
         
         public class CrewMemberModel
         {
@@ -90,18 +107,24 @@ namespace TubsWeb.Models
 
             public string Comments { get; set; }
 
-            public bool? IsDirty { get; set; }
+            public bool _destroy { get; set; }
 
+            [JsonIgnore]
             public bool IsFilled
             {
                 get
                 {
-                    // At some point in the future, might want to make this more
-                    // complex for senior crew...
+                    if (this.Job.HasValue && this.Job.Value != JobType.Crew)
+                    {
+                        return
+                            !string.IsNullOrWhiteSpace(this.Name) ||
+                            !string.IsNullOrWhiteSpace(this.Comments);
+                    }
                     return !string.IsNullOrWhiteSpace(this.Name);
                 }
             }
 
+            [JsonIgnore]
             public string Experience
             {
                 get

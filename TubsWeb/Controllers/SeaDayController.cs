@@ -24,7 +24,6 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Linq;
-    using System.Net;
     using System.Web.Mvc;
     using System.Web.Routing;
     using Spc.Ofp.Tubs.DAL;
@@ -102,9 +101,7 @@ namespace TubsWeb.Controllers
         /// <returns>true if this is the "Add" action, false otherwise</returns>
         internal bool IsAdd()
         {
-            return "Add".Equals(
-                this.ControllerContext.RouteData.GetRequiredString("action"),
-                StringComparison.InvariantCultureIgnoreCase);
+            return "Add".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
@@ -113,9 +110,7 @@ namespace TubsWeb.Controllers
         /// <returns>true if this is the "Edit" action, false otherwise</returns>
         internal bool IsEdit()
         {
-            return "Edit".Equals(
-                this.ControllerContext.RouteData.GetRequiredString("action"),
-                StringComparison.InvariantCultureIgnoreCase);
+            return "Edit".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
@@ -281,10 +276,10 @@ namespace TubsWeb.Controllers
                     return ModelErrorsResponse();
                 return View(sdvm);
             }
-            Logger.Info("ViewModel looks valid...");
 
             // Try this for now, refactor later (if at all)
             // drepo for (d)ay, erepo for (e)vent (aka Activity).
+            // TODO Start transaction here...
             IRepository<SeaDay> drepo = TubsDataService.GetRepository<SeaDay>(MvcApplication.CurrentSession);
             IRepository<Activity> erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
             IRepository<PurseSeineSet> srepo = TubsDataService.GetRepository<PurseSeineSet>(MvcApplication.CurrentSession);
@@ -310,6 +305,9 @@ namespace TubsWeb.Controllers
                 erepo.Add(activity);
                 if (addSet)
                 {
+                    // FIXME:  There's a bug here in that set number isn't set
+                    // This is why some trips don't display sets even though
+                    // there are records in the database.
                     var fset = new PurseSeineSet();
                     fset.BeginBrailing = activity.LocalTime;
                     fset.BeginBrailingTimeOnly = activity.LocalTimeTimeOnly;
@@ -320,13 +318,17 @@ namespace TubsWeb.Controllers
                 }
             }
 
+            // TODO:  Commit transaction here
+            // At this point, if the transaction worked, we can guarantee that the
+            // SeaDay has an ID -- use that to load the correct day instead of Skip/Take
+            // Don't forget the second call to get the number of days
+
             // This is the happy path -- if we get here, everything should have worked...
             if (IsApiRequest())
             {
-                // Return JSON for debug only
-                //return GettableJsonNetData(sdvm);
-                Response.StatusCode = (int)HttpStatusCode.NoContent;
-                return null;
+                // Force a reload after a save to ensure that PKs are set for all
+                // appropriate entities.
+                return GettableJsonNetData(sdvm);
             }
 
             // If this isn't an API request (which shouldn't really happen)
@@ -362,13 +364,14 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId, dayNumber);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        //[Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, int dayNumber)
         {
             return ViewActionImpl(tripId, dayNumber);
         }
 
         [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Add(Trip tripId, int dayNumber, SeaDayViewModel sdvm)
         {
             return SaveActionImpl(tripId, dayNumber, sdvm);

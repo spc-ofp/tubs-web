@@ -1,0 +1,156 @@
+﻿@model TubsWeb.Models.PurseSeineSetViewModel
+
+@{
+    bool IncludeLegacyColumn = Model.VersionNumber != 2009;
+}
+
+<fieldset>
+    <legend>Total Tuna Catch Breakdown</legend>
+    @* 
+     * Although it's possible to make this look more like the form,
+     * this particular layout is more tab friendly without screwing around
+     * with setting tab order.
+     *@
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <td>&nbsp;</td>
+                <td>In Set</td>
+                <td>Percentage</td>
+                <td>Number</td>
+                @if (IncludeLegacyColumn)
+                {
+                <td>Weight (mT)</td>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Skipjack</strong></td>
+                <td>
+                    YES
+                </td>
+                <td>
+                    @Html.TextBoxFor(
+                        m => Model.SkipjackPercentage,
+                        new {
+                            @class = "input-mini",
+                            data_bind = "value: SkipjackPercentage",
+                            type = "number"
+                        }
+                    )
+                </td>
+                <td>&nbsp;</td>
+                @if (IncludeLegacyColumn)
+                {
+                <td>
+                    @Html.TextBoxFor(
+                        m => Model.TonsOfSkipjackObserved,
+                        new {
+                            data_bind = "value: TonsOfSkipjackObserved",
+                            @class = "input-mini"
+                        })
+                </td>
+                }
+            </tr>
+            <tr>
+                <td><strong>Small Yellowfin (&lt; 9kgs)</strong></td>
+                <td>
+                    YES
+                </td>
+                <td>
+                    @Html.TextBoxFor(
+                        m => Model.YellowfinPercentage,
+                        new {
+                            @class = "input-mini",
+                            data_bind = "value: YellowfinPercentage",
+                            type = "number"
+                        }
+                    )
+                </td>
+                <td>&nbsp;</td>
+                @if (IncludeLegacyColumn)
+                {
+                <td>
+                    @Html.TextBoxFor(
+                        m => Model.TonsOfYellowfinObserved,
+                        new {
+                            data_bind = "value: TonsOfYellowfinObserved",
+                            @class = "input-mini"
+                        })
+                </td>
+                }
+            </tr>
+            <tr>
+                <td><strong>Large Yellowfin (&gt; 9kgs)</strong></td>
+                <td>
+                    YES
+                </td>
+                <td>
+                    @Html.TextBoxFor(
+                        m => Model.LargeYellowfinPercentage,
+                        new {
+                            @class = "input-mini",
+                            data_bind = "value: LargeYellowfinPercentage",
+                            type = "number"
+                        }
+                    )
+                </td>
+                <td>&nbsp;</td>
+                @if (IncludeLegacyColumn)
+                {
+                <td>&nbsp;</td>
+                }
+            </tr>
+            <tr>
+                <td><strong>Small Bigeye (&lt; 9kgs)</strong></td>
+                <td>
+                    YES
+                </td>
+                <td>
+                    @Html.TextBoxFor(
+                        m => Model.BigeyePercentage,
+                        new {
+                            @class = "input-mini",
+                            data_bind = "value: BigeyePercentage",
+                            type = "number"
+                        }
+                    )
+                </td>
+                <td>&nbsp;</td>
+                @if (IncludeLegacyColumn)
+                {
+                <td>
+                    @Html.TextBoxFor(
+                        m => Model.TonsOfBigeyeObserved,
+                        new {
+                            data_bind = "value: TonsOfBigeyeObserved",
+                            @class = "input-mini"
+                        })
+                </td>
+                }
+            </tr>
+            <tr>
+                <td><strong>Large Bigeye (&gt; 9kgs)</strong></td>
+                <td>
+                    YES
+                </td>
+                <td>
+                    @Html.TextBoxFor(
+                        m => Model.LargeBigeyePercentage,
+                        new {
+                            @class = "input-mini",
+                            data_bind = "value: LargeBigeyePercentage",
+                            type = "number"
+                        }
+                    )
+                </td>
+                <td>&nbsp;</td>
+                @if (IncludeLegacyColumn)
+                {
+                <td>&nbsp;</td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</fieldset>

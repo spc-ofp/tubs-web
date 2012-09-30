@@ -128,7 +128,7 @@ tubs.psSeaDay = function (data) {
         self.HasGen3Event,
         self.DiaryPage,
         self.Events // This is only for the add/remove
-    ], false, tubs.hashFunction);
+    ], false, tubs.seaDayHashFunction);
 
     self.isDirty = ko.computed(function () {
         // Avoid iterating over the events if the header
@@ -246,13 +246,13 @@ tubs.psSeaDayReplacer = function (key, value) {
 //
 // After much yak-shaving, it looks like this is the easiest way
 // to manage this.
-// Write the state of the watched fields (set up in trackedObject)
+// Write the state of the watched fields (set up in seaDay)
 // to JSON, using the tubs.psSeaDayReplacer function to remove any
 // fields down at the Event level that we don't consider
 // when marking the whole day as 'dirty'.
 // 
 //
-tubs.hashFunction = function (trackedObject) {
-    return ko.toJSON(trackedObject, tubs.psSeaDayReplacer);
+tubs.seaDayHashFunction = function (seaDay) {
+    return ko.toJSON(seaDay, tubs.psSeaDayReplacer);
 };
 

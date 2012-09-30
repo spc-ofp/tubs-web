@@ -35,64 +35,33 @@ namespace TubsWeb.Controllers
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class CrewController : SuperController
     {
-        // This is a strong linkage to the template name.  We can't use the default template engine behavior
-        // since there are two templates with this name -- one for display, and one for edit.
-        // There _might_ be a fix by changing the view template from something that's shared in "DisplayTemplates"
-        // into something that's hosted elsewhere.  That will mean having to provide the partial name where appropriate
-        private const string PathToEditPartial = @"~/Views/Shared/EditorTemplates/CrewMemberModel.cshtml";
-
-        private const string PathToDeckHandPartial = @"~/Views/Crew/DeckHand.cshtml";
-
-        private CrewViewModel.CrewMemberModel SaveCrewmember(Trip tripId, CrewViewModel.CrewMemberModel cmm, out bool success)
+        internal ActionResult ViewActionImpl(Trip tripId)
         {
-            success = false;
-            if (ModelState.IsValid)
-            {
-                Crew crew = tripId.CreateCrew();
-                if (null != crew)
-                {
-                    cmm.CopyTo(crew);
-                    crew.Trip = tripId;
-                    var repo = new TubsRepository<Crew>(MvcApplication.CurrentSession);
-                    if (default(int) == crew.Id)
-                    {
-                        crew.EnteredBy = User.Identity.Name;
-                        crew.EnteredDate = DateTime.Now;
-                        repo.Add(crew);
-                        cmm.Id = crew.Id;
-                        success = true;
-                    }
-                    else
-                    {
-                        repo.Update(crew, true);
-                        success = true;
-                    }
-                }
-            }
-            return cmm;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tripId"></param>
-        /// <param name="cmm"></param>
-        /// <param name="partialName"></param>
-        /// <returns></returns>
-        private PartialViewResult ModifyCrewmember(Trip tripId, CrewViewModel.CrewMemberModel cmm, string partialName)
-        {
-            // Not the best way to handle this, but how often will it happen?
             if (null == tripId)
             {
-                return PartialView(partialName, cmm);
+                return InvalidTripResponse();
             }
 
-            bool modelSaved = false;
-            cmm = SaveCrewmember(tripId, cmm, out modelSaved);
-            return PartialView(partialName, cmm);
+            var cvm = Fill(MvcApplication.CurrentStatelessSession, tripId.Id);
+            cvm.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+            string title = String.Format(" list for {0}", tripId.ToString());
+            if ("Index".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase))
+                title = "Crew" + title;
+            if ("Edit".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase))
+                title = "Edit crew" + title;
+            ViewBag.Title = title;
+
+            if (IsApiRequest())
+                return GettableJsonNetData(cvm);
+
+            return View(CurrentAction(), cvm);           
         }
+
 
         /// <summary>
         /// Find the first crewmember with the given job in the list of all crew for the trip.
@@ -138,8 +107,6 @@ namespace TubsWeb.Controllers
         {
             CrewViewModel cvm = new CrewViewModel();
             cvm.TripId = tripId;
-            // Without a Trip, we can't meaningfully set TripNumber
-            cvm.TripNumber = "This Trip";
             var crewlist = TubsDataService.GetRepository<Crew>(session).FilterBy(c => c.Trip.Id == tripId);
             cvm.Hands.AddRange(GetDeckHands(crewlist));
             // Get named crew members
@@ -156,51 +123,34 @@ namespace TubsWeb.Controllers
             return cvm;
         }
 
-        private CrewViewModel Fill(Trip tripId)
-        {            
-            CrewViewModel cvm = Fill(MvcApplication.CurrentStatelessSession, tripId.Id);
-            cvm.TripNumber = tripId.SpcTripNumber ?? "This Trip";
-            return cvm;
-        }
-
         //
         // GET: /Crew/
         public ActionResult Index(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
-            ViewBag.Title = String.Format("Crew list for {0}", tripId.ToString());
-            var cvm = Fill(tripId);
-            
-            if (IsApiRequest())
-                return GettableJsonNetData(cvm);
-            return View(cvm);
+            return ViewActionImpl(tripId);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        //[Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-            ViewBag.Title = String.Format("Edit crew list for {0}", tripId.ToString());
-            return View(Fill(tripId));
+            return ViewActionImpl(tripId);
         }
 
         // This should only ever be hit by the Knockout function, but we'll still probably want
         // to cater for straight up HTML Forms
+        // This is the first test of the manual transaction attribute.
+        // The transaction is committed in the middle so that we can be sure
+        // that what's sent to the client is what's in the database.
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [HandleTransactionManually]
+        //[Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, CrewViewModel cvm)
         {
             if (null == tripId)
             {
                 return InvalidTripResponse();
             }
+
             if (!ModelState.IsValid)
             {
                 if (IsApiRequest())
@@ -211,32 +161,31 @@ namespace TubsWeb.Controllers
                 return View(cvm);
             }
 
-            // Two approaches:  We can save what we can save, or we do this as an all or nothing
-            // deal.  For now, we'll do all or nothing...
-            var crewlist = cvm.AsCrewList(); // AsCrewList strips out any crew without any details
-            // This is where it would be handy to have an extension that sets the audit trail...
-            foreach (var c in crewlist)
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
-                if (default(int) == c.Id)
+                IRepository<Crew> repo = TubsDataService.GetRepository<Crew>(MvcApplication.CurrentSession);
+                // Deletes first
+                cvm.Deleted.ToList().ForEach(c => repo.DeleteById(c.Id));
+
+                // AsCrewList strips out any crew marked _destroy or that don't have details
+                var crewlist = cvm.AsCrewList();
+
+                crewlist.ToList().ForEach(c =>
                 {
-                    c.EnteredBy = User.Identity.Name;
-                    c.EnteredDate = DateTime.Now;
-                }
-                else
-                {
-                    c.UpdatedBy = User.Identity.Name;
-                    c.UpdatedDate = DateTime.Now;
-                }
-                c.Trip = tripId;
+                    c.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    c.Trip = tripId;
+                });
+
+                repo.Add(crewlist);
+                // Flush to database
+                xa.Commit();
             }
-            //crewlist.ToList().ForEach(c => c.Trip = tripId);
-            IRepository<Crew> repo = TubsDataService.GetRepository<Crew>(MvcApplication.CurrentSession);                
-            repo.Add(crewlist);
-            // TODO:  If there are crew that aren't in the list, then those crew members need to be deleted
             if (IsApiRequest())
             {
-                Response.StatusCode = (int)HttpStatusCode.NoContent;
-                return null;
+                // Reload the model from the DB.  This will fill any
+                // PK Id values
+                cvm = Fill(MvcApplication.CurrentStatelessSession, tripId.Id);
+                return GettableJsonNetData(cvm);
             }
             else
             {
@@ -244,41 +193,6 @@ namespace TubsWeb.Controllers
             }
         }
 
-        [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
-        public PartialViewResult EditSingleDeckhand(Trip tripId, CrewViewModel.CrewMemberModel cmm)
-        {
-            return ModifyCrewmember(tripId, cmm, PathToDeckHandPartial);
-        }
-
-        // TODO At some point in the future, change this from the ViewModel directly to the DAL model.
-        // However, at this point, it's a PITA because it requires the AbstractBind attribute, which
-        // then requires a hidden attribute with the concrete type, which means that the concrete
-        // type needs to be fed into ViewModel.  Yeesh!
-        //
-        // Hint to get started on this came from here:
         // http://xhalent.wordpress.com/2011/02/05/using-unobtrusive-ajax-forms-in-asp-net-mvc3/
-        //
-        [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
-        public PartialViewResult EditSingle(Trip tripId, CrewViewModel.CrewMemberModel cmm)
-        {
-            return ModifyCrewmember(tripId, cmm, PathToEditPartial);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
-        public PartialViewResult AddDeckHand(Trip tripId, [Bind(Prefix = "hand")] CrewViewModel.CrewMemberModel cmm)
-        {
-            bool modelSaved = false;
-            SaveCrewmember(tripId, cmm, out modelSaved);
-            var crewlist = new TubsRepository<Crew>(MvcApplication.CurrentSession).FilterBy(c => c.Trip.Id == tripId.Id);
-            var hands = GetDeckHands(crewlist);
-            return PartialView("OtherCrew", hands);
-        }
-
     }
 }

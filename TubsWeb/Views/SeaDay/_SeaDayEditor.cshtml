@@ -35,19 +35,37 @@
         <div class="row-fluid">
             <div class="span1">
                 @Html.LabelFor(m => Model.ShipsDate)
-                @Html.TextBoxFor(m => Model.ShipsDate, new { data_bind = "value: ShipsDate.formattedDate", @class = "input-mini" })
+                <div class="input-append">
+                    @Html.TextBoxFor(
+                        m => Model.ShipsDate, 
+                        new { 
+                            data_val = "true",
+                            data_val_required="Date portion of start date is required",
+                            data_bind = "value: ShipsDate.formattedDate", 
+                            @class = "input-mini" })
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
             </div>
             <div class="span1">
                 @Html.LabelFor(m => Model.ShipsTime)
-                @Html.TextBoxFor(m => Model.ShipsTime, new { data_bind = "value: $root.ShipsTime", @class = "input-mini" })
+                <div class="input-append">
+                    @Html.TextBoxFor(m => Model.ShipsTime, new { data_bind = "value: $root.ShipsTime", @class = "input-mini" })
+                    <span class="add-on"><i class="icon-time"></i></span>
+                </div>
             </div>
             <div class="span1">
                 @Html.LabelFor(m => Model.UtcDate)
-                @Html.TextBoxFor(m => Model.UtcDate, new { data_bind = "value: UtcDate.formattedDate", @class = "input-mini" })
+                <div class="input-append">
+                    @Html.TextBoxFor(m => Model.UtcDate, new { data_bind = "value: UtcDate.formattedDate", @class = "input-mini" })
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
             </div>
             <div class="span1">
                 @Html.LabelFor(m => Model.UtcTime)
-                @Html.TextBoxFor(m => Model.UtcTime, new { data_bind = "value: $root.UtcTime", @class = "input-mini" })
+                <div class="input-append">
+                    @Html.TextBoxFor(m => Model.UtcTime, new { data_bind = "value: $root.UtcTime", @class = "input-mini" })
+                    <span class="add-on"><i class="icon-time"></i></span>
+                </div>
             </div>
         </div>
     </fieldset>
@@ -89,7 +107,7 @@
                                 class="btn btn-mini btn-info unlockItem"
                                 rel="tooltip"
                                 title="Click to unlock row">
-                                <img src="~/Content/images/appbar.unlock.png" width="16" height="16" alt="Unlock"/>
+                                <i class="icon-lock icon-white"></i>
                         </button>
                     </td>
                     <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini" type="text" required /></td>

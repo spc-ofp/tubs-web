@@ -1,0 +1,113 @@
+﻿@model TubsWeb.Models.PurseSeineSetViewModel
+@using TubsWeb.Models
+@using Newtonsoft.Json
+
+@{
+    // Set up some navigation URLs
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, dayNumber = Model.NextSet, action = Model.HasNext ? "Edit" : "Add" });
+    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, dayNumber = Model.PreviousSet, action = "Edit" });    
+}
+
+<form id="fishingSetForm">
+    <p>
+        @if (Model.HasPrevious)
+        {
+        <a href='@previousPage' class="btn btn-info">
+            <i class="icon-backward icon-white"></i>&nbsp;Previous Set
+        </a>
+        }
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+        @* If the next set exists, this button will edit it.  Otherwise, go to add next set *@
+        @* Allow going to the next set regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+        <a href='@nextPage' id="nextSetButton" class="btn btn-info">
+            Next Set&nbsp;<i class="icon-forward icon-white"></i>
+        </a>
+    </p>
+    <hr />
+    @* TODO Logbook date and time *@
+
+    @{ Html.RenderPartial("_SetSequenceTimes", Model); }
+
+    <hr />
+
+    @* false is being used to turn off _CumulativeCatch partial *@
+    @if (false && 2009 != Model.VersionNumber)
+    {
+        Html.RenderPartial("_CumulativeCatch", Model);
+        @: <hr />
+    }
+
+    @{ Html.RenderPartial("_SetCatchDetails", Model); }
+
+    <hr />
+
+    @{ Html.RenderPartial("_CatchBreakdown", Model); }
+
+    <hr />
+
+    @{ Html.RenderPartial("_TargetCatch", Model); }
+
+    <hr />
+
+    @{ Html.RenderPartial("_ByCatch", Model); }
+
+    <hr />
+
+    <fieldset>
+        <legend>Tags</legend>   
+        <div class="row">
+            <div class="span2">
+                <label>Recovered Tag Count</label>
+                @Html.TextBoxFor(
+                    m => Model.RecoveredTagCount, 
+                    new {
+                        @class = "input-mini",
+                        type = "number",
+                        data_bind = "value: RecoveredTagCount"
+                    })
+            </div>
+        </div>
+    </fieldset>
+
+    <hr />
+
+    <fieldset>
+        <legend>Comments</legend>
+        @Html.TextAreaFor(
+            m => Model.Comments,
+            new {
+                @class = "span12",
+                rows = 4,
+                data_bind = "value: Comments"
+            }
+        )
+    </fieldset>
+</form>
+
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+
+@section AdditionalScripts {
+    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+    <script src="~/Scripts/spc.utilities.js"></script>
+    <script src="~/Scripts/App/vm.fishingset.js"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+
+    <script>
+        $(document).ready(function () {
+            var viewModel = new tubs.psSet(@modelAsJson);
+            ko.applyBindings(viewModel);
+
+            // This will toggle visibility of legends, but it needs some
+            // work, as we want to hide all but the first on load
+            // Also, want to use these as a clickable hint:
+            // icon-chevron-down icon-chevron-up
+            //$('legend').click(function(){
+            //    $(this).siblings().slideToggle("slow");
+            //});
+        });
+    </script>
+}

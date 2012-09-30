@@ -30,6 +30,7 @@ namespace TubsWeb.Controllers
     using System.Web.Configuration;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
+    using Spc.Ofp.Tubs.DAL.Common; // For date utilities
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     using TubsWeb.Models;
@@ -366,7 +367,7 @@ namespace TubsWeb.Controllers
         }
 
         // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
-        [Authorize(Roles = Security.EditRoles)]
+        //[Authorize(Roles = Security.EditRoles)]
         public ActionResult Create()
         {
             // Drive program code and country code if this is an in-country installation
@@ -385,34 +386,29 @@ namespace TubsWeb.Controllers
         // CRUD operation in the application.
         //
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        //[Authorize(Roles = Security.EditRoles)]
         public ActionResult Create(TripHeaderViewModel thvm)
         {
-            // Validate ViewModel (potentially, just copy and then validate domain model...)
-            Logger.Debug("Entering function...");
-            // Model level validations
-            if (ModelState.IsValidField("DepartureDate") && ModelState.IsValidField("ReturnDate"))
-            {
-                Logger.Debug("Has departure/return date fields");
-                if (!thvm.ReturnDate.HasValue)
-                {
-                    ModelState["ReturnDate"].Errors.Add("Return Date is required");
-                    Logger.Debug("Failed on ReturnDate validation");
-                }
+            // After much hassle with native DateTime objects, I've bowed to reality and
+            // decided to transport the dates via string and do parsing here.
+            
+            // TODO:  Validate time only values via RegEx
 
-                if (!thvm.DepartureDate.HasValue)
-                {
-                    ModelState["DepartureDate"].Errors.Add("Departure Date is required");
-                    Logger.Debug("Failed on DepartureDate validation");
-                }
-                
-                if (thvm.ReturnDate.Value.CompareTo(thvm.DepartureDate.Value) < 0)
-                {
-                    // This will prevent ModelState.IsValid from returning true
-                    ModelState["ReturnDate"].Errors.Add("Return Date can't be before departure date");
-                    Logger.Debug("Failed on return date after departure date");
-                }
+            var departDate = thvm.DepartureDateOnly.Parse().Merge(thvm.DepartureTimeOnly);
+            if (!departDate.HasValue)
+                ModelState["DepartureDateOnly"].Errors.Add("Missing or invalid departure date");
+
+            var returnDate = thvm.ReturnDateOnly.Parse().Merge(thvm.ReturnTimeOnly);
+            if (!returnDate.HasValue)
+                ModelState["ReturnDateOnly"].Errors.Add("Missing or invalid return date");
+
+            if (returnDate.HasValue && departDate.HasValue && returnDate.Value.CompareTo(departDate.Value) < 0)
+            {
+                ModelState["ReturnDate"].Errors.Add("Return date can't be before departure date");
             }
+
+            thvm.DepartureDate = departDate;
+            thvm.ReturnDate = returnDate;
 
             // Check to see if the observer code/trip number combo already exists
             var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
@@ -430,7 +426,7 @@ namespace TubsWeb.Controllers
                 ModelState["ObserverCode"].Errors.Add(message);
                 ModelState["TripNumber"].Errors.Add(message);
                 Logger.DebugFormat("Found observer/tripNumber violation.  Existing obstripId={0}");
-                // Redirect to some error page that includes link to existing trip
+                // TODO Redirect to some error page that includes link to existing trip
                 Flash(message);
                 return View(thvm);
             }

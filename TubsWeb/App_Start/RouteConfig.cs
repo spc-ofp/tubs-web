@@ -23,11 +23,9 @@ namespace TubsWeb
         public static string Gen3 = "Gen3";
         public static string Gen6Details = "Gen6Details";
         public static string Gen6 = "Gen6";
-        public static string SetDetails = "SetDetails";
+        //public static string SetDetails = "SetDetails";
         public static string Sets = "Sets";
         public static string LengthSamples = "LengthSamples";
-        //public static string SeaDayDetails = "SeaDayDetails";
-        //public static string SeaDayViewModel = "SeaDayViewModel"; // TODO Come up with a better route name
         public static string SeaDayById = "SeaDayById";
         public static string SeaDays = "SeaDays";
         public static string Gear = "Gear";
@@ -161,8 +159,16 @@ namespace TubsWeb
             // Even though Set is subordinate to day, allow link directly to list of sets
             // and to a particular set number
             routes.MapRoute(
+                name: Sets,
+                url: "Trip/{tripId}/Sets/{setNumber}/{action}",
+                defaults: new { controller = "FishingSet", action = "List", setNumber = UrlParameter.Optional },
+                constraints: new { tripId = @"\d+", setNumber = @"\d+" }
+            );
+
+            /*
+            routes.MapRoute(
                 SetDetails,
-                "Trip/{tripId}/Sets/{setNumber}",
+                "Trip/{tripId}/Sets/{setNumber}/{action}",
                 new { controller = "FishingSet", action = "Index" },
                 new { tripId = @"\d+", setNumber = @"\d+" }
             );
@@ -173,6 +179,7 @@ namespace TubsWeb
                 new { controller = "FishingSet", action = "List" },
                 new { tripId = @"\d+" }
             );
+            */
 
             // Although length samples are subordinate to Sets, they'll be available at a higher level
             // for a more readable URL.

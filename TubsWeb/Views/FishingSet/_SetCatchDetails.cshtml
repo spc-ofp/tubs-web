@@ -1,0 +1,37 @@
+﻿@model TubsWeb.Models.PurseSeineSetViewModel
+
+<fieldset>
+    <legend>Set Catch Details</legend>
+    <div class="row">
+        <div class="span2">
+            <label>Brail 1</label>
+            <span data-bind="text: SizeOfBrail1">N/A</span>mT &times;
+            @Html.TextBoxFor(
+                m => Model.SumOfBrail1,
+                new {
+                    @class="input-mini",
+                    data_binding = "value: SumOfBrail1"
+                })
+        </div>
+        <div class="span2">
+            <label>Brail 2</label>
+            + <span data-bind="text: SizeOfBrail2">N/A</span>mT &times;
+            @Html.TextBoxFor(
+                m => Model.SumOfBrail2,
+                new {
+                    @class="input-mini",
+                    data_binding = "value: SumOfBrail2"
+                })
+        </div>
+        <div class="span2">
+            <label>Total Catch Weight</label>
+            =&nbsp;
+            @Html.TextBoxFor(
+                m => Model.TotalCatch,
+                new {
+                    @class="input-mini",
+                    data_binding = "value: TotalCatch"
+                })
+        </div>
+    </div>
+</fieldset>

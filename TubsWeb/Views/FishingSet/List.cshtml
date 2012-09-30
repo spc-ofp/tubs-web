@@ -36,7 +36,7 @@
     {
         <tr>
             <td>
-                <a href='@Url.RouteUrl("SetDetails", new { tripId = ViewBag.TripId, setNumber = set.SetNumber })'>@set.SetNumber</a>
+                <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" })'>@set.SetNumber</a>
             </td>
             <td>@set.Activity.SchoolAssociation.GetDescription()</td>
             <td>@IsSkunk(set.CatchList)</td>
