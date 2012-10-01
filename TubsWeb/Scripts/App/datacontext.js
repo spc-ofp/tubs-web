@@ -7,10 +7,12 @@
 /// <reference path="../amplify.js" />
 var tubs = tubs || {};
 
-// This depends on the scripts being served out of 'Scripts' just off the
-// application root.
+// This will break for any page that's served via
+// the default route.  However, that doesn't look
+// like any of the pages that would have these, so call
+// it good enough for now.
 var href = window.location.href;
-var endsAt = href.indexOf("Scripts");
+var endsAt = href.indexOf("Trip");
 var appBase = href.substr(0, endsAt);
 
 amplify.request.define("getSeaDay", "ajax", {
