@@ -1,0 +1,68 @@
+﻿@model TubsWeb.Models.PurseSeineSetViewModel
+@using Newtonsoft.Json
+
+<script src="~/Scripts/knockout.custom-bindings.js"></script>
+<script src="~/Scripts/spc.utilities.js"></script>
+<!-- Ajax data layer -->
+<script src="~/Scripts/App/datacontext.js"></script>
+<script src="~/Scripts/App/vm.fishingset.js"></script>
+
+@{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+
+<script>
+    $(document).ready(function () {
+        var viewModel = new tubs.psSet(@modelAsJson);
+        viewModel.clearDirtyFlag();
+        ko.applyBindings(viewModel);
+
+        $(".bycatch").on("click", ".removeItem", function () {
+            viewModel.removeByCatch(ko.dataFor(this));
+        });
+
+        $(".bycatch").on("click", ".addItem", function () {
+            viewModel.addByCatch();
+        });
+
+        $(".targetCatch").on("click", ".removeItem", function () {
+            viewModel.removeTargetCatch(ko.dataFor(this));
+        });
+
+        $(".targetCatch").on("click", ".addItem", function () {
+            viewModel.addTargetCatch();
+        });
+
+        $("#btnAddByCatchWhenEmpty").on("click", function () {
+            viewModel.addByCatch();
+        });
+
+        // PageGuide initialization
+        tl.pg.init();
+
+        /* TODO: Extract this into a common script for the whole application */
+        window.onbeforeunload = function(e) {
+            if (viewModel.isDirty())
+            {
+                if (!e) e = window.event;
+                // IE only?
+                e.cancelBubble = true;
+                e.returnValue = "Leaving the page will discard unsaved changes.";
+                // Firefox?
+                if (e.stopPropagation)
+                {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+
+                return "Leaving the page will discard unsaved changes.";
+            }
+        };  
+
+        // This will toggle visibility of legends, but it needs some
+        // work, as we want to hide all but the first on load
+        // Also, want to use these as a clickable hint:
+        // icon-chevron-down icon-chevron-up
+        //$('legend').click(function(){
+        //    $(this).siblings().slideToggle("slow");
+        //});
+    });
+</script>

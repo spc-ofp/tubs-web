@@ -23,7 +23,6 @@ namespace TubsWeb
         public static string Gen3 = "Gen3";
         public static string Gen6Details = "Gen6Details";
         public static string Gen6 = "Gen6";
-        //public static string SetDetails = "SetDetails";
         public static string Sets = "Sets";
         public static string LengthSamples = "LengthSamples";
         public static string SeaDayById = "SeaDayById";
