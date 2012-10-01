@@ -2,8 +2,8 @@
 
 @Html.HiddenFor(m => Model.Id) @* I know it's zero, but add it for completeness sake *@
 
-@Html.LabelFor(m => Model.EventTime) 
-@Html.TextBoxFor(m => Model.EventTime, new { @class = "datetime", id = System.Guid.NewGuid().ToString() }) <br />
+@Html.LabelFor(m => Model.EventDate) 
+@Html.TextBoxFor(m => Model.EventDate, new { @class = "datetime", id = System.Guid.NewGuid().ToString() }) <br />
 
 @Html.LabelFor(m => Model.Latitude) 
 @Html.TextBoxFor(m => Model.Latitude) @Html.ValidationMessageFor(m => Model.Latitude)<br />

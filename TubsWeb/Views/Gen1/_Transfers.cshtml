@@ -8,7 +8,7 @@
 
 @helper ActionTypeHelper(ActionType? atype)
 {
-    @Html.Raw(atype.GetDescription());
+    @Html.Raw(atype.GetDescription());                                   
 }
 
 
@@ -17,7 +17,7 @@
     @sightings.GetHtml(
     tableStyle: "table table-bordered table-condensed table-striped",
     columns: sightings.Columns(
-        sightings.Column("TransferTime", "Date / Time"),
+        sightings.Column("TransferDate", "Date / Time"),
         sightings.Column("Latitude", "Latitude"),
         sightings.Column("Longitude", "Longitude"),
         sightings.Column(header: "Vessel Type", format: (item) => VesselTypeHelper(item.VesselType)),

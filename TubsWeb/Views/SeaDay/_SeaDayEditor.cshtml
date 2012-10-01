@@ -99,11 +99,13 @@
                     <td>
                         @* Delete button is taken out of the tab order to prevent accidents *@
                         <button data-bind="visible: !IsLocked()" 
+                                type="button"
                                 tabindex="3000"
                                 class="removeItem btn btn-mini btn-danger" 
                                 rel="tooltip" 
                                 title="Click to remove row"><i class="icon-remove icon-white"></i></button>
                         <button data-bind="visible: IsLocked, event: { click: toggleUnlock }"
+                                type="button"
                                 class="btn btn-mini btn-info unlockItem"
                                 rel="tooltip"
                                 title="Click to unlock row">
@@ -132,7 +134,12 @@
                     <td><input data-bind="value: Comments, uniqueName: true" class="input-xlarge" type="text" placeholder="And Set No. from PS-3" /></td>
                     }
                     <td>
-                        <button class="addItem btn btn-mini btn-info" rel="tooltip" title="Click to add row"><i class="icon-plus icon-white"></i></button>
+                        <button class="addItem btn btn-mini btn-info" 
+                                type="button"
+                                rel="tooltip" 
+                                title="Click to add row">
+                            <i class="icon-plus icon-white"></i>
+                        </button>
                     </td>
                 </tr>
             </tbody>

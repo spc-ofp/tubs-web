@@ -35,8 +35,27 @@ http://keith-wood.name/uiDatepickerValidation.html
 http://docs.jquery.com/Plugins/Validation/Methods/date
 *@
 
-@* TODO: Reorder the items to match the revised form *@
-<ul id="tlyPageGuide" data-tourtitle="Detailed data entry instructions">
+
+<ul id="tlyPageGuide" data-tourtitle="Detailed trip registration instructions">
+    <!-- First row.  It comes first because this is metadata more than observer data -->
+    <li class="tlypageguide_left" data-tourtarget="#ProgramCode">
+        <div>
+            Enter the program code for the organization that arranged this observer trip.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#CountryCode">
+        <div>
+            Enter the ISO A2 code for the country for which the trip was undertaken.
+            For example, the A2 code for Papua New Guinea is PG.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#Version">
+        <div>
+            Select the workbook version.
+        </div>
+    </li>
+
+    <!-- Second row -->
     <li class="tlypageguide_left" data-tourtarget="#ObserverFullName">
         <div>
             Enter the observer's name.  TUBS will filter the list based on what you enter.
@@ -51,14 +70,21 @@ http://docs.jquery.com/Plugins/Validation/Methods/date
             field.
         </div>
     </li>
-    <li class="tlypageguide_left" data-tourtarget="#DepartureDate">
+    <li class="tlypageguide_left" data-tourtarget="#DepartureDateOnly">
         <div>
-            Enter the departure date.  The format for date is dd-mm-yy HH:mm.
+            Enter the departure date.  The format for date is dd/mm/yy
             This means that day of the month and month should have a leading zero
             if the value is less than 9 (for example, "09" instead of "9").
-            Time of day uses the 24-hour clock.
         </div>
     </li>
+    <li class="tlypageguide_left" data-tourtarget="#DepartureTimeOnly">
+        <div>
+            Enter the departure time using the 24 hour format.  Both the hour and
+            minute should have leading zeros for values less than 9 (for example, "09" instead of "9").
+        </div>
+    </li>
+
+    <!-- Third row -->
     <li class="tlypageguide_left" data-tourtarget="#TripNumber">
         <div>
             Enter the numeric portion of the trip number.  For example, if the
@@ -72,14 +98,21 @@ http://docs.jquery.com/Plugins/Validation/Methods/date
             field.
         </div>
     </li>
-    <li class="tlypageguide_left" data-tourtarget="#ReturnDate">
+    <li class="tlypageguide_left" data-tourtarget="#ReturnDateOnly">
         <div>
-            Enter the departure date.  The format for date is dd-mm-yy HH:mm.
+            Enter the return date.  The format for date is dd/mm/yy
             This means that day of the month and month should have a leading zero
             if the value is less than 9 (for example, "09" instead of "9").
-            Time of day uses the 24-hour clock.
         </div>
     </li>
+    <li class="tlypageguide_left" data-tourtarget="#ReturnTimeOnly">
+        <div>
+            Enter the return time using the 24 hour format.  Both the hour and
+            minute should have leading zeros for values less than 9 (for example, "09" instead of "9").
+        </div>
+    </li>
+
+    <!-- Fourth row -->
     <li class="tlypageguide_left" data-tourtarget="#VesselName">
         <div>
             Enter the vessel name.  TUBS will filter the list based on what you enter.
@@ -90,24 +123,14 @@ http://docs.jquery.com/Plugins/Validation/Methods/date
     </li>
     <li class="tlypageguide_left" data-tourtarget="#GearCode">
         <div>
-            Gear code should be filled automatically when vessel was selected.
+            Gear code should be filled automatically when vessel was selected.  If the gear code
+            is not filled or is incorrect, check that the correct vessel was chosen in the
+            previous field.
         </div>
     </li>
-    <li class="tlypageguide_left" data-tourtarget="#ProgramCode">
-        <div>
-            Enter the program code for the organization that arranged this observer trip.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#CountryCode">
-        <div>
-            Enter the ISO A2 code for the country for which the trip was undertaken.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#Version">
-        <div>
-            Select the workbook version.
-        </div>
-    </li>
+    
+    
+    
 </ul>
 
 @section AdditionalScripts {

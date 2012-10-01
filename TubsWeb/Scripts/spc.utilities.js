@@ -60,9 +60,11 @@ spc.typeAheadFactory = function (sourceUrl, onSelect) {
 
     // Default 'minLength' is set to two.
     // Overwrite in returned value if necessary
+    // items set to 10
     return {
         source: source,
         updater: updater,
+        items: 10,
         minLength: 2
     };
 };

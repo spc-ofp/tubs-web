@@ -6,7 +6,7 @@
     @Html.HiddenFor(m => Model.Id)
     @* TODO Format the date better *@
     @* NOTE: By default, MVC is uses the same Id for each value.  Not great, but then it really only matters for the date field *@
-    @Html.TextBoxFor(m => Model.EventTime, new { @class = "datetime", style = "width: 110px", id = System.Guid.NewGuid().ToString() })
+    @Html.TextBoxFor(m => Model.EventDate, new { @class = "datetime", style = "width: 110px", id = System.Guid.NewGuid().ToString() })
 </td>
 <td>
     @Html.TextBoxFor(m => Model.Latitude, new { style = "width: 80px;" })

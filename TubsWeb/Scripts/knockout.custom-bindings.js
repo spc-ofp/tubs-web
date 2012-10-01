@@ -49,17 +49,11 @@ ko.extenders.isoDate = function (target, formatString) {
             if (!target()) {
                 return;
             }
-            console.log("Parsing target value " + target());
             var dt = moment(target());
-            console.log("formatString: " + formatString);
-            console.log("Formatted value: " + dt.format(formatString));
             return dt.format(formatString);
         },
         write: function (value) {
             if (value) {
-                console.log("Inside write, the value is " + value);
-                var x = moment(value).format();
-                console.log("Inside write, after format... " + x);
                 target(moment(value).format());
             }
         }

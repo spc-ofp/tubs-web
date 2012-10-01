@@ -31,6 +31,15 @@ namespace TubsWeb.Models.ExtensionMethods
     using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
 
+    /// <summary>
+    /// TubsExtensions currently holds a grab-bag of Extension methods.
+    /// This could no doubt be improved by moving extensions into smaller
+    /// classes and re-factoring code to remove the need for
+    /// these extensions.
+    /// 
+    /// Also, the to/from ViewModel stuff should be moved to
+    /// AutoMapper which will improve the readability of the code.
+    /// </summary>
     public static class TubsExtensions
     {
         public static string GearCodeFromVesselType(VesselTypeCode vtype)
@@ -154,6 +163,8 @@ namespace TubsWeb.Models.ExtensionMethods
         }
 
         // TODO:  This is hard-coded for Purse Seine crew, something that needs fixing...
+        // Probably the best fix would be to centralize crew into a common table
+        // and enforce jobtype constraints at the application level.
         public static Crew AsCrew(this CrewViewModel.CrewMemberModel cmm, JobType job)
         {
             Crew crew = null;
@@ -305,8 +316,8 @@ namespace TubsWeb.Models.ExtensionMethods
                 fsvm.BeginBrailingTimeOnly = fset.BeginBrailingTimeOnly;
                 fsvm.EndBrailingTimeOnly = fset.EndBrailingTimeOnly;
                 fsvm.EndOfSetTimeOnly = fset.EndOfSetTimeOnly;
-                fsvm.LogbookDate = fset.StartOfSetFromLog; // TODO Strip to date only portion
-                fsvm.LogbookTime = "1234"; // TODO format date
+                fsvm.LogbookDate = fset.StartOfSetFromLog.HasValue ? fset.StartOfSetFromLog.Value.Date : (DateTime?)null;
+                fsvm.LogbookTime = fset.StartOfSetFromLog.HasValue ? fset.StartOfSetFromLog.Value.ToString("HHmm") : string.Empty;
                 fsvm.SetNumber = fset.SetNumber.HasValue ? fset.SetNumber.Value : default(Int32);
 
                 // Weights
@@ -340,18 +351,22 @@ namespace TubsWeb.Models.ExtensionMethods
                 fsvm.BigeyePercentage = fset.BigeyePercentage;
                 fsvm.TonsOfBigeyeObserved = fset.TonsOfBigeyeObserved;
 
-                // Yes, this is duplication.  Memory is cheap
-                var all = fset.CatchList.Where(sc => sc != null);
-                fsvm.AllCatch.AddRange(all.AsViewModelSetCatch());
+                var all =
+                    from sc in fset.CatchList
+                    where sc != null
+                    select sc;
+                fsvm.TargetCatch.AddRange(all.AsViewModelSetCatch());
 
-                var bet = fset.CatchList.Where(sc => sc != null && sc.SpeciesCode == "BET");
-                fsvm.BetCatch.AddRange(bet.AsViewModelSetCatch());
-
-                var yft = fset.CatchList.Where(sc => sc != null && sc.SpeciesCode == "YFT");
-                fsvm.YftCatch.AddRange(yft.AsViewModelSetCatch());
-
-                var skj = fset.CatchList.Where(sc => sc != null && sc.SpeciesCode == "SKJ");
-                fsvm.SkjCatch.AddRange(skj.AsViewModelSetCatch());
+                var target =
+                    from sc in fset.CatchList
+                    where
+                        sc != null && (
+                        sc.SpeciesCode == "BET" ||
+                        sc.SpeciesCode == "YFT" ||
+                        sc.SpeciesCode == "SKJ")
+                    orderby sc.SpeciesCode, sc.FateCode descending
+                    select sc;
+                fsvm.TargetCatch.AddRange(target.AsViewModelSetCatch());
 
                 var bycatch =
                     from sc in fset.CatchList
@@ -363,6 +378,43 @@ namespace TubsWeb.Models.ExtensionMethods
                     select sc;
                 fsvm.ByCatch.AddRange(bycatch.AsViewModelSetCatch());
 
+                // Start backfilling now
+                if (fsvm.VersionNumber != 2009 && 
+                    !String.IsNullOrEmpty(fset.LargeSpecies) && 
+                    (fset.LargeSpeciesPercentage.HasValue || fset.LargeSpeciesCount.HasValue))
+                {
+                    var sp_code = fset.LargeSpecies.NullSafeTrim().NullSafeToUpper();
+                    if (3 == sp_code.Length)
+                    {
+                        switch (sp_code)
+                        {
+                            case "YFT":
+                                fsvm.ContainsLargeYellowfin = "YES";
+                                fsvm.LargeYellowfinPercentage = fset.LargeSpeciesPercentage;
+                                fsvm.LargeYellowfinCount = fset.LargeSpeciesCount;
+                                break;
+                            case "BET":
+                                fsvm.ContainsLargeBigeye = "YES";
+                                fsvm.LargeBigeyePercentage = fset.LargeSpeciesPercentage;
+                                fsvm.LargeBigeyeCount = fset.LargeSpeciesCount;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        // This is a matter of guesstimation.  If we get here, then the
+                        // observer recorded that the large species were both BET and YFT
+                        // (well, we hope so...)
+                        bool yftRecorded = sp_code.Contains("YFT");
+                        bool betRecorded = sp_code.Contains("BET");
+
+                    }
+                    
+
+
+                }
                 fsvm.LargeSpecies = fset.LargeSpecies;
                 fsvm.LargeSpeciesPercentage = fset.LargeSpeciesPercentage;
                 fsvm.LargeSpeciesCount = fset.LargeSpeciesCount;
@@ -380,6 +432,7 @@ namespace TubsWeb.Models.ExtensionMethods
                 from sc in catchlist
                 select new PurseSeineSetViewModel.SetCatch
                 {
+                    Id = sc.Id,
                     SpeciesCode = sc.SpeciesCode,
                     FateCode = sc.FateCode,
                     ObservedWeight = sc.MetricTonsObserved,

@@ -31,11 +31,9 @@ namespace TubsWeb.Models
     {
         public PurseSeineSetViewModel()
         {
-             ByCatch = new List<SetCatch>(8);
-             SkjCatch = new List<SetCatch>(8);
-             YftCatch = new List<SetCatch>(8);
-             BetCatch = new List<SetCatch>(8);
-             AllCatch = new List<SetCatch>(32);
+            ByCatch = new List<SetCatch>(8);
+            TargetCatch = new List<SetCatch>(16);
+            AllCatch = new List<SetCatch>(16);
         }
         
         // UX state
@@ -138,11 +136,10 @@ namespace TubsWeb.Models
         public int? LargeSpeciesCount { get; set; }
 
         public List<SetCatch> ByCatch { get; set; }
-        public List<SetCatch> SkjCatch { get; set; }
-        public List<SetCatch> YftCatch { get; set; }
-        public List<SetCatch> BetCatch { get; set; }
+        public List<SetCatch> TargetCatch { get; set; }
 
-        // Memory is cheap except on the client
+        // This is used to display data -- The normal display doesn't
+        // differentiate between target and bycatch
         [JsonIgnore]
         public List<SetCatch> AllCatch { get; set; }
 
@@ -161,6 +158,7 @@ namespace TubsWeb.Models
             public decimal? LogbookWeight { get; set; }
             public int? LogbookCount { get; set; }
             public string Comments { get; set; }
+            public bool NeedsFocus { get; set; }
         }
     }
 }

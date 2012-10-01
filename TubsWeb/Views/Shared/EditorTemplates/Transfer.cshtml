@@ -2,9 +2,9 @@
 @using Spc.Ofp.Tubs.DAL.Entities
 
 @Html.HiddenFor(m => Model.Id)
-@Html.LabelFor(m => Model.TransferTime)
-@Html.TextBoxFor(m => Model.TransferTime, new { @class = "datetime", id = System.Guid.NewGuid().ToString() })
-@Html.ValidationMessageFor(m => Model.TransferTime)<br />
+@Html.LabelFor(m => Model.TransferDate)
+@Html.TextBoxFor(m => Model.TransferDate, new { @class = "datetime", id = System.Guid.NewGuid().ToString() })
+@Html.ValidationMessageFor(m => Model.TransferDate)<br />
 @Html.LabelFor(m => Model.Latitude) 
 @Html.TextBoxFor(m => Model.Latitude) 
 @Html.ValidationMessageFor(m => Model.Latitude)<br />

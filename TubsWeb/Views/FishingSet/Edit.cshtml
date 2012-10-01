@@ -4,8 +4,8 @@
 
 @{
     // Set up some navigation URLs
-    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, dayNumber = Model.NextSet, action = Model.HasNext ? "Edit" : "Add" });
-    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, dayNumber = Model.PreviousSet, action = "Edit" });    
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.NextSet, action = Model.HasNext ? "Edit" : "Add" });
+    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.PreviousSet, action = "Edit" });    
 }
 
 <form id="fishingSetForm">
@@ -28,7 +28,31 @@
         </a>
     </p>
     <hr />
-    @* TODO Logbook date and time *@
+    <fieldset>
+        <legend>Vessel Log Start of Set</legend>
+    </fieldset>
+    <div class="row-fluid">
+        <div class="span2">
+            <label>Date</label>
+            <div class="input-append">
+                @Html.TextBoxFor(
+                    m => Model.LogbookDate, 
+                    new { 
+                        data_val = "true",
+                        data_val_required="Date portion of start date is required",
+                        data_bind = "value: LogbookDate.formattedDate", 
+                        @class = "input-mini" })
+                <span class="add-on"><i class="icon-calendar"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label>Time</label>
+            <div class="input-append">
+                @Html.TextBoxFor(m => Model.LogbookTime, new { data_bind = "value: $root.LogbookTime", @class = "input-mini" })
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+    </div>
 
     @{ Html.RenderPartial("_SetSequenceTimes", Model); }
 
@@ -88,18 +112,45 @@
     </fieldset>
 </form>
 
+@*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
 
 @section AdditionalScripts {
     <script src="~/Scripts/knockout.custom-bindings.js"></script>
     <script src="~/Scripts/spc.utilities.js"></script>
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/datacontext.js"></script>
     <script src="~/Scripts/App/vm.fishingset.js"></script>
+
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
 
     <script>
         $(document).ready(function () {
             var viewModel = new tubs.psSet(@modelAsJson);
+            viewModel.clearDirtyFlag();
             ko.applyBindings(viewModel);
+
+            $(".bycatch").on("click", ".removeItem", function () {
+                viewModel.removeByCatch(ko.dataFor(this));
+            });
+
+            $(".bycatch").on("click", ".addItem", function () {
+                viewModel.addByCatch();
+            });
+
+            $(".targetCatch").on("click", ".removeItem", function () {
+                viewModel.removeTargetCatch(ko.dataFor(this));
+            });
+
+            $(".targetCatch").on("click", ".addItem", function () {
+                viewModel.addTargetCatch();
+            });
+
+            $("#btnAddByCatchWhenEmpty").on("click", function () {
+                viewModel.addByCatch();
+            });
 
             // This will toggle visibility of legends, but it needs some
             // work, as we want to hide all but the first on load

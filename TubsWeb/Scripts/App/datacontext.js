@@ -20,15 +20,23 @@ amplify.request.define("getSeaDay", "ajax", {
 });
 
 // Not used while Amplify.JS issues worked out!
+/*
 amplify.request.define("saveSeaDay", "ajax", {
     url: appBase + '/Trip/{TripId}/Days/{DayNumber}/Edit',
     dataType: "json",
     contentType: "application/json",
     type: "POST"
 });
+*/
 
 amplify.request.define("getCrew", "ajax", {
     url: appBase + '/Trip/{TripId}/Crew/Edit',
+    dataType: 'json',
+    type: 'GET'
+});
+
+amplify.request.define("getFishingSet", "ajax", {
+    url: appBase + '/Trip/{TripId}/Sets/{SetNumber}/Edit',
     dataType: 'json',
     type: 'GET'
 });
@@ -81,3 +89,25 @@ tubs.saveCrew = function (tripId, crew, success_cb, error_cb) {
         error: error_cb
     });
 };
+
+tubs.getFishingSet = function (tripId, setNumber, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getFishingSet",
+        data: { "TripId": tripId, "SetNumber": setNumber },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error_cb) {
+    var url = appBase + '/Trip/' + tripId + '/Sets/' + fishingSet + '/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(fishingSet),
+        success: success_cb,
+        error: error_cb
+    });
+}

@@ -1,4 +1,5 @@
 ﻿@model TubsWeb.Models.PurseSeineSetViewModel
+@* Might not actually need this model, but leave it here for the present... *@
 
 <fieldset>
     <legend>By-Catch</legend>
@@ -16,10 +17,12 @@
                 <th>&nbsp;</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
+        <tbody data-bind="foreach: ByCatch" class="bycatch">
+            @* TODO: Add warning for isDirty() *@
+            <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
                 <td>
                     <button  
+                            type="button"
                             tabindex="3000"
                             class="removeItem btn btn-mini btn-danger" 
                             rel="tooltip" 
@@ -27,13 +30,27 @@
                         <i class="icon-remove icon-white"></i>
                     </button>
                 </td>
-                <td>PLS</td>
-                <td>RCC</td>
-                <td>0.002</td>
-                <td>1</td>
-                <td>0</td>
-                <td>0</td>
-                <td>Xyzzy</td>
+                <td>
+                    <input type="text" class="required input-mini" data-bind="hasfocus: NeedsFocus, value: SpeciesCode, uniqueName: true" />
+                </td>
+                <td>
+                    <input type="text" class="required input-mini" data-bind="value: FateCode, uniqueName: true" />
+                </td>
+                <td>
+                    <input type="number" class="input-mini" data-bind="value: ObservedWeight, uniqueName: true" />
+                </td>
+                <td>
+                    <input type="number" class="input-mini" data-bind="value: ObservedCount, uniqueName: true" />
+                </td>
+                <td>
+                    <input type="number" class="input-mini" data-bind="value: LogbookWeight, uniqueName: true" />
+                </td>
+                <td>
+                    <input type="number" class="input-mini" data-bind="value: LogbookCount, uniqueName: true" />
+                </td>
+                <td>
+                    <input type="text" data-bind="value: Comments, uniqueName: true" />
+                </td>
                 <td>
                     <button class="addItem btn btn-mini btn-info" 
                             rel="tooltip" 
@@ -44,4 +61,5 @@
             </tr>
         </tbody>
     </table>
+    <button id="btnAddByCatchWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.ByCatch().length == 0">Add Record</button>
 </fieldset>
