@@ -33,6 +33,15 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.Models.ExtensionMethods;
 
+    /// <summary>
+    /// FishingSetController provides access to fishing sets.  This is currently Purse Seine only,
+    /// as Longline fishing doesn't use the concept of 'Set' and there is no Pole-and-line support
+    /// in TUBS.
+    /// 
+    /// NOTE:  Due to referential integrity constraints, the users are not allowed to add a set past
+    /// the maximum set number.  If a set needs to be added, the associated activity from a PS-2 must
+    /// be entered.
+    /// </summary>
     public class FishingSetController : SuperController
     {
         internal Tuple<bool, RouteValueDictionary> NeedsRedirect(int tripId, int setNumber, int maxSets)
@@ -43,24 +52,7 @@ namespace TubsWeb.Controllers
                 new { controller = "FishingSet", tripId = tripId }
             );
 
-            if (IsAdd())
-            {
-                if (setNumber <= maxSets)
-                {
-                    // Redirect to edit
-                    rvd["setNumber"] = setNumber;
-                    rvd["action"] = "Edit";
-                    needsRedirect = true;
-                }
-                else if (setNumber > (setNumber + 1))
-                {
-                    // Redirect to add, but with correct dayNumber
-                    rvd["setNumber"] = (maxSets + 1);
-                    rvd["action"] = "Add";
-                    needsRedirect = true;
-                }
-            }
-            else if (IsEdit())
+            if (IsEdit())
             {
                 if (setNumber > maxSets)
                 {
@@ -71,24 +63,6 @@ namespace TubsWeb.Controllers
             }
 
             return Tuple.Create(needsRedirect, rvd);
-        }
-        
-        /// <summary>
-        /// Check to see if this is the "Add" action
-        /// </summary>
-        /// <returns>true if this is the "Add" action, false otherwise</returns>
-        internal bool IsAdd()
-        {
-            return "Add".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        /// <summary>
-        /// Check to see if this is the "Edit" action
-        /// </summary>
-        /// <returns>true if this is the "Edit" action, false otherwise</returns>
-        internal bool IsEdit()
-        {
-            return "Edit".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
         }
 
         internal ActionResult ViewActionImpl(Trip tripId, int setNumber)
@@ -112,6 +86,14 @@ namespace TubsWeb.Controllers
             var checkpoint = NeedsRedirect(tripId.Id, setNumber, maxSets);
             if (checkpoint.Item1)
                 return new RedirectToRouteResult(checkpoint.Item2);
+
+            // One minor point.  If the user passes in a completely crazy setNumber for Index
+            // we'll re-interpret based on intent.
+            if (IsIndex())
+            {
+                if (setNumber < 1) { setNumber = 1; }
+                if (setNumber > maxSets) { setNumber = maxSets; }
+            }
 
             // Based on NeedsRedirect, we should be okay -- the
             // setNumber should be perfect for the action
@@ -164,43 +146,9 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId, setNumber);
         }
 
-        public ActionResult Add(Trip tripId, int setNumber)
-        {
-            return ViewActionImpl(tripId, setNumber);
-        }
-
         public ActionResult Index(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
-        }
-        
-        //
-        // GET: /FishingSet/
-        public ActionResult IndexEx(Trip tripId, int setNumber)
-        {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
-            var repo = new TubsRepository<PurseSeineSet>(MvcApplication.CurrentSession);
-            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == tripId.Id);
-            int maxSets = sets.Count();
-            if (setNumber > maxSets)
-            {
-                setNumber = maxSets;
-            }
-            ViewBag.MaxSets = maxSets;
-            ViewBag.CurrentSet = setNumber;
-            // TODO Add trip number to title?
-            ViewBag.Title = String.Format("Set {0} of {1} for {2}", setNumber, maxSets, tripId.ToString());
-            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
-            // This depends on set number!
-            var set = (
-                from s in sets
-                where s.SetNumber == setNumber
-                select s).FirstOrDefault();
-            return View(set);
         }
 
         /*

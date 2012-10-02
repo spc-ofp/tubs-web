@@ -147,6 +147,33 @@ namespace TubsWeb.Controllers
             return this.ControllerContext.RouteData.GetRequiredString("action");
         }
 
+        /// <summary>
+        /// Check to see if this is the "Add" action
+        /// </summary>
+        /// <returns>true if this is the "Add" action, false otherwise</returns>
+        protected bool IsAdd()
+        {
+            return "Add".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        /// <summary>
+        /// Check to see if this is the "Edit" action
+        /// </summary>
+        /// <returns>true if this is the "Edit" action, false otherwise</returns>
+        protected bool IsEdit()
+        {
+            return "Edit".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        /// <summary>
+        /// Check to see if this is the "Index" action
+        /// </summary>
+        /// <returns>true if this is the "Index" action, false otherwise</returns>
+        protected bool IsIndex()
+        {
+            return "Index".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
+        }
+
         protected void AddTripNavbar(Trip tripId)
         {
             // TODO Figure out how to get the Controller name from the ControllerContext

@@ -33,7 +33,9 @@
             coverPageUrl += "&rs:Format=PDF";
         }
     }
-    <div class="span2"><a href="@coverPageUrl" target="_blank"><img src="@Url.Content("~/Content/images/pdf-16x16.png")" alt="PDF" />&nbsp;PDF</a></div>
+    <div class="span2">
+        <a id="coverPageLink" href="@coverPageUrl" target="_blank"><img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF</a>
+    </div>
 </div>
 <div class="row">
     <div class="span2"><strong>Trip Summary</strong></div>
@@ -41,25 +43,83 @@
         string tripSummaryUrl = String.Format(formatString, "PS-TripSummary", ViewBag.TripId);
         string externalPdf = tripSummaryUrl + "&rs:Format=PDF";
     }
-    <div class="span2"><a href="@externalPdf" target="_blank"><img src="@Url.Content("~/Content/images/pdf-16x16.png")" alt="PDF" />&nbsp;PDF</a></div>
-    <div class="span2"><a href="@tripSummaryUrl">Other Formats</a></div>
+    <div class="span2">
+        <a id="summaryPdf" href="@externalPdf" target="_blank">
+            <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
+        </a>
+    </div>
+    <div class="span2">
+        <a id="summaryOther" href="@tripSummaryUrl">Other Formats</a>
+    </div>
 </div>
 <div class="row">
     <div class="span2"><strong>Trip Positions</strong></div>
-    <div class="span2"><a href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })'><img src='@Url.Content("~/Content/images/google-earth-16x16.png")' alt="" />KML</a></div>
+    <div class="span2">
+        <a id="kmlLink" href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })'>
+            <img src="~/Content/images/google-earth-16x16.png" alt="KML" height="16" width="16" />KML
+        </a>
+    </div>
     <div class="span2"><a href="#">Other Formats</a></div>
 </div>
 
-
+<ul id="tlyPageGuide" data-tourtitle="Trip data navigation">
+    <li class="tlypageguide_right" data-tourtarget="#subsectionNavbar">
+        <div>
+            Use these links to navigate to different sections of the trip.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#crumb_1">
+        <div>
+            This link will always take you back to the list of all trips.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#crumb_2">
+        <div>
+            As you navigate through the different sections, this link will always
+            return you to this page.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#coverPageLink">
+        <div>
+            This link will create a PDF coverpage for the trip.
+        </div>
+    </li>
+    <li class="tlypageguide_right" data-tourtarget="#summaryPdf">
+        <div>
+            This link will create a PDF trip summary report.
+            The summary report includes basic catch and effort information.
+        </div>
+    </li>
+    <li class="tlypageguide_right" data-tourtarget="#summaryOther">
+        <div>
+            This link will take you to the report server.  Use this link if
+            you want the summary report in another format like Word, Excel, or CSV.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#kmlLink">
+        <div>
+            This link will download a KML file that plots trip positions.
+        </div>
+    </li>
+</ul>
 
 @section Sidebar {
 
-@{
-    IEnumerable<Tuple<string, string>> navpills = ViewBag.NavPills;
-    if (null != navpills)
-    {
-        Html.RenderPartial("_VerticalTripNavBar", navpills);   
+    @{
+        IEnumerable<Tuple<string, string>> navpills = ViewBag.NavPills;
+        if (null != navpills)
+        {
+            Html.RenderPartial("_VerticalTripNavBar", navpills);   
+        }
     }
+
 }
 
+@section AdditionalScripts {
+    <script>
+        $(function () {
+            /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
+            tl.pg.init();
+        });
+    </script>
 }

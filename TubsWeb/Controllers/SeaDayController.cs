@@ -96,24 +96,6 @@ namespace TubsWeb.Controllers
         }
 
         /// <summary>
-        /// Check to see if this is the "Add" action
-        /// </summary>
-        /// <returns>true if this is the "Add" action, false otherwise</returns>
-        internal bool IsAdd()
-        {
-            return "Add".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        /// <summary>
-        /// Check to see if this is the "Edit" action
-        /// </summary>
-        /// <returns>true if this is the "Edit" action, false otherwise</returns>
-        internal bool IsEdit()
-        {
-            return "Edit".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        /// <summary>
         /// The HttpGet portion of the Add/Edit screens is very similar.
         /// By extracting it all into a single function, there's less copy/paste
         /// inheritance going on.
@@ -143,27 +125,19 @@ namespace TubsWeb.Controllers
             if (checkpoint.Item1)
                 return new RedirectToRouteResult(checkpoint.Item2);
 
+            // One minor point.  If the user passes in a completely crazy dayNumber for Index
+            // we'll re-interpret based on intent.
+            if (IsIndex())
+            {
+                if (dayNumber < 1) { dayNumber = 1; }
+                if (dayNumber > maxDays) { dayNumber = maxDays; } 
+            }
+
             // Based on NeedsRedirect, we should be okay -- the
             // dayNumber should be perfect for the action
             var day = days.Skip(dayNumber - 1).Take(1).FirstOrDefault() as PurseSeineSeaDay;
-            var sdvm = day.AsViewModel();
-
-            // Fill in what the extension method couldn't/didn't
-            sdvm.DayNumber = dayNumber;
-            sdvm.MaxDays = maxDays;
-            sdvm.NextDay = dayNumber + 1;
-            sdvm.PreviousDay = dayNumber - 1;
-            sdvm.HasNext = dayNumber < maxDays;
-            sdvm.HasPrevious = dayNumber > 1;
-
-            sdvm.TripId = trip.Id;
-            sdvm.TripNumber = trip.SpcTripNumber ?? "This Trip";
-            sdvm.TripNumber = sdvm.TripNumber.Trim();
-            sdvm.VersionNumber = trip.Version == WorkbookVersion.v2009 ? 2009 : 2007;
-            sdvm.ActivityCodes =
-                sdvm.VersionNumber == 2009 ?
-                    SeaDayViewModel.v2009ActivityCodes :
-                    SeaDayViewModel.v2007ActivityCodes;
+            var sdvm = day.AsViewModel(trip, dayNumber, maxDays);
+            sdvm.ActionName = CurrentAction();
 
             if (sdvm.NeedsDates() && (IsAdd() || IsEdit()))
             {
@@ -233,16 +207,19 @@ namespace TubsWeb.Controllers
             }
 
             // We don't particularly care which control has these, since the drop downs should prevent the user
-            // from actually changing these.  This is here to guard against a rogue API
-            var invalidSeaCodes = sdvm.Keepers.Select(e => e.SeaCode).Where(c => !sdvm.SeaCodes.Contains(c)).Distinct();
+            // from actually changing these.  This is here to guard against API bugs
+            var seaCodes = sdvm.Keepers.Select(e => e.SeaCode).DefaultIfEmpty();
+            var invalidSeaCodes = seaCodes.Where(c => c != null && !sdvm.SeaCodes.Contains(c)).Distinct();
             if (invalidSeaCodes.Count() > 0)
                 ModelState["SeaCode"].Errors.Add(String.Format("Invalid Sea Code(s): [{0}]", string.Join(",", invalidSeaCodes)));
 
-            var invalidDetectionCodes = sdvm.Keepers.Select(e => e.DetectionCode).Where(c => !sdvm.DetectionCodes.Contains(c)).Distinct();
+            var detectionCodes = sdvm.Keepers.Select(e => e.DetectionCode).DefaultIfEmpty();
+            var invalidDetectionCodes = detectionCodes.Where(c => c != null && !sdvm.DetectionCodes.Contains(c)).Distinct();
             if (invalidDetectionCodes.Count() > 0)
                 ModelState["DetectionCode"].Errors.Add(String.Format("Invalid Detection Code(s): [{0}]", string.Join(",", invalidDetectionCodes)));
 
-            var invalidAssociationCodes = sdvm.Keepers.Select(e => e.AssociationCode).Where(c => !sdvm.AssociationCodes.Contains(c)).Distinct();
+            var associationCodes = sdvm.Keepers.Select(e => e.AssociationCode).DefaultIfEmpty();
+            var invalidAssociationCodes = associationCodes.Where(c => c!= null && !sdvm.AssociationCodes.Contains(c)).Distinct();
             if (invalidAssociationCodes.Count() > 0)
                 ModelState["AssociationCode"].Errors.Add(String.Format("Invalid Association Code(s): [{0}]", string.Join(",", invalidAssociationCodes)));
 
@@ -258,6 +235,7 @@ namespace TubsWeb.Controllers
 
         }
 
+        // 
         internal ActionResult SaveActionImpl(Trip tripId, int dayNumber, SeaDayViewModel sdvm)
         {
             var trip = tripId as PurseSeineTrip;
@@ -279,61 +257,107 @@ namespace TubsWeb.Controllers
 
             // Try this for now, refactor later (if at all)
             // drepo for (d)ay, erepo for (e)vent (aka Activity).
-            // TODO Start transaction here...
-            IRepository<SeaDay> drepo = TubsDataService.GetRepository<SeaDay>(MvcApplication.CurrentSession);
-            IRepository<Activity> erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
-            IRepository<PurseSeineSet> srepo = TubsDataService.GetRepository<PurseSeineSet>(MvcApplication.CurrentSession);
-           
             var seaDay = sdvm.AsEntity();
-            seaDay.SetAuditTrail(User.Identity.Name, DateTime.Now);
-            seaDay.Trip = trip;
 
-            drepo.Add(seaDay);
-            // If we get here, the database didn't freak over the header, so now we can add the details  
-            // Deletes first
-            sdvm.Deleted.ToList().ForEach(e => erepo.DeleteById(e.EventId));
-
-            var activities = sdvm.AsActivities();
-            foreach (var activity in activities)
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
-                // If an activity is _new_ and has an activity code of fishing, create a new empty
-                // set.  This will enable easier entry on the PS-3 side.  Set# and Page# should match, so remind users
-                // to check?
-                bool addSet = (default(int) == activity.Id && ActivityType.Fishing == activity.ActivityType);
-                activity.SetAuditTrail(User.Identity.Name, DateTime.Now);
-                activity.Day = seaDay;
-                erepo.Add(activity);
-                if (addSet)
+                IRepository<SeaDay> drepo = TubsDataService.GetRepository<SeaDay>(MvcApplication.CurrentSession);
+                IRepository<Activity> erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
+                IRepository<PurseSeineSet> srepo = TubsDataService.GetRepository<PurseSeineSet>(MvcApplication.CurrentSession);
+
+                seaDay.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                seaDay.Trip = trip;
+
+                drepo.Add(seaDay);
+                // If we get here, the database didn't freak over the header, so now we can add the details  
+                // Deletes first
+                sdvm.Deleted.ToList().ForEach(e => erepo.DeleteById(e.EventId));
+
+                var activities = sdvm.AsActivities();
+                foreach (var activity in activities)
                 {
-                    // FIXME:  There's a bug here in that set number isn't set
-                    // This is why some trips don't display sets even though
-                    // there are records in the database.
-                    var fset = new PurseSeineSet();
-                    fset.BeginBrailing = activity.LocalTime;
-                    fset.BeginBrailingTimeOnly = activity.LocalTimeTimeOnly;
-                    fset.Activity = activity;
-                    fset.EnteredBy = User.Identity.Name;
-                    fset.EnteredDate = DateTime.Now;
-                    srepo.Add(fset);
+                    // If an activity is _new_ and has an activity code of fishing, create a new empty
+                    // set.  This will enable easier entry on the PS-3 side.  Set# and Page# should match, so remind users
+                    // to check?
+                    bool addSet = (default(int) == activity.Id && ActivityType.Fishing == activity.ActivityType);
+                    activity.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    activity.Day = seaDay;
+                    erepo.Add(activity);
+                    if (addSet)
+                    {
+                        // Application expects SetNumber to be set at creation.
+                        // There's an easy path and a hard path...
+                        var sets = srepo.FilterBy(fs => fs.Activity.Day.Trip.Id == trip.Id);
+
+                        var maxSetDate = sets.Select(fs => fs.SkiffOff).Max();
+
+                        // Whether the set order is okay or not, we use the next available set number
+                        // for .SetNumber
+                        int nextSetNumber = (sets.Select(fs => fs.SetNumber).Max() ?? 0) + 1;
+
+                        // This is not entirely true, but it's good enough for a first pass approximation
+                        bool setOrderOkay = 
+                            !maxSetDate.HasValue ? 
+                                true :
+                                -1 == maxSetDate.Value.CompareTo(activity.LocalTime.Value);
+
+                        var fset = new PurseSeineSet();
+                        fset.SetNumber = nextSetNumber;
+                        fset.SkiffOff = activity.LocalTime;
+                        fset.SkiffOffTimeOnly = activity.LocalTimeTimeOnly;
+                        fset.Activity = activity;
+                        fset.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                        srepo.Add(fset);
+
+                        // This is where stuff goes sideways...
+                        if (!setOrderOkay)
+                        {
+                            // TODO: Re-order the sets according to date
+                            // This could get crazy, so perhaps we need to notify the
+                            // user somehow...
+                        }
+                    }
                 }
+
+                xa.Commit();
             }
 
-            // TODO:  Commit transaction here
-            // At this point, if the transaction worked, we can guarantee that the
-            // SeaDay has an ID -- use that to load the correct day instead of Skip/Take
-            // Don't forget the second call to get the number of days
+            // If the save worked, the entity should have been updated with the
+            // correct primary key.  Use the primary key to reload the entity
+            // NOTE:  There's a second database call to get the current number of days
+            // We should be able to calculate that, but we might as well treat the
+            // database as definitive.
 
             // This is the happy path -- if we get here, everything should have worked...
             if (IsApiRequest())
             {
-                // Force a reload after a save to ensure that PKs are set for all
-                // appropriate entities.
+                // For some reason (could be a bug, could be something I'm forgetting to do)
+                // the ISession that was used for the updates doesn't reflect said updates
+                // after the commit.
+                // This didn't appear in CrewController because the reload used the
+                // stateless session (no dependent objects on crew).
+                // To be clear, if I use MvcApplication.CurrentSession here, the parent object
+                // (PurseSeineSeaDay) is loaded, but the child objects (Activities) are not.
+                // This isn't a great workaround, but it's a workaround nonetheless.
+                using (var repo = TubsDataService.GetRepository<SeaDay>(false))
+                {
+                    // Force a reload after a save to ensure that PKs are set for all
+                    // appropriate entities.
+                    int maxDays = repo.FilterBy(d => d.Trip.Id == tripId.Id).Count();
+
+                    var day = repo.FindById(seaDay.Id) as PurseSeineSeaDay;
+
+                    sdvm = day.AsViewModel(tripId, dayNumber, maxDays);
+                    sdvm.ActionName = CurrentAction();
+                }
+
                 return GettableJsonNetData(sdvm);
             }
 
             // If this isn't an API request (which shouldn't really happen)
-            // push back to HttpGet version of the page.
-            return RedirectToAction(CurrentAction(), "SeaDay", new { tripId = tripId.Id, dayNumber = dayNumber });
+            // always push to the Edit page.  It's been saved, so an Add is counter-productive
+            // (besides, redirecting to Add with the current dayNumber will redirect to Edit anyways...)
+            return RedirectToAction("Edit", "SeaDay", new { tripId = tripId.Id, dayNumber = dayNumber });
         }
         
         //
@@ -364,13 +388,14 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId, dayNumber);
         }
 
-        //[Authorize(Roles = Security.EditRoles)]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, int dayNumber)
         {
             return ViewActionImpl(tripId, dayNumber);
         }
 
         [HttpPost]
+        [HandleTransactionManually]
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Add(Trip tripId, int dayNumber, SeaDayViewModel sdvm)
         {
@@ -380,12 +405,14 @@ namespace TubsWeb.Controllers
         // This should only ever be hit by the Knockout function, but we'll still probably want
         // to cater for straight up HTML Forms
         [HttpPost]
+        [HandleTransactionManually]
         [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, int dayNumber, SeaDayViewModel sdvm)
         {
             return SaveActionImpl(tripId, dayNumber, sdvm);
         }
 
+        // TODO Remove this
         public ActionResult AutoFill(Trip tripId)
         {
             if (null == tripId)

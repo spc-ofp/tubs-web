@@ -114,6 +114,8 @@ tubs.psSeaDay = function (data) {
     // the options in psSeaDayMapping
     ko.mapping.fromJS(data, tubs.psSeaDayMapping, self);
 
+    self.addPattern = /add/i;
+
     // Define the fields that are watched to determine the 'dirty' state   
     self.dirtyFlag = new ko.DirtyFlag([
         self.ShipsDate,
@@ -129,6 +131,16 @@ tubs.psSeaDay = function (data) {
         self.DiaryPage,
         self.Events // This is only for the add/remove
     ], false, tubs.seaDayHashFunction);
+
+    self.isAdd = ko.computed(function () {
+        return self.addPattern.test(self.ActionName());
+    });
+
+    // Only show the "Next Day" button for any Edit
+    // or an Add that has been stored in the database
+    self.showNextDayButton = ko.computed(function () {
+        return !self.isAdd() || (self.DayId() != 0);
+    });
 
     self.isDirty = ko.computed(function () {
         // Avoid iterating over the events if the header

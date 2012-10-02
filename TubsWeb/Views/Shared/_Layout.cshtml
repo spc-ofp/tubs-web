@@ -10,13 +10,30 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @* 
+     * A couple of Chrome Frame options:  
+     * If we set IE=9,chrome=1 then it will use IE 9 if available and then Chrome Frame.
+     * If chrome=1 comes first, then Chrome Frame is preferred.
+     * The implementation below will use Chrome Frame if set, otherwise it will use
+     * the best version of IE on the user's workstation ($diety help us if that's IE7!)
+     *@
     <!-- Make use of Chrome Frame optional on a per View basis -->
     @if (ViewBag.UseChromeFrame != null && ViewBag.UseChromeFrame)
     {
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     }
+    else
+    {
+    <meta http-equiv="X-UA-Compatible" content="IE=8, IE=9, IE=10">
+    }
     <title>@ViewBag.Title</title>
-    
+    @* 
+     * This link relation allows us to publish the starting URL for our application.
+     * The trick here is the use of the ~/ Url, which MVC will resolve into the root of
+     * the appropriate virtual directory.
+     * Much cleaner than messing with window.location
+     *@
+    <link rel="start" href="~/" id="applicationHome" />
     <link rel="alternate" type="application/rss+xml" title="Latest Trips" href="@Url.Action("Rss", "Trip")" />
     @Styles.Render("~/Content/css")
     <style>

@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Tuple<string, string>>
 
-<ul class="nav nav-tabs nav-stacked">
+<ul id="subsectionNavbar" class="nav nav-tabs nav-stacked">
     @foreach (var pill in Model)
     {
     <li><a href='@pill.Item2'>@pill.Item1</a></li>

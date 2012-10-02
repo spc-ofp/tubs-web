@@ -2,7 +2,7 @@
 
 @{
     // Set up some navigation URLs
-    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.NextSet, action = Model.HasNext ? "Edit" : "Add" });
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.NextSet, action = "Edit" });
     var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.PreviousSet, action = "Edit" });    
 }
 
@@ -19,11 +19,14 @@
             <i class="icon-refresh icon-white"></i>&nbsp;Reload
         </button>
         <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
-        @* If the next set exists, this button will edit it.  Otherwise, go to add next set *@
+
         @* Allow going to the next set regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+        @if (Model.HasNext)
+        {
         <a href='@nextPage' id="nextSetButton" class="btn btn-info">
             Next Set&nbsp;<i class="icon-forward icon-white"></i>
         </a>
+        }
     </p>
     <hr />
     <fieldset>
@@ -34,12 +37,14 @@
             <label>Date</label>
             <div class="input-append">
                 @Html.TextBoxFor(
-                    m => Model.LogbookDate, 
-                    new { 
+                    m => Model.LogbookDate,
+                    new
+                    {
                         data_val = "true",
-                        data_val_required="Date portion of start date is required",
-                        data_bind = "value: LogbookDate.formattedDate", 
-                        @class = "input-mini" })
+                        data_val_required = "Date portion of start date is required",
+                        data_bind = "value: LogbookDate.formattedDate",
+                        @class = "input-mini"
+                    })
                 <span class="add-on"><i class="icon-calendar"></i></span>
             </div>
         </div>
@@ -85,8 +90,9 @@
             <div class="span2">
                 <label>Recovered Tag Count</label>
                 @Html.TextBoxFor(
-                    m => Model.RecoveredTagCount, 
-                    new {
+                    m => Model.RecoveredTagCount,
+                    new
+                    {
                         @class = "input-mini",
                         type = "number",
                         data_bind = "value: RecoveredTagCount"

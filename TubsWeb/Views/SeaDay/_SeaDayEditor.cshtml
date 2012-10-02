@@ -19,13 +19,13 @@
         </a>
         }
         <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
             <i class="icon-refresh icon-white"></i>&nbsp;Reload
         </button>
         <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
         @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
         @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-        <a href='@nextPage' id="nextDayButton" class="btn btn-info">
+        <a href='@nextPage' id="nextDayButton" class="btn btn-info" data-bind="visible: $root.showNextDayButton()">
             Next Day&nbsp;<i class="icon-forward icon-white"></i>
         </a>
     </p>
@@ -187,7 +187,7 @@
         <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
         @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
         @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-        <a href='@nextPage' class="btn btn-info">
+        <a href='@nextPage' class="btn btn-info"  data-bind="visible: $root.showNextDayButton()">
             Next Day&nbsp;<i class="icon-forward icon-white"></i>
         </a>
     </p>

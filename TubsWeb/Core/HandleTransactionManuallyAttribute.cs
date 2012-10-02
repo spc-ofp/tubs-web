@@ -25,7 +25,7 @@ namespace TubsWeb.Core
     using System;
 
     /// <summary>
-    /// Attache this attribute to signal that callier is manually handling transaction.
+    /// Attach this attribute to signal that caller is manually handling transaction.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class HandleTransactionManuallyAttribute : TransactionalActionBaseAttribute

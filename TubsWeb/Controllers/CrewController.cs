@@ -49,12 +49,12 @@ namespace TubsWeb.Controllers
 
             var cvm = Fill(MvcApplication.CurrentStatelessSession, tripId.Id);
             cvm.TripNumber = tripId.SpcTripNumber ?? "This Trip";
-            string title = String.Format(" list for {0}", tripId.ToString());
-            if ("Index".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase))
-                title = "Crew" + title;
-            if ("Edit".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase))
-                title = "Edit crew" + title;
-            ViewBag.Title = title;
+            string formatString = 
+                IsEdit() ? 
+                    "Edit crew list for {0}" :
+                    "Crew list for {0}";
+
+            ViewBag.Title = String.Format(formatString, tripId.ToString());
 
             if (IsApiRequest())
                 return GettableJsonNetData(cvm);
@@ -143,7 +143,7 @@ namespace TubsWeb.Controllers
         // that what's sent to the client is what's in the database.
         [HttpPost]
         [HandleTransactionManually]
-        //[Authorize(Roles = Security.EditRoles)]
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, CrewViewModel cvm)
         {
             if (null == tripId)

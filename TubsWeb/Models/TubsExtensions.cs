@@ -243,6 +243,7 @@ namespace TubsWeb.Models.ExtensionMethods
                 where !string.IsNullOrEmpty(evt.Time) && !evt._destroy
                 select new PurseSeineActivity()
                 {
+                    Id = evt.EventId,
                     LocalTime = sdvm.ShipsDate.Merge(evt.Time),
                     LocalTimeDateOnly = sdvm.ShipsDate,
                     LocalTimeTimeOnly = evt.Time,
@@ -444,9 +445,32 @@ namespace TubsWeb.Models.ExtensionMethods
             
         }
 
-        public static SeaDayViewModel AsViewModel(this PurseSeineSeaDay day)
+        public static SeaDayViewModel AsViewModel(this PurseSeineSeaDay day, Trip trip = null, int dayNumber = -1, int maxDays = -1)
         {
             SeaDayViewModel sdvm = new SeaDayViewModel();
+
+            if (dayNumber > -1 && maxDays > -1)
+            {
+                sdvm.DayNumber = dayNumber;
+                sdvm.MaxDays = maxDays;
+                sdvm.NextDay = dayNumber + 1;
+                sdvm.PreviousDay = dayNumber - 1;
+                sdvm.HasNext = dayNumber < maxDays;
+                sdvm.HasPrevious = dayNumber > 1;
+            }
+
+            if (null != trip)
+            {
+                sdvm.TripId = trip.Id;
+                sdvm.TripNumber = trip.SpcTripNumber ?? "This Trip";
+                sdvm.TripNumber = sdvm.TripNumber.Trim();
+                sdvm.VersionNumber = trip.Version == WorkbookVersion.v2009 ? 2009 : 2007;
+                sdvm.ActivityCodes =
+                    sdvm.VersionNumber == 2009 ?
+                        SeaDayViewModel.v2009ActivityCodes :
+                        SeaDayViewModel.v2007ActivityCodes;
+            }
+
             if (null != day)
             {
                 sdvm.DayId = day.Id;

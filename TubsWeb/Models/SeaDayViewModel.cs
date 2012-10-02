@@ -115,6 +115,7 @@ namespace TubsWeb.Models
         public bool HasPrevious { get; set; }
         public int NextDay { get; set; }
         public int VersionNumber { get; set; }
+        public string ActionName { get; set; }
 
         // Again UX state, to let the display path know if
         // this object exists in the database.

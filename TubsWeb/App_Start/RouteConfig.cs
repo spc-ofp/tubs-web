@@ -41,6 +41,8 @@ namespace TubsWeb
         public static string MyOpenTrips = "MyOpenTrips";
         public static string CreateTrip = "CreateTrip";
 
+        public const string IsPositiveInteger = @"^\d+$";
+
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
@@ -68,21 +70,21 @@ namespace TubsWeb
                 name: Electronics,
                 url: "Trip/{tripId}/Electronics/{action}",
                 defaults: new { controller = "Electronics", action = "List" },
-                constraints: new { tripId = @"\d+" }
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
                 SafetyInspection,
                 "Trip/{tripId}/SafetyInspection/{action}",
                 new { controller = "SafetyInspection", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
                 Crew,
                 "Trip/{tripId}/Crew/{action}",
                 new { controller = "Crew", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             // For now, route vessel attributes through Trip since there's a 1:1 relationship
@@ -91,7 +93,7 @@ namespace TubsWeb
                 Auxiliaries,
                 "Trip/{tripId}/Auxiliaries/{action}",
                 new { controller = "Auxiliaries", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             // As with vessel attributes, hang this off of Trip
@@ -103,14 +105,14 @@ namespace TubsWeb
                 VesselDetails,
                 "Trip/{tripId}/VesselDetails/{action}",
                 new { controller = "VesselDetails", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
                 Gen1,
                 "Trip/{tripId}/GEN-1/{action}",
                 new { controller = "Gen1", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             // A trip has zero to n GEN-2 forms, and each GEN-2 has a "Page X of Y"
@@ -119,7 +121,7 @@ namespace TubsWeb
                 Gen2Details,
                 "Trip/{tripId}/GEN-2/{pageNumber}/{action}",
                 new { controller = "Gen2", action = "Index" },
-                new { tripId = @"\d+", pageNumber = @"\d+" }
+                new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
             // TODO This is going to be tricky with the Gen2Details routing
@@ -128,14 +130,14 @@ namespace TubsWeb
                 Gen2,
                 "Trip/{tripId}/GEN-2/{action}",
                 new { controller = "Gen2", action = "List" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
                 Gen3,
                 "Trip/{tripId}/GEN-3/{action}",
                 new { controller = "Gen3", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             // Link to particular GEN-6 page has to come first
@@ -144,7 +146,7 @@ namespace TubsWeb
                 Gen6Details,
                 "Trip/{tripId}/GEN-6/{pageNumber}",
                 new { controller = "Gen6", action = "Index" },
-                new { tripId = @"\d+", pageNumber = @"\d+" }
+                new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
             // TODO Change the default action to Index
@@ -152,7 +154,7 @@ namespace TubsWeb
                 Gen6,
                 "Trip/{tripId}/GEN-6/{action}/{pageNumber}",
                 new { controller = "Gen6", action = "List", pageNumber = UrlParameter.Optional },
-                new { tripId = @"\d+", pageNumber = @"\d+" }
+                new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
             // Even though Set is subordinate to day, allow link directly to list of sets
@@ -161,7 +163,7 @@ namespace TubsWeb
                 name: Sets,
                 url: "Trip/{tripId}/Sets/{setNumber}/{action}",
                 defaults: new { controller = "FishingSet", action = "List", setNumber = UrlParameter.Optional },
-                constraints: new { tripId = @"\d+", setNumber = @"\d+" }
+                constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger }
             );
 
             /*
@@ -186,7 +188,7 @@ namespace TubsWeb
                 LengthSamples,
                 "Trip/{tripId}/Samples/{setNumber}/Page/{pageNumber}",
                 new { controller = "LengthSample", action = "Index", pageNumber = UrlParameter.Optional },
-                new { tripId = @"\d+", setNumber = @"\d+", pageNumber = @"\d+" }
+                new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
             /*
@@ -217,14 +219,14 @@ namespace TubsWeb
                 name: SeaDays,
                 url: "Trip/{tripId}/Days/{dayNumber}/{action}",
                 defaults: new { controller = "SeaDay", action = "List", dayNumber = UrlParameter.Optional},
-                constraints: new { tripId = @"\d+", dayNumber = @"\d+" }
+                constraints: new { tripId = IsPositiveInteger, dayNumber = IsPositiveInteger }
             );
 
             routes.MapRoute(
                 name: SeaDayById,
                 url: "Trip/{tripId}/DayById/{dayId}/{action}",
                 defaults: new { controller = "SeaDay", action = "Index" },
-                constraints: new { tripId = @"\d+", dayId = @"\d+" }
+                constraints: new { tripId = IsPositiveInteger, dayId = IsPositiveInteger }
             );
 
             // Trip/{tripId}/Days/{dayNumber}/{action}
@@ -237,28 +239,28 @@ namespace TubsWeb
                 Gear,
                 "Trip/{tripId}/Gear/{action}",
                 new { controller = "Gear", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
                 WellContents,
                 "Trip/{tripId}/WellContent/{action}",
                 new { controller = "WellContent", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
                 PageCount,
                 "Trip/{tripId}/PageCount/{action}",
                 new { controller = "PageCount", action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
                 TripDetails,
                 "Trip/{tripId}/{action}",
                 new { controller = "Trip", action = "Details" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             // Can this route replace the fairly generic routes?
@@ -267,7 +269,7 @@ namespace TubsWeb
                 TripDefault,
                 "Trip/{tripId}/{controller}/{action}",
                 new { action = "Index" },
-                new { tripId = @"\d+" }
+                new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(

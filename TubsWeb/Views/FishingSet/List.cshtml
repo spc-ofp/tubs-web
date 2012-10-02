@@ -24,6 +24,7 @@
 <table class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>
+            <th>&nbsp;</th>
             <th>Set #</th>
             <th>Association</th>
             <th>Skunk Set</th>
@@ -36,8 +37,13 @@
     {
         <tr>
             <td>
-                <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" })'>@set.SetNumber</a>
+                <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" })'>Details</a>
+                @if (!ViewBag.IsReadOnly)
+                {
+                   <text>| </text><a href='@Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Edit" })'>Edit</a>
+                }
             </td>
+            <td>@set.SetNumber</td>
             <td>@set.Activity.SchoolAssociation.GetDescription()</td>
             <td>@IsSkunk(set.CatchList)</td>
             <td>@set.CatchList.Sum(sc => sc.MetricTonsObserved)</td>

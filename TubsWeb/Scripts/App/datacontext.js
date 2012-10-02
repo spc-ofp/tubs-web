@@ -7,38 +7,41 @@
 /// <reference path="../amplify.js" />
 var tubs = tubs || {};
 
-// This will break for any page that's served via
-// the default route.  However, that doesn't look
-// like any of the pages that would have these, so call
-// it good enough for now.
-var href = window.location.href;
-var endsAt = href.indexOf("Trip");
-var appBase = href.substr(0, endsAt);
+/*
+ * After much screwing around, this looks to be
+ * a portable solution.  MVC puts the virtual directory
+ * app root into every page for us.
+ */
+var appBase = '/';
+var start = $('#applicationHome');
+if (start) {
+    appBase = start.attr('href');
+}
 
 amplify.request.define("getSeaDay", "ajax", {
-    url: appBase + '/Trip/{TripId}/Days/{DayNumber}/Edit',
-    dataType: 'json',
-    type: 'GET'
+url: appBase + 'Trip/{TripId}/Days/{DayNumber}/Edit',
+dataType: 'json',
+type: 'GET'
 });
 
 // Not used while Amplify.JS issues worked out!
 /*
 amplify.request.define("saveSeaDay", "ajax", {
-    url: appBase + '/Trip/{TripId}/Days/{DayNumber}/Edit',
-    dataType: "json",
-    contentType: "application/json",
-    type: "POST"
+url: appBase + '/Trip/{TripId}/Days/{DayNumber}/Edit',
+dataType: "json",
+contentType: "application/json",
+type: "POST"
 });
 */
 
 amplify.request.define("getCrew", "ajax", {
-    url: appBase + '/Trip/{TripId}/Crew/Edit',
+    url: appBase + 'Trip/{TripId}/Crew/Edit',
     dataType: 'json',
     type: 'GET'
 });
 
 amplify.request.define("getFishingSet", "ajax", {
-    url: appBase + '/Trip/{TripId}/Sets/{SetNumber}/Edit',
+    url: appBase + 'Trip/{TripId}/Sets/{SetNumber}/Edit',
     dataType: 'json',
     type: 'GET'
 });
@@ -58,7 +61,7 @@ tubs.getSeaDay = function (tripId, dayNumber, success_cb, error_cb) {
 // This StackOverflow answer might have a workaround:
 // http://stackoverflow.com/questions/10808312/amplify-js-crud-like-urls
 tubs.saveSeaDay = function (tripId, dayNumber, seaDay, success_cb, error_cb) {
-    var url = appBase + '/Trip/' + tripId + '/Days/' + dayNumber + '/Edit';
+    var url = appBase + 'Trip/' + tripId + '/Days/' + dayNumber + '/Edit';
     $.ajax({
         url: url,
         type: 'POST',
@@ -80,7 +83,7 @@ tubs.getCrew = function (tripId, success_cb, error_cb) {
 };
 
 tubs.saveCrew = function (tripId, crew, success_cb, error_cb) {
-    var url = appBase + '/Trip/' + tripId + '/Crew/Edit';
+    var url = appBase + 'Trip/' + tripId + '/Crew/Edit';
     $.ajax({
         url: url,
         type: 'POST',
@@ -102,7 +105,7 @@ tubs.getFishingSet = function (tripId, setNumber, success_cb, error_cb) {
 };
 
 tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error_cb) {
-    var url = appBase + '/Trip/' + tripId + '/Sets/' + fishingSet + '/Edit';
+    var url = appBase + 'Trip/' + tripId + '/Sets/' + fishingSet + '/Edit';
     $.ajax({
         url: url,
         type: 'POST',
