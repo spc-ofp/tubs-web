@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Models
+namespace TubsWeb.ViewModels
 {
     /*
      * This file is part of TUBS.
@@ -103,8 +103,8 @@ namespace TubsWeb.Models
         public decimal? SumOfBrail2 { get; set; }
 
         // Used to help with calculation/validation
-        public int SizeOfBrail1 { get; set; }
-        public int SizeOfBrail2 { get; set; }
+        public decimal? SizeOfBrail1 { get; set; }
+        public decimal? SizeOfBrail2 { get; set; }
 
         [Display(Name = "Total Catch")]
         public decimal? TotalCatch { get; set; }

@@ -19,9 +19,9 @@ if (start) {
 }
 
 amplify.request.define("getSeaDay", "ajax", {
-url: appBase + 'Trip/{TripId}/Days/{DayNumber}/Edit',
-dataType: 'json',
-type: 'GET'
+    url: appBase + 'Trip/{TripId}/Days/{DayNumber}/Edit',
+    dataType: 'json',
+    type: 'GET'
 });
 
 // Not used while Amplify.JS issues worked out!
@@ -42,6 +42,18 @@ amplify.request.define("getCrew", "ajax", {
 
 amplify.request.define("getFishingSet", "ajax", {
     url: appBase + 'Trip/{TripId}/Sets/{SetNumber}/Edit',
+    dataType: 'json',
+    type: 'GET'
+});
+
+amplify.request.define("getSightings", "ajax", {
+    url: appBase + 'Trip/{TripId}/GEN-1/Sightings',
+    dataType: 'json',
+    type: 'GET'
+});
+
+amplify.request.define("getTransfers", "ajax", {
+    url: appBase + 'Trip/{TripId}/GEN-1/Transfers',
     dataType: 'json',
     type: 'GET'
 });
@@ -116,3 +128,21 @@ tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error
         error: error_cb
     });
 }
+
+tubs.getSightings = function (tripId, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getSightings",
+        data: { "TripId": tripId },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+tubs.getTransfers = function (tripId, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getTransfers",
+        data: { "TripId": tripId },
+        success: success_cb,
+        error: error_cb
+    });
+};

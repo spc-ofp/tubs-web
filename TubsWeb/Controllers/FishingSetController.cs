@@ -32,6 +32,9 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     using TubsWeb.Models.ExtensionMethods;
+    using TubsWeb.Models;
+    using TubsWeb.ViewModels;
+    using AutoMapper;
 
     /// <summary>
     /// FishingSetController provides access to fishing sets.  This is currently Purse Seine only,
@@ -101,18 +104,13 @@ namespace TubsWeb.Controllers
                 from s in sets
                 where s.SetNumber == setNumber
                 select s).FirstOrDefault();
-            var fsvm = fset.AsViewModel();
 
-            // Fill in what the extension method couldn't/didn't
+            var fsvm = Mapper.Map<PurseSeineSet, PurseSeineSetViewModel>(fset);
+
+            // Fill in what it's a pain to get AutoMapper to do
             fsvm.MaxSets = maxSets;
-            fsvm.NextSet = setNumber + 1;
-            fsvm.PreviousSet = setNumber - 1;
             fsvm.HasNext = setNumber < maxSets;
             fsvm.HasPrevious = setNumber > 1;
-
-            fsvm.TripId = trip.Id;
-            fsvm.TripNumber = (trip.SpcTripNumber ?? "This Trip").Trim();
-            fsvm.VersionNumber = trip.Version == WorkbookVersion.v2009 ? 2009 : 2007;
 
             if (IsApiRequest())
                 return GettableJsonNetData(fsvm);
@@ -141,6 +139,7 @@ namespace TubsWeb.Controllers
             return View(sets);
         }
 
+        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
@@ -149,6 +148,40 @@ namespace TubsWeb.Controllers
         public ActionResult Index(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
+        }
+
+        [HttpPost]
+        [HandleTransactionManually]
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Edit(Trip tripId, int setNumber, PurseSeineSetViewModel fsvm)
+        {
+            var trip = tripId as PurseSeineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+                return View(fsvm);
+            }
+
+            // Convert to entity
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+
+            }
+
+            if (IsApiRequest())
+            {
+                // Since set doesn't have any significant child properties during edit,
+                // we can do the reload with the StatelessSession
+                return GettableJsonNetData(fsvm);
+            }
+
+            return RedirectToAction("Edit", new { tripId = tripId.Id, setNumber = setNumber });
         }
 
         /*

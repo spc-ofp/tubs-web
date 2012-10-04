@@ -16,6 +16,8 @@
      * If chrome=1 comes first, then Chrome Frame is preferred.
      * The implementation below will use Chrome Frame if set, otherwise it will use
      * the best version of IE on the user's workstation ($diety help us if that's IE7!)
+     * One final option is to set chrome=IE8, which will only replace IE8 and below with Chrome
+     * but pass through to IE9.
      *@
     <!-- Make use of Chrome Frame optional on a per View basis -->
     @if (ViewBag.UseChromeFrame != null && ViewBag.UseChromeFrame)

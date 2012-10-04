@@ -2,6 +2,7 @@
 // <copyright file="Gen1ViewModel.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2012 Secretariat of the Pacific Community
 // </copyright>
+// -----------------------------------------------------------------------
 
 namespace TubsWeb.Models
 {

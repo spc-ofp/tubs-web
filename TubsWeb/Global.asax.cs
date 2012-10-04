@@ -23,17 +23,16 @@ namespace TubsWeb
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System.Linq;
+    using System.Net.Http.Formatting;
     using System.Web;
     using System.Web.Http;
     using System.Web.Mvc;
     using System.Web.Optimization;
     using System.Web.Routing;
+    using Newtonsoft.Json.Converters;
     using NHibernate;
     using Spc.Ofp.Tubs.DAL;
     using TubsWeb.Core;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-    using System.Net.Http.Formatting;
 
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
@@ -123,6 +122,9 @@ namespace TubsWeb
 
         protected void Application_Start()
         {
+            // Hard to get Log4net working if you don't call this -- D'Oh!
+            log4net.Config.XmlConfigurator.Configure();
+
             AreaRegistration.RegisterAllAreas();
             // Trip is the only model worth binding.
             ModelBinderProviders.BinderProviders.Add(new TripModelBinderProvider());
@@ -139,8 +141,10 @@ namespace TubsWeb
             RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            // Hard to get Log4net working if you don't call this -- D'Oh!
-            log4net.Config.XmlConfigurator.Configure();
+
+            // AutoMapper is used to convert entities to viewmodels (and vice versa)
+            MappingConfig.Configure();
+            
         }
     }
 }

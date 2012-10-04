@@ -24,12 +24,73 @@ namespace TubsWeb.Controllers
     using System;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
+    using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
+    using TubsWeb.ViewModels;
 
     public class Gen1Controller : SuperController
     {
 
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Sightings(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+            
+            var svm = new SightingViewModel();
+            svm.TripId = tripId.Id;
+            svm.TripNumber = (tripId.SpcTripNumber ?? "This Trip").Trim();
+            svm.VersionNumber = tripId.Version == WorkbookVersion.v2009 ? 2009 : 2007;
+
+            if (IsApiRequest())
+                return GettableJsonNetData(svm);
+
+            return View(svm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Sightings(Trip tripId, SightingViewModel svm)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            if (IsApiRequest())
+                return GettableJsonNetData(svm);
+
+            return View(svm);
+        }
+
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Transfers(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            var tvm = new TransferViewModel();
+            return View(tvm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Security.EditRoles)]
+        public ActionResult Transfers(Trip tripId, TransferViewModel tvm)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            return View(tvm);
+        }
+        
+        
         //
         // GET: /Gen1/
         public ActionResult Index(Trip tripId)
@@ -46,8 +107,7 @@ namespace TubsWeb.Controllers
 
             ViewBag.Title = String.Format(titleFormat, tripId.ToString());
             AddMinMaxDates(tripId);
-            string actionName = this.ControllerContext.RouteData.GetRequiredString("action");
-            return View(actionName, tripId);
+            return View(CurrentAction(), tripId);
         }
 
         [Authorize(Roles = Security.EditRoles)]

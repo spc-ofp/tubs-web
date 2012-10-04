@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TubsWeb", "TubsWeb\TubsWeb.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotViewerApp", "PivotViewerApp\PivotViewerApp.csproj", "{5980C976-9BA4-481D-9727-D50670C3A02B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TubsWebViewModels", "TubsWebViewModels\TubsWebViewModels.csproj", "{C0406A35-6B11-437B-968F-2DE21693EB93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,12 @@ Global
 		{5980C976-9BA4-481D-9727-D50670C3A02B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5980C976-9BA4-481D-9727-D50670C3A02B}.Release-Forms-Security|Any CPU.ActiveCfg = Release|Any CPU
 		{5980C976-9BA4-481D-9727-D50670C3A02B}.Release-Forms-Security|Any CPU.Build.0 = Release|Any CPU
+		{C0406A35-6B11-437B-968F-2DE21693EB93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0406A35-6B11-437B-968F-2DE21693EB93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0406A35-6B11-437B-968F-2DE21693EB93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0406A35-6B11-437B-968F-2DE21693EB93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0406A35-6B11-437B-968F-2DE21693EB93}.Release-Forms-Security|Any CPU.ActiveCfg = Release|Any CPU
+		{C0406A35-6B11-437B-968F-2DE21693EB93}.Release-Forms-Security|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -147,6 +147,11 @@ namespace TubsWeb.Controllers
             return this.ControllerContext.RouteData.GetRequiredString("action");
         }
 
+        protected string CurrentController()
+        {
+            return this.ControllerContext.RouteData.GetRequiredString("controller");
+        }
+
         /// <summary>
         /// Check to see if this is the "Add" action
         /// </summary>
@@ -174,17 +179,28 @@ namespace TubsWeb.Controllers
             return "Index".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
         }
 
+        private void AddTripNavbar(PurseSeineTrip tripId)
+        {
+            var routeValues = new { tripId = tripId.Id };
+            IList<NavPill> pills = new List<NavPill>(12);
+            
+            // Don't display pills for data we know we don't have
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.VesselAttributes != null))
+            {
+                pills.Add(new NavPill { Title = "Vessel Characteristics (PS-1)", Href = Url.Action("Index", "Auxiliaries", routeValues) });
+            }
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.WellContent.Count > 0))
+            {
+                pills.Add(new NavPill { Title = "Well Contents (PS-1)", Href = Url.Action("Index", "WellContent", routeValues) });
+            }
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.VesselNotes != null))
+            {
+                pills.Add(new NavPill { Title = "Vessel Comments (PS-1)", Href = Url.Action("Index", "WellContent", routeValues) });
+            }
+        }
+
         protected void AddTripNavbar(Trip tripId)
         {
-            // TODO Figure out how to get the Controller name from the ControllerContext
-            // Until then, no active pill
-            // Okay, now we've got the controller name, but we need to figure out how to
-            // pass another value to the view showing which matches the current controller
-            // Probably best way to do this is to push the title, action name, and controller name into
-            // a List<Tuple<string, string, string>>
-            // Yet another thing to consider -- how to deal with PS or LL only views?
-            var controllerName = this.ControllerContext.RouteData.GetRequiredString("controller");
-            var routeName = CurrentAction();
 
             var routeValues = new { tripId = tripId.Id };
 
