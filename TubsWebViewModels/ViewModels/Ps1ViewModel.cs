@@ -59,7 +59,6 @@ namespace TubsWeb.ViewModels
 
         public string Page2Comments { get; set; }
 
-
         public class VesselCharacteristics
         {
             public int Id { get; set; }
@@ -68,9 +67,9 @@ namespace TubsWeb.ViewModels
             public string RegistrationNumber { get; set; }
             public string CountryCode { get; set; }
             public string Ircs { get; set; }
-            public int? Length { get; set; }
+            public float? Length { get; set; }
             public string LengthUnits { get; set; }
-            public decimal GrossTonnage { get; set; }
+            public float? GrossTonnage { get; set; }
 
             public int? SpeedboatCount { get; set; }
             public int? AuxiliaryBoatCount { get; set; }
@@ -119,7 +118,29 @@ namespace TubsWeb.ViewModels
 
             public int? BuoyCount { get; set; }
 
-            
+            public int? Epirb406Count { get; set; }
+            public string Epirb406Expiration { get; set; }
+
+            public string OtherEpirbType { get; set; }
+            public int? OtherEpirbCount { get; set; }
+            public string OtherEpirbExpiration { get; set; }
+           
+
+            public int? LifeRaft1Capacity { get; set; }
+            public string LifeRaft1Inspection { get; set; }
+            public string LifeRaft1LastOrDue { get; set; }
+
+            public int? LifeRaft2Capacity { get; set; }
+            public string LifeRaft2Inspection { get; set; }
+            public string LifeRaft2LastOrDue { get; set; }
+
+            public int? LifeRaft3Capacity { get; set; }
+            public string LifeRaft3Inspection { get; set; }
+            public string LifeRaft3LastOrDue { get; set; }
+
+            public int? LifeRaft4Capacity { get; set; }
+            public string LifeRaft4Inspection { get; set; }
+            public string LifeRaft4LastOrDue { get; set; }
         }
 
         

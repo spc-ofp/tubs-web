@@ -23,7 +23,14 @@
         <td>Vessel Name:</td>
         <td>@Html.DisplayFor(m => m.Vessel.Name)</td>
         <td>Vessel Flag:</td>
-        <td>@Html.DisplayFor(m => m.Vessel.RegisteredCountryCode)</td>
+        <td>
+            @if (!String.IsNullOrEmpty(Model.Vessel.RegisteredCountryCode))
+            {
+                var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", Model.Vessel.RegisteredCountryCode.ToLower()));
+                <img src="@imgLink" alt="@Model.Vessel.RegisteredCountryCode" title="@Model.Vessel.RegisteredCountryCode" /> @:&nbsp;
+            }
+            @Html.DisplayFor(m => m.Vessel.RegisteredCountryCode)
+        </td>
     </tr>
     <tr>
         <td>Departure Port:</td>

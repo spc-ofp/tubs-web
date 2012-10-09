@@ -1,0 +1,104 @@
+﻿@model TubsWeb.ViewModels.Ps1ViewModel.VesselCharacteristics
+
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ps1-accordion" href="#characteristics">
+            <i class="icon-chevron-down"></i> Vessel Characteristics
+        </a>
+    </div>
+    <div id="characteristics" class="accordion-body collapse in">
+        <div class="accordion-inner">
+            @if (null == Model)
+            {
+                @: No Vessel Information
+            }
+            else
+            {            
+            @* Owner / Registration Number / Flag / IRCS / Length / Gross Tonnage *@
+            <div class="row-fluid">
+                <div class="span4">
+                    <label><strong>Owner</strong></label>
+                    <span>@(Model.Owner ?? "N/A")</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Reg. Number</strong></label>
+                    <span>@Model.RegistrationNumber</span>
+                </div>
+                <div class="span1">
+                    <label><strong>Flag</strong></label>
+                    <span>@Model.CountryCode</span>
+                </div>
+                <div class="span1">
+                    <label><strong>IRCS</strong></label>
+                    <span>@(Model.Ircs ?? "N/A")</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Length</strong></label>
+                    <span>@Html.DisplayFor(m => Model.Length) @Model.LengthUnits</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Gross Tonnage</strong></label>
+                    <span>@Html.DisplayFor(m => Model.GrossTonnage) mT</span>
+                </div>
+            </div>
+            <hr />
+            @* Speed Boats / Aux. Boats / Tender Boats Answer / Skiff Make / Skiff Power / Cruise Speed *@
+            <div class="row-fluid">
+                <div class="span2">
+                    <label><strong>Speed<br />Boats</strong></label>
+                    <span>@Html.DisplayFor(m => Model.SpeedboatCount)</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Other Onboard<br />Boats</strong></label>
+                    <span>@Html.DisplayFor(m => Model.AuxiliaryBoatCount)</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Works with<br />other Tenders?</strong></label>
+                    <span>@Html.DisplayFor(m => Model.TenderBoatAnswer)</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Skiff<br />Make</strong></label>
+                    <span>@Model.SkiffMake</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Skiff<br />Power</strong></label>
+                    <span>@Html.DisplayFor(m => Model.SkiffPower) hp</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Cruise<br />Speed</strong></label>
+                    <span>@Html.DisplayFor(m => Model.CruiseSpeed) kts</span>
+                </div>
+            </div>
+            <hr />
+            @* Helicopter Make / Model / Registration Number / Range / Color / Count *@
+            <div class="row-fluid">
+                <div class="span2">
+                    <label><strong>Helicopter<br />Make</strong></label>
+                    <span>@Model.HelicopterMake</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Helicopter<br />Model</strong></label>
+                    <span>@Model.HelicopterModel</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Registration<br />Number</strong></label>
+                    <span>@Model.HelicopterRegistration</span>
+                </div>
+                <div class="span2">
+                    <label><strong>&nbsp;<br />Range</strong></label>
+                    <span>@Html.DisplayFor(m => Model.HelicopterRange) @Model.HelicopterRangeUnits</span>
+                </div>
+                <div class="span2">
+                    <label><strong>&nbsp;<br />Color</strong></label>
+                    <span>@Model.HelicopterColor</span>
+                </div>
+                <div class="span2">
+                    <label><strong># of Vessels<br />Serviced</strong></label>
+                    <span>@Html.DisplayFor(m => Model.HelicopterServiceOtherCount)</span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+

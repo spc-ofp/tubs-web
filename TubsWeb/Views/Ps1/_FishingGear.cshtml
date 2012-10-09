@@ -1,0 +1,75 @@
+﻿@model TubsWeb.ViewModels.Ps1ViewModel.FishingGear
+
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ps1-accordion" href="#fishingGear">
+            <i class="icon-chevron-right"></i> Fishing Gear
+        </a>
+    </div>
+    <div id="fishingGear" class="accordion-body collapse">
+        <div class="accordion-inner">
+            @if (null == Model)
+            {
+                @: No Gear Information
+            }
+            else
+            { 
+            @* PB Make / PB Model / PW Make / PW Model / Brail1 *@                  
+            <div class="row-fluid">
+                <div class="span2">
+                    <label><strong>Powerblock<br />Make</strong></label>
+                    <span>@Model.PowerblockMake</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Powerblock<br />Model</strong></label>
+                    <span>@Model.PowerblockModel</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Pursewinch<br />Make</strong></label>
+                    <span>@Model.PurseWinchMake</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Pursewinch<br />Model</strong></label>
+                    <span>@Model.PurseWinchModel</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Brail Capacity<br />Brail 1</strong></label>
+                    <span>@Html.DisplayFor(m => Model.Brail1Capacity) mT</span>
+                </div>
+            </div>
+            <hr />
+            @* Net Depth / Net Length / Strips / Mesh Size / Brail 2*@
+            <div class="row-fluid">
+                <div class="span2">
+                    <label><strong>Net<br />Depth</strong></label>
+                    <span>@Html.DisplayFor(m => m.NetDepth) @Model.NetDepthUnits</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Net<br />Length</strong></label>
+                    <span>@Html.DisplayFor(m => m.NetLength) @Model.NetLengthUnits</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Number<br />of Strips</strong></label>
+                    <span>@Html.DisplayFor(m => m.NetStripCount)</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Mesh<br />Size</strong></label>
+                    <span>@Html.DisplayFor(m => m.NetMeshSize) @Model.NetMeshUnits</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Brail Capacity<br />Brail 2</strong></label>
+                    <span>@Html.DisplayFor(m => Model.Brail2Capacity) mT</span>
+                </div>
+            </div>
+            <hr />
+            @* Brailing Type *@    
+            <div class="row-fluid">
+                <div class="span12">
+                    <label><strong>Brailing Type Description</strong></label>
+                    <p>@Model.BrailType</p>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

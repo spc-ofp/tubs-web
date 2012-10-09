@@ -1,4 +1,4 @@
-﻿@model TubsWeb.Models.PurseSeineSetViewModel
+﻿@model TubsWeb.ViewModels.PurseSeineSetViewModel
 @using Newtonsoft.Json
 
 <script src="~/Scripts/knockout.custom-bindings.js"></script>
@@ -10,6 +10,7 @@
 @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
 
 <script>
+    /* TODO: Integrate Keypress (http://dmauro.github.com/Keypress/) */
     $(document).ready(function () {
         var viewModel = new tubs.psSet(@modelAsJson);
         viewModel.clearDirtyFlag();
@@ -33,6 +34,10 @@
 
         $("#btnAddByCatchWhenEmpty").on("click", function () {
             viewModel.addByCatch();
+        });
+
+        $("#btnAddTargetCatchWhenEmpty").on("click", function () {
+            viewModel.addTargetCatch();
         });
 
         // PageGuide initialization

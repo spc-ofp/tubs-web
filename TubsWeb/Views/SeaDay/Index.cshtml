@@ -1,5 +1,9 @@
 ﻿@model TubsWeb.Models.SeaDayViewModel
 
+@{
+    ViewBag.Title = string.Format("Day {0} of {1} for {2}", Model.DayNumber, Model.MaxDays, Model.TripNumber);
+}
+
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
@@ -14,13 +18,15 @@
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
 <ul class="pager">
-    @if (Model.HasPrevious) {
+    @if (Model.HasPrevious)
+    {
         <li>
             <a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.TripId, dayNumber = Model.PreviousDay, action = "Index" })'>Previous Day</a>
         </li>
     }
     
-    @if(Model.HasNext) {
+    @if (Model.HasNext)
+    {
         <li>
             <a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.TripId, dayNumber = Model.NextDay, action = "Index" })'>Next Day</a>
         </li>
@@ -30,11 +36,12 @@
 <!-- Add Sea days and sets for PS trips -->
 @if (Model.IsEmpty)
 {
-    <text>No PS-2 data for this day and trip.</text>
+    @: No PS-2 data for this day and trip.
 }
 else
 {
     <fieldset>
+        @* TODO: Rationalize this with the rest of the fluid rows (label/span) *@
         <legend>Start of Day</legend>
         <div class="row">
             <div class="span3">
@@ -89,20 +96,41 @@ else
             <th>Detection Method</th>
             <th>Association</th>
             <th>Comments</th>
+            <th class="nobr">GEN-5</th>
           </tr>
       </thead>
       <tbody>
       @foreach (var entry in Model.Events)
       {
-          @Html.DisplayFor(m => entry)
+          <tr>
+            <td>@entry.Time</td>
+            <td>@entry.Latitude / @entry.Longitude</td>
+            <td>@entry.EezCode</td>
+            <td>@entry.ActivityCode</td>
+            <td>@Html.Raw(entry.SpeedAndDirection)</td>
+            <td>@entry.SeaCode</td>
+            <td>@entry.DetectionCode</td>
+            <td>@entry.AssociationCode</td>
+            <td>@entry.Comments</td>
+            <td>
+                @if (entry.HasGen5)
+                {
+                    <a href="#">Edit</a> @:| <a href="#">Details</a>
+                }
+                else
+                {
+                    <a href="#">Add</a>
+                }
+            </td>
+        </tr>
       }
       </tbody>
     </table>
     
-    if (!ViewBag.IsReadOnly)
-    {
+      if (!ViewBag.IsReadOnly)
+      {
         @Html.ActionLink("Edit daily log", "Edit", "SeaDay", new { tripId = ViewBag.TripId, dayNumber = Model.DayNumber }, null)
-    }
+      }
     
     @*TODO:  Add color coded dots to the activity column that match the pins in the map?  Or just color code the rows for significant events?*@
     @*TODO:  Add in a hideable map for just this day.  Bonus points for overlaying observer, VMS, and logsheet data.*@

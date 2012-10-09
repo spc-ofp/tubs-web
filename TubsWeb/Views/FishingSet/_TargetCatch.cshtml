@@ -1,4 +1,4 @@
-﻿@model TubsWeb.Models.PurseSeineSetViewModel
+﻿@model TubsWeb.ViewModels.PurseSeineSetViewModel
 
 <fieldset>
     <legend>Target Tuna</legend>
@@ -17,7 +17,6 @@
             </tr>
         </thead>
         <tbody data-bind="foreach: TargetCatch" class="targetCatch">
-            @* TODO: Add warning for isDirty() *@
             <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
                 <td>
                     <button  
@@ -30,7 +29,8 @@
                     </button>
                 </td>
                 <td>
-                    <input type="text" class="required input-mini" data-bind="hasfocus: NeedsFocus, value: SpeciesCode, uniqueName: true" />
+                    @* TODO: NeedsFocus is pointing to root ViewModel *@
+                    <select data-bind="options: $root.TargetSpecies, value: SpeciesCode, hasfocus: NeedsFocus" class="input-small"></select>
                 </td>
                 <td>
                     <input type="text" class="required input-mini" data-bind="value: FateCode, uniqueName: true" />

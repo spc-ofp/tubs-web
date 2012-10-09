@@ -117,7 +117,7 @@ tubs.getFishingSet = function (tripId, setNumber, success_cb, error_cb) {
 };
 
 tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error_cb) {
-    var url = appBase + 'Trip/' + tripId + '/Sets/' + fishingSet + '/Edit';
+    var url = appBase + 'Trip/' + tripId + '/Sets/' + setNumber + '/Edit';
     $.ajax({
         url: url,
         type: 'POST',

@@ -6,7 +6,7 @@
 
 namespace TubsWeb.Controllers
 {
-    /*
+   /*
     * This file is part of TUBS.
     *
     * TUBS is free software: you can redistribute it and/or modify
@@ -139,7 +139,7 @@ namespace TubsWeb.Controllers
             return View(sets);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        //[Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
@@ -152,7 +152,7 @@ namespace TubsWeb.Controllers
 
         [HttpPost]
         [HandleTransactionManually]
-        [Authorize(Roles = Security.EditRoles)]
+        //[Authorize(Roles = Security.EditRoles)]
         public ActionResult Edit(Trip tripId, int setNumber, PurseSeineSetViewModel fsvm)
         {
             var trip = tripId as PurseSeineTrip;
@@ -160,6 +160,8 @@ namespace TubsWeb.Controllers
             {
                 return InvalidTripResponse();
             }
+
+            // TODO Any validation that the attributes don't cover
 
             if (!ModelState.IsValid)
             {
@@ -169,9 +171,33 @@ namespace TubsWeb.Controllers
             }
 
             // Convert to entity
+            var fset = Mapper.Map<PurseSeineSetViewModel, PurseSeineSet>(fsvm);
+            // Set audit trails
+            fset.SetAuditTrail(User.Identity.Name, DateTime.Now);
+            fset.CatchList.ToList().ForEach(cl => cl.SetAuditTrail(User.Identity.Name, DateTime.Now));
+
+
+            // Older notes, but this may be a pointer to a better solution than
+            // our Merge implementation
+            // http://ayende.com/blog/4282/nhibernate-cross-session-operations
+            // http://stackoverflow.com/questions/2058417/nhibernate-definitive-cascade-application-guide
             using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
+                var fsrepo = TubsDataService.GetRepository<PurseSeineSet>(MvcApplication.CurrentSession);
+                var erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
+                var screpo = TubsDataService.GetRepository<PurseSeineSetCatch>(MvcApplication.CurrentSession);               
 
+                // Deletes first
+                fsvm.TargetCatch.Where(x => x != null && x._destroy).ToList().ForEach(x => screpo.DeleteById(x.Id));
+                fsvm.ByCatch.Where(x => x != null && x._destroy).ToList().ForEach(x => screpo.DeleteById(x.Id));
+
+                var parent = erepo.FindById(fsvm.ActivityId) as PurseSeineActivity;
+                fset.Activity = parent;
+                screpo.Add(fset.CatchList);
+                // Basic testing suggests we're okay here.
+                fsrepo.Update(fset, true); // This should never be an actual Add               
+
+                xa.Commit();
             }
 
             if (IsApiRequest())

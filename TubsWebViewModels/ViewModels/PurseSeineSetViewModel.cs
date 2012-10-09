@@ -34,7 +34,13 @@ namespace TubsWeb.ViewModels
             ByCatch = new List<SetCatch>(8);
             TargetCatch = new List<SetCatch>(16);
             AllCatch = new List<SetCatch>(16);
+            TargetSpecies = new List<string>() { "SKJ", "YFT", "BET" };
         }
+
+        // Use Knockout to help with common codes
+        public IList<string> TargetSpecies { get; set; }
+        public IList<string> FateCodes { get; set; }
+        // TODO Not sure about ByCatch yet...
         
         // UX state
         public string TripNumber { get; set; }
@@ -47,6 +53,7 @@ namespace TubsWeb.ViewModels
         public bool CrossesDayBoundary { get; set; }
 
         public int TripId { get; set; }
+        public int ActivityId { get; set; }
         public int SetId { get; set; }
 
         // Sequence of this set during the trip

@@ -33,7 +33,7 @@
                     var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", item.Vessel.RegisteredCountryCode.ToLower()));
                     <img src="@imgLink" alt="@item.Vessel.RegisteredCountryCode" title="@item.Vessel.RegisteredCountryCode" />
                 }
-                @Html.DisplayFor(i => item.Vessel.Name) @* TODO flag icon for vessel *@
+                @Html.DisplayFor(i => item.Vessel.Name)
             </td>
             <td>
                 @item.DeparturePort.ToString()

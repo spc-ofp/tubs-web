@@ -20,6 +20,8 @@ namespace TubsWeb
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile<SetProfile>();
+                cfg.AddProfile<Ps1Profile>();
+                cfg.AddProfile<Gen5Profile>();
                 // Trim all strings.  If the trimmed string is empty, return a null
                 Mapper.CreateMap<string, string>().ConvertUsing(s =>
                 {

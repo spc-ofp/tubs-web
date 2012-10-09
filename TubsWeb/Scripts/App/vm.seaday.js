@@ -44,6 +44,7 @@ tubs.psSeaDayMapping = {
 // TODO:  Add draft auto-save via AmplifyJS
 // http://craigcav.wordpress.com/2012/05/16/simple-client-storage-for-view-models-with-amplifyjs-and-knockout/
 
+//'^([01]?[0-9]|2[0-3])[0-5][0-9]$'
 //
 // Adding validation is much easier via manual mapping
 // https://github.com/ericmbarnard/Knockout-Validation
@@ -52,6 +53,7 @@ tubs.psSeaDayMapping = {
 tubs.psEvent = function (eventData) {
     var self = this;
     self.EventId = ko.observable(eventData.EventId || 0);
+    self.Gen5Id = ko.observable(eventData.Gen5Id || 0);
     self.Time = ko.observable(eventData.Time || '').extend({ required: true, pattern: '^[0-2][0-9][0-5][0-9]$' });
     self.Latitude = ko.observable(eventData.Latitude || '').extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
     self.Longitude = ko.observable(eventData.Longitude || '').extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
@@ -75,6 +77,7 @@ tubs.psEvent = function (eventData) {
     // okay to delete associated data.
     self.IsLocked = ko.observable(eventData.IsLocked || false);
     self.HasSet = ko.observable(eventData.HasSet || false);
+    self.HasGen5 = ko.observable(eventData.HasGen5 || false);
     self.NeedsFocus = ko.observable(eventData.NeedsFocus || false);
     self._destroy = ko.observable(eventData._destroy || false);
 

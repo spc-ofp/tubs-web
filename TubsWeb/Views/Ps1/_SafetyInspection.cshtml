@@ -1,0 +1,67 @@
+﻿@model TubsWeb.ViewModels.Ps1ViewModel.SafetyInspection
+
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ps1-accordion" href="#safetyInspection">
+            <i class="icon-chevron-right"></i> Safety Equipment
+        </a>
+    </div>
+    <div id="safetyInspection" class="accordion-body collapse">
+        <div class="accordion-inner">
+            @if (null == Model)
+            {
+                @: No Safety Equipment Information
+            }
+            else
+            {
+            @* Lifejacket / Buoy count *@                  
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Lifejacket Provided?</strong></label>
+                    <span>@Model.LifejacketProvided</span>
+                </div>
+                <div class="span3">
+                    <label><strong>Suitable Size?</strong></label>
+                    <span>@Model.LifejacketSizeOk</span>
+                </div>
+                <div class="span3">
+                    <label><strong>Availability</strong></label>
+                    <span>@Model.LifejacketAvailability</span>
+                </div>
+                <div class="span3">
+                    <label><strong>Life Buoys/<br />Life Rings</strong></label>
+                    <span>@Html.DisplayFor(m => Model.BuoyCount)</span>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>EPIRB Type</strong></label>
+                    <span>406</span>
+                </div>
+                <div class="span3">
+                    <label><strong>Total</strong></label>
+                    <span>@Html.DisplayFor(m => m.Epirb406Count)</span>
+                </div>
+                <div class="span3">
+                    <label><strong>Expiration</strong></label>
+                    <span>@Model.Epirb406Expiration</span>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>EPIRB Type</strong></label>
+                    <span>@Model.OtherEpirbType</span>
+                </div>
+                <div class="span3">
+                    <label><strong>Total</strong></label>
+                    <span>@Html.DisplayFor(m => m.OtherEpirbCount)</span>
+                </div>
+                <div class="span3">
+                    <label><strong>Expiration</strong></label>
+                    <span>@Model.OtherEpirbExpiration</span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

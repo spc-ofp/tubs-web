@@ -222,6 +222,8 @@ namespace TubsWeb.Models
         {
             public int EventId { get; set; }
 
+            public int Gen5Id { get; set; }
+
             // Re-use the RoR integration in Knockout
             public bool _destroy { get; set; }
             
@@ -277,6 +279,8 @@ namespace TubsWeb.Models
             public bool IsLocked { get; set; }
 
             public bool HasSet { get; set; }
+
+            public bool HasGen5 { get; set; }
 
             // TODO:  Add any other dependent data record flags
 

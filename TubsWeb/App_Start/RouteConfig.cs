@@ -12,6 +12,7 @@ namespace TubsWeb
     public class RouteConfig
     {
         // TODO Add documentation to all these strings
+        public static string Ps1 = "Ps1";
         public static string Electronics = "Electronics";
         public static string SafetyInspection = "SafetyInspection";
         public static string Crew = "Crew";
@@ -21,6 +22,7 @@ namespace TubsWeb
         public static string Gen2Details = "Gen2Details";
         public static string Gen2 = "Gen2";
         public static string Gen3 = "Gen3";
+        public static string Gen5 = "Gen5";
         public static string Gen6Details = "Gen6Details";
         public static string Gen6 = "Gen6";
         public static string Sets = "Sets";
@@ -109,6 +111,13 @@ namespace TubsWeb
             );
 
             routes.MapRoute(
+                name: Ps1,
+                url: "Trip/{tripId}/PS-1/{action}",
+                defaults: new { controller = "Ps1", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
                 Gen1,
                 "Trip/{tripId}/GEN-1/{action}",
                 new { controller = "Gen1", action = "Index" },
@@ -138,6 +147,13 @@ namespace TubsWeb
                 "Trip/{tripId}/GEN-3/{action}",
                 new { controller = "Gen3", action = "Index" },
                 new { tripId = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: Gen5,
+                url: "Trip/{tripId}/GEN-5/{action}",
+                defaults: new { controller = "Gen5", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             // Link to particular GEN-6 page has to come first

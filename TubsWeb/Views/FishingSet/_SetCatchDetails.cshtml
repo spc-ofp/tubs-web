@@ -1,4 +1,4 @@
-﻿@model TubsWeb.Models.PurseSeineSetViewModel
+﻿@model TubsWeb.ViewModels.PurseSeineSetViewModel
 
 <fieldset>
     <legend>Set Catch Details</legend>
@@ -10,7 +10,8 @@
                 m => Model.SumOfBrail1,
                 new {
                     @class="input-mini",
-                    data_binding = "value: SumOfBrail1"
+                    data_bind = "value: SumOfBrail1",
+                    type = "number"
                 })
         </div>
         <div class="span2">
@@ -20,7 +21,8 @@
                 m => Model.SumOfBrail2,
                 new {
                     @class="input-mini",
-                    data_binding = "value: SumOfBrail2"
+                    data_bind = "value: SumOfBrail2",
+                    type = "number"
                 })
         </div>
         <div class="span2">
@@ -30,8 +32,14 @@
                 m => Model.TotalCatch,
                 new {
                     @class="input-mini",
-                    data_binding = "value: TotalCatch"
+                    data_bind = "value: TotalCatch",
+                    type = "number"
                 })
+        </div>
+        <div class="span3">
+            <label>Total Catch (expected)</label>
+            <span data-bind="text: computedCatch">N/A</span>
+            <span data-bind="visible: showCatchTotalNote" class="text-warning">Total catch mismatch</span>
         </div>
     </div>
 </fieldset>

@@ -13,6 +13,7 @@
 * toastr (user notification)
 * knockout.custom-bindings (date binding)
 */
+/// <reference path="../knockout-2.1.0.debug.js"  />
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
@@ -37,7 +38,12 @@ tubs.psSetMapping = {
     }
 };
 
+
 tubs.psSetCatch = function (catchData) {
+    ///<signature>
+    ///<summary> Record of catch for a single species</summary>
+    ///<param name="catchData" type="Object">entity data</param>
+    ///</signature>
     var self = this;
     self.Id = ko.observable(catchData.Id || 0);
     self._destroy = ko.observable(catchData._destroy || false);
@@ -71,6 +77,10 @@ tubs.psSetCatch = function (catchData) {
 // Any functions/properties/etc. that belong on the view model
 // are defined here.
 tubs.psSet = function (data) {
+    ///<signature>
+    ///<summary> Observed data for a fishing set</summary>
+    ///<param name="data" type="Object">entity data</param>
+    ///</signature>
     var self = this;
     // Map the incoming JSON in 'data' to self, using
     // the options in psSetMapping
@@ -141,6 +151,26 @@ tubs.psSet = function (data) {
             value.dirtyFlag().reset();
         });
     };
+
+    // Compute total catch, not to store, but as a possible check
+    self.computedCatch = ko.computed(function () {
+        var brail1 = 0;
+        var brail2 = 0;
+        if ($.isNumeric(self.SizeOfBrail1()) && $.isNumeric(self.SumOfBrail1())) {
+            console.log("computedCatch");
+            brail1 = self.SizeOfBrail1() * self.SumOfBrail1();
+        }
+        if ($.isNumeric(self.SizeOfBrail2()) && $.isNumeric(self.SumOfBrail2())) {
+            brail2 = self.SizeOfBrail2() * self.SumOfBrail2();
+        }
+        return brail1 + brail2;
+    });
+
+    // Show a warning if the entered and computed values don't match
+    self.showCatchTotalNote = ko.computed(function () {
+        return ($.isNumeric(self.SumOfBrail1()) || $.isNumeric(self.SumOfBrail2())) &&
+                self.computedCatch() != self.TotalCatch();
+    });
 
     // Operations
     self.addByCatch = function () {

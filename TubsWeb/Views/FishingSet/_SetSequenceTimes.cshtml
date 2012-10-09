@@ -1,4 +1,4 @@
-﻿@model TubsWeb.Models.PurseSeineSetViewModel
+﻿@model TubsWeb.ViewModels.PurseSeineSetViewModel
 
 <fieldset>
     <legend>Set Sequence Times</legend>
@@ -11,7 +11,7 @@
                     new { 
                         data_bind = "value: SkiffOffTimeOnly", // TODO Date
                         @class = "input-mini",
-                        uneditable_input = string.Empty})
+                        disabled = string.Empty})
                 <span class="add-on"><i class="icon-time"></i></span>
             </div>
         </div>
@@ -22,7 +22,8 @@
                     m => Model.WinchOnTimeOnly, 
                     new { 
                         data_bind = "value: WinchOnTimeOnly", 
-                        @class = "input-mini" })
+                        @class = "input-mini",
+                        type = "number" })
                 <span class="add-on"><i class="icon-time"></i></span>
             </div>
         </div>

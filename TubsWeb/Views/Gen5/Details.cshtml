@@ -1,0 +1,78 @@
+﻿@model TubsWeb.ViewModels.Gen5ViewModel
+@using Spc.Ofp.Tubs.DAL.Common
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Index", "Gen5", new {}), "All GEN-5 Records"),
+        Tuple.Create("#", "GEN-5 Details")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@* TODO: Link back to PS-2 activity *@
+
+<div class="row-fluid">
+    <div class="span2">
+        <label><strong>Object Number</strong></label>
+        <span>@Model.ObjectNumber</span>
+    </div>
+    <div class="span2">
+        <label><strong>Buoy Number</strong></label>
+        <span>@Model.BuoyNumber</span>
+    </div>
+    <div class="span4">
+        <label><strong>FAD / Payao No. and/or markings</strong></label>
+        <span>@Model.Markings</span>
+    </div>
+    <div class="span2">
+        <label><strong>Origin</strong></label>
+        <span>@Model.OriginCode</span>
+    </div>
+    <div class="span2">
+        <label><strong>SSI trapped?</strong></label>
+        <span>@Model.SsiTrapped</span>
+    </div>
+</div>
+<hr />
+<div class="row-fluid">
+    <div class="span2">
+        <label><strong>FAD as<br />found</strong></label>
+        <span>@Model.AsFoundCode</span>
+    </div>
+    <div class="span2">
+        <label><strong>FAD as<br />left</strong></label>
+        <span>@Model.AsLeftCode</span>
+    </div>
+    <div class="span2">
+        <label><strong>Max est.<br />depth</strong></label>
+        <span>@Model.Depth</span>
+    </div>
+    <div class="span2">
+        <label><strong>FAD<br />length</strong></label>
+        <span>@Model.Length</span>
+    </div>
+    <div class="span2">
+        <label><strong>FAD<br />width</strong></label>
+        <span>@Model.Width</span>
+    </div> 
+</div>
+<hr />
+<div class="row-fluid">
+    <div class="span4">
+        <label><strong>Deployment Date</strong></label>
+        <span>@Model.DeploymentDate</span>
+    </div>
+    <div class="span4">
+        <label><strong>Latitude</strong></label>
+        <span>@Model.Latitude</span>
+    </div>
+    <div class="span4">
+        <label><strong>Longitude</strong></label>
+        <span>@Model.Longitude</span>
+    </div>
+</div>

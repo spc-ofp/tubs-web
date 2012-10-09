@@ -34,6 +34,25 @@ namespace TubsWeb.Tests
     public class MappingTests
     {
         [Test]
+        public void TripEntityToPs1ViewModel([Values(70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId) as PurseSeineTrip;
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<PurseSeineTrip, Ps1ViewModel>(trip);
+                Assert.NotNull(vm);
+                Assert.AreEqual(tripId, vm.TripId);
+                Assert.NotNull(vm.Characteristics);
+                Assert.NotNull(vm.Gear);
+                Assert.NotNull(vm.Inspection);
+                Assert.NotNull(vm.Characteristics.CountryCode);
+                StringAssert.AreEqualIgnoringCase("VU", vm.Characteristics.CountryCode.Trim());
+            }
+        }
+        
+        [Test]
         public void SetEntityToViewModel([Values(284)] int setId)
         {
             Mapper.AssertConfigurationIsValid();
@@ -57,6 +76,19 @@ namespace TubsWeb.Tests
                 Assert.AreEqual(2, vm.SetNumber);
                 Assert.AreEqual(setId, vm.SetId);
 
+            }
+        }
+
+        [Test]
+        public void FadEntityToViewModel([Values(1)] int fadId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Gen5Object>(false))
+            {
+                var fad = repo.FindById(fadId);
+                Assert.NotNull(fad);
+                var vm = Mapper.Map<Gen5Object, Gen5ViewModel>(fad);
+                Assert.NotNull(vm);
             }
         }
 

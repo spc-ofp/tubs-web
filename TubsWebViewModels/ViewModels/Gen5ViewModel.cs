@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Models
+namespace TubsWeb.ViewModels
 {
     /*
      * This file is part of TUBS.
@@ -28,11 +28,6 @@ namespace TubsWeb.Models
 
     public class Gen5ViewModel
     {
-        public Gen5ViewModel()
-        {
-            Fads = new List<FishAggregatingDevice>();
-        }
-        
         // UX state
         public string TripNumber { get; set; }
         public int VersionNumber { get; set; }
@@ -44,10 +39,6 @@ namespace TubsWeb.Models
         public IList<int?> DescriptionCodes =
             new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-        // How Detected
-        public IList<int?> DetectionCodes =
-            new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-
         // Main Materials
         public IList<int?> MaterialCodes =
             new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -56,57 +47,45 @@ namespace TubsWeb.Models
         public IList<int?> AttachmentCodes =
             new List<int?> { null, 11, 12, 13, 14, 15, 16, 17 };
 
-        public IList<FishAggregatingDevice> Fads { get; set; }
+        public int Id { get; set; }
 
+        public int ActivityId { get; set; }
 
-        public class FishAggregatingDevice
-        {
-            public int Id { get; set; }
+        [Display(Name = "Object Number")]
+        public int? ObjectNumber { get; set; }
 
-            public DateTime? ShipsDate { get; set; }
+        [Display(Name = "Origin of FAD")]
+        public int? OriginCode { get; set; }
 
-            [RegularExpression(@"^[0-2]\d[0-5]\d")]
-            public string ShipsTime { get; set; }
+        public DateTime? DeploymentDate { get; set; }
 
-            [Display(Name = "Set Number")]
-            public int? SetNumber { get; set; }
+        [RegularExpression(@"^[0-8]\d{3}\.?\d{3}[NnSs]$")]
+        public string Latitude { get; set; }
 
-            [Display(Name = "Object Number")]
-            public string ObjectNumber { get; set; }
+        [RegularExpression(@"^[0-1]\d{4}\.?\d{3}[EeWw]$")]
+        public string Longitude { get; set; }
 
-            [Display(Name = "Origin of FAD")]
-            public int? OriginCode { get; set; }
+        public bool? SsiTrapped { get; set; }
 
-            public DateTime? DeploymentDate { get; set; }
+        public int? AsFoundCode { get; set; }
 
-            [RegularExpression(@"^[0-8]\d{3}\.?\d{3}[NnSs]$")]
-            public string Latitude { get; set; }
+        public int? AsLeftCode { get; set; }
 
-            [RegularExpression(@"^[0-1]\d{4}\.?\d{3}[EeWw]$")]
-            public string Longitude { get; set; }
+        public IList<int> MainMaterials { get; set; }
 
-            public bool? SsiTrapped { get; set; }
+        public IList<int> Attachments { get; set; }
 
-            public int? AsFoundCode { get; set; }
+        public int? Depth { get; set; }
 
-            public int? AsLeftCode { get; set; }
+        public decimal? Length { get; set; }
 
-            public IList<int> MainMaterials { get; set; }
+        public decimal? Width { get; set; }
 
-            public IList<int> Attachments { get; set; }
+        public string BuoyNumber { get; set; }
 
-            public int? MaxDepth { get; set; }
+        public string Markings { get; set; }
 
-            public decimal? Length { get; set; }
-
-            public decimal? Width { get; set; }
-
-            public string BuoyNumber { get; set; }
-
-            public string FadNumber { get; set; }
-
-            public string Comments { get; set; }
-
-        }
+        public string Comments { get; set; }
+ 
     }
 }

@@ -34,6 +34,8 @@ namespace TubsWeb.Mapping.Profiles
     {
         protected override void Configure()
         {
+            base.Configure();
+
             // ViewModel to Entity
             CreateMap<PurseSeineSetViewModel.SetCatch, DAL.Entities.PurseSeineSetCatch>()
                 // Standard ignores
@@ -77,7 +79,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.EnteredDate, o => o.Ignore())
                 .ForMember(d => d.UpdatedBy, o => o.Ignore())
                 .ForMember(d => d.UpdatedDate, o => o.Ignore())
-                .ForMember(d => d.Activity, o => o.Ignore()) // Handled by parent in AfterMap
+                .ForMember(d => d.Activity, o => o.Ignore()) // Caller's responsibility
                 .ForMember(d => d.SamplingHeaders, o => o.Ignore()) // Not part of this ViewModel                
                 .ForMember(d => d.VesselTonnageOnlyFromThisSet, o => o.Ignore()) // Not supported in webapp
                 .ForMember(d => d.ContainsLargeTuna, o => o.Ignore()) // Legacy column
@@ -93,7 +95,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.EndBrailing, o => o.Ignore()) // AfterMap
                 .ForMember(d => d.EndOfSet, o => o.Ignore()) // AfterMap
                 .ForMember(d => d.Id, o => o.MapFrom(s => s.SetId))
-                .ForMember(d => d.CatchList, o => o.MapFrom(s => s.AllCatch))
+                .ForMember(d => d.CatchList, o => o.MapFrom(s => s.AllCatch.Where(x => x != null && !x._destroy))) // Don't copy destroyed entities
                 .AfterMap((s, d) =>
                 {
                     // s.SkiffOff has the DateTime (if it's set)
@@ -106,6 +108,11 @@ namespace TubsWeb.Mapping.Profiles
                         d.BeginBrailing = dt.Merge(s.BeginBrailingTimeOnly);
                         d.EndBrailing = dt.Merge(s.EndBrailingTimeOnly);
                         d.EndOfSet = dt.Merge(s.EndOfSetTimeOnly);
+                    }
+                    // Rebuild the reference to the parent entity for NHibernate
+                    if (null != d.CatchList && d.CatchList.Count > 0)
+                    {
+                        d.CatchList.ToList().ForEach(cl => cl.FishingSet = d);
                     }
                 })
                 ;
@@ -122,6 +129,8 @@ namespace TubsWeb.Mapping.Profiles
             
             CreateMap<DAL.Entities.PurseSeineSet, PurseSeineSetViewModel>()
                 .ForMember(d => d.CrossesDayBoundary, o => o.Ignore()) // Not from database
+                .ForMember(d => d.TargetSpecies, o => o.Ignore()) // Not from database
+                .ForMember(d => d.FateCodes, o => o.Ignore()) // Not from database
                 .ForMember(d => d.HasNext, o => o.Ignore()) // Caller's responsibility, post AutoMapper
                 .ForMember(d => d.HasPrevious, o => o.Ignore()) // Caller's responsibility, post AutoMapper
                 .ForMember(d => d.MaxSets, o => o.Ignore()) // Caller's responsibility, post AutoMapper
@@ -130,6 +139,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.SizeOfBrail1, o => o.Ignore()) // AfterMap
                 .ForMember(d => d.SizeOfBrail2, o => o.Ignore()) // AfterMap
                 .ForMember(d => d.SetId, o => o.MapFrom(s => s.Id))
+                .ForMember(d => d.ActivityId, o => o.MapFrom(s => s.Activity.Id))
                 .ForMember(d => d.TripId, o => o.MapFrom(s => s.Activity.Day.Trip.Id))
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.Activity.Day.Trip.SpcTripNumber ?? "This Trip").Trim()))
                 .ForMember(d => d.VersionNumber, o => o.MapFrom(s => s.Activity.Day.Trip.Version == DAL.Common.WorkbookVersion.v2009 ? 2009 : 2007))
