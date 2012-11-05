@@ -1,52 +1,73 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
-@using Spc.Ofp.Tubs.DAL.Entities
-@using Spc.Ofp.Tubs.DAL.Common
+﻿@model TubsWeb.ViewModels.PageCountViewModel
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
         Tuple.Create("#", "Page Counts")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@* TODO Should we enable edits directly in the table too? *@
-@{ Html.RenderPartial("_PageCounts", Model.PageCounts); }
-
-@if (!Model.IsReadOnly)
-{
-    @* Passing the argument to 'done' requires the String.Format call *@
-    @* http://stackoverflow.com/questions/6550290/ajaxoptions-onsuccess-callback-with-parameter-not-working *@
-    var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "pageCounts", OnSuccess = String.Format("clearForm('#{0}')", "addPageCountForm") };
-    // Drop down list of form types should be valid for trip type
-    var formNames =
-        from FormNames fm in Enum.GetValues(typeof(FormNames))
-        select new { ID = fm, Name = fm.GetDescription() };
-    var formNameList = new SelectList(formNames, "ID", "Name");
-    
-    using (Ajax.BeginForm("AddPageCount", null, options, new { id = "addPageCountForm" }))
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>Form</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (Model is TubsWeb.ViewModels.PurseSeinePageCountViewModel)
     {
-        @Html.ValidationSummary(false)
-        <fieldset>
-            <legend>Add Page Count</legend>
-            @{ var pageCount = new PageCount(); }
-            @Html.HiddenFor(m => pageCount.Id)
-
-            @Html.LabelFor(m => pageCount.FormName)
-            @Html.DropDownListFor(m => pageCount.FormName, formNameList)
-            @Html.ValidationMessageFor(m => pageCount.FormName) <br />
-
-            @Html.LabelFor(m => pageCount.FormCount)
-            @Html.TextBoxFor(m => pageCount.FormCount)
-            @Html.ValidationMessageFor(m => pageCount.FormCount) <br />
-            <p>
-                <input type="submit" name="Add" value="Add" class="btn btn-primary" />
-                <input type="reset" name="Cancel" class="btn" />
-            </p>
-        </fieldset>
+        var pmodel = Model as TubsWeb.ViewModels.PurseSeinePageCountViewModel;
+        <tr>
+            <td>PS-1</td>
+            <td>@Html.DisplayFor(m => pmodel.Ps1Count)</td>
+        </tr>
+        <tr>
+            <td>PS-2</td>
+            <td>@Html.DisplayFor(m => pmodel.Ps2Count)</td>
+        </tr>
+        <tr>
+            <td>PS-3</td>
+            <td>@Html.DisplayFor(m => pmodel.Ps3Count)</td>
+        </tr>
+        <tr>
+            <td>PS-4</td>
+            <td>@Html.DisplayFor(m => pmodel.Ps4Count)</td>
+        </tr>
+        <tr>
+            <td>PS-5</td>
+            <td>@Html.DisplayFor(m => pmodel.Ps5Count)</td>
+        </tr>
     }
-}
+        <tr>
+            <td>GEN-1</td>
+            <td>@Html.DisplayFor(m => Model.Gen1Count)</td>
+        </tr>
+        <tr>
+            <td>GEN-2</td>
+            <td>@Html.DisplayFor(m => Model.Gen2Count)</td>
+        </tr>
+        <tr>
+            <td>GEN-3</td>
+            <td>@Html.DisplayFor(m => Model.Gen3Count)</td>
+        </tr>
+    @if (Model is TubsWeb.ViewModels.PurseSeinePageCountViewModel)
+    {
+        var pmodel = Model as TubsWeb.ViewModels.PurseSeinePageCountViewModel;
+        <tr>
+            <td>GEN-5</td>
+            <td>@Html.DisplayFor(m => pmodel.Gen5Count)</td>
+        </tr>
+    }
+        <tr>
+            <td>GEN-6</td>
+            <td>@Html.DisplayFor(m => Model.Gen6Count)</td>
+        </tr>
+    
+    </tbody>
+</table>

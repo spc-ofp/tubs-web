@@ -1,129 +1,156 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
-@using Spc.Ofp.Tubs.DAL.Entities
+﻿@model TubsWeb.ViewModels.TransferViewModel
+@using Newtonsoft.Json
+
+@{ 
+    // Switch to full width layout
+    ViewBag.UseFluid = true;
+    ViewBag.Title = "Edit GEN-1 Transfers"; 
+}
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
-        Tuple.Create(Url.Action("Index", "Gen1", new { tripId = ViewBag.TripId }), "GEN-1"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
         Tuple.Create("#", "Edit GEN-1 Transfers")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-<fieldset>
-    <legend>Fish Transferring, Fish Dumping, Bunkering by Observer's Vessel</legend>
-    @{ Html.RenderPartial("_EditTransfers", Model.Transfers); }
-</fieldset>
+<form id="sightingsForm">
+    @* 
+     * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+     * when the first 'dirtying' change occurs.
+     *@
+    <p>
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
+    <hr />
+    <table class="table table-bordered table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Name</th>
+                <th>IRCS</th>
+                <th>Flag</th>
+                <th>Type</th>
+                <th>SKJ</th>
+                <th>YFT</th>
+                <th>BET</th>
+                <th>Mixed</th>
+                <th>Action Code</th>
+                <th>Comments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: Transfers">
+            <tr data-bind="css: { warning: (isDirty() || 0 === Id) }" class="lineitems">
+                <td>
+                    @* Delete button is taken out of the tab order to prevent accidents *@
+                    <button type="button"
+                            tabindex="3000"
+                            class="removeItem btn btn-mini btn-danger" 
+                            rel="tooltip" 
+                            title="Click to remove row">
+                        <i class="icon-remove icon-white"></i>
+                    </button>
+                </td>
+                <td><input type="text" data-bind="value: DateOnly.formattedDate, uniqueName: true" class="input-mini" /></td>
+                <td><input type="text" data-bind="value: TimeOnly, uniqueName: true" class="input-mini" /></td>
+                <td><input type="text" data-bind="value: Latitude, uniqueName: true" class="input-small" /></td>
+                <td><input type="text" data-bind="value: Longitude, uniqueName: true" class="input-small" /></td>
+                <td><input type="text" data-bind="value: Name, uniqueName: true" class="vesselName" /></td>
+                <td><input type="text" data-bind="value: Ircs, uniqueName: true" class="input-mini" /></td>
+                <td><input type="text" data-bind="value: CountryCode, uniqueName: true" class="input-mini" /></td>
+                <td>
+                    <select data-bind="value: TypeCode, options: $root.TypeCodes" class="input-mini"></select>
+                </td>
+                <td><input type="number" data-bind="value: Skipjack, uniqueName: true" class="input-mini" /></td>
+                <td><input type="number" data-bind="value: Yellowfin, uniqueName: true" class="input-mini" /></td>
+                <td><input type="number" data-bind="value: Bigeye, uniqueName: true" class="input-mini" /></td>
+                <td><input type="number" data-bind="value: Mixed, uniqueName: true" class="input-mini" /></td>
+                <td>
+                    <select data-bind="value: ActionCode, options: $root.ActionCodes" class="input-mini"></select>
+                </td>
+                <td><input type="text" data-bind="value: Comments, uniqueName: true" /></td>
+                <td>
+                    <button class="addItem btn btn-mini btn-info" 
+                            type="button"
+                            rel="tooltip" 
+                            title="Click to add row">
+                        <i class="icon-plus icon-white"></i>
+                    </button>
+                </td>
+            </tr>        
+        </tbody>
+    </table>
+    <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Transfers().length == 0">Add Sighting</button>
+</form>
 
-@{
-    // Passing the argument to 'done' requires the String.Format call
-    // http://stackoverflow.com/questions/6550290/ajaxoptions-onsuccess-callback-with-parameter-not-working
-    AjaxOptions options = new AjaxOptions { 
-        HttpMethod = "Post", 
-        UpdateTargetId = "gen1Transfers", 
-        OnSuccess = String.Format("clearForm('{0}')", "#addTransferForm") 
-    };
-}
-
-@using (Ajax.BeginForm("AddTransfer", "Gen1", null, options, new { id = "addTransferForm", @class = "form well" }))
-{
-    @Html.ValidationSummary(true)
-    <fieldset>
-        <legend>Add Transfer</legend>
-        @{ var transfer = new Transfer(); }
-        @Html.EditorFor(t => transfer)
-        <p>
-            <input type="submit" name="Save" value="Save" class="btn btn-primary" />
-            <input type="reset" name="Cancel" class="btn" />
-        </p>
-    </fieldset>
-}
-
-<ul id="tlyPageGuide" data-tourtitle="Instructions for adding a transfer">
-    <li class="tlypageguide_left" data-tourtarget="input[name='transfer.TransferTime']">
-        <div>
-            Enter the time of the transfer.  The format for date is dd-mm-yy HH:mm.
-            This means that day of the month and month should have a leading zero
-            if the value is less than 9 (for example, "09" instead of "9").
-            Time of day uses the 24-hour clock.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_Latitude">
-        <div>
-            Enter the latitude of your vessel during the transfer.  The format for
-            latitude is ddmm.mmmS or ddmm.mmmN.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_Longitude">
-        <div>
-            Enter the longitude of your vessel during the transfer.  The format for
-            latitude is dddmm.mmmE or dddmm.mmmW.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_VesselName">
-        <div>
-            Enter the name of the other vessel participating in the transfer.  If the entire name can't be
-            recorded, write down what is visible.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_Ircs">
-        <div>
-            Enter the IRCS of the other vessel participating in the transfer.  If the entire call sign can't be
-            recorded, write down what is visible.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_VesselType">
-        <div>
-            Select the type of the other vessel participating in the transfer.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_TonsOfSkipjack">
-        <div>
-            Enter the amount (in metric tonnes) of transferred skipjack tuna.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_TonsOfYellowfin">
-        <div>
-            Enter the amount (in metric tonnes) of transferred yellowfin tuna.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_TonsOfBigeye">
-        <div>
-            Enter the amount (in metric tonnes) of transferred bigeye tuna.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_TonsOfMixed">
-        <div>
-            Enter the amount (in metric tonnes) of the mixed species transfer.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_ActionType">
-        <div>
-            Select the action code representing the activity of the host vessel.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#transfer_Comments">
-        <div>
-            Enter any additional comments about the transfer.
-        </div>
-    </li>
-</ul>
-
-
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
 
 @section AdditionalScripts {
-    @{ Html.RenderPartial("_DateTimePickerInit"); }
-    <script src="@Url.Content("~/Scripts/pageguide.min.js")" type="text/javascript"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+    <script src="~/Scripts/spc.utilities.js"></script>
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.transfer.js"></script>
     <script>
         $(function () {
+            var viewModel = new tubs.TransferViewModel(@modelAsJson);
+            viewModel.clearDirtyFlag();
+            ko.applyBindings(viewModel);
+
+            $(".lineitems").on("click", ".removeItem", function () {
+                viewModel.removeEvent(ko.dataFor(this));
+            });
+
+            $(".lineitems").on("click", ".addItem", function () {
+                viewModel.addEvent();
+            });
+
+            $("#btnAddWhenEmpty").on("click", function () {
+                viewModel.addEvent();
+            });
+
+            /* TODO:  Attach a vessel lookup typeahead to anything with the .vesselName class */
+
             /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
             tl.pg.init();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function(e) {
+                if (viewModel.isDirty())
+                {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };  
         });
     </script>
 }
 
-@* TODO Wire up Ajax on vessel name field *@

@@ -23,8 +23,10 @@ namespace TubsWeb.Controllers
     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
     */
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Web.Configuration;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using TubsWeb.Models;
@@ -113,6 +115,39 @@ namespace TubsWeb.Controllers
             return View();
         }
 
+        // TODO: Consider pushing this into a comma separated list in web.config
+        // and then just doing a split here...
+        public ActionResult EntryHelp()
+        {
+            // Everybody wants some!
+            HashSet<string> sections = new HashSet<string>
+            {
+                "PS-2",
+                "GEN-3"
+            };
+            // Check the installed location:
+            string installedFor = WebConfigurationManager.AppSettings["DefaultProgramCode"] ?? String.Empty;
+            if ("PGOB".Equals(installedFor, StringComparison.InvariantCultureIgnoreCase))
+            {
+                sections.Add("PS-1 (PG)");
+                sections.Add("PS-3");
+            }
+            else if ("SBOB".Equals(installedFor, StringComparison.InvariantCultureIgnoreCase))
+            {
+                sections.Add("PS-1 (SB)");
+            }
+            else
+            {
+                sections.Add("PS-1");
+                sections.Add("PS-3");
+                sections.Add("GEN-1");
+                sections.Add("GEN-2");
+                sections.Add("GEN-5");
+                sections.Add("GEN-6");
+            }
+            return View(sections);
+        }
+
         // FIXME Add some kind of security here
         public ActionResult Debug()
         {
@@ -122,6 +157,24 @@ namespace TubsWeb.Controllers
 
         public ActionResult Confidentiality()
         {
+            return View();
+        }
+
+        public ActionResult Reports()
+        {
+            // Not exactly this, but similar
+            // http://ofp-reports/Reports/Pages/ReportViewer.aspx?%2f{0}&amp;rs:Command=Render&amp;tripId={1}
+            // This Url 
+            // http://localhost/ReportServer/Pages/ReportViewer.aspx?%2fProgramSummary&rs:Command=Render
+            string reportServer = WebConfigurationManager.AppSettings["ReportingServicesFormatUrl"] ?? String.Empty;
+          
+            int offset = reportServer.IndexOf('?');
+            if (offset > 0)
+            {
+                reportServer = reportServer.Substring(0, offset);
+            }
+            
+            ViewBag.ReportingUrl = reportServer;
             return View();
         }
     }

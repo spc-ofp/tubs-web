@@ -1,0 +1,98 @@
+﻿@model TubsWeb.ViewModels.Ps1ViewModel.VesselCharacteristics
+
+<div class="accordion-group" data-bind="with: Characteristics">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ps1-accordion" href="#characteristics">
+            <i class="icon-chevron-down"></i> Vessel Characteristics
+        </a>
+    </div>
+    <div id="characteristics" class="accordion-body collapse in">
+        @* Vessel details come from another system, so no point in editing them *@
+        <div class="accordion-inner">         
+            @* Owner / Registration Number / Flag / IRCS / Length / Gross Tonnage *@
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Owner</strong></label>
+                    <input id="Owner" name="Owner" type="text" data-bind="value: Owner" />
+                </div>
+                <div class="span2">
+                    <label><strong>Reg. Number</strong></label>
+                    <span>@(Model.RegistrationNumber ?? "N/A")</span>
+                </div>
+                <div class="span1">
+                    <label><strong>Flag</strong></label>
+                    <span>@Model.CountryCode</span>
+                </div>
+                <div class="span2">
+                    <label><strong>IRCS</strong></label>
+                    <span>@(Model.Ircs ?? "N/A")</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Length</strong></label>
+                    <span>@Html.DisplayFor(m => Model.Length)</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Gross Tonnage</strong></label>
+                    <span>@Html.DisplayFor(m => Model.GrossTonnage) mT</span>
+                </div>
+            </div>
+            <hr />
+            @* Speed Boats / Aux. Boats / Tender Boats Answer / Skiff Make / Skiff Power / Cruise Speed *@
+            <div class="row-fluid">
+                <div class="span2">
+                    <label><strong>Speed<br />Boats</strong></label>
+                    <input id="SpeedboatCount" name="SpeedboatCount" type="number" data-bind="value: SpeedboatCount" class="input-mini" />
+                </div>
+                <div class="span2">
+                    <label><strong>Other Onboard<br />Boats</strong></label>
+                    <input id="AuxiliaryBoatCount" name="AuxiliaryBoatCount" type="number" data-bind="value: AuxiliaryBoatCount" class="input-mini" />
+                </div>
+                <div class="span2">
+                    <label><strong>Works with<br />other Tenders?</strong></label>
+                    <select id="TenderBoatAnswer" name="TenderBoatAnswer" data-bind="value: TenderBoatAnswer, options: $root.BooleanValues" class="input-mini"></select>
+                </div>
+                <div class="span2">
+                    <label><strong>Skiff<br />Make</strong></label>
+                    <input id="SkiffMake" name="SkiffMake" type="text" data-bind="value: SkiffMake" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong>Skiff<br />Power</strong></label>
+                    <input id="SkiffPower" name="SkiffPower" type="number" data-bind="value: SkiffPower" class="input-mini" />
+                </div>
+                <div class="span2">
+                    <label><strong>Cruise<br />Speed</strong></label>
+                    <input id="CruiseSpeed" name="CruiseSpeed" type="number" data-bind="value: CruiseSpeed" class="input-mini" />
+                </div>
+            </div>
+            <hr />
+            @* Helicopter Make / Model / Registration Number / Range / Color / Count *@
+            <div class="row-fluid">
+                <div class="span2">
+                    <label><strong>Helicopter<br />Make</strong></label>
+                    <input id="HelicopterMake" name="HelicopterMake" type="text" data-bind="value: HelicopterMake" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong>Helicopter<br />Model</strong></label>
+                    <input id="HelicopterModel" name="HelicopterModel" type="text" data-bind="value: HelicopterModel" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong>Registration<br />Number</strong></label>
+                    <input id="HelicopterRegistration" name="HelicopterRegistration" type="text" data-bind="value: HelicopterRegistration" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong>&nbsp;<br />Range</strong></label>
+                    <input id="HelicopterRange" name="HelicopterRange" type="number" data-bind="value: HelicopterRange" class="input-mini" />
+                    <select id="HelicopterRangeUnits" name="HelicopterRangeUnits" data-bind="options: $root.RangeUnits, value: HelicopterRangeUnits" class="input-mini"></select>
+                </div>
+                <div class="span2">
+                    <label><strong>&nbsp;<br />Color</strong></label>
+                    <input id="HelicopterColor" name="HelicopterColor" type="text" data-bind="value: HelicopterColor" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong># of Vessels<br />Serviced</strong></label>
+                    <input id="HelicopterServiceOtherCount" name="HelicopterServiceOtherCount" type="number" data-bind="value: HelicopterServiceOtherCount" class="input-mini" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

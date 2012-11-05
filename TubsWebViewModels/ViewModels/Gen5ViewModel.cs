@@ -25,6 +25,7 @@ namespace TubsWeb.ViewModels
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Newtonsoft.Json;
 
     public class Gen5ViewModel
     {
@@ -39,13 +40,14 @@ namespace TubsWeb.ViewModels
         public IList<int?> DescriptionCodes =
             new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-        // Main Materials
+        // Although there are separate lists for materials and attachments,
+        // the instructions also state that these are guidelines and that
+        // any material code can appear as either a main material or an attachment
+        // Accordingly, there is only one list of material codes.
         public IList<int?> MaterialCodes =
-            new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            new List<int?> { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
 
-        // FAD Attachments
-        public IList<int?> AttachmentCodes =
-            new List<int?> { null, 11, 12, 13, 14, 15, 16, 17 };
+        public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
 
         public int Id { get; set; }
 
@@ -57,6 +59,9 @@ namespace TubsWeb.ViewModels
         [Display(Name = "Origin of FAD")]
         public int? OriginCode { get; set; }
 
+        [JsonIgnore]
+        public string Origin { get; set; }
+
         public DateTime? DeploymentDate { get; set; }
 
         [RegularExpression(@"^[0-8]\d{3}\.?\d{3}[NnSs]$")]
@@ -65,15 +70,27 @@ namespace TubsWeb.ViewModels
         [RegularExpression(@"^[0-1]\d{4}\.?\d{3}[EeWw]$")]
         public string Longitude { get; set; }
 
-        public bool? SsiTrapped { get; set; }
+        public string SsiTrapped { get; set; }
+
+        [JsonIgnore]
+        public string AsFound { get; set; }
 
         public int? AsFoundCode { get; set; }
 
+        [JsonIgnore]
+        public string AsLeft { get; set; }
+
         public int? AsLeftCode { get; set; }
 
-        public IList<int> MainMaterials { get; set; }
+        public IList<FadMaterial> MainMaterials { get; set; }
 
-        public IList<int> Attachments { get; set; }
+        [JsonIgnore]
+        public IList<string> MainMaterialDescriptions { get; set; }
+
+        public IList<FadMaterial> Attachments { get; set; }
+
+        [JsonIgnore]
+        public IList<string> AttachmentDescriptions { get; set; }
 
         public int? Depth { get; set; }
 
@@ -86,6 +103,14 @@ namespace TubsWeb.ViewModels
         public string Markings { get; set; }
 
         public string Comments { get; set; }
+
+        public class FadMaterial
+        {
+            public int Id { get; set; }
+            public int MaterialCode { get; set; }
+            public bool _destroy { get; set; }
+            public bool NeedsFocus { get; set; }
+        }
  
     }
 }

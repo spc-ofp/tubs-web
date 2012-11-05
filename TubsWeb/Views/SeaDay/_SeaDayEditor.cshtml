@@ -56,7 +56,11 @@
             <div class="span1">
                 @Html.LabelFor(m => Model.UtcDate)
                 <div class="input-append">
-                    @Html.TextBoxFor(m => Model.UtcDate, new { data_bind = "value: UtcDate.formattedDate", @class = "input-mini" })
+                    @Html.TextBoxFor(
+                        m => Model.UtcDate, 
+                        new { 
+                            data_bind = "value: UtcDate.formattedDate", 
+                            @class = "input-mini" })
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
             </div>

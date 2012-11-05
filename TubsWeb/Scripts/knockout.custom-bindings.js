@@ -2,6 +2,8 @@
  * Custom Knockout bindings that can be shared go here.
  */
 
+/// <reference name="../knockout-2.1.0.debug.js" />
+
 // http://stackoverflow.com/questions/5953222/how-to-convert-json-datetime-into-readable-date-time-using-knockout-and-custom
 // Using answer provided by Mike Ward
 // Updated to handle null or invalid values
@@ -40,10 +42,10 @@ ko.bindingHandlers.date = {
 // http://www.reddnet.net/knockout-js-extender-for-dates-in-iso-8601-format/
 // JSFiddle:
 // http://jsfiddle.net/StephenRedd/SXRyr/
-
-// This is closer, but it's swapping month and day (but not always).
-// http://momentjs.com/docs/
 ko.extenders.isoDate = function (target, formatString) {
+    /// <summary>Extend Knockout to store dates using ISO-8601, but display (and accept) in arbitrary formats</summary>
+    /// <param name="target" optional="false" type="ko.observable"></param>
+    /// <param name="formatString" optional="false" type="String"></param>
     target.formattedDate = ko.computed({
         read: function () {
             if (!target()) {
@@ -54,7 +56,14 @@ ko.extenders.isoDate = function (target, formatString) {
         },
         write: function (value) {
             if (value) {
-                target(moment(value).format());
+                var shortDate = value.indexOf("/") > 0;
+                // TODO:  Replace hard-coded value with 'formatString' argument?
+                var dt = shortDate ? moment(value, "DD/MM/YY") : moment(value);
+                //console.log("value: " + value);
+                //console.log("dt: " + dt);
+                var formatted = dt.format();
+                //console.log("formatted: " + formatted);
+                target(formatted);
             }
         }
     });

@@ -15,6 +15,10 @@
  * spc.utilities (String hashCode)
  */
 
+/// <reference name="../knockout-2.1.0.debug.js" />
+/// <reference name="../amplify.js" />
+/// <reference name="../knockout-custom-bindings.js" />
+
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
 "use strict";
@@ -51,6 +55,7 @@ tubs.psSeaDayMapping = {
 // https://github.com/ericmbarnard/Knockout-Validation/wiki/Native-Rules
 //
 tubs.psEvent = function (eventData) {
+    /// <summary>A single event during purse seine trip.</summary>
     var self = this;
     self.EventId = ko.observable(eventData.EventId || 0);
     self.Gen5Id = ko.observable(eventData.Gen5Id || 0);
@@ -108,10 +113,10 @@ tubs.psEvent = function (eventData) {
     return self;
 };
 
-// This is the actual Purse Seine Sea Day view model
-// Any functions/properties/etc. that belong on the view model
-// are defined here.
+
 tubs.psSeaDay = function (data) {
+    /// <summary>ViewModel for an an entire day at sea.</summary>
+    /// <param name="data" mayBeNull="false" type="Object">ViewModel data</param>
     var self = this;
     // Map the incoming JSON in 'data' to self, using
     // the options in psSeaDayMapping
@@ -203,7 +208,7 @@ tubs.psSeaDay = function (data) {
                     complete();
                 },
                 function (xhr, status, error) {
-                    toastr.error(error, 'Failed to reload daily log');
+                    tubs.notify('Failed to reload daily log', xhr, status);
                     complete();
                 });
         },
@@ -226,7 +231,7 @@ tubs.psSeaDay = function (data) {
                     complete();
                 },
                 function (xhr, status, error) {
-                    toastr.error(error, 'Failed to save daily log');
+                    tubs.notify('Failed to save daily log', xhr, status);
                     complete();
                 });
         },

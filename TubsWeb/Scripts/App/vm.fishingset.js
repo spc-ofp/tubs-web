@@ -141,7 +141,7 @@ tubs.psSet = function (data) {
     });
 
     // Clear the dirty flag for the this entity, plus all the
-    // child entities stored in the Events observableArray
+    // child entities stored in the ByCatch and TargetCatch observableArrays
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
         $.each(self.ByCatch(), function (index, value) {
@@ -157,19 +157,28 @@ tubs.psSet = function (data) {
         var brail1 = 0;
         var brail2 = 0;
         if ($.isNumeric(self.SizeOfBrail1()) && $.isNumeric(self.SumOfBrail1())) {
-            console.log("computedCatch");
             brail1 = self.SizeOfBrail1() * self.SumOfBrail1();
+            if (brail1 > 0) {
+                brail1 = Math.round(brail1 * 1000) / 1000;
+            }
         }
         if ($.isNumeric(self.SizeOfBrail2()) && $.isNumeric(self.SumOfBrail2())) {
             brail2 = self.SizeOfBrail2() * self.SumOfBrail2();
+            if (brail2 > 0) {
+                brail2 = Math.round(brail2 * 1000) / 1000;
+            }
         }
         return brail1 + brail2;
     });
 
-    // Show a warning if the entered and computed values don't match
+    // Show a warning if the entered and computed values don't match (within a half ton)
     self.showCatchTotalNote = ko.computed(function () {
-        return ($.isNumeric(self.SumOfBrail1()) || $.isNumeric(self.SumOfBrail2())) &&
-                self.computedCatch() != self.TotalCatch();
+        var retval = false;
+        if ($.isNumeric(self.SumOfBrail1()) || $.isNumeric(self.SumOfBrail2())) {
+            var delta = Math.abs(self.computedCatch() - self.TotalCatch());
+            retval = delta > .5;
+        }
+        return retval;
     });
 
     // Operations
@@ -191,9 +200,6 @@ tubs.psSet = function (data) {
         else { self.TargetCatch.remove(sc); }
     };
 
-    // tubs.getFishingSet = function (tripId, setNumber, success_cb, error_cb)
-    // tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error_cb)
-
     // Commands
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
@@ -207,7 +213,7 @@ tubs.psSet = function (data) {
                     complete();
                 },
                 function (xhr, status, error) {
-                    toastr.error(error, 'Failed to reload set details');
+                    tubs.notify('Failed to reload set details', xhr, status);
                     complete();
                 }
             );
@@ -231,7 +237,7 @@ tubs.psSet = function (data) {
                     complete();
                 },
                 function (xhr, status, error) {
-                    toastr.error(error, 'Failed to save set details');
+                    tubs.notify('Failed to save set details', xhr, status);
                     complete();
                 }
             );

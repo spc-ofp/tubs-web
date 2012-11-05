@@ -1,0 +1,111 @@
+﻿@model TubsWeb.ViewModels.Ps1ViewModel
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "Edit PS-1 for " + Model.TripNumber;
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
+        Tuple.Create("#", "Edit PS-1")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+<form id="ps1Form">
+    @* 
+     * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+     * when the first 'dirtying' change occurs.
+     *@
+    <p>
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
+    <div class="accordion" id="ps1-accordion">
+        @{ 
+            Html.RenderPartial("_VesselCharacteristicsEditor", Model.Characteristics);
+            Html.RenderPartial("_FishingGearEditor", Model.Gear);
+        }
+        <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#ps1-accordion" href="#comments">
+                <i class="icon-chevron-right"></i> Observations / Comments / Other Gear / Unusual Use of Gear
+              </a>
+            </div>
+            <div id="comments" class="accordion-body collapse">
+              <div class="accordion-inner">
+                <div class="row-fluid">
+                    <textarea id="Page1Comments" name="Page1Comments" data-bind="value: Page1Comments" rows="5" class="span12"></textarea>
+                </div>
+              </div>
+            </div>
+          </div><!-- accordion-group -->
+          @* Waste Disposal (no separate class) *@
+          @if (Model.VersionNumber == 2009)
+          {
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#ps1-accordion" href="#wasteDisposal">
+                <i class="icon-chevron-right"></i> Waste Disposal
+              </a>
+            </div>
+            <div id="wasteDisposal" class="accordion-body collapse">
+              <div class="accordion-inner">
+                <div class="row-fluid">
+                    <div class="span3">
+                        <label><strong>Has Waste Disposal?</strong></label>
+                        <select id="HasWasteDisposal" name="HasWasteDisposal" data-bind="value: HasWasteDisposal, options: $root.BooleanValues" class="input-mini"></select>
+                    </div>
+                    <div class="span9">
+                        <label><strong>Description</strong></label>
+                        <textarea id="WasteDisposalDescription" name="WasteDisposalDescription" data-bind="value: WasteDisposalDescription" class="span9"></textarea>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- accordion-group -->
+          }
+          @{ Html.RenderPartial("_SafetyInspectionEditor"); }
+          @* TODO Additional Notes (find where this is stored!) *@
+    </div>
+
+</form>
+
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
+@section AdditionalScripts {
+    <!-- ISODate extension -->
+    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+
+    <!-- String hashCode implementation -->    
+    <script src="~/Scripts/spc.utilities.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.ps1.js"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <script>
+        $(function () {
+            $('.accordion').on('show', function (e) {
+                $(e.target).prev('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-down icon-chevron-right');
+            });
+            $('.accordion').on('hide', function (e) {
+                $(e.target).prev('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-down icon-chevron-right');
+            });
+            var viewModel = new tubs.Ps1ViewModel(@modelAsJson);
+            viewModel.clearDirtyFlag();
+            ko.applyBindings(viewModel);
+        });
+    </script>
+}

@@ -1,0 +1,27 @@
+﻿@model TubsWeb.ViewModels.Gen5ViewModel
+
+@{ ViewBag.Title = "Edit GEN-5"; }
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Index", "Gen5", new {}), "All GEN-5 Records"),
+        Tuple.Create("#", "Edit GEN-5")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@{ Html.RenderPartial("_Gen5Editor", Model); }
+
+<!-- TODO Add a debug param so that this can be displayed for troubleshooting -->
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
+@section AdditionalScripts {
+ @{ Html.RenderPartial("_Gen5EditorScripts", Model); }
+}

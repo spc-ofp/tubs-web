@@ -79,7 +79,7 @@ namespace TubsWeb.Controllers
             return View(aux);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Create(Trip tripId)
         {
             var trip = tripId as PurseSeineTrip;
@@ -101,7 +101,7 @@ namespace TubsWeb.Controllers
         
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Create(Trip tripId, PurseSeineVesselAttributes aux)
         {
             aux.EnteredDate = DateTime.Now;
@@ -109,7 +109,7 @@ namespace TubsWeb.Controllers
             return Modify(tripId, aux);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             var trip = tripId as PurseSeineTrip;
@@ -130,7 +130,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(int tripId, PurseSeineVesselAttributes aux)
         {
             var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(tripId) as PurseSeineTrip;

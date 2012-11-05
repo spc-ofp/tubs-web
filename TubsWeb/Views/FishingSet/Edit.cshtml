@@ -20,7 +20,9 @@
 
 @{ Html.RenderPartial("_FishingSetEditor", Model); }
 
+@*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
 
 @section AdditionalScripts {
     @{ Html.RenderPartial("_FishingSetEditorScripts", Model); }

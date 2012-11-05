@@ -77,7 +77,7 @@ namespace TubsWeb.Controllers
         // http://xhalent.wordpress.com/2011/05/25/master-details-with-dialog-in-asp-net-mvc-and-unobstrusive-ajax/
         // On further reflection, GEN-6 isn't a great candidate for this
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Add(Trip tripId)
         {
             if (null == tripId)
@@ -93,7 +93,7 @@ namespace TubsWeb.Controllers
             return View(pevent);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, int pageNumber)
         {
             if (null == tripId)

@@ -31,6 +31,7 @@ namespace TubsWeb.Models.ExtensionMethods
     using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.ViewModels;
+    using AutoMapper;
 
     /// <summary>
     /// TubsExtensions currently holds a grab-bag of Extension methods.
@@ -166,7 +167,7 @@ namespace TubsWeb.Models.ExtensionMethods
         // TODO:  This is hard-coded for Purse Seine crew, something that needs fixing...
         // Probably the best fix would be to centralize crew into a common table
         // and enforce jobtype constraints at the application level.
-        public static Crew AsCrew(this CrewViewModel.CrewMemberModel cmm, JobType job)
+        public static Crew AsCrew(this TubsWeb.ViewModels.CrewViewModel.CrewMemberModel cmm, JobType job)
         {
             Crew crew = null;
             if (null != cmm && !cmm._destroy && cmm.IsFilled)
@@ -179,7 +180,7 @@ namespace TubsWeb.Models.ExtensionMethods
             return crew;
         }
 
-        public static IList<Crew> AsCrewList(this CrewViewModel cvm)
+        public static IList<Crew> AsCrewList(this TubsWeb.ViewModels.CrewViewModel cvm)
         {
             var crewlist = new List<Crew>(16);
             crewlist.Add(cvm.Captain.AsCrew(JobType.Captain));
@@ -375,6 +376,8 @@ namespace TubsWeb.Models.ExtensionMethods
                             BuoyNumber = a.Beacon.NullSafeTrim(),
                             Comments = a.Comments.NullSafeTrim(),                            
                             HasSet = (Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing == a.ActivityType && a.FishingSet != null),
+                            HasGen5 = (a.Fad != null),
+                            Gen5Id = (null != a.Fad ? a.Fad.Id : 0),
                             /* TODO: At some point we'll have to add an extension method to check this */
                             IsLocked = (Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing == a.ActivityType && a.FishingSet != null)
                         };

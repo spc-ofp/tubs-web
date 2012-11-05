@@ -27,13 +27,14 @@ namespace TubsWeb.Controllers
     using System.Linq;
     using System.Net;
     using System.Web.Mvc;
+    using AutoMapper;
     using NHibernate;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
-    using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
+    using TubsWeb.ViewModels;
 
     /// <summary>
     /// 
@@ -42,13 +43,13 @@ namespace TubsWeb.Controllers
     {
         internal ActionResult ViewActionImpl(Trip tripId)
         {
-            if (null == tripId)
+            var trip = tripId as PurseSeineTrip;
+            if (null == trip)
             {
                 return InvalidTripResponse();
             }
 
-            var cvm = Fill(MvcApplication.CurrentStatelessSession, tripId.Id);
-            cvm.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+            var cvm = Mapper.Map<PurseSeineTrip, CrewViewModel>(trip);
             string formatString = 
                 IsEdit() ? 
                     "Edit crew list for {0}" :
@@ -62,7 +63,7 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), cvm);           
         }
 
-
+        /*
         /// <summary>
         /// Find the first crewmember with the given job in the list of all crew for the trip.
         /// If there is no crewmember, create a new, empty object.
@@ -122,6 +123,7 @@ namespace TubsWeb.Controllers
             cvm.WinchMan = GetCrewmember(crewlist, JobType.WinchMan);
             return cvm;
         }
+        */
 
         //
         // GET: /Crew/
@@ -130,7 +132,7 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId);
         }
 
-        //[Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
@@ -143,7 +145,7 @@ namespace TubsWeb.Controllers
         // that what's sent to the client is what's in the database.
         [HttpPost]
         [HandleTransactionManually]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, CrewViewModel cvm)
         {
             if (null == tripId)
@@ -182,9 +184,11 @@ namespace TubsWeb.Controllers
             }
             if (IsApiRequest())
             {
-                // Reload the model from the DB.  This will fill any
-                // PK Id values
-                cvm = Fill(MvcApplication.CurrentStatelessSession, tripId.Id);
+                using (var repo = TubsDataService.GetRepository<Trip>(false))
+                {
+                    var trip = repo.FindById(tripId.Id) as PurseSeineTrip;
+                    cvm = Mapper.Map<PurseSeineTrip, CrewViewModel>(trip);
+                }
                 return GettableJsonNetData(cvm);
             }
             else

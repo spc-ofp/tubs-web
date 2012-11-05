@@ -23,6 +23,7 @@ namespace TubsWeb.Tests
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using AutoMapper;
     using NUnit.Framework;
@@ -49,6 +50,75 @@ namespace TubsWeb.Tests
                 Assert.NotNull(vm.Inspection);
                 Assert.NotNull(vm.Characteristics.CountryCode);
                 StringAssert.AreEqualIgnoringCase("VU", vm.Characteristics.CountryCode.Trim());
+            }
+        }
+
+        [Test]
+        public void TripEntityToSightingViewModel([Values(70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<Trip, SightingViewModel>(trip);
+                Assert.NotNull(vm);
+                Assert.AreEqual(tripId, vm.TripId);
+                Assert.NotNull(vm.Sightings);
+                Assert.GreaterOrEqual(vm.Sightings.Count, 20);
+            }
+        }
+
+        [Test]
+        public void TripEntityToTransferViewModel([Values(111)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<Trip, TransferViewModel>(trip);
+                Assert.NotNull(vm);
+                Assert.AreEqual(tripId, vm.TripId);
+                Assert.NotNull(vm.Transfers);
+                Assert.GreaterOrEqual(vm.Transfers.Count, 5);
+            }
+        }
+
+        [Test]
+        public void TripEntityToCrewViewModel([Values(103)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId) as PurseSeineTrip;
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<PurseSeineTrip, CrewViewModel>(trip);
+                Assert.NotNull(vm);
+                Assert.NotNull(vm.Captain);
+                StringAssert.AreEqualIgnoringCase("James T. Kirk", vm.Captain.Name);
+                Assert.NotNull(vm.ChiefEngineer);
+                Assert.NotNull(vm.Navigator);
+                Assert.NotNull(vm.Cook);
+                Assert.GreaterOrEqual(vm.Hands.Count, 2);
+            }
+        }
+
+        [Test]
+        public void TripEntityToPageCountViewModel([Values(70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId) as PurseSeineTrip;
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<PurseSeineTrip, PurseSeinePageCountViewModel>(trip);
+                Assert.NotNull(vm);
+                Assert.AreEqual(1, vm.Ps1Count);
+                Assert.AreEqual(5, vm.Ps2Count);
+                Assert.AreEqual(5, vm.Gen3Count);
+                Assert.False(vm.Gen6Count.HasValue, "GEN-6 count");
+                
             }
         }
         
@@ -93,7 +163,7 @@ namespace TubsWeb.Tests
         }
 
         [Test]
-        public void RoundTripTest([Values(284)] int setId)
+        public void RoundTripSetTest([Values(284)] int setId)
         {
             Mapper.AssertConfigurationIsValid();
             using (var repo = TubsDataService.GetRepository<PurseSeineSet>(false))
@@ -108,6 +178,30 @@ namespace TubsWeb.Tests
                 Assert.AreEqual(fset.RingsUp, entity.RingsUp);
                 Assert.AreEqual(fset.CatchList.Count, entity.CatchList.Count);
 
+            }
+        }
+
+        // Values determined by inspection
+        [Test]
+        public void LengthSampleHeaderToViewModel([Values(234)] int lengthFrequencyId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<LengthSamplingHeader>(false))
+            {
+                var ps4 = repo.FindById(lengthFrequencyId);
+                Assert.NotNull(ps4);
+                var vm = Mapper.Map<LengthSamplingHeader, LengthFrequencyViewModel>(ps4);
+                Assert.NotNull(vm);
+                StringAssert.AreEqualIgnoringCase("1729", vm.StartBrailingTime);
+                StringAssert.AreEqualIgnoringCase("1859", vm.EndBrailingTime);
+                Assert.True(vm.IsBrail1, "IsBrail1?");
+                Assert.AreEqual(1, vm.SamplePageNumber);
+                Assert.AreEqual(3, vm.SamplePageTotal);
+                Assert.AreEqual(5, vm.GrabTarget);
+                Assert.AreEqual(10, vm.SevenEighthsBrailCount);
+                Assert.AreEqual(10, vm.ThreeQuartersBrailCount);
+                Assert.AreEqual(30, vm.TotalBrails);
+                Assert.AreEqual(21.5, vm.SumOfAllBrails);
             }
         }
     }

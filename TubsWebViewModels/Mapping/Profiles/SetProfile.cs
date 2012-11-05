@@ -29,6 +29,7 @@ namespace TubsWeb.Mapping.Profiles
     using DAL = Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common; // For DateTime 'Merge'
     using TubsWeb.ViewModels;
+    using TubsWeb.ViewModels.Resolvers;
     
     public class SetProfile : Profile
     {
@@ -96,9 +97,14 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.EndOfSet, o => o.Ignore()) // AfterMap
                 .ForMember(d => d.Id, o => o.MapFrom(s => s.SetId))
                 .ForMember(d => d.CatchList, o => o.MapFrom(s => s.AllCatch.Where(x => x != null && !x._destroy))) // Don't copy destroyed entities
+                .ForMember(d => d.ContainsSkipjack, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.ContainsSkipjack))
+                .ForMember(d => d.ContainsBigeye, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.ContainsBigeye))
+                .ForMember(d => d.ContainsLargeBigeye, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.ContainsLargeBigeye))
+                .ForMember(d => d.ContainsYellowfin, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.ContainsYellowfin))
+                .ForMember(d => d.ContainsLargeYellowfin, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.ContainsLargeYellowfin))
                 .AfterMap((s, d) =>
                 {
-                    // s.SkiffOff has the DateTime (if it's set)
+                    // s.SkiffOff has the DateTime (if it's set)                    
                     if (s.SkiffOff.HasValue)
                     {
                         var dt = s.SkiffOff.Value.Date;
@@ -130,6 +136,7 @@ namespace TubsWeb.Mapping.Profiles
             CreateMap<DAL.Entities.PurseSeineSet, PurseSeineSetViewModel>()
                 .ForMember(d => d.CrossesDayBoundary, o => o.Ignore()) // Not from database
                 .ForMember(d => d.TargetSpecies, o => o.Ignore()) // Not from database
+                .ForMember(d => d.BooleanValues, o => o.Ignore()) // Not from database
                 .ForMember(d => d.FateCodes, o => o.Ignore()) // Not from database
                 .ForMember(d => d.HasNext, o => o.Ignore()) // Caller's responsibility, post AutoMapper
                 .ForMember(d => d.HasPrevious, o => o.Ignore()) // Caller's responsibility, post AutoMapper
@@ -146,6 +153,11 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.LogbookDate, o => o.MapFrom(s => s.StartOfSetFromLog)) // TODO Split this in AfterMap
                 .ForMember(d => d.NextSet, o => o.MapFrom(s => (s.SetNumber ?? 0) + 1))
                 .ForMember(d => d.PreviousSet, o => o.MapFrom(s => (s.SetNumber ?? 0) - 1))
+                .ForMember(d => d.ContainsSkipjack, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.ContainsSkipjack))
+                .ForMember(d => d.ContainsBigeye, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.ContainsBigeye))
+                .ForMember(d => d.ContainsLargeBigeye, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.ContainsLargeBigeye))
+                .ForMember(d => d.ContainsYellowfin, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.ContainsYellowfin))
+                .ForMember(d => d.ContainsLargeYellowfin, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.ContainsLargeYellowfin))
                 // LINQ is soooo awesome!
                 .ForMember(d => d.AllCatch, o => o.MapFrom(s => s.CatchList))
                 .ForMember(d => d.ByCatch, o => o.MapFrom(s => s.CatchList.Where(cl => 

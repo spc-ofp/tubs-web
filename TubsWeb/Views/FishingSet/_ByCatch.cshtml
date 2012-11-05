@@ -34,7 +34,7 @@
                     <input type="text" class="required input-mini" data-bind="hasfocus: NeedsFocus, value: SpeciesCode, uniqueName: true" />
                 </td>
                 <td>
-                    <input type="text" class="required input-mini" data-bind="value: FateCode, uniqueName: true" />
+                    <select class="input-small" data-bind="value: FateCode, options: $root.FateCodes" />
                 </td>
                 <td>
                     <input type="number" class="input-mini" data-bind="value: ObservedWeight, uniqueName: true" />

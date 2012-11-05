@@ -28,11 +28,10 @@
             <tr>
                 <td><strong>Skipjack</strong></td>
                 <td>
-                    <select id="ContainsSkipjack" name="ContainsSkipjack" class="input-small" data-bind="value: ContainsSkipjack">
-                        <option value=""></option>
-                        <option value="true">YES</option>
-                        <option value="false">NO</option>
-                    </select>
+                    <select id="ContainsSkipjack" 
+                            name="ContainsSkipjack" 
+                            class="input-small" 
+                            data-bind="value: ContainsSkipjack, options: $root.BooleanValues" />
                 </td>
                 <td>
                     @Html.TextBoxFor(
@@ -61,11 +60,10 @@
             <tr>
                 <td><strong>Small Yellowfin (&lt; 9kgs)</strong></td>
                 <td>
-                    <select id="ContainsYellowfin" name="ContainsYellowfin" class="input-small" data-bind="value: ContainsYellowfin">
-                        <option value=""></option>
-                        <option value="true">YES</option>
-                        <option value="false">NO</option>
-                    </select>
+                    <select id="ContainsYellowfin" 
+                            name="ContainsYellowfin" 
+                            class="input-small" 
+                            data-bind="value: ContainsYellowfin, options: $root.BooleanValues" />
                 </td>
                 <td>
                     @Html.TextBoxFor(
@@ -94,11 +92,10 @@
             <tr>
                 <td><strong>Large Yellowfin (&gt; 9kgs)</strong></td>
                 <td>
-                    <select id="ContainsLargeYellowfin" name="ContainsLargeYellowfin" class="input-small" data-bind="value: ContainsLargeYellowfin">
-                        <option value=""></option>
-                        <option value="true">YES</option>
-                        <option value="false">NO</option>
-                    </select>
+                    <select id="ContainsLargeYellowfin" 
+                            name="ContainsLargeYellowfin" 
+                            class="input-small" 
+                            data-bind="value: ContainsLargeYellowfin, options: $root.BooleanValues" />
                 </td>
                 <td>
                     @Html.TextBoxFor(
@@ -127,11 +124,10 @@
             <tr>
                 <td><strong>Small Bigeye (&lt; 9kgs)</strong></td>
                 <td>
-                    <select id="ContainsBigeye" name="ContainsBigeye" class="input-small" data-bind="value: ContainsBigeye">
-                        <option value=""></option>
-                        <option value="true">YES</option>
-                        <option value="false">NO</option>
-                    </select>
+                    <select id="ContainsBigeye" 
+                            name="ContainsBigeye" 
+                            class="input-small" 
+                            data-bind="value: ContainsBigeye, options: $root.BooleanValues" />
                 </td>
                 <td>
                     @Html.TextBoxFor(
@@ -159,11 +155,10 @@
             <tr>
                 <td><strong>Large Bigeye (&gt; 9kgs)</strong></td>
                 <td>
-                    <select id="ContainsLargeBigeye" name="ContainsLargeBigeye" class="input-small" data-bind="value: ContainsLargeBigeye">
-                        <option value=""></option>
-                        <option value="true">YES</option>
-                        <option value="false">NO</option>
-                    </select>
+                    <select id="ContainsLargeBigeye" 
+                            name="ContainsLargeBigeye" 
+                            class="input-small" 
+                            data-bind="value: ContainsLargeBigeye, options: $root.BooleanValues" />
                 </td>
                 <td>
                     @Html.TextBoxFor(

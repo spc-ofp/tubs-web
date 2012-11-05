@@ -1,0 +1,222 @@
+﻿@model TubsWeb.ViewModels.Gen5ViewModel
+
+<form id="fadForm">
+    @* 
+     * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+     * when the first 'dirtying' change occurs.
+     *@
+    <p>
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        @if (Model.Id != 0)
+        {
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        }
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
+    <hr />
+    <div class="row-fluid">
+        <div class="span1">
+            <label><strong>Object<br />Number</strong></label>
+            <input id="ObjectNumber" name="ObjectNumber" type="number" data-bind="value: ObjectNumber" class="input-mini" />
+        </div>
+        <div class="span1">
+            <label><strong>FAD<br />Origin</strong></label>
+            <select id="OriginCode" name="OriginCode" data-bind="options: $root.OriginCodes, value: OriginCode" class="input-mini"></select>
+        </div>
+        <div class="span2">
+            <label><strong>Deployment<br />Date</strong></label>
+            <div class="input-append">
+                <input id="DeploymentDate" name="DeploymentDate" type="text" data-bind="value: DeploymentDate.formattedDate" class="input-mini datepicker" />
+                <span class="add-on"><i class="icon-calendar"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label><strong>Deployment<br />Latitude</strong></label>
+            <input id="Latitude" name="Latitude" type="text" data-bind="value: Latitude" class="input-small" />
+        </div>
+        <div class="span2">
+            <label><strong>Deployment<br />Longitude</strong></label>
+            <input id="Longitude" name="Longitude" type="text" data-bind="value: Longitude" class="input-small" />
+        </div>
+        <div class="span2">
+            <label><strong>SSI<br />Trapped</strong></label>
+            <select id="SsiTrapped" name="SsiTrapped" data-bind="options: $root.BooleanValues, value: SsiTrapped" class="input-mini"></select>
+        </div>
+        <div class="span2">
+            <label><strong>FAD<br />As Found</strong></label>
+            <select id="AsFoundCode" name="AsFoundCode" data-bind="options: $root.DescriptionCodes, value: AsFoundCode" class="input-mini"></select>
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <div class="span4">
+            <label><strong>Main Materials</strong></label>
+            <button id="addMainMaterialsWhenEmpty" type="button" data-bind="visible: ($root.MainMaterials().length == 0)" class="btn btn-info">Add</button>
+            <ul data-bind="foreach: $root.MainMaterials()" class="mainMaterials unstyled">
+                <li>
+                    <button type="button"
+                            tabindex="3000"
+                            class="removeItem btn btn-mini btn-danger" 
+                            rel="tooltip" 
+                            title="Click to remove row">
+                        <i class="icon-remove icon-white"></i>
+                    </button>
+                    <select data-bind="options: $root.MaterialCodes, value: MaterialCode, hasfocus: NeedsFocus" class="input-mini"></select>
+                    <button class="addItem btn btn-mini btn-info" 
+                            rel="tooltip" 
+                            title="Click to add row">
+                        <i class="icon-plus icon-white"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="span4">
+            <label><strong>Attachments</strong></label>
+            <button id="addAttachmentWhenEmpty" type="button" data-bind="visible: ($root.Attachments().length == 0)" class="btn btn-info">Add</button>
+            <ul data-bind="foreach: $root.Attachments()" class="attachments unstyled">
+                <li>
+                    <button type="button"
+                            tabindex="3000"
+                            class="removeItem btn btn-mini btn-danger" 
+                            rel="tooltip" 
+                            title="Click to remove row">
+                        <i class="icon-remove icon-white"></i>
+                    </button>
+                    <select data-bind="options: $root.MaterialCodes, value: MaterialCode, hasfocus: NeedsFocus" class="input-mini"></select>
+                    <button class="addItem btn btn-mini btn-info" 
+                            rel="tooltip" 
+                            title="Click to add row">
+                        <i class="icon-plus icon-white"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <div class="span1">
+            <label><strong>Max est.<br />depth</strong></label>
+            <input id="Depth" name="Depth" type="number" data-bind="value: Depth" class="input-mini" />
+        </div>
+        <div class="span1">
+            <label><strong>FAD<br />length</strong></label>
+            <input id="Length" name="Length" type="number" data-bind="value: Length" class="input-mini" />
+        </div>
+        <div class="span2">
+            <label><strong>FAD<br />width</strong></label>
+            <input id="Width" name="Width" type="number" data-bind="value: Width" class="input-mini" />
+        </div>
+        <div class="span2">
+            <label><strong>Buoy<br />number</strong></label>
+            <input id="BuoyNumber" name="BuoyNumber" type="text" data-bind="value: BuoyNumber" class="input-small" />
+        </div>
+        <div class="span4">
+            <label><strong>FAD<br />markings</strong></label>
+            <input id="Markings" name="Markings" type="text" data-bind="value: Markings" />
+        </div>
+        <div class="span2">
+            <label><strong>FAD<br />As Left</strong></label>
+            <select id="AsLeftCode" name="AsLeftCode" data-bind="options: $root.DescriptionCodes, value: AsLeftCode" class="input-mini"></select>
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <div class="span12">
+            <label><strong>Comments / change description </strong></label>
+            <textarea id="Comments" name="Comments" data-bind="value: Comments" rows="5" class="span12"></textarea>
+        </div>
+    </div>
+</form>
+
+<ul id="tlyPageGuide" data-tourtitle="GEN-5 entry instructions">
+    <li class="tlypageguide_top" data-tourtarget="#saveButton">
+        <div>
+            The save button will only be active if there are unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#reloadButton">
+        <div>
+            Use the reload button to discard any unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#ObjectNumber">
+        <div>
+            Object number is assigned by the observer and should represent
+            the order in which this FAD was seen during the trip.
+            For example, the first FAD should be recorded as '1', the second as '2'
+            and so on.  It is especially helpful for recognizing natural FADS that
+            may not have any assigned identification number.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#OriginCode">
+        <div>
+            Code denoting the origin of this FAD.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#DeploymentDate">
+        <div>
+            Date this FAD was deployed.  Unless the fishing vessel has just deployed
+            this FAD, it shouldn't be the same as the date from the PS-2 form.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Latitude">
+        <div>
+            Latitude this FAD was deployed.  Unless the fishing vessel has just deployed
+            this FAD, it shouldn't be the same as the latitude from the PS-2 form.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Longitude">
+        <div>
+            Longitude this FAD was deployed.  Unless the fishing vessel has just deployed
+            this FAD, it shouldn't be the same as the longitude from the PS-2 form.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#SsiTrapped">
+        <div>
+            Was a species of significant interest trapped in the FAD?
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#AsFoundCode">
+        <div>
+            What type of floating object was this when it was found?
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Depth">
+        <div>
+            Maximum estimated depth of the FAD (in meters).
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Length">
+        <div>
+            Length of the FAD (in meters).
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Width">
+        <div>
+            Width of the FAD (in meters).
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#BuoyNumber">
+        <div>
+            Number of buoy associated with FAD, if appropriate.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Markings">
+        <div>
+            FAD / payao identification number or any other markings.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#AsLeftCode">
+        <div>
+            What type of floating object was this when it was left?
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#Comments">
+        <div>
+            Comments or a description of the changes made.  If a sketch is present,
+            record that with the text "see original for sketch".
+        </div>
+    </li>
+</ul>

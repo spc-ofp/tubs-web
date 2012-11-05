@@ -22,9 +22,6 @@ var tubs = tubs || {};
 
 tubs.sightingMapping = {
     'Sightings': {
-        key: function (data) {
-            return ko.utils.unwrapObservable(data.Id);
-        },
         create: function (options) {
             return new tubs.sighting(options.data);
         }
@@ -35,7 +32,7 @@ tubs.sighting = function (eventData) {
     var self = this;
     self.Id = ko.observable(eventData.Id || 0);
     self.DateOnly = ko.observable(eventData.DateOnly || null).extend({ isoDate: 'DD/MM/YY' });
-    self.TimeOnly = ko.observable(eventData.Time || '').extend({ required: true, pattern: '^[0-2][0-9][0-5][0-9]$' });
+    self.TimeOnly = ko.observable(eventData.TimeOnly || '').extend({ pattern: '^[0-2][0-9][0-5][0-9]$' });
     self.Latitude = ko.observable(eventData.Latitude || '').extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
     self.Longitude = ko.observable(eventData.Longitude || '').extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
     self.VesselId = ko.observable(eventData.VesselId || 0);
@@ -48,9 +45,6 @@ tubs.sighting = function (eventData) {
     self.ActionCode = ko.observable(eventData.ActionCode || '');
     self.PhotoFrame = ko.observable(eventData.PhotoFrame || '');
     self.Comments = ko.observable(eventData.Comments || '');
-    // IsLocked has two functions:  On the UI side, it notifies the user
-    // that the activity can't be deleted.  On the database side, it will be our
-    // okay to delete associated data.
     self.NeedsFocus = ko.observable(eventData.NeedsFocus || false);
     self._destroy = ko.observable(eventData._destroy || false);
 
@@ -79,21 +73,28 @@ tubs.sighting = function (eventData) {
     return self;
 };
 
-tubs.sightingList = function (data) {
+tubs.SightingViewModel = function (data) {
     var self = this;
     ko.mapping.fromJS(data, tubs.sightingMapping, self);
 
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.Sightings
+    ], false);
+
     self.isDirty = ko.computed(function () {
+        // Avoid iterating over the events if the header
+        // has changed
+        if (self.dirtyFlag().isDirty()) { return true; }
         var hasDirtyChild = false;
         $.each(self.Sightings(), function (i, evt) {
-            if (evt.IsDirty()) {
+            if (evt.isDirty()) {
                 hasDirtyChild = true;
                 return false;
             }
         });
     });
 
-    self.clearDirtyFlag() = function () {
+    self.clearDirtyFlag = function () {
         $.each(self.Sightings(), function (index, value) {
             value.dirtyFlag().reset();
         });
@@ -105,14 +106,25 @@ tubs.sightingList = function (data) {
         self.Sightings.push(new tubs.sighting({ "NeedsFocus": true }));
     };
 
-    self.removeSighting = function (evt) {
-        if (evt && evt.EventId()) { self.Sightings.destroy(evt); }
+    self.removeEvent = function (evt) {
+        if (evt && evt.Id()) { self.Sightings.destroy(evt); }
         else { self.Sightings.remove(evt); }
     }
 
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
-            complete();
+            tubs.getSightings(
+                self.TripId(),
+                function (result) {
+                    ko.mapping.fromJS(data, tubs.sightingMapping, self);
+                    self.clearDirtyFlag();
+                    toastr.info('Reloaded sightings');
+                    complete();
+                },
+                function (xhr, status, error) {
+                    tubs.notify('Failed to reload sightings', xhr, status);
+                    complete();
+                });
         },
 
         canExecute: function (isExecuting) {
@@ -122,7 +134,19 @@ tubs.sightingList = function (data) {
 
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
-            complete();
+            tubs.saveSightings(
+                self.TripId(),
+                self,
+                function (result) {
+                    ko.mapping.fromJS(data, tubs.sightingMapping, self);
+                    self.clearDirtyFlag();
+                    toastr.info('Saved sightings');
+                    complete();
+                },
+                function (xhr, status, error) {
+                    tubs.notify('Failed to save sightings', xhr, status);
+                    complete();
+                });
         },
 
         canExecute: function (isExecuting) {

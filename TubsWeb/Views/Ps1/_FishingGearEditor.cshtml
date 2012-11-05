@@ -1,0 +1,70 @@
+﻿
+<div class="accordion-group" data-bind="with: Gear">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ps1-accordion" href="#fishingGear">
+            <i class="icon-chevron-right"></i> Fishing Gear
+        </a>
+    </div>
+    <div id="fishingGear" class="accordion-body collapse">
+        <div class="accordion-inner">
+            @* PB Make / PB Model / PW Make / PW Model / Brail1 *@                  
+            <div class="row-fluid">
+                <div class="span2">
+                    <label><strong>Powerblock<br />Make</strong></label>
+                    <input id="PowerblockMake" name="PowerblockMake" type="text" data-bind="value: PowerblockMake" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong>Powerblock<br />Model</strong></label>
+                    <input id="PowerblockModel" name="PowerblockModel" type="text" data-bind="value: PowerblockModel" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong>Pursewinch<br />Make</strong></label>
+                    <input id="PurseWinchMake" name="PurseWinchMake" type="text" data-bind="value: PurseWinchMake" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong>Pursewinch<br />Model</strong></label>
+                    <input id="PurseWinchModel" name="PurseWinchModel" type="text" data-bind="value: PurseWinchModel" class="input-small" />
+                </div>
+                <div class="span2">
+                    <label><strong>Brail Capacity<br />Brail 1</strong></label>
+                    <input id="Brail1Capacity" name="Brail1Capacity" type="number" data-bind="value: Brail1Capacity" class="input-small" />
+                </div>
+            </div>
+            <hr />
+            @* Net Depth / Net Length / Strips / Mesh Size / Brail 2*@
+            <div class="row-fluid">
+                <div class="span2">
+                    <label><strong>Net<br />Depth</strong></label>
+                    <input id="NetDepth" name="NetDepth" type="number" data-bind="value: NetDepth" class="input-mini" />
+                    <select id="NetDepthUnits" name="NetDepthUnits" data-bind="options: $root.NetUnits, value: NetDepthUnits" class="input-mini"></select>
+                </div>
+                <div class="span2">
+                    <label><strong>Net<br />Length</strong></label>
+                    <input id="NetLength" name="NetLength" type="number" data-bind="value: NetLength" class="input-mini" />
+                    <select id="NetLengthUnits" name="NetLengthUnits" data-bind="options: $root.NetUnits, value: NetLengthUnits" class="input-mini"></select>
+                </div>
+                <div class="span2">
+                    <label><strong>Number<br />of Strips</strong></label>
+                    <input id="NetStripCount" name="NetStripCount" type="number" data-bind="value: NetStripCount" class="input-mini" />
+                </div>
+                <div class="span2">
+                    <label><strong>Mesh<br />Size</strong></label>
+                    <input id="NetMeshSize" name="NetMeshSize" type="number" data-bind="value: NetMeshSize" class="input-mini" />
+                    <select id="NetMeshUnits" name="NetMeshUnits" data-bind="options: $root.MeshUnits, value: NetMeshUnits" class="input-mini"></select>
+                </div>
+                <div class="span2">
+                    <label><strong>Brail Capacity<br />Brail 2</strong></label>
+                    <input id="Brail2Capacity" name="Brail2Capacity" type="number" data-bind="value: Brail2Capacity" class="input-small" />
+                </div>
+            </div>
+            <hr />
+            @* Brailing Type *@    
+            <div class="row-fluid">
+                <div class="span12">
+                    <label><strong>Brailing Type Description</strong></label>
+                    <textarea class="span12" rows="5" data-bind="value: BrailType"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

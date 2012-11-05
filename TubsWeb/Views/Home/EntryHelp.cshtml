@@ -1,0 +1,88 @@
+﻿@model HashSet<string>
+
+@{
+    // Switch to full width layout
+    ViewBag.UseFluid = true;
+    ViewBag.Title = "Entry Help";
+}
+
+@section Sidebar {
+<div class="span3 bs-docs-sidebar">
+    <ul class="nav nav-list bs-docs-sidenav">
+        <li><a href="#starting"><i class="icon-chevron-right"></i> Starting Entry</a></li>
+        <li><a href="#navigating"><i class="icon-chevron-right"></i> Trip Sections</a></li>
+        <li><a href="#ps1"><i class="icon-chevron-right"></i> PS-1</a></li>
+    </ul>
+</div>
+}
+
+<section id="starting">
+    <div class="page-header">
+        <h1>Starting trip entry</h1>
+    </div>
+    <p>
+        From the home page, click on the link titled "Register New Trip" (highlighted in red below).       
+    </p>
+    <img src="~/Content/images/screenshots/StartNewTrip.png" alt="" />
+    <p>
+        A screenshot of the trip registration page appears below.  The highlighted item, when clicked,
+        will provide labeled help for the entire screen.  All items are required.
+        For the observer, vessel, and port names, start typing the information from the form.  The system
+        will provide a list of items that match the typed information.  These lists are limited to fewer than
+        10 items so as to fit on the screen.  If the observer, vessel, or port doesn't appear in the list, type
+        a few more characters.
+        <br />
+        Dates are required to be in the format "dd/mm/yy".  If number for day or month is less than 10, add
+        a leading zero.  For example, April 1st of 2012 is represented as "01/04/12".
+        <br />
+        Times use a 24 time format without any additional characters.  As with dates, add leading zeros for
+        numbers less than 10.  For example, 9:15 AM is represented as "0915".
+        <br />
+        If there are any errors, you will be prompted to correct them before continuing.      
+    </p>
+    <img src="~/Content/images/screenshots/CreateScreen.png" alt="" />
+    <p>
+        When the registration information is accepted, you will be presented with the trip summary page.
+        This page will allow you to navigate to all the sections of the trip.     
+    </p>
+    <img src="~/Content/images/screenshots/TripDetailPage.png" alt="" />
+</section>
+<section id="navigating">
+    <div class="page-header">
+        <h1>Trip Sections</h1>
+    </div>
+    <p>
+        Every page relating to a trip has a "breadcrumb" display similar to the one shown below.
+        The last item in the list will be the page you are currently on.  At any time you can navigate back
+        to the trip summary page by clicking on the link that is the trip number ("DJB / 12-05" in the example below).
+    </p>
+    <img src="~/Content/images/screenshots/BreadCrumbs.png" alt="" />
+</section>
+<section id="ps1">
+    <div class="page-header">
+        <h1>PS-1</h1>
+        @if (Model.Contains("PS-1 (PG)"))
+        {
+        <text>
+        <p>
+        The only information from the PS-1 that must be entered are the brail capacities.
+        These will be used to check the catch amount for the PS-3 entry.
+        To enter the brail capacity, first navigate to the PS-1 section of the trip.
+        </p>
+        <img src="~/Content/images/screenshots/PS1_select.png" alt="" />
+        <p>Then, click on the link titled "Edit PS-1".</p>
+        <img src="~/Content/images/screenshots/PS1_edit.png" alt="" />
+        <p>The brail capacities can be found in the section "Fishing Gear" as seen below.</p>
+        <img src="~/Content/images/screenshots/PS-1_PG.png" alt="" />
+        </text>
+        }
+    </div>
+</section>
+
+@section AdditionalScripts {
+    <script>
+        $(function () {
+            $('.bs-docs-sidebar').affix();
+        });
+    </script>
+}

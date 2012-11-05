@@ -6,8 +6,25 @@
 
 namespace TubsWeb
 {
+    /*
+     * This file is part of TUBS.
+     *
+     * TUBS is free software: you can redistribute it and/or modify
+     * it under the terms of the GNU Affero General Public License as published by
+     * the Free Software Foundation, either version 3 of the License, or
+     * (at your option) any later version.
+     *  
+     * TUBS is distributed in the hope that it will be useful,
+     * but WITHOUT ANY WARRANTY; without even the implied warranty of
+     * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     * GNU Affero General Public License for more details.
+     *  
+     * You should have received a copy of the GNU Affero General Public License
+     * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
+     */
     using System.Web.Mvc;
     using System.Web.Routing;
+    using DoddleReport.Web;
     
     public class RouteConfig
     {
@@ -18,6 +35,12 @@ namespace TubsWeb
         public static string Crew = "Crew";
         public static string Auxiliaries = "Auxiliaries";
         public static string VesselDetails = "VesselDetails";
+        // Revision of route for GEN-1
+        public static string Gen1Sightings = "Gen1Sightings";
+        public static string EditGen1Sightings = "EditGen1Sightings";
+        public static string Gen1Transfers = "Gen1Transfers";
+        public static string EditGen1Transfers = "EditGen1Transfers";
+        // TODO:  This will go away...
         public static string Gen1 = "Gen1";
         public static string Gen2Details = "Gen2Details";
         public static string Gen2 = "Gen2";
@@ -27,6 +50,7 @@ namespace TubsWeb
         public static string Gen6 = "Gen6";
         public static string Sets = "Sets";
         public static string LengthSamples = "LengthSamples";
+        public static string LengthFrequencyByTrip = "LengthFrequencyByTrip";
         public static string SeaDayById = "SeaDayById";
         public static string SeaDays = "SeaDays";
         public static string Gear = "Gear";
@@ -49,6 +73,7 @@ namespace TubsWeb
         {
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.MapReportingRoute(); // TODO Check that this doesn't break anything
 
             routes.MapRoute(
                 name: MyOpenTrips,
@@ -114,6 +139,34 @@ namespace TubsWeb
                 name: Ps1,
                 url: "Trip/{tripId}/PS-1/{action}",
                 defaults: new { controller = "Ps1", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: Gen1Sightings,
+                url: "Trip/{tripId}/Sightings",
+                defaults: new { controller = "Gen1", action = "Sightings" },
+                constraints: new { tripId = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: EditGen1Sightings,
+                url: "Trip/{tripId}/Sightings/Edit",
+                defaults: new { controller = "Gen1", action = "EditSightings" },
+                constraints: new { tripId = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: Gen1Transfers,
+                url: "Trip/{tripId}/Transfers",
+                defaults: new { controller = "Gen1", action = "Transfers" },
+                constraints: new { tripId = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: EditGen1Transfers,
+                url: "Trip/{tripId}/Transfers/Edit",
+                defaults: new { controller = "Gen1", action = "EditTransfers" },
                 constraints: new { tripId = IsPositiveInteger }
             );
 
@@ -205,6 +258,13 @@ namespace TubsWeb
                 "Trip/{tripId}/Samples/{setNumber}/Page/{pageNumber}",
                 new { controller = "LengthSample", action = "Index", pageNumber = UrlParameter.Optional },
                 new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger, pageNumber = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: LengthFrequencyByTrip,
+                url: "Trip/{tripId}/LengthFrequency.xlsx",
+                defaults: new { controller = "LengthSample", action = "AllSamples" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             /*

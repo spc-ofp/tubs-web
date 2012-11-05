@@ -22,7 +22,9 @@ namespace TubsWeb.ViewModels.Resolvers
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
     using AutoMapper;
+    using Spc.Ofp.Tubs.DAL.Common;
     using Tubs = Spc.Ofp.Tubs.DAL.Common;
 
     /// <summary>

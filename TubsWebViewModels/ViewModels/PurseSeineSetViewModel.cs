@@ -34,12 +34,33 @@ namespace TubsWeb.ViewModels
             ByCatch = new List<SetCatch>(8);
             TargetCatch = new List<SetCatch>(16);
             AllCatch = new List<SetCatch>(16);
-            TargetSpecies = new List<string>() { "SKJ", "YFT", "BET" };
         }
 
         // Use Knockout to help with common codes
-        public IList<string> TargetSpecies { get; set; }
-        public IList<string> FateCodes { get; set; }
+        public IList<string> TargetSpecies = new List<string>() { "SKJ", "YFT", "BET" };        
+        public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
+        public IList<string> FateCodes = new List<string>
+        {
+            "RWW",
+            "RHG",
+            "RGG",
+            "RPT",
+            "RCC",
+            "ROR",
+            "RFR",
+            "DFR",
+            "DTS",
+            "DGD",
+            "DVF",
+            "DUS",
+            "DSD",
+            "DWD",
+            "DPQ",
+            "DPA",
+            "DPD",
+            "DPU",
+            "DOR",
+        };
         // TODO Not sure about ByCatch yet...
         
         // UX state

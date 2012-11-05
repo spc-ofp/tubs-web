@@ -1,7 +1,7 @@
 /*
     RateIt
-    version 1.0.7
-    07/28/2012
+    version 1.0.9
+    10/31/2012
     http://rateit.codeplex.com
     Twitter: @gjunge
 
@@ -88,7 +88,10 @@
                     //if we have a backing field, hide it, and get its value, and override defaults if range.
                     var fld = $(itemdata('backingfld'));
                     itemdata('value', fld.hide().val());
-                    itemdata('readonly', fld[0].disabled); //http://rateit.codeplex.com/discussions/362055 , if a backing field is disabled at instantiation, make rateit readonly.
+
+                    if (fld.attr('disabled') || fld.attr('readonly')) 
+                        itemdata('readonly', true); //http://rateit.codeplex.com/discussions/362055 , if a backing field is disabled or readonly at instantiation, make rateit readonly.
+
 
                     if (fld[0].nodeName == 'INPUT') {
                         if (fld[0].type == 'range' || fld[0].type == 'text') { //in browsers not support the range type, it defaults to text
@@ -114,6 +117,7 @@
                     item.find('.rateit-selected').addClass('rateit-selected-rtl');
                     item.find('.rateit-hover').addClass('rateit-hover-rtl');
                 }
+
                 itemdata('init', true);
             }
 
@@ -136,6 +140,17 @@
             }
 
             var resetbtn = item.find('.rateit-reset');
+            if (resetbtn.data('wired') !== true) {
+                resetbtn.click(function () {
+                    itemdata('value', itemdata('min'));
+                    range.find('.rateit-hover').hide().width(0);
+                    range.find('.rateit-selected').width(0).show();
+                    if (itemdata('backingfld')) $(itemdata('backingfld')).val(itemdata('min'));
+                    item.trigger('reset');
+                }).data('wired', true);
+                
+            }
+            
 
             var calcRawScore = function (element, event) {
                 var pageX = (event.changedTouches) ? event.changedTouches[0].pageX : event.pageX;
@@ -155,21 +170,8 @@
                 //if we are not read only, add all the events
 
                 //if we have a reset button, set the event handler.
-                if (itemdata('resetable')) {
-                    resetbtn.click(function () {
-                        itemdata('value', itemdata('min'));
-                        range.find('.rateit-hover').hide().width(0);
-                        range.find('.rateit-selected').width(0).show();
-                        if (itemdata('backingfld')) $(itemdata('backingfld')).val(itemdata('min'));
-                        item.trigger('reset');
-                    });
-
-                }
-                else {
+                if (!itemdata('resetable')) 
                     resetbtn.hide();
-                }
-
-
 
                 //when the mouse goes over the range div, we set the "hover" stars.
                 if (!itemdata('wired')) {

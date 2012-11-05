@@ -21,7 +21,14 @@ namespace TubsWeb
             {
                 cfg.AddProfile<SetProfile>();
                 cfg.AddProfile<Ps1Profile>();
+                cfg.AddProfile<Ps1ViewModelProfile>();
+                cfg.AddProfile<SightingProfile>();
+                cfg.AddProfile<TransferProfile>();
+                cfg.AddProfile<CrewProfile>();
+                //cfg.AddProfile<ElectronicsProfile>();
+                cfg.AddProfile<LengthFrequencyProfile>();
                 cfg.AddProfile<Gen5Profile>();
+                cfg.AddProfile<PageCountProfile>();
                 // Trim all strings.  If the trimmed string is empty, return a null
                 Mapper.CreateMap<string, string>().ConvertUsing(s =>
                 {

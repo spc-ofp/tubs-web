@@ -23,9 +23,10 @@ namespace TubsWeb.ViewModels.Resolvers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System.Collections.Generic;
+    using System.Linq;
     using AutoMapper;
     using Tubs = Spc.Ofp.Tubs.DAL.Common;
-    using System.Linq;
+    using Spc.Ofp.Tubs.DAL.Common;
 
     /// <summary>
     /// FadMaterialResolver converts numeric form code to
@@ -33,12 +34,9 @@ namespace TubsWeb.ViewModels.Resolvers
     /// </summary>
     public class FadMaterialResolver : ValueResolver<int?, Tubs.FadMaterials?>
     {
-        protected override Tubs.FadMaterials? ResolveCore(int? source)
+        public static Tubs.FadMaterials? MaterialLookup(int source)
         {
-            if (!source.HasValue)
-                return null;
-
-            switch (source.Value)
+            switch (source)
             {
                 case 1:
                     return Tubs.FadMaterials.LogsOrTrees;
@@ -77,6 +75,33 @@ namespace TubsWeb.ViewModels.Resolvers
                 default:
                     return null;
             }
+        }
+        
+        protected override Tubs.FadMaterials? ResolveCore(int? source)
+        {
+            if (!source.HasValue)
+                return null;
+
+            return MaterialLookup(source.Value);
+        }
+    }
+
+    public class MaterialDescriptionListResolver : ValueResolver<IList<Tubs.FadMaterials>, IList<string>>
+    {
+        public static string Convert(Tubs.FadMaterials source)
+        {
+            return source.GetDescription();
+        }
+        
+        protected override IList<string> ResolveCore(IList<Tubs.FadMaterials> source)
+        {
+            if (null == source || 0 == source.Count)
+                return new List<string>();
+
+            var materials = new List<string>(source.Count);
+            source.ToList().ForEach(src => materials.Add(Convert(src)));
+
+            return materials;
         }
     }
 
@@ -146,14 +171,11 @@ namespace TubsWeb.ViewModels.Resolvers
     /// MaterialCodeResolver converts data access layer enum value to
     /// numeric form code.
     /// </summary>
-    public class MaterialCodeResolver : ValueResolver<Tubs.FadMaterials?, int?>
+    public class MaterialCodeResolver : ValueResolver<Tubs.FadMaterials, int>
     {
-        protected override int? ResolveCore(Tubs.FadMaterials? source)
+        protected override int ResolveCore(Tubs.FadMaterials source)
         {
-            if (!source.HasValue)
-                return null;
-
-            switch (source.Value)
+            switch (source)
             {
                 case Tubs.FadMaterials.LogsOrTrees:
                     return 1;
@@ -190,7 +212,7 @@ namespace TubsWeb.ViewModels.Resolvers
                 case Tubs.FadMaterials.Other:
                     return 17;
                 default:
-                    return null;
+                    return 0;
             }
         }
     }

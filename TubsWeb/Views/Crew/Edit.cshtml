@@ -1,5 +1,4 @@
-﻿@model TubsWeb.Models.CrewViewModel
-@using TubsWeb.Models
+﻿@model TubsWeb.ViewModels.CrewViewModel
 @using Newtonsoft.Json
 
 @* For now, create this in the View. *@
@@ -44,23 +43,23 @@
         </thead>
         <tbody>
             @* MVC partial makes for less copy/paste noise, although it does mean more stuff needs to be in the author/debugger's head *@
-            @Html.Partial("_SeniorCrew", Model.Captain, new ViewDataDictionary { { "bindingSource", "$root.Captain()" }, { "jobTitle", "Captain" } })
-            @Html.Partial("_SeniorCrew", Model.Navigator, new ViewDataDictionary { { "bindingSource", "$root.Navigator()" }, { "jobTitle", "Navigator/Master" } })
-            @Html.Partial("_SeniorCrew", Model.Mate, new ViewDataDictionary { { "bindingSource", "$root.Mate()" }, { "jobTitle", "Mate" } })
-            @Html.Partial("_SeniorCrew", Model.ChiefEngineer, new ViewDataDictionary { { "bindingSource", "$root.ChiefEngineer()" }, { "jobTitle", "Chief Engineer" } })
-            @Html.Partial("_SeniorCrew", Model.AssistantEngineer, new ViewDataDictionary { { "bindingSource", "$root.AssistantEngineer()" }, { "jobTitle", "Assistant Engineer" } })
-            @Html.Partial("_SeniorCrew", Model.DeckBoss, new ViewDataDictionary { { "bindingSource", "$root.DeckBoss()" }, { "jobTitle", "Deck Boss" } })
-            @Html.Partial("_SeniorCrew", Model.Cook, new ViewDataDictionary { { "bindingSource", "$root.Cook()" }, { "jobTitle", "Cook" } })
-            @Html.Partial("_SeniorCrew", Model.HelicopterPilot, new ViewDataDictionary { { "bindingSource", "$root.HelicopterPilot()" }, { "jobTitle", "Helicopter Pilot" } })
-            @Html.Partial("_SeniorCrew", Model.SkiffMan, new ViewDataDictionary { { "bindingSource", "$root.SkiffMan()" }, { "jobTitle", "Skiff Man" } })
-            @Html.Partial("_SeniorCrew", Model.WinchMan, new ViewDataDictionary { { "bindingSource", "$root.WinchMan()" }, { "jobTitle", "Winch Man" } })
+            @Html.Partial("_SeniorCrew", Model.Captain, new ViewDataDictionary { { "bindingSource", "Captain" }, { "jobTitle", "Captain" } })
+            @Html.Partial("_SeniorCrew", Model.Navigator, new ViewDataDictionary { { "bindingSource", "Navigator" }, { "jobTitle", "Navigator/Master" } })
+            @Html.Partial("_SeniorCrew", Model.Mate, new ViewDataDictionary { { "bindingSource", "Mate" }, { "jobTitle", "Mate" } })
+            @Html.Partial("_SeniorCrew", Model.ChiefEngineer, new ViewDataDictionary { { "bindingSource", "ChiefEngineer" }, { "jobTitle", "Chief Engineer" } })
+            @Html.Partial("_SeniorCrew", Model.AssistantEngineer, new ViewDataDictionary { { "bindingSource", "AssistantEngineer" }, { "jobTitle", "Assistant Engineer" } })
+            @Html.Partial("_SeniorCrew", Model.DeckBoss, new ViewDataDictionary { { "bindingSource", "DeckBoss" }, { "jobTitle", "Deck Boss" } })
+            @Html.Partial("_SeniorCrew", Model.Cook, new ViewDataDictionary { { "bindingSource", "Cook" }, { "jobTitle", "Cook" } })
+            @Html.Partial("_SeniorCrew", Model.HelicopterPilot, new ViewDataDictionary { { "bindingSource", "HelicopterPilot" }, { "jobTitle", "Helicopter Pilot" } })
+            @Html.Partial("_SeniorCrew", Model.SkiffMan, new ViewDataDictionary { { "bindingSource", "SkiffMan" }, { "jobTitle", "Skiff Man" } })
+            @Html.Partial("_SeniorCrew", Model.WinchMan, new ViewDataDictionary { { "bindingSource", "WinchMan" }, { "jobTitle", "Winch Man" } })
         </tbody>
     </table>
 </fieldset>
 <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Hands().length == 0">Add Hand</button>
 <fieldset>
     <legend id="otherCrew">Other Crew</legend>
-    <table class="table table-condensed">
+    <table class="table table-condensed deckhands">
         <thead>
             <tr>
                 <th></th>
@@ -71,10 +70,11 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody data-bind="foreach: $root.Hands">
-            <tr data-bind="css: { warning: ($data.isDirty() || 0 === $data.Id) }">
+        <tbody data-bind="foreach: Hands">
+            <tr data-bind="css: { warning: (isDirty() || 0 === Id) }">
                 <td>
-                    <button class="removeItem btn btn-mini btn-danger" 
+                    <button type="button"
+                            class="removeItem btn btn-mini btn-danger" 
                             rel="tooltip" 
                             data-confirm="Delete this crewmember?"
                             title="Click to remove row">
@@ -86,7 +86,12 @@
                 <td><input data-bind="value: Nationality, uniqueName: true" class="input-mini" type="text" /></td>
                 <td><input data-bind="value: Comments, uniqueName: true" class="input-xxlarge" type="text" /></td>
                 <td>
-                    <button class="addItem btn btn-mini btn-info" rel="tooltip" title="Click to add row"><i class="icon-plus icon-white"></i></button>
+                    <button type="button" 
+                            class="addItem btn btn-mini btn-info" 
+                            rel="tooltip" 
+                            title="Click to add row">
+                        <i class="icon-plus icon-white"></i>
+                    </button>
                 </td>
             </tr>
         </tbody>
@@ -165,7 +170,9 @@
 @*<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>*@
 
 
-@section AdditionalScripts {   
+@section AdditionalScripts {
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>  
     <script src="~/Scripts/App/vm.crew.js"></script>
     <!-- ClickHandler function for opening/closing Twitter modal dialog. -->
     @*
@@ -192,22 +199,7 @@
     *@
  
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
-    @{ var endpointUrl = Request.Url.AbsoluteUri; }
-    <script>
-        @* TODO:  Probably want to pull all the amplify requests into a single script and use params... *@
-        amplify.request.define("getCrew", "ajax", {
-            url: '@endpointUrl',
-            dataType: "json",
-            type: "GET"
-        });
-
-        amplify.request.define("saveCrew", "ajax", {
-            url: '@endpointUrl',
-            dataType: "json",
-            contentType: "application/json",
-            type: "POST"
-        });
-           
+    <script>          
         $(document).ready(function () {
             //Doesn't work with Knockout.  Will need some work, but that can come later...
             //$("body").delegate("[data-confirm]", "click", confirmClickHandler);
@@ -215,12 +207,14 @@
             viewModel.clearDirtyFlag();
             ko.applyBindings(viewModel);
 
-            $(".addItem").on("click", function () {
-                viewModel.addHand();
-            });
-            $(".removeItem").on("click", function () {
+            $('.deckhands').on("click", ".removeItem", function() {
                 viewModel.removeHand(ko.dataFor(this));
             });
+
+            $('.deckhands').on("click", ".addItem", function() {
+                viewModel.addHand();
+            });
+
             $("#btnAddWhenEmpty").on("click", function () {
                 viewModel.addHand();
             });

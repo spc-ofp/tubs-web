@@ -9,7 +9,7 @@
                 @Html.TextBoxFor(
                     m => Model.SkiffOffTimeOnly, 
                     new { 
-                        data_bind = "value: SkiffOffTimeOnly", // TODO Date
+                        data_bind = "value: SkiffOffTimeOnly",
                         @class = "input-mini",
                         disabled = string.Empty})
                 <span class="add-on"><i class="icon-time"></i></span>
@@ -22,8 +22,7 @@
                     m => Model.WinchOnTimeOnly, 
                     new { 
                         data_bind = "value: WinchOnTimeOnly", 
-                        @class = "input-mini",
-                        type = "number" })
+                        @class = "input-mini" })
                 <span class="add-on"><i class="icon-time"></i></span>
             </div>
         </div>

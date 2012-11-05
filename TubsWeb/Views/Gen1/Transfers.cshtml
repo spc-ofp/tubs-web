@@ -1,0 +1,54 @@
+﻿@model TubsWeb.ViewModels.TransferViewModel
+
+@{ ViewBag.Title = "Transfers"; }
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create("#", "GEN-1 Transfers")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Name</th>
+            <th>IRCS</th>
+            <th>Type</th>
+            <th>Action</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var sighting in Model.Transfers)
+    {
+        <tr>
+            <td>@Html.DisplayFor(m => sighting.DateOnly, new { format = "dd/MM/yy" })</td>
+            <td>@sighting.TimeOnly</td>
+            <td>@sighting.Latitude</td>
+            <td>@sighting.Longitude</td>
+            <td>
+                @if (!String.IsNullOrEmpty(sighting.CountryCode))
+                {
+                    var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", sighting.CountryCode.ToLower()));
+                    <img src="@imgLink" alt="@sighting.CountryCode" title="@sighting.CountryCode" />
+                }
+                @sighting.Name
+            </td>
+            <td>@sighting.Ircs</td>
+            <td>@sighting.TypeDescription</td>
+            <td>@sighting.ActionDescription</td>
+            <td>@sighting.Comments</td>
+        </tr>
+    }
+    </tbody>
+</table>

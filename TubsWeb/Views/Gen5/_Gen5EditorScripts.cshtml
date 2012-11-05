@@ -1,0 +1,72 @@
+﻿@model TubsWeb.ViewModels.Gen5ViewModel
+@using Newtonsoft.Json
+
+@* 
+    This partial depends on a bunch of other JavaScript already being loaded
+    (like jQuery, knockout, knockout extensions, etc.)
+*@
+<!-- ISODate extension -->
+<script src="~/Scripts/knockout.custom-bindings.js"></script>
+<!-- String hashCode implementation -->
+<script src="~/Scripts/spc.utilities.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+<!-- Ajax data layer -->
+<script src="~/Scripts/App/errorlogger.js"></script>
+<script src="~/Scripts/App/datacontext.js"></script>
+<script src="~/Scripts/App/vm.fad.js"></script>
+@{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+<script>
+    $(document).ready(function () {
+        var viewModel = new tubs.FadViewModel(@modelAsJson);
+        viewModel.clearDirtyFlag();
+        ko.applyBindings(viewModel);
+
+        $(".mainMaterials").on("click", ".removeItem", function () {
+            viewModel.removeMainMaterial(ko.dataFor(this));
+        });
+
+        $(".mainMaterials").on("click", ".addItem", function () {
+            viewModel.addMainMaterial();
+        });
+
+        $(".attachments").on("click", ".removeItem", function () {
+            viewModel.removeAttachment(ko.dataFor(this));
+        });
+
+        $(".attachments").on("click", ".addItem", function () {
+            viewModel.addAttachment();
+        });
+
+        $('.datepicker').datepicker();
+
+        $("#addMainMaterialsWhenEmpty").on("click", function () {
+            viewModel.addMainMaterial();
+        });
+
+        $("#addAttachmentWhenEmpty").on("click", function () {
+            viewModel.addAttachment();
+        });
+
+        // PageGuide initialization
+        tl.pg.init();
+
+        /* TODO: Extract this into a common script for the whole application */
+        window.onbeforeunload = function(e) {
+            if (viewModel.isDirty())
+            {
+                if (!e) e = window.event;
+                // IE only?
+                e.cancelBubble = true;
+                e.returnValue = "Leaving the page will discard unsaved changes.";
+                // Firefox?
+                if (e.stopPropagation)
+                {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+
+                return "Leaving the page will discard unsaved changes.";
+            }
+        };            
+    });
+</script>

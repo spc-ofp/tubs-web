@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Models
+namespace TubsWeb.ViewModels
 {
 
     /*

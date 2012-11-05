@@ -280,6 +280,16 @@ namespace TubsWeb.Controllers
                     // set.  This will enable easier entry on the PS-3 side.  Set# and Page# should match, so remind users
                     // to check?
                     bool addSet = (default(int) == activity.Id && ActivityType.Fishing == activity.ActivityType);
+                    // Need to check if the activity has been changed to Fishing, like someone made a mistake
+                    // originally.
+                    if (activity.ActivityType == ActivityType.Fishing && default(int) != activity.Id)
+                    {
+                        var setCount = srepo.FilterBy(s => s.Activity.Id == activity.Id).Count();
+                        if (0 == setCount)
+                        {
+                            addSet = true;
+                        }
+                    }
                     activity.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     activity.Day = seaDay;
                     erepo.Add(activity);
@@ -382,13 +392,13 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId, dayNumber);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Add(Trip tripId, int dayNumber)
         {
             return ViewActionImpl(tripId, dayNumber);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, int dayNumber)
         {
             return ViewActionImpl(tripId, dayNumber);
@@ -396,7 +406,7 @@ namespace TubsWeb.Controllers
 
         [HttpPost]
         [HandleTransactionManually]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Add(Trip tripId, int dayNumber, SeaDayViewModel sdvm)
         {
             return SaveActionImpl(tripId, dayNumber, sdvm);
@@ -406,7 +416,7 @@ namespace TubsWeb.Controllers
         // to cater for straight up HTML Forms
         [HttpPost]
         [HandleTransactionManually]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, int dayNumber, SeaDayViewModel sdvm)
         {
             return SaveActionImpl(tripId, dayNumber, sdvm);

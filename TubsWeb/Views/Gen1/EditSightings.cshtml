@@ -1,121 +1,153 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
-@using Spc.Ofp.Tubs.DAL.Entities
+﻿@model TubsWeb.ViewModels.SightingViewModel
+@using Newtonsoft.Json
+
+@{ 
+    // Switch to full width layout
+    ViewBag.UseFluid = true;
+    ViewBag.Title = "Edit GEN-1 Sightings"; 
+}
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
-        Tuple.Create(Url.Action("Index", "Gen1", new { tripId = ViewBag.TripId }), "GEN-1"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
         Tuple.Create("#", "Edit GEN-1 Sightings")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-<fieldset>
-    <legend>Vessel or Aircraft Sightings</legend>
-    @{ Html.RenderPartial("_EditSightings", Model.Sightings); }
-</fieldset>
+<form id="sightingsForm">
+    @* 
+     * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+     * when the first 'dirtying' change occurs.
+     *@
+    <p>
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
+    <hr />
+    <table class="table table-bordered table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Name</th>
+                <th>IRCS</th>
+                <th>Flag</th>
+                <th>Type</th>
+                <th>Bearing</th>
+                <th>Distance</th>
+                <th>Action</th>
+                <th>Photo</th>
+                <th>Comments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: Sightings">
+            <tr data-bind="css: { warning: (isDirty() || 0 === Id) }" class="lineitems">
+                <td>
+                    @* Delete button is taken out of the tab order to prevent accidents *@
+                    <button type="button"
+                            tabindex="3000"
+                            class="removeItem btn btn-mini btn-danger" 
+                            rel="tooltip" 
+                            title="Click to remove row">
+                        <i class="icon-remove icon-white"></i>
+                    </button>
+                </td>
+                <td><input type="text" data-bind="value: DateOnly.formattedDate, uniqueName: true" class="input-mini" /></td>
+                <td><input type="text" data-bind="value: TimeOnly, uniqueName: true" class="input-mini" /></td>
+                <td><input type="text" data-bind="value: Latitude, uniqueName: true" class="input-small" /></td>
+                <td><input type="text" data-bind="value: Longitude, uniqueName: true" class="input-small" /></td>
+                <td><input type="text" data-bind="value: Name, uniqueName: true" class="vesselName" /></td>
+                <td><input type="text" data-bind="value: Ircs, uniqueName: true" class="input-mini" /></td>
+                <td><input type="text" data-bind="value: CountryCode, uniqueName: true" class="input-mini" /></td>
+                <td>
+                    <select data-bind="value: TypeCode, options: $root.TypeCodes" class="input-mini"></select>
+                </td>
+                <td><input type="number" data-bind="value: Bearing, uniqueName: true" class="input-mini" /></td>
+                <td><input type="number" data-bind="value: Distance, uniqueName: true" class="input-mini" /></td>
+                <td>
+                    <select data-bind="value: ActionCode, options: $root.ActionCodes" class="input-mini"></select>
+                </td>
+                <td><input type="text" data-bind="value: PhotoFrame, uniqueName: true" class="input-mini" /></td>
+                <td><input type="text" data-bind="value: Comments, uniqueName: true" /></td>
+                <td>
+                    <button class="addItem btn btn-mini btn-info" 
+                            type="button"
+                            rel="tooltip" 
+                            title="Click to add row">
+                        <i class="icon-plus icon-white"></i>
+                    </button>
+                </td>
+            </tr>        
+        </tbody>
+    </table>
+    <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Sightings().length == 0">Add Sighting</button>
+</form>
 
-@{
-    AjaxOptions options = new AjaxOptions
-    {
-        HttpMethod = "Post",
-        UpdateTargetId = "gen1Sightings",
-        OnSuccess = String.Format("clearForm('#{0}')", "addSightingForm")
-    }; 
-}
-
-@using (Ajax.BeginForm("AddSighting", "Gen1", null, options, new { id = "addSightingForm", @class = "form well" }))
-{
-    @Html.ValidationSummary(true)
-    <fieldset>
-        <legend>Add Sighting</legend>
-        @{ var sighting = new Sighting(); }
-        @Html.EditorFor(s => sighting)
-        <p>
-            <input type="submit" name="Save" value="Save" class="btn btn-primary" />
-            <input type="reset" name="Cancel" class="btn" />
-        </p>
-    </fieldset>
-}
-
-<ul id="tlyPageGuide" data-tourtitle="Instructions for adding a sighting">
-    <li class="tlypageguide_left" data-tourtarget="input[name='sighting.EventTime']">
-        <div>
-            Enter the time of the sighting.  The format for date is dd-mm-yy HH:mm.
-            This means that day of the month and month should have a leading zero
-            if the value is less than 9 (for example, "09" instead of "9").
-            Time of day uses the 24-hour clock.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_Latitude">
-        <div>
-            Enter the latitude of your vessel during the sighting.  The format for
-            latitude is ddmm.mmmS or ddmm.mmmN.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_Longitude">
-        <div>
-            Enter the longitude of your vessel during the sighting.  The format for
-            latitude is dddmm.mmmE or dddmm.mmmW.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_VesselName">
-        <div>
-            Enter the name of the sighted vessel.  If the entire name can't be
-            recorded, write down what is visible.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_Ircs">
-        <div>
-            Enter the IRCS of the sighted vessel.  If the entire call sign can't be
-            recorded, write down what is visible.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_VesselType">
-        <div>
-            Select the type of the sighted vessel.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_Bearing">
-        <div>
-            Enter the compass bearing from your vessel to the sighted vessel.
-            This value must be between 0 and 360.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_Distance">
-        <div>
-            Enter the distance (in nautical miles) from your vessel to the sighted vessel.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_ActionType">
-        <div>
-            Select the action code corresponding to the activity that the sighted vessel is performing.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_PhotoNumber">
-        <div>
-            If a photo of the sighted vessel was taken, enter the photo frame number.
-        </div>
-    </li>
-    <li class="tlypageguide_left" data-tourtarget="#sighting_Comments">
-        <div>
-            Enter any additional comments about the sighting or the sighted vessel here.
-        </div>
-    </li>
-</ul>
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
 
 @section AdditionalScripts {
-    @{ Html.RenderPartial("_DateTimePickerInit"); }
-    <script src="@Url.Content("~/Scripts/pageguide.min.js")" type="text/javascript"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+    <script src="~/Scripts/spc.utilities.js"></script>
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.sighting.js"></script>
     <script>
         $(function () {
+            var viewModel = new tubs.SightingViewModel(@modelAsJson);
+            viewModel.clearDirtyFlag();
+            ko.applyBindings(viewModel);
+
+            $(".lineitems").on("click", ".removeItem", function () {
+                viewModel.removeEvent(ko.dataFor(this));
+            });
+
+            $(".lineitems").on("click", ".addItem", function () {
+                viewModel.addEvent();
+            });
+
+            $("#btnAddWhenEmpty").on("click", function () {
+                viewModel.addEvent();
+            });
+
+            /* TODO:  Attach a vessel lookup typeahead to anything with the .vesselName class */
+
             /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
             tl.pg.init();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function(e) {
+                if (viewModel.isDirty())
+                {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };  
         });
     </script>
 }
-

@@ -16,6 +16,65 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
+"use strict";
+
+tubs.psCrewMapping = {
+    'Hands': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'Captain': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'Navigator': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'Mate': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'ChiefEngineer': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'AssistantEngineer': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'DeckBoss': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'Cook': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'HelicopterPilot': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'SkiffMan': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+    'WinchMan': {
+        create: function (options) {
+            return new tubs.CrewMember(options.data);
+        }
+    },
+};
 
 tubs.CrewMember = function (data) {
     var self = this;
@@ -44,7 +103,8 @@ tubs.CrewMember = function (data) {
 
 tubs.psCrewViewModel = function (data) {
     var self = this;
-
+    ko.mapping.fromJS(data, tubs.psCrewMapping, self);
+    /*
     self.TripId = ko.observable(data.TripId || 0);
 
     // Senior Crew
@@ -65,7 +125,7 @@ tubs.psCrewViewModel = function (data) {
         tmpHands.push(new tubs.CrewMember(n));
     });
     self.Hands = ko.observableArray(tmpHands);
-
+    */
     self.dirtyFlag = new ko.DirtyFlag([
         self.Captain,
         self.Navigator,
@@ -128,38 +188,21 @@ tubs.psCrewViewModel = function (data) {
         else { self.Hands.remove(hand); }
     };
 
-    self.save = function () {
-        $.ajax({
-            url: "/Trip/" + self.TripId() + "/Crew/Edit",
-            dataType: "json",
-            contentType: "application/json",
-            data: ko.toJSON(self),
-            type: "POST",
-            success: function (result) {
-                toastr.success('Saved crew data');
-            },
-            error: function (xhr, status, error) {
-                toastr.error(error, 'Failed to save crew data');
-            }
-        });
-        //alert("Saving..." + ko.toJSON(self));
-    };
-
     // Getting a working reload is going to require a working JSON mapping
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
-            amplify.request({
-                resourceId: "getCrew",
-                success: function (result) {
-                    ko.mapping.fromJS(result, {/* Replace this with the mapping...*/}, self);
+            tubs.getCrew(
+                self.TripId(),
+                function (result) {
+                    ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     complete();
                 },
-                error: function (xhr, status, error) {
-                    toastr.error(error, 'Failed to reload crew');
+                function (xhr, status, error) {
+                    tubs.notify('Failed to reload crew', xhr, status);
                     complete();
                 }
-            });
+            );
         },
 
         canExecute: function (isExecuting) {
@@ -169,19 +212,20 @@ tubs.psCrewViewModel = function (data) {
 
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
-            amplify.request({
-                resourceId: "saveCrew",
-                data: ko.toJSON(self),
-                success: function (result) {
-                    self.clearDirtyFlag();
-                    toastr.success('Crew saved');
-                    complete();
-                },
-                error: function (xhr, status, error) {
-                    toastr.error(error, 'Failed to save crew');
-                    complete();
-                }
-            });
+            tubs.saveCrew(
+                    self.TripId(),
+                    self,
+                    function (result) {
+                        ko.mapping.fromJS(result, {}, self);
+                        self.clearDirtyFlag();
+                        toastr.info('Saved crew details');
+                        complete();
+                    },
+                    function (xhr, status, error) {
+                        tubs.notify('Failed to save crew details', xhr, status);
+                        complete();
+                    }
+                );
         },
 
         canExecute: function (isExecuting) {

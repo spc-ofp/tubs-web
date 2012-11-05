@@ -66,7 +66,7 @@ namespace TubsWeb.Controllers
             return View(tripId.VesselNotes);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Create(Trip tripId)
         {
             if (null == tripId)
@@ -86,14 +86,14 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Create(Trip tripId, VesselNotes notes)
         {
             return Modify(tripId, notes, "Create");
         }
 
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             if (null == tripId)
@@ -113,7 +113,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, VesselNotes notes)
         {
             return Modify(tripId, notes, "Edit");

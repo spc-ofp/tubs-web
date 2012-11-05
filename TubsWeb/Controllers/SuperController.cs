@@ -93,7 +93,7 @@ namespace TubsWeb.Controllers
             return GettableJsonNetData(
                 ModelState
                     .Where(s => s.Value.Errors.Count > 0)
-                    .Select(s => new KeyValuePair<string, string>(s.Key, s.Value.Errors.First().ErrorMessage)));
+                    .Select(s => s.Value.Errors.First().ErrorMessage));
         }
 
         /// <summary>
@@ -209,25 +209,35 @@ namespace TubsWeb.Controllers
             if (typeof(PurseSeineTrip) == tripId.GetType())
             {
                 var pstrip = tripId as PurseSeineTrip;
-                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.VesselAttributes != null))
+                pills.Add(Tuple.Create("PS-1", Url.Action("Index", "Ps1", routeValues)));
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.Electronics.Count > 0))
                 {
-                    pills.Add(Tuple.Create("Auxiliaries", Url.Action("Index", "Auxiliaries", routeValues)));
+                    pills.Add(Tuple.Create("Electronics (PS-1)", Url.Action("List", "Electronics", routeValues)));
                 }
                 if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.WellContent.Count > 0))
                 {
-                    pills.Add(Tuple.Create("Well Content", Url.Action("Index", "WellContent", routeValues)));
+                    pills.Add(Tuple.Create("Well Content (PS-1)", Url.Action("Index", "WellContent", routeValues)));
+                }
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.Crew.Count > 0))
+                {
+                    pills.Add(Tuple.Create("Crew (PS-1)", Url.Action("Index", "Crew", routeValues)));
                 }
             }
-
-            pills.Add(Tuple.Create("Vessel", Url.Action("Index", "VesselDetails", routeValues)));
-            pills.Add(Tuple.Create("Crew", Url.Action("Index", "Crew", routeValues)));
-            pills.Add(Tuple.Create("Electronics", Url.Action("List", "Electronics", routeValues)));
-            pills.Add(Tuple.Create("Safety Gear", Url.Action("Index", "SafetyInspection", routeValues)));
-            pills.Add(Tuple.Create("Fishing Gear", Url.Action("Index", "Gear", routeValues)));            
+         
+            // TODO Split GEN-1 into Sightings and Transfers
+            // Hide pills if trip is closed and no such entity exists
             pills.Add(Tuple.Create("GEN-1", Url.Action("Index", "Gen1", routeValues)));
             pills.Add(Tuple.Create("GEN-2", Url.Action("List", "Gen2", routeValues)));
-            pills.Add(Tuple.Create("GEN-3", Url.Action("Index", "Gen3", routeValues))); 
-            pills.Add(Tuple.Create("GEN-6", Url.Action("List", "Gen6", routeValues)));
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.TripMonitor != null))
+            {
+                pills.Add(Tuple.Create("GEN-3", Url.Action("Index", "Gen3", routeValues)));
+            }
+            // GEN-5 is Purse Seine only
+            pills.Add(Tuple.Create("GEN-5", Url.Action("Index", "Gen5", routeValues)));
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.PollutionEvents.Count > 0))
+            {
+                pills.Add(Tuple.Create("GEN-6", Url.Action("List", "Gen6", routeValues)));
+            }
             pills.Add(Tuple.Create("Days (PS-2)", Url.Action("List", "SeaDay", routeValues)));
             // TODO Use the route for this so that the name looks right
             pills.Add(Tuple.Create("Sets (PS-3)", Url.Action("List", "FishingSet", routeValues)));
@@ -236,10 +246,10 @@ namespace TubsWeb.Controllers
             // It's possible that the scan didn't come with a registration cover page.  If not, TUBS has to create it
             // This URL is outside the system
             // TODO Figure out the best way to have this URL open in a new window.
-            string coverPageUrl = GetReportUrl(CoverPage, tripId.Id);
-            pills.Add(Tuple.Create("Cover Page", coverPageUrl));
-            string summaryReportUrl = GetReportUrl(PSTripSummary, tripId.Id);
-            pills.Add(Tuple.Create("Trip Summary", summaryReportUrl));
+            //string coverPageUrl = GetReportUrl(CoverPage, tripId.Id);
+            //pills.Add(Tuple.Create("Cover Page", coverPageUrl));
+            //string summaryReportUrl = GetReportUrl(PSTripSummary, tripId.Id);
+            //pills.Add(Tuple.Create("Trip Summary", summaryReportUrl));
 
             pills.Add(Tuple.Create("Position Audit", Url.Action("PositionAudit", "Trip", routeValues)));
             if (!tripId.IsReadOnly)

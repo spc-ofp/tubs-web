@@ -139,7 +139,7 @@ namespace TubsWeb.Controllers
             return View(sets);
         }
 
-        //[Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
@@ -152,7 +152,7 @@ namespace TubsWeb.Controllers
 
         [HttpPost]
         [HandleTransactionManually]
-        //[Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, int setNumber, PurseSeineSetViewModel fsvm)
         {
             var trip = tripId as PurseSeineTrip;
@@ -188,8 +188,8 @@ namespace TubsWeb.Controllers
                 var screpo = TubsDataService.GetRepository<PurseSeineSetCatch>(MvcApplication.CurrentSession);               
 
                 // Deletes first
-                fsvm.TargetCatch.Where(x => x != null && x._destroy).ToList().ForEach(x => screpo.DeleteById(x.Id));
-                fsvm.ByCatch.Where(x => x != null && x._destroy).ToList().ForEach(x => screpo.DeleteById(x.Id));
+                fsvm.TargetCatch.DefaultIfEmpty().Where(x => x != null && x._destroy).ToList().ForEach(x => screpo.DeleteById(x.Id));
+                fsvm.ByCatch.DefaultIfEmpty().Where(x => x != null && x._destroy).ToList().ForEach(x => screpo.DeleteById(x.Id));
 
                 var parent = erepo.FindById(fsvm.ActivityId) as PurseSeineActivity;
                 fset.Activity = parent;
@@ -198,12 +198,13 @@ namespace TubsWeb.Controllers
                 fsrepo.Update(fset, true); // This should never be an actual Add               
 
                 xa.Commit();
+                fsrepo.Reload(fset);
             }
 
             if (IsApiRequest())
             {
-                // Since set doesn't have any significant child properties during edit,
-                // we can do the reload with the StatelessSession
+                fsvm = Mapper.Map<PurseSeineSet, PurseSeineSetViewModel>(fset);
+                // TODO There are some UX properties that need setting...
                 return GettableJsonNetData(fsvm);
             }
 

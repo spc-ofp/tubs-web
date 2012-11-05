@@ -1,6 +1,8 @@
 ﻿@model TubsWeb.ViewModels.Gen5ViewModel
 @using Spc.Ofp.Tubs.DAL.Common
 
+@{ ViewBag.Title = "GEN-5 Details"; }
+
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
@@ -17,62 +19,95 @@
 @* TODO: Link back to PS-2 activity *@
 
 <div class="row-fluid">
-    <div class="span2">
+    <div class="span3">
         <label><strong>Object Number</strong></label>
         <span>@Model.ObjectNumber</span>
     </div>
-    <div class="span2">
+    <div class="span3">
         <label><strong>Buoy Number</strong></label>
         <span>@Model.BuoyNumber</span>
     </div>
-    <div class="span4">
+    <div class="span6">
         <label><strong>FAD / Payao No. and/or markings</strong></label>
         <span>@Model.Markings</span>
-    </div>
-    <div class="span2">
-        <label><strong>Origin</strong></label>
-        <span>@Model.OriginCode</span>
-    </div>
-    <div class="span2">
-        <label><strong>SSI trapped?</strong></label>
-        <span>@Model.SsiTrapped</span>
     </div>
 </div>
 <hr />
 <div class="row-fluid">
-    <div class="span2">
-        <label><strong>FAD as<br />found</strong></label>
-        <span>@Model.AsFoundCode</span>
+    <div class="span3">
+        <label><strong>Origin</strong></label>
+        <span>@Model.Origin</span>
     </div>
-    <div class="span2">
-        <label><strong>FAD as<br />left</strong></label>
-        <span>@Model.AsLeftCode</span>
+    <div class="span3">
+        <label><strong>Deployment Date</strong></label>
+        <span>@Model.DeploymentDate</span>
     </div>
-    <div class="span2">
-        <label><strong>Max est.<br />depth</strong></label>
+    <div class="span3">
+        <label><strong>Latitude</strong></label>
+        <span>@Model.Latitude</span>
+    </div>
+    <div class="span3">
+        <label><strong>Longitude</strong></label>
+        <span>@Model.Longitude</span>
+    </div>
+</div>
+<hr />
+<div class="row-fluid">
+    <div class="span3">
+        <label><strong>FAD as found</strong></label>
+        <span>@Model.AsFound</span>
+    </div>
+    <div class="span3">
+        <label><strong>SSI trapped?</strong></label>
+        <span>@Model.SsiTrapped</span>
+    </div>
+    <div class="span3">
+        <label><strong>FAD as left</strong></label>
+        <span>@Model.AsLeft</span>
+    </div>
+    
+    
+</div>
+<hr />
+<div class="row-fluid">   
+    <div class="span3">
+        <label><strong>Max est. depth</strong></label>
         <span>@Model.Depth</span>
     </div>
-    <div class="span2">
-        <label><strong>FAD<br />length</strong></label>
+    <div class="span3">
+        <label><strong>FAD length</strong></label>
         <span>@Model.Length</span>
     </div>
-    <div class="span2">
-        <label><strong>FAD<br />width</strong></label>
+    <div class="span3">
+        <label><strong>FAD width</strong></label>
         <span>@Model.Width</span>
     </div> 
 </div>
 <hr />
 <div class="row-fluid">
-    <div class="span4">
-        <label><strong>Deployment Date</strong></label>
-        <span>@Model.DeploymentDate</span>
+    <div class="span6">
+        <label><strong>Main Materials</strong></label>
+        <ul>
+            @foreach (var main in Model.MainMaterialDescriptions)
+            {
+            <li>@main</li>
+            }
+        </ul>
     </div>
-    <div class="span4">
-        <label><strong>Latitude</strong></label>
-        <span>@Model.Latitude</span>
+    <div class="span6">
+        <label><strong>Attachments</strong></label>
+        <ul>
+            @foreach (var attach in Model.AttachmentDescriptions)
+            {
+            <li>@attach</li>
+            }
+        </ul>
     </div>
-    <div class="span4">
-        <label><strong>Longitude</strong></label>
-        <span>@Model.Longitude</span>
+</div>
+<hr />
+<div class="row-fluid">
+    <div class="span12">
+        <label><strong>Comments</strong></label>
+        <p>@Model.Comments</p>
     </div>
 </div>

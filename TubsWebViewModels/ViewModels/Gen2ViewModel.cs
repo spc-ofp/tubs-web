@@ -3,7 +3,7 @@
 // Copyright (C) 2012 Secretariat of the Pacific Community
 // </copyright>
 
-namespace TubsWeb.Models
+namespace TubsWeb.ViewModels
 {
     /*
      * This file is part of TUBS.

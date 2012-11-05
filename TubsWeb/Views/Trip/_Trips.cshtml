@@ -1,11 +1,21 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Trip>
+@using System.Web.Configuration
+
+@{
+    bool IsInstalledAtSpc = 
+        string.IsNullOrEmpty(WebConfigurationManager.AppSettings["DefaultProgramCode"]) &&
+        string.IsNullOrEmpty(WebConfigurationManager.AppSettings["DefaultCountryCode"]);
+}  
            
 <table class="table table-bordered table-condensed table-striped" id="tripTable">
     <caption>@ViewBag.TotalRows Trips</caption>
     <thead>
         <tr>
             <th>Trip Id</th>
+            @if (IsInstalledAtSpc)
+            {
             <th>Program</th>
+            }
             <th>Trip Number</th>
             <th>Vessel</th>
             <th>Port of Departure</th>
@@ -21,9 +31,12 @@
             <td>
                 @Html.ActionLink(item.Id.ToString(), "Details", new { tripId = item.Id })
             </td>
+            @if (IsInstalledAtSpc)
+            {
             <td>
                 @Html.DisplayFor(i => item.ProgramCode)
             </td>
+            }
             <td>
                 @Html.DisplayFor(i => item.SpcTripNumber)
             </td>

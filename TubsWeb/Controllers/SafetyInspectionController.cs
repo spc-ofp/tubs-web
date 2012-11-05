@@ -44,7 +44,7 @@ namespace TubsWeb.Controllers
             return View(tripId.Inspection);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             if (null == tripId)
@@ -73,7 +73,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, SafetyInspection inspection)
         {
             if (null == tripId)

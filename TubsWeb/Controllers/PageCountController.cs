@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AuxiliariesController.cs" company="Secretariat of the Pacific Community">
-// Copyright (C) 2011 Secretariat of the Pacific Community
+// <copyright file="PageCountController.cs" company="Secretariat of the Pacific Community">
+// Copyright (C) 2012 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -24,28 +24,53 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Web.Mvc;
+    using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
+    using TubsWeb.ViewModels;
     
     public class PageCountController : SuperController
     {
-        //
-        // GET: /PageCount/
-
-        public ActionResult Index(Trip tripId)
+        internal ActionResult ViewActionImpl(Trip tripId)
         {
             if (null == tripId)
             {
-                return new NoSuchTripResult();
+                return InvalidTripResponse();
             }
 
-            ViewBag.Title = String.Format("Page counts for trip {0}", tripId.ToString());           
-            return View(tripId);
+            var vm = tripId is PurseSeineTrip ?
+                Mapper.Map<PurseSeineTrip, PurseSeinePageCountViewModel>(tripId as PurseSeineTrip) :
+                Mapper.Map<Trip, PageCountViewModel>(tripId);
+
+            if (IsApiRequest())
+                return GettableJsonNetData(vm);
+ 
+            return View(CurrentAction(), vm);
+        }
+        
+        public ActionResult Index(Trip tripId)
+        {
+            return ViewActionImpl(tripId);
+        }
+
+        public ActionResult Edit(Trip tripId)
+        {
+            return ViewActionImpl(tripId);
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
+        public ActionResult Edit(Trip tripId, PageCountViewModel pcvm)
+        {
+            throw new NotImplementedException("");
+        }
+
+
+
+        /*
+        [HttpPost]
+        [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public PartialViewResult AddPageCount(Trip tripId, PageCount pageCount)
         {
@@ -62,6 +87,7 @@ namespace TubsWeb.Controllers
             var pageCounts = repo.FilterBy(t => t.Trip.Id == tripId.Id);
             return PartialView("_PageCounts", pageCounts);
         }
+        */
 
     }
 }

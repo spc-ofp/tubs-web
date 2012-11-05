@@ -22,9 +22,11 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Mvc;
+    using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     using TubsWeb.ViewModels;
@@ -32,54 +34,119 @@ namespace TubsWeb.Controllers
     public class Gen1Controller : SuperController
     {
 
-        [Authorize(Roles = Security.EditRoles)]
+        internal ActionResult SightingViewActionImpl(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            var svm = Mapper.Map<Trip, SightingViewModel>(tripId);
+            if (IsApiRequest())
+                return GettableJsonNetData(svm);
+
+            return View(CurrentAction(),svm);
+        }
+
+        internal ActionResult TransferViewActionImpl(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            var tvm = Mapper.Map<Trip, TransferViewModel>(tripId);
+            if (IsApiRequest())
+                return GettableJsonNetData(tvm);
+
+            return View(CurrentAction(), tvm);
+        }
+        
         public ActionResult Sightings(Trip tripId)
         {
+            return SightingViewActionImpl(tripId);
+        }
+
+        [EditorAuthorize]
+        public ActionResult EditSightings(Trip tripId)
+        {
+            return SightingViewActionImpl(tripId);
+        }
+
+        [HttpPost]
+        [HandleTransactionManually]
+        [EditorAuthorize]
+        public ActionResult EditSightings(Trip tripId, SightingViewModel svm)
+        {
             if (null == tripId)
             {
                 return InvalidTripResponse();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+                return View(svm);
+            }
+
+            var sightings = new List<Sighting>();
+            // I can almost get there with LINQ, but I fear I'd have problems with it
+            // in the Brian Kernighan "twice-as-smart-to-debug" sense.
+            foreach (var sighting in svm.Sightings)
+            {
+                if (null == sighting || sighting._destroy)
+                    continue;
+                var entity = Mapper.Map<SightingViewModel.Sighting, Sighting>(sighting);
+                if (null != entity)
+                {
+                    entity.Trip = tripId;
+                    entity.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    sightings.Add(entity);
+                }
             }
             
-            var svm = new SightingViewModel();
-            svm.TripId = tripId.Id;
-            svm.TripNumber = (tripId.SpcTripNumber ?? "This Trip").Trim();
-            svm.VersionNumber = tripId.Version == WorkbookVersion.v2009 ? 2009 : 2007;
 
-            if (IsApiRequest())
-                return GettableJsonNetData(svm);
-
-            return View(svm);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
-        public ActionResult Sightings(Trip tripId, SightingViewModel svm)
-        {
-            if (null == tripId)
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
-                return InvalidTripResponse();
+                IRepository<Sighting> repo = TubsDataService.GetRepository<Sighting>(MvcApplication.CurrentSession);
+
+                // Deletes first
+                // This I can do in LINQ
+                svm.Sightings.Where(s => s != null && s._destroy).ToList().ForEach(s => repo.DeleteById(s.Id));
+
+                repo.Add(sightings);
+                xa.Commit();
             }
 
+
             if (IsApiRequest())
+            {
+                using (var trepo = TubsDataService.GetRepository<Trip>(false))
+                {
+                    var t = trepo.FindById(tripId.Id);
+                    svm = Mapper.Map<Trip, SightingViewModel>(t);
+                }
                 return GettableJsonNetData(svm);
 
-            return View(svm);
+            }
+
+            return RedirectToAction("EditSightings", "Gen1", new { tripId = tripId.Id });
         }
 
-        [Authorize(Roles = Security.EditRoles)]
         public ActionResult Transfers(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
+            return TransferViewActionImpl(tripId);
+        }
 
-            var tvm = new TransferViewModel();
-            return View(tvm);
+        [EditorAuthorize]
+        public ActionResult EditTransfers(Trip tripId)
+        {
+            return TransferViewActionImpl(tripId);
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Transfers(Trip tripId, TransferViewModel tvm)
         {
             if (null == tripId)
@@ -110,20 +177,24 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), tripId);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        /*
+        [EditorAuthorize]
         public ActionResult EditSightings(Trip tripId)
         {
             return Load(tripId, "Edit GEN-1 sightings for trip {0}");
         }
+        */
 
-        [Authorize(Roles = Security.EditRoles)]
+        /*
+        [EditorAuthorize]
         public ActionResult EditTransfers(Trip tripId)
         {
             return Load(tripId, "Edit GEN-1 transfers for trip {0}");
         }
+        */
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public PartialViewResult EditSighting(Trip tripId, Sighting sighting)
         {            
@@ -138,7 +209,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public PartialViewResult AddSighting(Trip tripId, [Bind(Prefix = "sighting")] Sighting sighting)
         {
@@ -155,7 +226,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public PartialViewResult EditTransfer(Trip tripId, Transfer transfer)
         {
@@ -169,7 +240,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public PartialViewResult AddTransfer(Trip tripId, [Bind(Prefix = "transfer")] Transfer transfer)
         {

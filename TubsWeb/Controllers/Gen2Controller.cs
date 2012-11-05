@@ -83,7 +83,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public PartialViewResult AddInteraction(Trip tripId, SpecialSpeciesInteraction interaction)
         {

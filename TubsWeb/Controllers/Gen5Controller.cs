@@ -30,6 +30,9 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.ViewModels;
+    using TubsWeb.Core;
+    using Spc.Ofp.Tubs.DAL.Common;
+    using System.Collections.Generic;
 
     public class Gen5Controller : SuperController
     {
@@ -37,12 +40,25 @@ namespace TubsWeb.Controllers
         // GET: /GEN-5/Details
         public ActionResult Index(Trip tripId)
         {
-            return View();
+            var trip = tripId as PurseSeineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            ViewBag.TripNumber = trip.SpcTripNumber;
+            // I'd like this to be stateless, since we could give a fig about the
+            // materials, but the AutoMapper portion would choke...
+            var repo = TubsDataService.GetRepository<Gen5Object>(MvcApplication.CurrentSession);
+            var fads = repo.FilterBy(f => f.Activity.Day.Trip.Id == tripId.Id);
+            var viewModels =
+                from f in fads
+                select Mapper.Map<Gen5Object, Gen5ViewModel>(f);
+
+            return View(viewModels.AsEnumerable());
         }
-        
-        //
-        // GET: /GEN-5/Details
-        public ActionResult Details(Trip tripId, int? fadId, int? activityId)
+
+        internal ActionResult ViewActionImpl(Trip tripId, int? fadId, int? activityId)
         {
             var trip = tripId as PurseSeineTrip;
             if (null == trip)
@@ -62,8 +78,7 @@ namespace TubsWeb.Controllers
                 fad = repo.FilterBy(f => f.Activity.Id == activityId.Value).FirstOrDefault();
             }
 
-            // 
-            if (null == fad || fad.Activity.Day.Trip.Id != trip.Id)
+            if (!IsAdd() && (null == fad || fad.Activity.Day.Trip.Id != trip.Id))
             {
                 if (IsApiRequest())
                 {
@@ -75,18 +90,143 @@ namespace TubsWeb.Controllers
             }
 
             var fvm = Mapper.Map<Gen5Object, Gen5ViewModel>(fad);
-            return View(fvm);
+            if (IsAdd() && null == fvm)
+            {
+                fvm = new Gen5ViewModel
+                {
+                    TripId = trip.Id,
+                    TripNumber = trip.SpcTripNumber,
+                    ActivityId = activityId.HasValue ? activityId.Value : 0,
+                    VersionNumber = trip.Version == WorkbookVersion.v2009 ? 2009 : 2007,
+                    MainMaterials = new List<Gen5ViewModel.FadMaterial>(),
+                    Attachments = new List<Gen5ViewModel.FadMaterial>()
+                };
+            }
+            if (IsApiRequest())
+                return GettableJsonNetData(fvm);
+
+            return View(CurrentAction(), fvm);
+        }
+
+        internal ActionResult SaveActionImpl(Trip tripId, Gen5ViewModel fvm)
+        {
+            var trip = tripId as PurseSeineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            // TODO:  What kind of validation needs to occur?
+            // Should we pull this snippet out into a new function?
+            if (!ModelState.IsValid)
+            {
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+                
+                return View(CurrentAction(), fvm);
+            }
+
+            var fad = Mapper.Map<Gen5ViewModel, Gen5Object>(fvm);
+            if (null == fad)
+            {
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+
+                return View(CurrentAction(), fvm);
+            }
+
+            fad.SetAuditTrail(User.Identity.Name, DateTime.Now);
+
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+                IRepository<Gen5Material> mrepo = TubsDataService.GetRepository<Gen5Material>(MvcApplication.CurrentSession);
+                IRepository<Gen5Object> frepo = TubsDataService.GetRepository<Gen5Object>(MvcApplication.CurrentSession);
+                IRepository<Activity> erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
+
+                fad.Activity = erepo.FindById(fvm.ActivityId) as PurseSeineActivity;
+                if (null == fad.Activity)
+                {
+                    throw new Exception("Yo dawg, this shouldn't happen");
+                }
+
+                // Manually handle deletes
+                fvm.MainMaterials.Where(x => x != null && x._destroy).ToList().ForEach(x =>
+                {
+                    mrepo.DeleteById(x.Id);
+                });
+
+                fvm.Attachments.Where(x => x != null && x._destroy).ToList().ForEach(x =>
+                {
+                    mrepo.DeleteById(x.Id);
+                });
+
+                fad.Materials.ToList().ForEach(x =>
+                {
+                    mrepo.Update(x, x.Id != default(int));
+                });
+
+                bool merge = fad.Id != default(int);
+                frepo.Update(fad, merge);
+                xa.Commit();
+                MvcApplication.CurrentSession.Evict(fad);
+                // Reload doesn't appear to be all that valuable
+                // for entities with a parent-child relationship
+                // Still, we'll keep the reload so that we can guarantee
+                // we've got the correct entity primary key
+                frepo.Reload(fad);
+            }
+
+            if (IsApiRequest())
+            {
+                using (var repo = TubsDataService.GetRepository<Gen5Object>(false))
+                {
+                    fad = repo.FindById(fad.Id);
+                    fvm = Mapper.Map<Gen5Object, Gen5ViewModel>(fad);
+                }
+                
+                return GettableJsonNetData(fvm);
+            }
+
+            // If this isn't an API request (which shouldn't really happen)
+            // always push to the Edit page.  It's been saved, so an Add is counter-productive
+            // (besides, redirecting to Add with the current dayNumber will redirect to Edit anyways...)
+            return RedirectToAction("Edit", "Gen5", new { tripId = tripId.Id, fadId = fad.Id });
+        }
+        
+        //
+        // GET: /GEN-5/Details
+        public ActionResult Details(Trip tripId, int? fadId, int? activityId)
+        {
+            return ViewActionImpl(tripId, fadId, activityId);
         }
 
         public ActionResult Edit(Trip tripId, int fadId)
         {
-            return View();
+            return ViewActionImpl(tripId, fadId, null);
+        }
+
+        [HttpPost]
+        [HandleTransactionManually]
+        [EditorAuthorize]
+        public ActionResult Edit(Trip tripId, Gen5ViewModel fvm)
+        {
+            return SaveActionImpl(tripId, fvm);
         }
 
         public ActionResult Add(Trip tripId, int activityId)
         {
-            return View();
+            return ViewActionImpl(tripId, null, activityId);
         }
+
+        // TODO:  Do we need this?  Not that there's much to it, but
+        // it could be confusing...
+        [HttpPost]
+        [HandleTransactionManually]
+        [EditorAuthorize]
+        public ActionResult Add(Trip tripId, Gen5ViewModel fvm)
+        {
+            return SaveActionImpl(tripId, fvm);
+        } 
 
         
 

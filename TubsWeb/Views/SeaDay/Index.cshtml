@@ -115,11 +115,14 @@ else
             <td>
                 @if (entry.HasGen5)
                 {
-                    <a href="#">Edit</a> @:| <a href="#">Details</a>
+                    var edit = Url.Action("Edit", "Gen5", new { tripId = Model.TripId, fadId = entry.Gen5Id });
+                    var details = Url.Action("Details", "Gen5", new { tripId = Model.TripId, fadId = entry.Gen5Id });
+                    <a href='@edit'>Edit</a> @:| <a href='@details'>Details</a>
                 }
                 else
                 {
-                    <a href="#">Add</a>
+                    var add = Url.Action("Add", "Gen5", new { tripId = Model.TripId, activityId = entry.EventId });
+                    <a href='@add'>Add</a>
                 }
             </td>
         </tr>

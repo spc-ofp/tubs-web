@@ -44,7 +44,7 @@ namespace TubsWeb.Controllers
             return View(trip);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             var trip = tripId as PurseSeineTrip;
@@ -58,7 +58,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public ActionResult AddItem(Trip tripId, [Bind(Prefix = "item")] PurseSeineWellContent content)
         {
@@ -95,7 +95,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public ActionResult EditItem(Trip tripId, PurseSeineWellContent content)
         {
@@ -103,12 +103,8 @@ namespace TubsWeb.Controllers
             //return PartialView("_EditWellContent", content);
         }
 
-
-
-
-
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, IList<PurseSeineWellContent> wells)
         {
             var trip = tripId as PurseSeineTrip;

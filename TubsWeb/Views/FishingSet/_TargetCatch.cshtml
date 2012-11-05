@@ -30,10 +30,10 @@
                 </td>
                 <td>
                     @* TODO: NeedsFocus is pointing to root ViewModel *@
-                    <select data-bind="options: $root.TargetSpecies, value: SpeciesCode, hasfocus: NeedsFocus" class="input-small"></select>
+                    <select data-bind="options: $root.TargetSpecies, value: SpeciesCode, hasfocus: NeedsFocus, uniqueName: true" class="input-small"></select>
                 </td>
                 <td>
-                    <input type="text" class="required input-mini" data-bind="value: FateCode, uniqueName: true" />
+                    <select class="input-small" data-bind="value: FateCode, options: $root.FateCodes" />
                 </td>
                 <td>
                     <input type="number" class="input-mini" data-bind="value: ObservedWeight, uniqueName: true" />

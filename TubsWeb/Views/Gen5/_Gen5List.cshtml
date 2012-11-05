@@ -1,0 +1,31 @@
+﻿@model IEnumerable<TubsWeb.ViewModels.Gen5ViewModel>
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>Object Number</th>
+            <th>SSI trapped</th>
+            <th>As Found</th>
+            <th>As Left</th>
+            <th>Buoy number</th>
+            <th>Markings</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var fad in Model)
+    {
+        var edit = Url.Action("Edit", "Gen5", new { tripId = ViewBag.TripId, fadId = fad.Id });
+        var details = Url.Action("Details", "Gen5", new { tripId = ViewBag.TripId, fadId = fad.Id });
+        <tr>
+            <td>@Html.DisplayFor(m => fad.ObjectNumber)</td>
+            <td>@fad.SsiTrapped</td>
+            <td>@fad.AsFound</td>
+            <td>@fad.AsLeft</td>
+            <td>@fad.BuoyNumber</td>
+            <td>@fad.Markings</td>
+            <td><a href='@edit'>Edit</a> | <a href='@details'>Details</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

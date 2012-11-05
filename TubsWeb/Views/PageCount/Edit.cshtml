@@ -1,0 +1,108 @@
+﻿@model TubsWeb.ViewModels.PageCountViewModel
+@using Newtonsoft.Json
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create("#", "Edit Page Counts")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<form id="pageCountForm" class="form-horizontal">
+    <p>
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
+@if (Model is TubsWeb.ViewModels.PurseSeinePageCountViewModel)
+{
+    <div class="control-group">
+        <label for="Ps1Count" class="control-label">PS-1</label>
+        <div class="controls">
+            <input type="number" id="Ps1Count" name="Ps1Count" data-bind="value: Ps1Count" class="input-small" />
+        </div> 
+    </div>
+    <div class="control-group">
+        <label for="Ps2Count" class="control-label">PS-2</label>
+        <div class="controls">
+            <input type="number" id="Ps2Count" name="Ps2Count" data-bind="value: Ps2Count" class="input-small" />
+        </div> 
+    </div>
+    <div class="control-group">
+        <label for="Ps3Count" class="control-label">PS-3</label>
+        <div class="controls">
+            <input type="number" id="Ps3Count" name="Ps3Count" data-bind="value: Ps3Count" class="input-small" />
+        </div> 
+    </div>
+    <div class="control-group">
+        <label for="Ps4Count" class="control-label">PS-4</label>
+        <div class="controls">
+            <input type="number" id="Ps4Count" name="Ps4Count" data-bind="value: Ps4Count" class="input-small" />
+        </div> 
+    </div>
+    <div class="control-group">
+        <label for="Ps5Count" class="control-label">PS-5</label>
+        <div class="controls">
+            <input type="number" id="Ps5Count" name="Ps5Count" data-bind="value: Ps5Count" class="input-small" />
+        </div> 
+    </div>
+}
+    <div class="control-group">
+        <label for="Gen1Count" class="control-label">GEN-1</label>
+        <div class="controls">
+            <input type="number" id="Gen1Count" name="Gen1Count" data-bind="value: Gen1Count" class="input-small" />
+        </div> 
+    </div>
+    <div class="control-group">
+        <label for="Gen2Count" class="control-label">GEN-2</label>
+        <div class="controls">
+            <input type="number" id="Gen2Count" name="Gen2Count" data-bind="value: Gen2Count" class="input-small" />
+        </div> 
+    </div>
+    <div class="control-group">
+        <label for="Gen3Count" class="control-label">GEN-3</label>
+        <div class="controls">
+            <input type="number" id="Gen3Count" name="Gen3Count" data-bind="value: Gen3Count" class="input-small" />
+        </div> 
+    </div>
+@if (Model is TubsWeb.ViewModels.PurseSeinePageCountViewModel)
+{
+    <div class="control-group">
+        <label for="Gen5Count" class="control-label">GEN-3</label>
+        <div class="controls">
+            <input type="number" id="Gen5Count" name="Gen5Count" data-bind="value: Gen5Count" class="input-small" />
+        </div> 
+    </div>
+}
+    <div class="control-group">
+        <label for="Gen6Count" class="control-label">GEN-6</label>
+        <div class="controls">
+            <input type="number" id="Gen6Count" name="Gen6Count" data-bind="value: Gen6Count" class="input-small" />
+        </div> 
+    </div>
+</form>
+
+@section AdditionalScripts {
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.pagecounts.js"></script>
+
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+
+    <script>
+        $(document).ready(function () {
+            var viewModel = new tubs.PageCountViewModel(@modelAsJson);
+            viewModel.clearDirtyFlag();
+            ko.applyBindings(viewModel);
+        });
+    </script>
+    
+}

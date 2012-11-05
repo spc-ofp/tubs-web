@@ -6,6 +6,7 @@
 
 namespace TubsWeb.ViewModels.Resolvers
 {
+    
     /*
      * This file is part of TUBS.
      *
@@ -22,7 +23,9 @@ namespace TubsWeb.ViewModels.Resolvers
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
     using AutoMapper;
+    using Spc.Ofp.Tubs.DAL.Common;
     using Tubs = Spc.Ofp.Tubs.DAL.Common;
 
     /// <summary>
@@ -59,6 +62,17 @@ namespace TubsWeb.ViewModels.Resolvers
                 default:
                     return null;
             }
+        }
+    }
+
+    public class OriginDescriptionResolver : ValueResolver<Tubs.FadOrigin?, string>
+    {
+        protected override string ResolveCore(Tubs.FadOrigin? source)
+        {
+            if (!source.HasValue)
+                return string.Empty;
+
+            return source.Value.GetDescription();
         }
     }
 

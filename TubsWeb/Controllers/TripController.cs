@@ -299,10 +299,11 @@ namespace TubsWeb.Controllers
 
             AddTripNavbar(tripId);
             ViewBag.Title = tripId.ToString();
+            ViewBag.BaseDownloadName = string.Format("{0}_{1}_", tripId.Observer.StaffCode, tripId.TripNumber);
             return View(tripId);
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Close(Trip tripId)
         {
             if (null == tripId)
@@ -326,7 +327,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Close(TripClosureViewModel tcvm)
         {
             if (!tcvm.TripId.HasValue)
@@ -366,8 +367,7 @@ namespace TubsWeb.Controllers
             return View(tcvm);
         }
 
-        // NOTE:  SPC\AL... doesn't seem to want to work on my workstation that's joined to the NOUMEA domain...
-        //[Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Create()
         {
             // Drive program code and country code if this is an in-country installation
@@ -386,7 +386,7 @@ namespace TubsWeb.Controllers
         // CRUD operation in the application.
         //
         [HttpPost]
-        //[Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Create(TripHeaderViewModel thvm)
         {
             // After much hassle with native DateTime objects, I've bowed to reality and

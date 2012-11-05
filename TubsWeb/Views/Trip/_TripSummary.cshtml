@@ -44,7 +44,15 @@
         var pstrip = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip;
         <tr>
             <td>Sea Days:</td>
-            <td>@pstrip.SeaDays.Count.ToString()</td>
+            <td>
+                @pstrip.SeaDays.Count.ToString()
+                @if (pstrip.DepartureDate.HasValue && pstrip.ReturnDate.HasValue)
+                {
+                    var dateDiff = pstrip.DepartureDate.Value.Subtract(pstrip.ReturnDate.Value);
+                    string suffix = ((int)Math.Abs(dateDiff.TotalDays)).ToString();
+                    @: / @suffix
+                }
+            </td>
             <td>Sets:</td>
             @{
                 var setcount = (

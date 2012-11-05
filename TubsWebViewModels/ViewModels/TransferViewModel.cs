@@ -33,8 +33,6 @@ namespace TubsWeb.ViewModels
         public TransferViewModel()
         {
             Transfers = new List<Transfer>(8);
-            TypeCodes = new List<int?>() { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 31 };
-            ActionCodes = new List<string>() { string.Empty, "TR", "SR", "BR", "OR", "TG", "SG", "BG", "OG" };
         }
 
         // UX state
@@ -42,8 +40,9 @@ namespace TubsWeb.ViewModels
         public int VersionNumber { get; set; }
         public int TripId { get; set; }
 
-        public IList<int?> TypeCodes { get; set; }
-        public IList<string> ActionCodes { get; set; }
+        public IList<int?> TypeCodes = new List<int?>() { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 31 };
+        public IList<string> ActionCodes =
+            new List<string>() { string.Empty, "TR", "SR", "BR", "OR", "TG", "SG", "BG", "OG" };
 
         public List<Transfer> Transfers { get; set; }
         
@@ -72,6 +71,10 @@ namespace TubsWeb.ViewModels
             // Display only, so no need to include in JSON
             [JsonIgnore]
             public string ActivityIconPath { get; set; }
+            [JsonIgnore]
+            public string TypeDescription { get; set; }
+            [JsonIgnore]
+            public string ActionDescription { get; set; }
         }
     }
 }

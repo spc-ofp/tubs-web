@@ -66,7 +66,7 @@
     <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
     -->   
 </head>
-<body>
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -95,8 +95,11 @@
                         </ul>
                     </li>
                     <li><a href="@Url.Content("~/")">Home</a></li>
+                    <li>@Html.RouteLink("Reports", new { controller = "Home", action = "Reports" })</li>
                     <li>@Html.RouteLink("About", new { controller = "Home", action = "About" })</li>
+                    <li>@Html.RouteLink("Help", new { controller = "Home", action = "EntryHelp" })</li>
                     @* Redundant for IE, but put it up there in the user's face... *@
+                    @* TODO:  Make this full width...
                     <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">RSS<b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -106,7 +109,8 @@
                             Latest Trips</a>
                         </li>
                     </ul>
-                    </li>     
+                    </li>
+                    *@    
                 </ul>
             }
             @{ Html.RenderPartial("_UserWidget"); }
@@ -128,8 +132,8 @@
         <div class="@containerClass">
         @if (hasSidebar)
         {
-            <div class="span2">@RenderSection("Sidebar")</div>
-            <div class="span10">@RenderBody()</div>
+            <div class="span3">@RenderSection("Sidebar")</div>
+            <div class="span9">@RenderBody()</div>
         }
         else
         {

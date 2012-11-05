@@ -79,9 +79,7 @@ namespace TubsWeb.Controllers
             return retval;
         }
 
-        // FIXME Need to come up with a better way of doing this -- maybe a "Mutator" attribute
-        // and an authorize filter?
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             if (null == tripId)
@@ -102,7 +100,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(int tripId, [AbstractBind(ConcreteTypeParameter = "gearType")] Gear gear)
         {
             var tripRepo = new TubsRepository<Trip>(MvcApplication.CurrentSession);

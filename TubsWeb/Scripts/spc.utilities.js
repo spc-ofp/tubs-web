@@ -55,6 +55,7 @@ spc.typeAheadFactory = function (sourceUrl, onSelect) {
         if (selected.length > 0) {
             self.onSelect(item, selected[0]);
         }
+        // TODO:  Set this to empty?
         return item;
     };
 

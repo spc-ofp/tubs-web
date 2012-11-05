@@ -55,14 +55,14 @@ namespace TubsWeb.Controllers
             return Load(tripId, "GEN-3 for trip {0}");
         }
 
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             return Load(tripId, "Edit GEN-3 for trip {0}", true);
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public PartialViewResult BlankEditorRow(Trip tripId)
         {
             AddMinMaxDates(tripId);
@@ -70,7 +70,7 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Security.EditRoles)]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, TripMonitor header)
         {
             if (null == tripId)

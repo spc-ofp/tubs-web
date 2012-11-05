@@ -23,6 +23,7 @@ namespace TubsWeb.ViewModels
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
     
     /// <summary>
     /// Ps1ViewModel collects most of the entities (see below) that are sourced
@@ -41,6 +42,13 @@ namespace TubsWeb.ViewModels
         public string TripNumber { get; set; }
         public int VersionNumber { get; set; }
         public int TripId { get; set; }
+
+        // Use Knockout to help with common codes
+        public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
+        public IList<string> NetUnits = new List<string> { null, "M", "Y", "F" };
+        public IList<string> MeshUnits = new List<string> { null, "CM", "IN" };
+        public IList<string> RangeUnits = new List<string> { null, "KM", "NM" };
+
 
         public string PermitNumbers { get; set; }
         public string VesselDeparturePort { get; set; }

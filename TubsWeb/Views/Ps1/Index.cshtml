@@ -16,6 +16,12 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+@if (!ViewBag.IsReadOnly)
+{
+<p>
+    @Html.ActionLink("Edit PS-1", "Edit")
+</p>
+}
 
 @* 
  * Vessel Characteristics
@@ -67,7 +73,6 @@
     </div>
   </div><!-- accordion-group -->
   }
-  @* TODO Safety Equipment *@
   @{ Html.RenderPartial("_SafetyInspection", Model.Inspection); }
   @* TODO Additional Notes (find where this is stored!) *@
 </div>

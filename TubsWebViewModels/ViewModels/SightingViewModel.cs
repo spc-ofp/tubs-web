@@ -33,7 +33,6 @@ namespace TubsWeb.ViewModels
         public SightingViewModel()
         {
             Sightings = new List<Sighting>(12);
-            TypeCodes = new List<int?>() { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 22, 31 };
             ActionCodes = new List<string>() { string.Empty, "FI", "PF", "NF", "DF", "TR", "SR", "BR", "OR", "TG", "SG", "BG", "OG" };
         }
         
@@ -42,8 +41,24 @@ namespace TubsWeb.ViewModels
         public int VersionNumber { get; set; }
         public int TripId { get; set; }
 
-        public IList<int?> TypeCodes { get; set; }
-        public IList<string> ActionCodes { get; set; }
+        // Use Knockout to help with common codes
+        public IList<int?> TypeCodes = new List<int?>() { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 21, 22, 31 };
+        public IList<string> ActionCodes = new List<string>() 
+        {
+            string.Empty, 
+            "FI", 
+            "PF", 
+            "NF", 
+            "DF", 
+            "TR", 
+            "SR", 
+            "BR", 
+            "OR", 
+            "TG", 
+            "SG", 
+            "BG", 
+            "OG" 
+        };
 
         public List<Sighting> Sightings { get; set; }
 
@@ -58,7 +73,7 @@ namespace TubsWeb.ViewModels
             public string Name { get; set; }
             public string Ircs { get; set; }
             public string CountryCode { get; set; }
-            public int? TypeCode { get; set; }
+            public int? TypeCode { get; set; }           
             public int? Bearing { get; set; }
             public decimal? Distance { get; set; }
             public string ActionCode { get; set; }
@@ -68,9 +83,14 @@ namespace TubsWeb.ViewModels
             // UX state
             public bool _destroy { get; set; }
             public bool NeedsFocus { get; set; }
+
             // Display only, so no need to include in JSON
             [JsonIgnore]
             public string ActivityIconPath { get; set; }
+            [JsonIgnore]
+            public string TypeDescription { get; set; }
+            [JsonIgnore]
+            public string ActionDescription { get; set; }
         }
     }
 }
