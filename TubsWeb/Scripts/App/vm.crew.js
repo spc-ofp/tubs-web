@@ -81,7 +81,7 @@ tubs.CrewMember = function (data) {
     self.Id = ko.observable(data.Id || 0);
     self.Job = ko.observable(data.Job); // Numeric enum value, not string description
     self.Name = ko.observable(data.Name);
-    self.Nationality = ko.observable(data.Nationality);
+    self.Nationality = ko.observable(data.Nationality).extend({ maxLength: 2 });
     self.Years = ko.observable(data.Years);
     self.Comments = ko.observable(data.Comments);
     // This is used to set focus on the most recently added CrewMember

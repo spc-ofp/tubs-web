@@ -176,9 +176,18 @@ namespace TubsWeb.Controllers
                 {
                     c.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     c.Trip = tripId;
+                    if (c.Id != default(int))
+                    {
+                        AuditHelper.BackfillTrail(c.Id, c, repo);
+                        repo.Update(c, true);
+                    }
+                    else
+                    {
+                        repo.Add(c);
+                    }
+                    
                 });
 
-                repo.Add(crewlist);
                 // Flush to database
                 xa.Commit();
             }

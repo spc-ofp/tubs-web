@@ -19,8 +19,7 @@
         <tbody data-bind="foreach: TargetCatch" class="targetCatch">
             <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
                 <td>
-                    <button  
-                            type="button"
+                    <button type="button"
                             tabindex="3000"
                             class="removeItem btn btn-mini btn-danger" 
                             rel="tooltip" 
@@ -30,7 +29,7 @@
                 </td>
                 <td>
                     @* TODO: NeedsFocus is pointing to root ViewModel *@
-                    <select data-bind="options: $root.TargetSpecies, value: SpeciesCode, hasfocus: NeedsFocus, uniqueName: true" class="input-small"></select>
+                    <select data-bind="hasfocus: NeedsFocus, options: $root.TargetSpecies, value: SpeciesCode, uniqueName: true" class="input-small"></select>
                 </td>
                 <td>
                     <select class="input-small" data-bind="value: FateCode, options: $root.FateCodes" />
@@ -51,7 +50,8 @@
                     <input type="text" data-bind="value: Comments, uniqueName: true" />
                 </td>
                 <td>
-                    <button class="addItem btn btn-mini btn-info" 
+                    <button type="button"
+                            class="addItem btn btn-mini btn-info" 
                             rel="tooltip" 
                             title="Click to add row">
                         <i class="icon-plus icon-white"></i>

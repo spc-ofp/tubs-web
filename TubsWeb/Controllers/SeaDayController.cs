@@ -265,10 +265,21 @@ namespace TubsWeb.Controllers
                 IRepository<Activity> erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
                 IRepository<PurseSeineSet> srepo = TubsDataService.GetRepository<PurseSeineSet>(MvcApplication.CurrentSession);
 
-                seaDay.SetAuditTrail(User.Identity.Name, DateTime.Now);
                 seaDay.Trip = trip;
+                seaDay.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                // I'd like to call .Save(seaDay) and have it manage this stuff:
+                // If the entity is new, use .Add(...)
+                // If the entity is not new, call BackfillTrail and then .Update(...)
+                if (seaDay.Id != default(int))
+                {
+                    AuditHelper.BackfillTrail(seaDay.Id, seaDay, drepo);
+                    drepo.Update(seaDay, true);
+                }
+                else
+                {
+                    drepo.Add(seaDay);
+                }
 
-                drepo.Add(seaDay);
                 // If we get here, the database didn't freak over the header, so now we can add the details  
                 // Deletes first
                 sdvm.Deleted.ToList().ForEach(e => erepo.DeleteById(e.EventId));
@@ -292,7 +303,16 @@ namespace TubsWeb.Controllers
                     }
                     activity.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     activity.Day = seaDay;
-                    erepo.Add(activity);
+                    if (activity.Id != default(int))
+                    {
+                        AuditHelper.BackfillTrail(activity.Id, activity, erepo);
+                        erepo.Update(activity, true);
+                    }
+                    else
+                    {
+                        erepo.Add(activity);
+                    }
+                    
                     if (addSet)
                     {
                         // Application expects SetNumber to be set at creation.

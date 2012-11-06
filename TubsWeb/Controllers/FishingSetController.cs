@@ -174,8 +174,6 @@ namespace TubsWeb.Controllers
             var fset = Mapper.Map<PurseSeineSetViewModel, PurseSeineSet>(fsvm);
             // Set audit trails
             fset.SetAuditTrail(User.Identity.Name, DateTime.Now);
-            fset.CatchList.ToList().ForEach(cl => cl.SetAuditTrail(User.Identity.Name, DateTime.Now));
-
 
             // Older notes, but this may be a pointer to a better solution than
             // our Merge implementation
@@ -185,7 +183,7 @@ namespace TubsWeb.Controllers
             {
                 var fsrepo = TubsDataService.GetRepository<PurseSeineSet>(MvcApplication.CurrentSession);
                 var erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
-                var screpo = TubsDataService.GetRepository<PurseSeineSetCatch>(MvcApplication.CurrentSession);               
+                var screpo = TubsDataService.GetRepository<PurseSeineSetCatch>(MvcApplication.CurrentSession);
 
                 // Deletes first
                 fsvm.TargetCatch.DefaultIfEmpty().Where(x => x != null && x._destroy).ToList().ForEach(x => screpo.DeleteById(x.Id));
@@ -193,8 +191,21 @@ namespace TubsWeb.Controllers
 
                 var parent = erepo.FindById(fsvm.ActivityId) as PurseSeineActivity;
                 fset.Activity = parent;
+                fset.CatchList.ToList().ForEach(cl =>
+                {
+                    cl.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    if (cl.Id != default(int))
+                    {
+                        AuditHelper.BackfillTrail(cl.Id, cl, screpo);
+                    }
+                });
+
                 screpo.Add(fset.CatchList);
                 // Basic testing suggests we're okay here.
+                if (fset.Id != default(int))
+                {
+                    AuditHelper.BackfillTrail(fset.Id, fset, fsrepo);
+                }
                 fsrepo.Update(fset, true); // This should never be an actual Add               
 
                 xa.Commit();
