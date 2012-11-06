@@ -118,7 +118,7 @@ tubs.TransferViewModel = function (data) {
             tubs.getTransfers(
                 self.TripId(),
                 function (result) {
-                    ko.mapping.fromJS(data, tubs.transferMapping, self);
+                    ko.mapping.fromJS(result, tubs.transferMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded transfers');
                     complete();
@@ -140,7 +140,7 @@ tubs.TransferViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
-                    ko.mapping.fromJS(data, tubs.transferMapping, self);
+                    ko.mapping.fromJS(result, tubs.transferMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved transfers');
                     complete();

@@ -224,6 +224,7 @@
     <Compile Include="Controllers\Gen2Controller.cs" />
     <Compile Include="Controllers\Gen3Controller.cs" />
     <Compile Include="Controllers\Gen6Controller.cs" />
+    <Compile Include="Core\AuditHelper.cs" />
     <Compile Include="Core\CxmlResult.cs" />
     <Compile Include="Core\DateTimeModelBinder.cs" />
     <Compile Include="Core\DateUtilities.cs" />

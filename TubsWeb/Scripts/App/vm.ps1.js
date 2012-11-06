@@ -177,7 +177,7 @@ tubs.Ps1ViewModel = function (data) {
             tubs.getPs1(
                 self.TripId(),
                 function (result) {
-                    ko.mapping.fromJS(data, tubs.Ps1Mapping, self);
+                    ko.mapping.fromJS(result, tubs.Ps1Mapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded PS-1 details');
                     complete();
@@ -200,7 +200,7 @@ tubs.Ps1ViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
-                    ko.mapping.fromJS(data, tubs.Ps1Mapping, self);
+                    ko.mapping.fromJS(result, tubs.Ps1Mapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved PS-1 details');
                     complete();

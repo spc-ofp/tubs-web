@@ -25,10 +25,10 @@ namespace TubsWeb.Controllers
     using System;
     using System.Web.Mvc;
     using AutoMapper;
+    using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     using TubsWeb.ViewModels;
-    using Spc.Ofp.Tubs.DAL;
 
     public class Ps1Controller : SuperController
     {
@@ -120,8 +120,10 @@ namespace TubsWeb.Controllers
                     }
                     else
                     {
+                        AuditHelper.BackfillTrail(gear.Id, gear, repo);
                         repo.Update(gear, true);
                     }
+                    MvcApplication.CurrentSession.Evict(gear);
                     
                 }
 
@@ -136,8 +138,10 @@ namespace TubsWeb.Controllers
                     }
                     else
                     {
+                        AuditHelper.BackfillTrail(inspection.Id, inspection, repo);
                         repo.Update(inspection, true);                        
                     }
+                    MvcApplication.CurrentSession.Evict(inspection);
                 }
 
                 if (null != characteristics)
@@ -150,9 +154,11 @@ namespace TubsWeb.Controllers
                         repo.Add(characteristics);
                     }
                     else
-                    {                       
+                    {
+                        AuditHelper.BackfillTrail(characteristics.Id, characteristics, repo);
                         repo.Update(characteristics, true);
                     }
+                    MvcApplication.CurrentSession.Evict(characteristics);
                 }
 
                 var trepo = TubsDataService.GetRepository<Trip>(MvcApplication.CurrentSession);
@@ -166,16 +172,20 @@ namespace TubsWeb.Controllers
                 MvcApplication.CurrentSession.Evict(trip);
             }
 
+            Logger.Info("Sending new values...");
+
             // TODO:  Even with the evict and the new session, we're not getting the
             // updated values
             if (IsApiRequest())
             {
-                using (var trepo = TubsDataService.GetRepository<Trip>(false))
+                Logger.Info("IsApiRequest");
+                using (var rrepo = TubsDataService.GetRepository<Trip>(false))
                 {
-                    trip = trepo.FindById(tripId.Id) as PurseSeineTrip;
-                    ps1vm = Mapper.Map<PurseSeineTrip, Ps1ViewModel>(trip);
+                    var ntrip = rrepo.FindById(tripId.Id) as PurseSeineTrip;
+                    var vm = Mapper.Map<PurseSeineTrip, Ps1ViewModel>(ntrip);
+                    Logger.InfoFormat("Brail1Capacity: {0}", vm.Gear.Brail1Capacity);
 
-                    return GettableJsonNetData(ps1vm);
+                    return GettableJsonNetData(vm);
                 }
             }           
 

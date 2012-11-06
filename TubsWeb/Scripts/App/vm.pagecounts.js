@@ -50,7 +50,7 @@ tubs.PageCountViewModel = function (data) {
             tubs.getPageCounts(
                 self.TripId(),
                 function (result) {
-                    ko.mapping.fromJS(data, {}, self);
+                    ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded page counts');
                     complete();
@@ -74,7 +74,7 @@ tubs.PageCountViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
-                    ko.mapping.fromJS(data, {}, self);
+                    ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved page counts');
                     complete();

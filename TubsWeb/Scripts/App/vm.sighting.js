@@ -116,7 +116,7 @@ tubs.SightingViewModel = function (data) {
             tubs.getSightings(
                 self.TripId(),
                 function (result) {
-                    ko.mapping.fromJS(data, tubs.sightingMapping, self);
+                    ko.mapping.fromJS(result, tubs.sightingMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded sightings');
                     complete();
@@ -138,7 +138,7 @@ tubs.SightingViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
-                    ko.mapping.fromJS(data, tubs.sightingMapping, self);
+                    ko.mapping.fromJS(result, tubs.sightingMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved sightings');
                     complete();

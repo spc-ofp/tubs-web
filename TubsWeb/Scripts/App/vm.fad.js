@@ -140,7 +140,7 @@ tubs.FadViewModel = function (data) {
                 self.TripId(),
                 self.Id(),
                 function (result) {
-                    ko.mapping.fromJS(data, tubs.FadMapping, self);
+                    ko.mapping.fromJS(result, tubs.FadMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded FAD details');
                     complete();
@@ -164,7 +164,7 @@ tubs.FadViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
-                    ko.mapping.fromJS(data, tubs.FadMapping, self);
+                    ko.mapping.fromJS(result, tubs.FadMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved FAD details');
                     complete();
