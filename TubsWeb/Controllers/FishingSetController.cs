@@ -194,19 +194,10 @@ namespace TubsWeb.Controllers
                 fset.CatchList.ToList().ForEach(cl =>
                 {
                     cl.SetAuditTrail(User.Identity.Name, DateTime.Now);
-                    if (cl.Id != default(int))
-                    {
-                        AuditHelper.BackfillTrail(cl.Id, cl, screpo);
-                    }
+                    screpo.Save(cl);
                 });
 
-                screpo.Add(fset.CatchList);
-                // Basic testing suggests we're okay here.
-                if (fset.Id != default(int))
-                {
-                    AuditHelper.BackfillTrail(fset.Id, fset, fsrepo);
-                }
-                fsrepo.Update(fset, true); // This should never be an actual Add               
+                fsrepo.Save(fset);              
 
                 xa.Commit();
                 fsrepo.Reload(fset);

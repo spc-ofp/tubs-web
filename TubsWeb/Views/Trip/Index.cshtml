@@ -50,7 +50,7 @@
 </div>
 
 @section AdditionalScripts {
-    <script src="~/Scripts/jquery.meow.js" type="text/javascript"></script>
+    <script src="~/Scripts/App/errorlogger.js"></script>
     <script>       
         function onSearchSuccess(data, status, xhr) {
             $('#pager').hide();
@@ -60,11 +60,7 @@
 
         function onSearchFail(xhr, status, error) {
             $('#progressBar').hide();
-            $.meow({
-                title: 'Search Failed',
-                message: error,
-                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
-            });
+            tubs.notify('Search Failed', xhr, status);
         }
     </script>
 }

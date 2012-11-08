@@ -103,8 +103,8 @@ namespace TubsWeb.Controllers
         [EditorAuthorize]
         public ActionResult Edit(int tripId, [AbstractBind(ConcreteTypeParameter = "gearType")] Gear gear)
         {
-            var tripRepo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trip = tripRepo.FindBy(tripId);
+            var tripRepo = TubsDataService.GetRepository<Trip>(MvcApplication.CurrentSession);
+            var trip = tripRepo.FindById(tripId);
             if (null == trip)
             {
                 Flash("Can't add gear for a trip that doesn't exist");
@@ -114,16 +114,9 @@ namespace TubsWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                var repo = new TubsRepository<Gear>(MvcApplication.CurrentSession);
+                var repo = TubsDataService.GetRepository<Gear>(MvcApplication.CurrentSession);
                 gear.Trip = trip;
-                if (default(int) == gear.Id)
-                {
-                    repo.Add(gear);
-                }
-                else
-                {
-                    repo.Update(gear, true);
-                }
+                repo.Save(gear);
                 return RedirectToAction("Index", new { tripId = tripId });
             }
             ViewBag.GearType = GetSpecificGearType(trip);

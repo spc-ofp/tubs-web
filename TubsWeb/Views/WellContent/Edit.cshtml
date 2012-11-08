@@ -54,8 +54,8 @@
 </fieldset>
 
 @section AdditionalScripts {
-    <script src="@Url.Content("~/Scripts/jquery.meow.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/jquery.rateit.min.js")" type="text/javascript"></script>   
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/jquery.rateit.min.js"></script>   
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -64,11 +64,7 @@
         });
 
         function onAddFail(xhr, status, error) {
-            $.meow({
-                title: 'Failed to add well',
-                message: error,
-                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
-            });
+            tubs.notify('Well content save failed', xhr, status);
         }
 
         function onAddSuccess(data, status, xhr) {
@@ -76,10 +72,7 @@
             clearForm('#addWellForm');
 
             $('#item_WellNumber').focus();
-            $.meow({
-                message: 'Well added',
-                icon: '@Url.Content("~/Content/images/nyan-cat.gif")'
-            });
+            toastr.success('Well added');
         }
     </script>
 }

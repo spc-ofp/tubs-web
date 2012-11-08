@@ -114,17 +114,7 @@ namespace TubsWeb.Controllers
                     gear.Trip = trip;
                     gear.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     var repo = TubsDataService.GetRepository<PurseSeineGear>(MvcApplication.CurrentSession);
-                    if (gear.Id == default(int))
-                    {
-                        repo.Add(gear);                        
-                    }
-                    else
-                    {
-                        AuditHelper.BackfillTrail(gear.Id, gear, repo);
-                        repo.Update(gear, true);
-                    }
-                    MvcApplication.CurrentSession.Evict(gear);
-                    
+                    repo.Save(gear);
                 }
 
                 if (null != inspection)
@@ -132,16 +122,7 @@ namespace TubsWeb.Controllers
                     inspection.Trip = trip;
                     inspection.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     var repo = TubsDataService.GetRepository<SafetyInspection>(MvcApplication.CurrentSession);
-                    if (inspection.Id == default(int))
-                    {
-                        repo.Add(inspection);
-                    }
-                    else
-                    {
-                        AuditHelper.BackfillTrail(inspection.Id, inspection, repo);
-                        repo.Update(inspection, true);                        
-                    }
-                    MvcApplication.CurrentSession.Evict(inspection);
+                    repo.Save(inspection);
                 }
 
                 if (null != characteristics)
@@ -149,42 +130,22 @@ namespace TubsWeb.Controllers
                     characteristics.Trip = trip;
                     characteristics.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     var repo = TubsDataService.GetRepository<PurseSeineVesselAttributes>(MvcApplication.CurrentSession);
-                    if (characteristics.Id == default(int))
-                    {
-                        repo.Add(characteristics);
-                    }
-                    else
-                    {
-                        AuditHelper.BackfillTrail(characteristics.Id, characteristics, repo);
-                        repo.Update(characteristics, true);
-                    }
-                    MvcApplication.CurrentSession.Evict(characteristics);
+                    repo.Save(characteristics);
                 }
 
                 var trepo = TubsDataService.GetRepository<Trip>(MvcApplication.CurrentSession);
-
-                trip.UpdatedBy = User.Identity.Name;
-                trip.UpdatedDate = DateTime.Now;
-
+                trip.SetAuditTrail(User.Identity.Name, DateTime.Now);
                 trepo.Update(trip);
 
                 xa.Commit();
-                MvcApplication.CurrentSession.Evict(trip);
             }
 
-            Logger.Info("Sending new values...");
-
-            // TODO:  Even with the evict and the new session, we're not getting the
-            // updated values
             if (IsApiRequest())
             {
-                Logger.Info("IsApiRequest");
                 using (var rrepo = TubsDataService.GetRepository<Trip>(false))
                 {
                     var ntrip = rrepo.FindById(tripId.Id) as PurseSeineTrip;
                     var vm = Mapper.Map<PurseSeineTrip, Ps1ViewModel>(ntrip);
-                    Logger.InfoFormat("Brail1Capacity: {0}", vm.Gear.Brail1Capacity);
-
                     return GettableJsonNetData(vm);
                 }
             }           

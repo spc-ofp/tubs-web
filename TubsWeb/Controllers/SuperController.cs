@@ -26,6 +26,7 @@ namespace TubsWeb.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Text;
     using System.Web.Configuration;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL.Entities;
@@ -87,13 +88,39 @@ namespace TubsWeb.Controllers
             };
         }
 
+        protected string ModelErrorString(ModelErrorCollection errors)
+        {
+            var messages = errors.Select(e => e.ErrorMessage);
+            return String.Join(", ", messages);
+        }
+
+        protected void LogModelErrors()
+        {
+            StringBuilder buffer = new StringBuilder();
+            var errors =
+                from prop in ModelState
+                where prop.Value.Errors.Count > 0
+                select prop.Key + ": " + ModelErrorString(prop.Value.Errors);
+            errors.ToList().ForEach(e => buffer.Append(e));
+            Logger.WarnFormat("Model validation failed with the following errors:\n{0}", buffer);
+        }
+
         protected JsonResult ModelErrorsResponse()
         {
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return GettableJsonNetData(
+            var errorMessages =
                 ModelState
                     .Where(s => s.Value.Errors.Count > 0)
-                    .Select(s => s.Value.Errors.First().ErrorMessage));
+                    .Select(s => s.Value.Errors.First().ErrorMessage);
+
+            // Something strange is happen if I use LINQ directly.
+            // If it looks okay, then ship it back to the client.
+            // Otherwise, fall back to a more verbose error checking method
+            if (errorMessages.Count() > 0)
+                return GettableJsonNetData(errorMessages);
+
+            var errors = ModelState.Where(s => s.Value.Errors.Count > 0).SelectMany(s => s.Value.Errors);
+            return GettableJsonNetData(errors.Select(e => e.ErrorMessage));
         }
 
         /// <summary>

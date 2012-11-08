@@ -12,6 +12,11 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+@if (!ViewBag.IsReadOnly)
+{
+    <p>@Html.ActionLink("Edit Page Counts", "Edit")</p>    
+}
+
 <table class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>

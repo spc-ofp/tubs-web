@@ -34,40 +34,48 @@
         <legend>Start of Day</legend>
         <div class="row-fluid">
             <div class="span1">
-                @Html.LabelFor(m => Model.ShipsDate)
+                <label for="ShipsDate">Ship's Date</label>
                 <div class="input-append">
-                    @Html.TextBoxFor(
-                        m => Model.ShipsDate, 
-                        new { 
-                            data_val = "true",
-                            data_val_required="Date portion of start date is required",
-                            data_bind = "value: ShipsDate.formattedDate", 
-                            @class = "input-mini" })
+                    <input id="ShipsDate"
+                           name="ShipsDate"
+                           type="text"
+                           data-val="true"
+                           data-val-required="Date portion of start of day is required"
+                           data-bind="value: ShipsDate.formattedDate"
+                           class="input-mini" />
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
             </div>
             <div class="span1">
-                @Html.LabelFor(m => Model.ShipsTime)
+                <label for="ShipsTime">Ship's Time</label>
                 <div class="input-append">
-                    @Html.TextBoxFor(m => Model.ShipsTime, new { data_bind = "value: $root.ShipsTime", @class = "input-mini" })
+                    <input id="ShipsTime"
+                           name="ShipsTime"
+                           type="text"
+                           data-bind="value: ShipsTime"
+                           class="input-mini" />
                     <span class="add-on"><i class="icon-time"></i></span>
                 </div>
             </div>
             <div class="span1">
-                @Html.LabelFor(m => Model.UtcDate)
+                <label for="UtcDate">UTC Date</label>
                 <div class="input-append">
-                    @Html.TextBoxFor(
-                        m => Model.UtcDate, 
-                        new { 
-                            data_bind = "value: UtcDate.formattedDate", 
-                            @class = "input-mini" })
+                    <input id="UtcDate"
+                           name="UtcDate"
+                           type="text"
+                           data-bind="value: UtcDate.formattedDate"
+                           class="input-mini" />
                     <span class="add-on"><i class="icon-calendar"></i></span>
                 </div>
             </div>
             <div class="span1">
-                @Html.LabelFor(m => Model.UtcTime)
+                <label for="UtcTime">UTC Time</label>
                 <div class="input-append">
-                    @Html.TextBoxFor(m => Model.UtcTime, new { data_bind = "value: $root.UtcTime", @class = "input-mini" })
+                    <input id="UtcTime"
+                           name="UtcTime"
+                           type="text"
+                           data-bind="value: UtcTime"
+                           class="input-mini" />
                     <span class="add-on"><i class="icon-time"></i></span>
                 </div>
             </div>

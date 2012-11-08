@@ -14,6 +14,11 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+@if (!ViewBag.IsReadOnly)
+{
+    <p>@Html.ActionLink("Edit Sightings", "EditSightings", new { tripId = Model.TripId })</p>
+}
+
 <table class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>

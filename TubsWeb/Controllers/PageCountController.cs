@@ -63,6 +63,16 @@ namespace TubsWeb.Controllers
         [EditorAuthorize]
         public ActionResult Edit(Trip tripId, PageCountViewModel pcvm)
         {
+            var repo = TubsDataService.GetRepository<PageCount>(MvcApplication.CurrentSession);
+            if (tripId is PurseSeineTrip)
+            {
+                var vm = pcvm as PurseSeinePageCountViewModel;
+                foreach (var pc in tripId.PageCounts)
+                {
+                    
+                }
+            }
+            
             throw new NotImplementedException("");
         }
 

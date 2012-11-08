@@ -115,7 +115,7 @@ namespace TubsWeb.Controllers
                 // This I can do in LINQ
                 svm.Sightings.Where(s => s != null && s._destroy).ToList().ForEach(s => repo.DeleteById(s.Id));
 
-                repo.Add(sightings);
+                sightings.ForEach(s => repo.Save(s));
                 xa.Commit();
             }
 

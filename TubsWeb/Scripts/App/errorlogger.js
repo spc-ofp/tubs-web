@@ -16,14 +16,19 @@ tubs.notify = function (header, xhr, status) {
         errorMessage = 'Server timed out';
     }
     if (xhr.status == 400 && xhr.responseText) {
-        var errors = $.parseJSON(xhr.responseText);
-        if (errors && errors.length > 0) {
-            // If there's only one message, then don't put it into a list
-            if (errors.length == 1) {
-                errorMessage = errors[0];
-            } else {
-                errorMessage = "<ul><li>" + errors.join("</li><li>") + "</li></ul>";
+        try {
+            var errors = $.parseJSON(xhr.responseText);
+            if (errors && errors.length > 0) {
+                // If there's only one message, then don't put it into a list
+                if (errors.length == 1) {
+                    errorMessage = errors[0];
+                } else {
+                    errorMessage = "<ul><li>" + errors.join("</li><li>") + "</li></ul>";
+                }
             }
+        } catch (err) {
+            // TODO Do something with this error
+            // In the meantime, the default value will get stuck in there
         }
     }
 

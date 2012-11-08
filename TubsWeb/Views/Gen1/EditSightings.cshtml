@@ -12,7 +12,8 @@
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Sightings", "Gen1", new { tripId = Model.TripId }), "Sightings"),
         Tuple.Create("#", "Edit GEN-1 Sightings")
     };
 }
@@ -52,8 +53,8 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody data-bind="foreach: Sightings">
-            <tr data-bind="css: { warning: (isDirty() || 0 === Id) }" class="lineitems">
+        <tbody data-bind="foreach: Sightings" class="lineitems">
+            <tr data-bind="css: { warning: (isDirty() || 0 === Id) }">
                 <td>
                     @* Delete button is taken out of the tab order to prevent accidents *@
                     <button type="button"

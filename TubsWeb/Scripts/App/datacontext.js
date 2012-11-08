@@ -17,7 +17,7 @@ var defaultSettings = {
     timeout: 10000 /* 10 seconds */
 };
 
-var saveTimeout = 30000 /* 30 seconds */
+var saveTimeout = 10000 /* 10 seconds */
 
 /*
  * After much screwing around, this looks to be

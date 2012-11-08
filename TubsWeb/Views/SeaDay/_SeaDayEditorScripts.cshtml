@@ -22,6 +22,8 @@
         var viewModel = new tubs.psSeaDay(@modelAsJson);
         viewModel.clearDirtyFlag();
         ko.applyBindings(viewModel);
+        // After page load, focus on the 'Ship's Time' field
+        $("#ShipsTime").focus();
         $(".ps2events").on("click", ".removeItem", function() {
             viewModel.removeEvent(ko.dataFor(this));
         });

@@ -37,6 +37,28 @@ namespace TubsWeb.Mapping.Profiles
         {
             base.Configure();
 
+            Mapper.CreateMap<SightingViewModel.Sighting, DAL.Entities.Sighting>()
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore())
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
+                .ForMember(d => d.DctNotes, o => o.Ignore())
+                .ForMember(d => d.DctScore, o => o.Ignore())
+                .ForMember(d => d.Trip, o => o.Ignore()) // Caller's responsibility
+                .ForMember(d => d.FormId, o => o.Ignore())
+                .ForMember(d => d.EezCode, o => o.Ignore())
+                .ForMember(d => d.Vessel, o => o.Ignore()) // TODO Figure out how this works
+                .ForMember(d => d.EventDateOnly, o => o.MapFrom(s => s.DateOnly))
+                .ForMember(d => d.EventTimeOnly, o => o.MapFrom(s => s.TimeOnly))
+                .ForMember(d => d.EventDate, o => o.MapFrom(s => s.DateOnly.Merge(s.TimeOnly)))
+                .ForMember(d => d.VesselName, o => o.MapFrom(s => s.Name))
+                .ForMember(d => d.VesselFlag, o => o.MapFrom(s => s.CountryCode))
+                .ForMember(d => d.PhotoNumber, o => o.MapFrom(s => s.PhotoFrame))
+                .ForMember(d => d.VesselType, o => o.ResolveUsing<VesselTypeCodeResolver>().FromMember(s => s.TypeCode))
+                .ForMember(d => d.DistanceUnit, o => o.UseValue("Nm"))
+                .ForMember(d => d.ActionType, o => o.ResolveUsing<ActionCodeResolver>().FromMember(s => s.ActionCode))                
+                ;
+
             Mapper.CreateMap<DAL.Entities.Sighting, SightingViewModel.Sighting>()
                 .ForMember(d => d._destroy, o => o.Ignore())
                 .ForMember(d => d.NeedsFocus, o => o.Ignore())

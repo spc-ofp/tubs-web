@@ -196,11 +196,6 @@ namespace TubsWeb.Controllers
             }
 
             // TODO Check the dayNumber?
-
-            // No start of day should be before the trip start date
-            Logger.Info("ShipsDate: " + sdvm.ShipsDate);
-            Logger.Info("ShipsTime: " + sdvm.ShipsTime);
-            Logger.Info("shipStartOfDay: " + shipStartOfDay);
             if (shipStartOfDay.HasValue && shipStartOfDay.Value.CompareTo(tripId.DepartureDate) < 0)
             {
                 ModelState["ShipsDate"].Errors.Add("Start of day can't be before the trip departure date");
@@ -241,15 +236,14 @@ namespace TubsWeb.Controllers
             var trip = tripId as PurseSeineTrip;
             if (null == trip)
             {
-                if (IsApiRequest())
-                    return GettableJsonNetData("No such trip");
-                return new NoSuchTripResult();
+                return InvalidTripResponse();
             }
 
             Validate(tripId, sdvm);           
 
             if (!ModelState.IsValid)
             {
+                LogModelErrors();
                 if (IsApiRequest())
                     return ModelErrorsResponse();
                 return View(sdvm);
@@ -267,18 +261,7 @@ namespace TubsWeb.Controllers
 
                 seaDay.Trip = trip;
                 seaDay.SetAuditTrail(User.Identity.Name, DateTime.Now);
-                // I'd like to call .Save(seaDay) and have it manage this stuff:
-                // If the entity is new, use .Add(...)
-                // If the entity is not new, call BackfillTrail and then .Update(...)
-                if (seaDay.Id != default(int))
-                {
-                    AuditHelper.BackfillTrail(seaDay.Id, seaDay, drepo);
-                    drepo.Update(seaDay, true);
-                }
-                else
-                {
-                    drepo.Add(seaDay);
-                }
+                drepo.Save(seaDay);
 
                 // If we get here, the database didn't freak over the header, so now we can add the details  
                 // Deletes first
@@ -301,17 +284,10 @@ namespace TubsWeb.Controllers
                             addSet = true;
                         }
                     }
+
                     activity.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     activity.Day = seaDay;
-                    if (activity.Id != default(int))
-                    {
-                        AuditHelper.BackfillTrail(activity.Id, activity, erepo);
-                        erepo.Update(activity, true);
-                    }
-                    else
-                    {
-                        erepo.Add(activity);
-                    }
+                    erepo.Save(activity);
                     
                     if (addSet)
                     {
