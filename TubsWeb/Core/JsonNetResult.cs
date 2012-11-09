@@ -22,6 +22,8 @@ namespace TubsWeb.Core
     /// </summary>
     public class JsonNetResult : JsonResult
     {
+        protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(JsonNetResult));
+        
         public JsonNetResult()
         {
             // Might flip this to AllowGet, since I'm using it for API type behavior
@@ -42,6 +44,9 @@ namespace TubsWeb.Core
 
             HttpResponseBase response = context.HttpContext.Response;
 
+            /*
+            // This appears to operate differently between IIS and Cassini, so
+            // I'm hard-coding to an appropriate ContentType
             if (!String.IsNullOrEmpty(ContentType))
             {
                 response.ContentType = ContentType;
@@ -50,13 +55,22 @@ namespace TubsWeb.Core
             {
                 response.ContentType = "application/json";
             }
+            */
+            response.ContentType = "application/json";
+
             if (ContentEncoding != null)
             {
                 response.ContentEncoding = ContentEncoding;
             }
+
+            Logger.WarnFormat("Data is null? {0}", null == Data);
             if (Data != null)
             {
-                response.Write(JsonConvert.SerializeObject(Data));
+                Logger.WarnFormat("Data.GetType(): {0}", Data.GetType());
+                var serialized = JsonConvert.SerializeObject(Data);
+                Logger.WarnFormat("JSON error text:\n{0}", serialized);
+                response.Write(serialized);
+                response.Flush();
             }
         }
     }

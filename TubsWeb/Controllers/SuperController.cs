@@ -108,19 +108,12 @@ namespace TubsWeb.Controllers
         protected JsonResult ModelErrorsResponse()
         {
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            var errorMessages =
-                ModelState
-                    .Where(s => s.Value.Errors.Count > 0)
-                    .Select(s => s.Value.Errors.First().ErrorMessage);
+            var errors =
+                from prop in ModelState
+                where prop.Value.Errors.Count > 0
+                select ModelErrorString(prop.Value.Errors);
 
-            // Something strange is happen if I use LINQ directly.
-            // If it looks okay, then ship it back to the client.
-            // Otherwise, fall back to a more verbose error checking method
-            if (errorMessages.Count() > 0)
-                return GettableJsonNetData(errorMessages);
-
-            var errors = ModelState.Where(s => s.Value.Errors.Count > 0).SelectMany(s => s.Value.Errors);
-            return GettableJsonNetData(errors.Select(e => e.ErrorMessage));
+            return GettableJsonNetData(errors.ToList());
         }
 
         /// <summary>
