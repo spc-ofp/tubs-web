@@ -71,8 +71,7 @@ namespace TubsWeb
                 "~/Content/datepicker.css", // Bootstrap datepicker
                 "~/Content/pageguide.css",
                 "~/Content/rateit.css",
-                "~/Content/toastr.css",
-                "~/Content/toastr-responsive.css"));
+                "~/Content/toastr.css"));
         }
     }
 }
