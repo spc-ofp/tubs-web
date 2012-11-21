@@ -128,8 +128,6 @@ namespace TubsWeb
             AreaRegistration.RegisterAllAreas();
             // Trip is the only model worth binding.
             ModelBinderProviders.BinderProviders.Add(new TripModelBinderProvider());
-            // Turns out DateTime needs binding too for client workstation installed culture issues
-            //ModelBinders.Binders.Add(typeof(DateTime), new DateTimeModelBinder());
             // Requires WebApi package(s)
             // Install-Package Microsoft.AspNet.WebApi.WebHost
             var f = GlobalConfiguration.Configuration.Formatters.OfType<JsonMediaTypeFormatter>().First();
@@ -141,6 +139,8 @@ namespace TubsWeb
             RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            // TODO
+            //WebApiConfig.Register(GlobalConfiguration.Configuration);
 
             // AutoMapper is used to convert entities to viewmodels (and vice versa)
             MappingConfig.Configure();

@@ -19,3 +19,32 @@
         @Html.Raw(sb.ToString()) 
     }
 }
+
+@helper FormatLatitude(double? latitude) {
+    if (latitude.HasValue && Math.Abs(latitude.Value) <= 90) {
+        string hemisphere = latitude.Value < 0 ? "S" : "N";
+        int degrees = Math.Abs((int)latitude.Value);
+        double decimalMinutes = Math.Abs(latitude.Value % 1);
+        double minutes = decimalMinutes * 60;
+        string output = String.Format("{0:D2} {1:00.000}{2}", degrees, minutes, hemisphere);
+        @: @output     
+    } else {
+        @: N/A   
+    }
+}
+
+@helper FormatLongitude(double? longitude) {
+    if (longitude.HasValue && Math.Abs(longitude.Value) <= 180)
+    {
+        string hemisphere = longitude.Value < 0 ? "W" : "E";
+        int degrees = Math.Abs((int)longitude.Value);
+        double decimalMinutes = Math.Abs(longitude.Value % 1);
+        double minutes = decimalMinutes * 60;
+        string output = String.Format("{0:D3} {1:00.000}{2}", degrees, minutes, hemisphere);
+        @: @output     
+    }
+    else
+    {
+        @: N/A   
+    }    
+}

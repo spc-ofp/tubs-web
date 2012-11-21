@@ -63,6 +63,11 @@ namespace TubsWeb.Core
                 response.ContentEncoding = ContentEncoding;
             }
 
+            // This might be better than messing around with web.config
+            // http://www.west-wind.com/weblog/posts/2009/Apr/29/IIS-7-Error-Pages-taking-over-500-Errors
+            // http://msdn.microsoft.com/en-us/library/system.web.httpresponse.tryskipiiscustomerrors(v=vs.100).aspx
+            response.TrySkipIisCustomErrors = true;
+
             Logger.WarnFormat("Data is null? {0}", null == Data);
             if (Data != null)
             {

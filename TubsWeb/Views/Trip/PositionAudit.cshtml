@@ -30,9 +30,9 @@ velocity between points exceeds 35 km/h (19 knots).
             <th>Timestamp</th>
             <th>Latitude / Longitude</th>
             <th>Event Description</th>
-            <th>Time From Last Position</th>
-            <th>Distance From Last Position (km)</th>
-            <th>Velocity From Last Position (km/h)</th>
+            <th>Time From <br />Last Position</th>
+            <th>Distance From <br />Last Position (km)</th>
+            <th>Velocity From <br />Last Position (km/h)</th>
         </tr>
     </thead>
     <tbody>
@@ -40,8 +40,11 @@ velocity between points exceeds 35 km/h (19 knots).
     {
         var styleString = (item.DeltaVelocity.HasValue && item.DeltaVelocity.Value > 35) ? " style='color:red;'" : String.Empty;
         <tr @Html.Raw(styleString)>
-            <td>@Html.DisplayFor(m => item.Timestamp)</td>
-            <td>@Html.DisplayFor(m => item.Latitude) / @Html.DisplayFor(m => item.Longitude)</td>
+            <td style="white-space:nowrap;">@Html.DisplayFor(m => item.Timestamp, new { format = "dd/MM/yy HHmm" })</td>
+            <td>
+                @TubsHelpers.FormatLatitude(item.Latitude) / <br /> 
+                @TubsHelpers.FormatLongitude(item.Longitude)
+            </td>
             <td>@Html.DisplayFor(m => item.Description)</td>
             <td>@Html.DisplayFor(m => item.DeltaTime)</td>
             <td>@Html.DisplayFor(m => item.DeltaPosition, new { format = "F2" })</td>

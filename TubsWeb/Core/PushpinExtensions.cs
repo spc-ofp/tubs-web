@@ -16,7 +16,6 @@ namespace TubsWeb.Core
     /// </summary>
     public static class PushpinExtensions
     {
-        
         public static Track ToTrack(this IList<Pushpin> pins, string formatString = "yyyy-MM-ddTHH:mm:ssK")
         {
             var track = new Track();
