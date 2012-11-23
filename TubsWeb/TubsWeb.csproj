@@ -664,6 +664,7 @@
     <Content Include="Scripts\pageguide.min.js" />
     <Content Include="Scripts\spc.utilities.js" />
     <Content Include="Scripts\toastr.js" />
+    <Content Include="Scripts\trunk8.js" />
     <Content Include="Scripts\tubs-ko.js" />
     <Content Include="Scripts\tubs-search.js" />
     <Content Include="Scripts\tubs-unobtrusive.js" />

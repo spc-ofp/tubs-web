@@ -136,6 +136,9 @@
 @section AdditionalScripts {
     <script>
         $(function () {
+            $('.large-text').trunk8({
+                fill: '&nbsp;&raquo;&nbsp;'
+            });
             /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
             tl.pg.init();
         });

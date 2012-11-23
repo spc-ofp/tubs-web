@@ -48,6 +48,7 @@ namespace TubsWeb
                     "~/Scripts/jquery.validate.js",
                     "~/Scripts/jquery.validate.unobtrusive.js",
                     "~/Scripts/jquery.unobtrusive-ajax.js",
+                    "~/Scripts/trunk8.js",
 
                     // Knockout and its plugins
                     "~/Scripts/knockout-{version}.js",

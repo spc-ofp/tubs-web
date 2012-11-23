@@ -4,10 +4,12 @@
 // Use jTruncate jQuery plugin to automatically truncate large text
 // http://www.jeremymartin.name/projects.php?project=jTruncate
 $(document).ready(function () {
+    /*
     $('.large-text').jTruncate({
         length: 50,
         minTrail: 10
     });
+    */
 
     /* Stolen from here */
     /* http://stackoverflow.com/questions/2335553/jquery-how-to-catch-enter-key-and-change-event-to-tab */
