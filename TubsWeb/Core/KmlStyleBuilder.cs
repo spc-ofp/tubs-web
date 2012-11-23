@@ -48,6 +48,7 @@ namespace TubsWeb.Core
             new string[]{ "_shaded_dotwhite", "ffffffff" },
             new string[]{ "_shaded_dotgreen", "ff00ff55" },
             new string[]{ "_shaded_dotbrown", "ff0055aa" },
+            new string[]{ "_shaded_dotblack", "ff000000" },
         };
 
         public static List<string> PUSHPIN_COLORS = new List<string>()
@@ -57,7 +58,8 @@ namespace TubsWeb.Core
             "blue",
             "wht",
             "grn",
-            "ltblu"
+            "ltblu",
+            "blk"
         };
         
         public static List<AbstractStyleSelector> BuildStyles()

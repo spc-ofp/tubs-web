@@ -40,6 +40,7 @@ namespace TubsWeb.Core
         public const string ShadedWhiteDot = "#msn_shaded_dotwhite";
         public const string ShadedGreenDot = "#msn_shaded_dotgreen";
         public const string ShadedBrownDot = "#msn_shaded_dotbrown";
+        public const string ShadedBlackDot = "#msn_shaded_dotblack";
 
         public static Placemark ToPlacemark(this Pushpin pushpin, string style)
         {
@@ -60,6 +61,15 @@ namespace TubsWeb.Core
         {
             if (null == pushpin)
                 return ShadedYellowDot;
+
+            if ("LL-2".Equals(pushpin.FormName.Trim(), StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (pushpin.Description.NullSafeToUpper().Contains("HAUL"))
+                    return ShadedBlackDot;
+
+                if (pushpin.Description.NullSafeToUpper().Contains("SET"))
+                    return ShadedRedDot;
+            }
 
             if ("GEN-6".Equals(pushpin.FormName.Trim(), StringComparison.InvariantCultureIgnoreCase))
                 return ShadedBrownDot;

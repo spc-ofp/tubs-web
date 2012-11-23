@@ -669,7 +669,6 @@
     <Content Include="Scripts\tubs-search.js" />
     <Content Include="Scripts\tubs-unobtrusive.js" />
     <Content Include="Scripts\jquery-ui-timepicker-addon.js" />
-    <Content Include="Scripts\jquery.jtruncate.pack.js" />
     <Content Include="Scripts\jquery.sparkline.min.js" />
     <Content Include="Scripts\tubs.js" />
     <Content Include="Silverlight.js" />
