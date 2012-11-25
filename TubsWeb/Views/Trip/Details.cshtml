@@ -24,55 +24,58 @@
 @* TODO Add downloads for CSV downloads of GEN-1, GEN-2, GEN-6, Days, and Sets *@
 @* TODO Better yet, figure out how to push this all into the controller.  This is too messy for Razor *@
 
-<h4>Downloads</h4>
-<div class="row">
-    <div class="span2"><strong>Cover Page</strong></div>
-    @{ 
-        string coverPageUrl = String.Format(formatString, "CoverPage", ViewBag.TripId);
-        if (!coverPageUrl.EndsWith("&rs:Format=PDF"))
-        {
-            coverPageUrl += "&rs:Format=PDF";
+<fieldset>
+    <legend>Downloads</legend>
+
+    <div class="row">
+        <div class="span2"><strong>Cover Page</strong></div>
+        @{ 
+            string coverPageUrl = String.Format(formatString, "CoverPage", ViewBag.TripId);
+            if (!coverPageUrl.EndsWith("&rs:Format=PDF"))
+            {
+                coverPageUrl += "&rs:Format=PDF";
+            }
         }
-    }
-    <div class="span2">
-        <a id="coverPageLink" href="@coverPageUrl" target="_blank" download="@(baseFileName)cover.pdf">
-            <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
-        </a>
+        <div class="span2">
+            <a id="coverPageLink" href="@coverPageUrl" target="_blank" download="@(baseFileName)cover.pdf">
+                <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
+            </a>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="span2"><strong>Trip Summary</strong></div>
-    @{ 
-        string tripSummaryUrl = String.Format(formatString, "PS-TripSummary", ViewBag.TripId);
-        string externalPdf = tripSummaryUrl + "&rs:Format=PDF";
-    }
-    <div class="span2">
-        <a id="summaryPdf" href="@externalPdf" target="_blank">
-            <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
-        </a>
+    <div class="row">
+        <div class="span2"><strong>Trip Summary</strong></div>
+        @{ 
+            string tripSummaryUrl = String.Format(formatString, "PS-TripSummary", ViewBag.TripId);
+            string externalPdf = tripSummaryUrl + "&rs:Format=PDF";
+        }
+        <div class="span2">
+            <a id="summaryPdf" href="@externalPdf" target="_blank">
+                <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
+            </a>
+        </div>
+        <div class="span2">
+            <a id="summaryOther" href="@tripSummaryUrl">Other Formats</a>
+        </div>
     </div>
-    <div class="span2">
-        <a id="summaryOther" href="@tripSummaryUrl">Other Formats</a>
+    <div class="row">
+        <div class="span2"><strong>Trip Positions</strong></div>
+        <div class="span2">
+            <a id="kmlLink" href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })' download="@(baseFileName)positions.kml">
+                <img src="~/Content/images/google-earth-16x16.png" alt="KML" height="16" width="16" />&nbsp;KML
+            </a>
+        </div>
+        <div class="span2"><a href="#">Other Formats</a></div>
     </div>
-</div>
-<div class="row">
-    <div class="span2"><strong>Trip Positions</strong></div>
-    <div class="span2">
-        <a id="kmlLink" href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })' download="@(baseFileName)positions.kml">
-            <img src="~/Content/images/google-earth-16x16.png" alt="KML" height="16" width="16" />&nbsp;KML
-        </a>
+    <div class="row">
+        <div class="span2"><strong>Length Frequency</strong></div>
+        <div class="span2">
+            @{ var lflink = Url.RouteUrl(TubsWeb.RouteConfig.LengthFrequencyByTrip, new { tripId = ViewBag.TripId });}
+            <a id="lfexcelLink" href="@lflink" download="@(baseFileName)lengthfrequency.xlsx">
+                <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel
+            </a>
+        </div>
     </div>
-    <div class="span2"><a href="#">Other Formats</a></div>
-</div>
-<div class="row">
-    <div class="span2"><strong>Length Frequency</strong></div>
-    <div class="span2">
-        @{ var lflink = Url.RouteUrl(TubsWeb.RouteConfig.LengthFrequencyByTrip, new { tripId = ViewBag.TripId });}
-        <a id="lfexcelLink" href="@lflink" download="@(baseFileName)lengthfrequency.xlsx">
-            <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel
-        </a>
-    </div>
-</div>
+</fieldset>
 
 <ul id="tlyPageGuide" data-tourtitle="Trip data navigation">
     <li class="tlypageguide_right" data-tourtarget="#subsectionNavbar">

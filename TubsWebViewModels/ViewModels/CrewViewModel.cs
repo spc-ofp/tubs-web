@@ -6,7 +6,6 @@
 
 namespace TubsWeb.ViewModels
 {
-
     /*
      * This file is part of TUBS.
      *

@@ -67,6 +67,7 @@
     <Compile Include="MappingExtensions.cs" />
     <Compile Include="Mapping\Profiles\CrewProfile.cs" />
     <Compile Include="Mapping\Profiles\ElectronicsProfile.cs" />
+    <Compile Include="Mapping\Profiles\Gen3Profile.cs" />
     <Compile Include="Mapping\Profiles\Gen5Profile.cs" />
     <Compile Include="Mapping\Profiles\LengthFrequencyProfile.cs" />
     <Compile Include="Mapping\Profiles\PageCountProfile.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="ViewModels\CrewViewModel.cs" />
     <Compile Include="ViewModels\ElectronicsViewModel.cs" />
     <Compile Include="ViewModels\Gen2ViewModel.cs" />
+    <Compile Include="ViewModels\Gen3ViewModel.cs" />
     <Compile Include="ViewModels\Gen5ViewModel.cs" />
     <Compile Include="ViewModels\LengthFrequencyViewModel.cs" />
     <Compile Include="ViewModels\PageCountViewModel.cs" />

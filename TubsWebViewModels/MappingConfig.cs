@@ -27,6 +27,7 @@ namespace TubsWeb
                 cfg.AddProfile<CrewProfile>();
                 //cfg.AddProfile<ElectronicsProfile>();
                 cfg.AddProfile<LengthFrequencyProfile>();
+                cfg.AddProfile<Gen3Profile>();
                 cfg.AddProfile<Gen5Profile>();
                 cfg.AddProfile<PageCountProfile>();
                 // Trim all strings.  If the trimmed string is empty, return a null

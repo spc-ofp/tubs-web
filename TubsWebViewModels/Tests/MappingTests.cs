@@ -204,5 +204,22 @@ namespace TubsWeb.Tests
                 Assert.AreEqual(21.5, vm.SumOfAllBrails);
             }
         }
+
+        [Test]
+        public void Gen3ToViewModel([Values(4167)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<Trip, Gen3ViewModel>(trip);
+                Assert.NotNull(vm);
+                Assert.NotNull(vm.Incidents);
+                Assert.AreEqual(2, vm.Incidents.Count);
+                Assert.NotNull(vm.Notes);
+                Assert.AreEqual(1, vm.Notes.Count);
+            }
+        }
     }
 }
