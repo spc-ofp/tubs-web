@@ -1,0 +1,216 @@
+﻿@model TubsWeb.ViewModels.Gen3ViewModel
+
+@helper AnswerByCode(string code) {
+    if (Model.IncidentByCode.ContainsKey(code))
+    {
+        var incident = Model.Incidents[Model.IncidentByCode[code]];
+        @Html.DisplayFor(m => incident.Answer) 
+    }
+}
+
+@helper PageByCode(string code) {
+    if (Model.IncidentByCode.ContainsKey(code))
+    {
+        var incident = Model.Incidents[Model.IncidentByCode[code]];
+        @Html.DisplayFor(m => incident.JournalPage) 
+    }
+}
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Question</th>
+            <th>Answer</th>
+            <th><span class="nobr">Journal Page</span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><span class="nobr">RS-A</span></td>
+            <td>Did the operator or any crew member assault, obstruct, resist, delay, refuse boarding to, intimidate or interefere with observers in the performance of their duties</td>        
+            <td class="yesno">@AnswerByCode("RS-A")</td>
+            <td>@PageByCode("RS-A")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">RS-B</span></td>
+            <td>Request that an event not be reported by the observer</td>
+            <td class="yesno">@AnswerByCode("RS-B")</td>
+            <td>@PageByCode("RS-B")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">RS-C</span></td>
+            <td>Mistreat other crew</td>
+            <td class="yesno">@AnswerByCode("RS-C")</td>
+            <td>@PageByCode("RS-C")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">RS-D</span></td>
+            <td>Did operator fail to provide observer with food, accommodation, etc.</td>
+            <td class="yesno">@AnswerByCode("RS-D")</td>
+            <td>@PageByCode("RS-D")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-A</span></td>
+            <td>Fish in areas where the vessel is not permitted to fish</td>
+            <td class="yesno">@AnswerByCode("NR-A")</td>
+            <td>@PageByCode("NR-A")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-B</span></td>
+            <td>Target species other than those they are licenced to target</td>
+            <td class="yesno">@AnswerByCode("NR-B")</td>
+            <td>@PageByCode("NR-B")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-C</span></td>
+            <td>Use a fishing method other than the method the vessel was designed or licensed</td>
+            <td class="yesno">@AnswerByCode("NR-C")</td>
+            <td>@PageByCode("NR-C")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-D</span></td>
+            <td>Not display or present a valid (and current) licence document onboard</td>
+            <td class="yesno">@AnswerByCode("NR-D")</td>
+            <td>@PageByCode("NR-D")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-E</span></td>
+            <td>Transfer or transship fish from or to another vessel</td>
+            <td class="yesno">@AnswerByCode("NR-E")</td>
+            <td>@PageByCode("NR-E")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-F</span></td>
+            <td>Was involved in bunkering activities</td>
+            <td class="yesno">@AnswerByCode("NR-F")</td>
+            <td>@PageByCode("NR-F")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-G</span></td>
+            <td>Fail to stow fishing gear when entering areas where vessel is not authorised to fish</td>
+            <td class="yesno">@AnswerByCode("NR-G")</td>
+            <td>@PageByCode("NR-G")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">WC-A</span></td>
+            <td>Fail to comply with any Commission Conservation and Management Measures (CMMs)</td>
+            <td class="yesno">@AnswerByCode("WC-A")</td>
+            <td>@PageByCode("WC-A")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">WC-B</span></td>
+            <td>High-grade the catch</td>
+            <td class="yesno">@AnswerByCode("WC-B")</td>
+            <td>@PageByCode("WC-B")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">WC-C</span></td>
+            <td>Fish on FAD during FAD Closure</td>
+            <td class="yesno">@AnswerByCode("WC-C")</td>
+            <td>@PageByCode("WC-C")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LP-A</span></td>
+            <td>Inaccurately record vessel position on vessel log sheets for sets, hauling and catch</td>
+            <td class="yesno">@AnswerByCode("LP-A")</td>
+            <td>@PageByCode("LP-A")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LP-B</span></td>
+            <td>Fail to report vessel positions to countries where required</td>
+            <td class="yesno">@AnswerByCode("LP-B")</td>
+            <td>@PageByCode("LP-B")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-A</span></td>
+            <td>Inaccurately record retained 'Target Species' in the Vessel logs [or weekly reports]</td>
+            <td class="yesno">@AnswerByCode("LC-A")</td>
+            <td>@PageByCode("LC-A")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-B</span></td>
+            <td>Inaccurately record 'Target Species' Discards</td>
+            <td class="yesno">@AnswerByCode("LC-B")</td>
+            <td>@PageByCode("LC-B")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-C</span></td>
+            <td>Record target species inaccurately [eg. combine bigeye/yellowfin/skipjack catch]</td>
+            <td class="yesno">@AnswerByCode("LC-C")</td>
+            <td>@PageByCode("LC-C")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-D</span></td>
+            <td>Not record bycatch discards</td>
+            <td class="yesno">@AnswerByCode("LC-D")</td>
+            <td>@PageByCode("LC-D")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-E</span></td>
+            <td>Inaccurately record retained bycatch Species</td>
+            <td class="yesno">@AnswerByCode("LC-E")</td>
+            <td>@PageByCode("LC-E")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-F</span></td>
+            <td>Inaccurately record discarded bycatch species</td>
+            <td class="yesno">@AnswerByCode("LC-F")</td>
+            <td>@PageByCode("LC-F")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">SI-A</span></td>
+            <td>Land on deck Species of Special Interest (SSIs)</td>
+            <td class="yesno">@AnswerByCode("SI-A")</td>
+            <td>@PageByCode("SI-A")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">SI-B</span></td>
+            <td>Interact (not land) with SSIs</td>
+            <td class="yesno">@AnswerByCode("SI-B")</td>
+            <td>@PageByCode("SI-B")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-A</span></td>
+            <td>Dispose of any metals, plastics, chemicals or old fishing gear</td>
+            <td class="yesno">@AnswerByCode("PN-A")</td>
+            <td>@PageByCode("PN-A")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-B</span></td>
+            <td>Discharge any oil</td>
+            <td class="yesno">@AnswerByCode("PN-B")</td>
+            <td>@PageByCode("PN-B")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-C</span></td>
+            <td>Lose any fishing gear</td>
+            <td class="yesno">@AnswerByCode("PN-C")</td>
+            <td>@PageByCode("PN-C")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-D</span></td>
+            <td>Abandon any fishing gear</td>
+            <td class="yesno">@AnswerByCode("PN-D")</td>
+            <td>@PageByCode("PN-D")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-E</span></td>
+            <td>Fail to report any abandoned gear</td>
+            <td class="yesno">@AnswerByCode("PN-E")</td>
+            <td>@PageByCode("PN-E")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">SS-A</span></td>
+            <td>Fail to monitor international safety frequencies</td>
+            <td class="yesno">@AnswerByCode("SS-A")</td>
+            <td>@PageByCode("SS-A")</td>
+        </tr>
+        <tr>
+            <td><span class="nobr">SS-B</span></td>
+            <td>Carry out-of-date safety equipment</td>
+            <td class="yesno">@AnswerByCode("SS-B")</td>
+            <td>@PageByCode("SS-B")</td>
+        </tr>
+    </tbody>
+</table>

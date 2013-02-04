@@ -114,6 +114,11 @@ namespace TubsWeb.Controllers
                     gear.Trip = trip;
                     gear.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     var repo = TubsDataService.GetRepository<PurseSeineGear>(MvcApplication.CurrentSession);
+                    // TODO AuditHelper is a pretty ugly hack, so see about fixing this problem
+                    if (!gear.IsNew())
+                    {
+                        AuditHelper.BackfillTrail<PurseSeineGear>(gear.Id, gear, repo);
+                    }
                     repo.Save(gear);
                 }
 
@@ -122,6 +127,10 @@ namespace TubsWeb.Controllers
                     inspection.Trip = trip;
                     inspection.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     var repo = TubsDataService.GetRepository<SafetyInspection>(MvcApplication.CurrentSession);
+                    if (!inspection.IsNew())
+                    {
+                        AuditHelper.BackfillTrail<SafetyInspection>(inspection.Id, inspection, repo);
+                    }
                     repo.Save(inspection);
                 }
 
@@ -130,11 +139,16 @@ namespace TubsWeb.Controllers
                     characteristics.Trip = trip;
                     characteristics.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     var repo = TubsDataService.GetRepository<PurseSeineVesselAttributes>(MvcApplication.CurrentSession);
+                    if (!inspection.IsNew())
+                    {
+                        AuditHelper.BackfillTrail<PurseSeineVesselAttributes>(characteristics.Id, characteristics, repo);
+                    }
                     repo.Save(characteristics);
                 }
 
                 var trepo = TubsDataService.GetRepository<Trip>(MvcApplication.CurrentSession);
                 trip.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                AuditHelper.BackfillTrail<Trip>(trip.Id, trip, trepo);
                 trepo.Update(trip);
 
                 xa.Commit();

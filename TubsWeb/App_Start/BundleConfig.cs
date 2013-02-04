@@ -54,7 +54,7 @@ namespace TubsWeb
                     "~/Scripts/knockout-{version}.js",
                     "~/Scripts/knockout.mapping-latest.js",
                     "~/Scripts/knockout.activity.js",
-                    "~/Scripts/knockout.asyncCommand.js",
+                    "~/Scripts/knockout.command.js",
                     "~/Scripts/knockout.dirtyFlag.js",
                     "~/Scripts/knockout.validation.js",
 

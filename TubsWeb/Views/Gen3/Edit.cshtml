@@ -1,179 +1,137 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.TripMonitor
+﻿@model TubsWeb.ViewModels.Gen3ViewModel
+@using Newtonsoft.Json
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
-        Tuple.Create(Url.Action("Index", "Gen3", new { tripId = ViewBag.TripId }), "GEN-3"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber as string),
+        Tuple.Create(Url.Action("Index", "Gen3", new { tripId = Model.TripId }), "GEN-3"),
         Tuple.Create("#", "Edit GEN-3")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@{
-    SelectListItem[] choices = {
-        new SelectListItem()
-        {
-            Text = "Yes",
-            Value = "true"
-        },
-        new SelectListItem()
-        {
-            Text = "No",
-            Value = "false"   
-        }                              
-    };
-}
+<form id="gen3Form">
+    <p>
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
+    @if (2007 == Model.VersionNumber)
+    {
+        Html.RenderPartial("_Edit_v07");
+    }
+    else if (2009 == Model.VersionNumber)
+    {
+        Html.RenderPartial("_Edit_v09");
+    }
+    else
+    {
+        @: GEN-3 questions not available for this trip
+    }
+    <hr />
+    @* TODO: .length isn't zero after all existing items have been destroyed but _before_ a save *@
+    <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Notes().length == 0">Add Note</button>
+    <table class="table table-bordered table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Comments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="gen3Notes" data-bind="foreach: $root.Notes">
+            <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
+                <td>
+                    @* Delete button is taken out of the tab order to prevent accidents *@
+                    <button type="button"
+                            tabindex="3000"
+                            class="removeItem btn btn-mini btn-danger" 
+                            rel="tooltip" 
+                            title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                </td>
+                <td>
+                    <div class="input-append">
+                        <input type="text"
+                               data-bind="hasfocus: NeedsFocus, uniqueName: true, value: Date.formattedDate"
+                               placeholder="dd/mm/yy"
+                               class="input-mini" />
+                        <span class="add-on"><i class="icon-calendar"></i></span>
+                    </div>
+                </td>
+                <td><textarea class="field span9" rows="6" data-bind="value: Comments"></textarea></td>
+                <td>
+                    <button class="addItem btn btn-mini btn-info" 
+                            type="button"
+                            rel="tooltip" 
+                            title="Click to add row">
+                        <i class="icon-plus icon-white"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
 
-@using (Html.BeginForm())
-{
-    @Html.HiddenFor(m => Model.Id)
-<table class="table table-bordered table-condensed table-striped">
-<thead>
-    <tr>
-        <th>&nbsp;</th>
-        <th>Question</th>
-        <th>Answer</th>
-    </tr>
-</thead>
-<tbody>
-    <tr>
-        <td>a)</td>
-        <td>Record inaccurate positions on the vessel logsheet</td>
-        <td>@Html.DropDownListFor(m => Model.Question1, new SelectList(choices, "Value", "Text", Model.Question1.HasValue ? Model.Question1.Value : false), "Choose")</td>       
-    </tr>
-    <tr>
-        <td>b)</td>
-        <td>Fish in areas that were not covered by any license or access agreement</td>
-        <td>@Html.DropDownListFor(m => Model.Question2, new SelectList(choices, "Value", "Text", Model.Question2.HasValue ? Model.Question2.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>c)</td>
-        <td>Mis-report catch in the vessel logs or weekly reports</td>
-        <td>@Html.DropDownListFor(m => Model.Question3, new SelectList(choices, "Value", "Text", Model.Question3.HasValue ? Model.Question3.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>d)</td>
-        <td>Not report catch of commercial species (includeing discards)</td>
-        <td>@Html.DropDownListFor(m => Model.Question4, new SelectList(choices, "Value", "Text", Model.Question4.HasValue ? Model.Question4.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>e)</td>
-        <td>Not record bycatch and discards</td>
-        <td>@Html.DropDownListFor(m => Model.Question5, new SelectList(choices, "Value", "Text", Model.Question5.HasValue ? Model.Question5.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>f)</td>
-        <td>Record bycatch and discards inaccurately</td>
-        <td>@Html.DropDownListFor(m => Model.Question6, new SelectList(choices, "Value", "Text", Model.Question6.HasValue ? Model.Question6.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>g)</td>
-        <td>Target species other than those they are licensed to target</td>
-        <td>@Html.DropDownListFor(m => Model.Question7, new SelectList(choices, "Value", "Text", Model.Question7.HasValue ? Model.Question7.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>h)</td>
-        <td>Use a fishing method other than the method they are licensed to use</td>
-        <td>@Html.DropDownListFor(m => Model.Question8, new SelectList(choices, "Value", "Text", Model.Question8.HasValue ? Model.Question8.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>i)</td>
-        <td>Record one species as a different species</td>
-        <td>@Html.DropDownListFor(m => Model.Question9, new SelectList(choices, "Value", "Text", Model.Question9.HasValue ? Model.Question9.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>j)</td>
-        <td>Catch species of special interest</td>
-        <td>@Html.DropDownListFor(m => Model.Question10, new SelectList(choices, "Value", "Text", Model.Question10.HasValue ? Model.Question10.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>k)</td>
-        <td>Breach MARPOL regulations</td>
-        <td>@Html.DropDownListFor(m => Model.Question11, new SelectList(choices, "Value", "Text", Model.Question11.HasValue ? Model.Question11.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>l)</td>
-        <td>Bunker or not report bunkering to national authorities</td>
-        <td>@Html.DropDownListFor(m => Model.Question12, new SelectList(choices, "Value", "Text", Model.Question12.HasValue ? Model.Question12.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>m)</td>
-        <td>Transfer fish from or to another vessel at sea</td>
-        <td>@Html.DropDownListFor(m => Model.Question13, new SelectList(choices, "Value", "Text", Model.Question13.HasValue ? Model.Question13.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>n)</td>
-        <td>Request that an event not be reported</td>
-        <td>@Html.DropDownListFor(m => Model.Question14, new SelectList(choices, "Value", "Text", Model.Question14.HasValue ? Model.Question14.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>o)</td>
-        <td>Mistreat other crew</td>
-        <td>@Html.DropDownListFor(m => Model.Question15, new SelectList(choices, "Value", "Text", Model.Question15.HasValue ? Model.Question15.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>p)</td>
-        <td>Hinder the observer in the carrying out of their duties</td>
-        <td>@Html.DropDownListFor(m => Model.Question16, new SelectList(choices, "Value", "Text", Model.Question16.HasValue ? Model.Question16.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>q)</td>
-        <td>Not supply reasonable accomodation, food and facilities to the observer onboard the vessel</td>
-        <td>@Html.DropDownListFor(m => Model.Question17, new SelectList(choices, "Value", "Text", Model.Question17.HasValue ? Model.Question17.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>r)</td>
-        <td>High grade or cull the catch</td>
-        <td>@Html.DropDownListFor(m => Model.Question18, new SelectList(choices, "Value", "Text", Model.Question18.HasValue ? Model.Question18.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>s)</td>
-        <td>Not report position to countries when crossing from one zone to another</td>
-        <td>@Html.DropDownListFor(m => Model.Question19, new SelectList(choices, "Value", "Text", Model.Question19.HasValue ? Model.Question19.Value : false), "Choose")</td>
-    </tr>
-    <tr>
-        <td>t)</td>
-        <td>Not display or present a valid (and current) licence document onboard</td>
-        <td>@Html.DropDownListFor(m => Model.Question20, new SelectList(choices, "Value", "Text", Model.Question20.HasValue ? Model.Question20.Value : false), "Choose")</td>
-    </tr>
-</tbody>
-</table>
-<hr />
-    
-    @* editorRows holds the dynamic content we're going to push into here in an Ajaxy fashion *@
-    @* TODO Fix styling *@
-    <div id="editorRows">
-        @foreach (var detailItem in Model.Details)
-        {
-            Html.RenderPartial("_DetailEditorRow", detailItem);
-        }
-    </div>
-    
-    @Ajax.ActionLink("Add new row", "BlankEditorRow", null, null, new { id = "addItem" })
-    
-    <div class="btn-group">
-        <input class="btn-primary" type="submit" value="Save" />
-        <input type="reset" value="Undo" />
-    </div>
-    
-}
+<!-- TODO Add a debug param so that this can be displayed for troubleshooting -->
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
 
 @section AdditionalScripts {
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <!-- ISODate extension -->
+    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.gen3.js"></script>
+    <script>
+        $(document).ready(function () {
+            var viewModel = new tubs.gen3(@modelAsJson);
+            viewModel.clearDirtyFlag();
+            ko.applyBindings(viewModel);
 
-    <script type="text/javascript">
-        $("#addItem").click(function () {
-            $.ajax({
-                url: this.href,
-                cache: false,
-                type: 'POST',
-                success: function (html) { $("#editorRows").append(html); }
+            $(".gen3Notes").on("click", ".removeItem", function() {
+                viewModel.removeNote(ko.dataFor(this));
             });
-            return false;
+
+            $(".gen3Notes").on("click", ".addItem", function() {
+                viewModel.addNote();
+            });
+
+            $("#btnAddWhenEmpty").on("click", function () {
+                viewModel.addNote();
+            });
+
+            // PageGuide initialization
+            tl.pg.init();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function(e) {
+                if (viewModel.isDirty())
+                {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };            
         });
     </script>
-
 }

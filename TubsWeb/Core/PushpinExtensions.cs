@@ -40,5 +40,12 @@ namespace TubsWeb.Core
             }
             return track;
         }
+
+        public static bool CanDisplay(this Pushpin pin)
+        {
+            if (null == pin)
+                return false;
+            return pin.Latitude.HasValue && pin.Longitude.HasValue && pin.Timestamp.HasValue;
+        }
     }
 }

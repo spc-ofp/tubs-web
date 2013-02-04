@@ -630,9 +630,9 @@
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\jquery-1.8.2-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.8.2.js" />
-    <Content Include="Scripts\jquery-1.8.2.min.js" />
+    <Content Include="Scripts\jquery-1.8.3-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.8.3.js" />
+    <Content Include="Scripts\jquery-1.8.3.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.23.js" />
     <Content Include="Scripts\jquery-ui-1.8.23.min.js" />
     <Content Include="Scripts\jquery-ui-timepicker-addon.min.js" />
@@ -646,10 +646,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\json2.min.js" />
-    <Content Include="Scripts\knockout-2.2.0.debug.js" />
-    <Content Include="Scripts\knockout-2.2.0.js" />
+    <Content Include="Scripts\knockout-2.2.1.debug.js" />
+    <Content Include="Scripts\knockout-2.2.1.js" />
     <Content Include="Scripts\knockout.activity.js" />
-    <Content Include="Scripts\knockout.asyncCommand.js" />
+    <Content Include="Scripts\knockout.command.js" />
     <Content Include="Scripts\knockout.custom-bindings.js" />
     <Content Include="Scripts\knockout.dirtyFlag.js" />
     <Content Include="Scripts\knockout.mapping-latest.debug.js" />
@@ -706,7 +706,7 @@
     <Content Include="Views\Electronics\_Electronics.cshtml" />
     <Content Include="Views\Electronics\List.cshtml" />
     <Content Include="Views\Shared\_CommServices.cshtml" />
-    <Content Include="Views\Gen3\Index.cshtml" />
+    <Content Include="Views\Gen3\Index_ori.cshtml" />
     <Content Include="Views\Gen1\Index.cshtml" />
     <Content Include="Views\Gen1\_Sightings.cshtml" />
     <Content Include="Views\Gen1\_Transfers.cshtml" />
@@ -809,7 +809,7 @@
     <Content Include="Views\Shared\_DatePickerInit.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Gen3\Edit.cshtml" />
+    <Content Include="Views\Gen3\Edit_ori.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Gen3\_DetailEditorRow.cshtml" />
@@ -1061,6 +1061,30 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\PageCount\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Gen3\Questions.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Gen3\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Gen3\_Questions_v07.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Gen3\_Questions_v09.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Gen3\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\App\vm.gen3.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Gen3\_Edit_v07.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Gen3\_Edit_v09.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

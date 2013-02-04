@@ -1,0 +1,260 @@
+﻿<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Question</th>
+            <th>Answer</th>
+            <th><span class="nobr">Journal Page</span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><span class="nobr">RS-A</span></td>
+            <td>Did the operator or any crew member assault, obstruct, resist, delay, refuse boarding to, intimidate or interefere with observers in the performance of their duties</td>        
+            <td>
+                <select id="answer[RS-A]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[0].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[0].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">RS-B</span></td>
+            <td>Request that an event not be reported by the observer</td>
+            <td>
+                <select id="answer[RS-B]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[1].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[1].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">RS-C</span></td>
+            <td>Mistreat other crew</td>
+            <td>
+                <select id="answer[RS-C]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[2].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[2].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">RS-D</span></td>
+            <td>Did operator fail to provide observer with food, accommodation, etc.</td>
+            <td>
+                <select id="answer[RS-D]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[3].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[3].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-A</span></td>
+            <td>Fish in areas where the vessel is not permitted to fish</td>
+            <td>
+                <select id="answer[NR-A]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[4].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[4].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-B</span></td>
+            <td>Target species other than those they are licenced to target</td>
+            <td>
+                <select id="answer[NR-B]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[5].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[5].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-C</span></td>
+            <td>Use a fishing method other than the method the vessel was designed or licensed</td>
+            <td>
+                <select id="answer[NR-C]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[6].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[6].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-D</span></td>
+            <td>Not display or present a valid (and current) licence document onboard</td>
+            <td>
+                <select id="answer[NR-D]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[7].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[7].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-E</span></td>
+            <td>Transfer or transship fish from or to another vessel</td>
+            <td>
+                <select id="answer[NR-E]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[8].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[8].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-F</span></td>
+            <td>Was involved in bunkering activities</td>
+            <td>
+                <select id="answer[NR-F]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[9].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[9].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">NR-G</span></td>
+            <td>Fail to stow fishing gear when entering areas where vessel is not authorised to fish</td>
+            <td>
+                <select id="answer[NR-G]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[10].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[10].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">WC-A</span></td>
+            <td>Fail to comply with any Commission Conservation and Management Measures (CMMs)</td>
+            <td>
+                <select id="answer[WC-A]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[11].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[11].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">WC-B</span></td>
+            <td>High-grade the catch</td>
+            <td>
+                <select id="answer[WC-B]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[12].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[12].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">WC-C</span></td>
+            <td>Fish on FAD during FAD Closure</td>
+            <td>
+                <select id="answer[WC-C]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[13].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[13].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LP-A</span></td>
+            <td>Inaccurately record vessel position on vessel log sheets for sets, hauling and catch</td>
+            <td>
+                <select id="answer[LP-A]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[14].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[14].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LP-B</span></td>
+            <td>Fail to report vessel positions to countries where required</td>
+            <td>
+                <select id="answer[LP-B]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[15].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[15].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-A</span></td>
+            <td>Inaccurately record retained 'Target Species' in the Vessel logs [or weekly reports]</td>
+            <td>
+                <select id="answer[LC-A]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[16].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[16].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-B</span></td>
+            <td>Inaccurately record 'Target Species' Discards</td>
+            <td>
+                <select id="answer[LC-B]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[17].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[17].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-C</span></td>
+            <td>Record target species inaccurately [eg. combine bigeye/yellowfin/skipjack catch]</td>
+            <td>
+                <select id="answer[LC-C]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[18].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[18].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-D</span></td>
+            <td>Not record bycatch discards</td>
+            <td>
+                <select id="answer[LC-D]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[19].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[19].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-E</span></td>
+            <td>Inaccurately record retained bycatch Species</td>
+            <td>
+                <select id="answer[LC-E]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[20].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[20].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">LC-F</span></td>
+            <td>Inaccurately record discarded bycatch species</td>
+            <td>
+                <select id="answer[LC-F]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[21].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[21].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">SI-A</span></td>
+            <td>Land on deck Species of Special Interest (SSIs)</td>
+            <td>
+                <select id="answer[SI-A]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[22].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[22].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">SI-B</span></td>
+            <td>Interact (not land) with SSIs</td>
+            <td>
+                <select id="answer[SI-B]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[23].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[23].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-A</span></td>
+            <td>Dispose of any metals, plastics, chemicals or old fishing gear</td>
+            <td>
+                <select id="answer[PN-A]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[24].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[24].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-B</span></td>
+            <td>Discharge any oil</td>
+            <td>
+                <select id="answer[PN-B]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[25].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[25].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-C</span></td>
+            <td>Lose any fishing gear</td>
+            <td>
+                <select id="answer[PN-C]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[26].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[26].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-D</span></td>
+            <td>Abandon any fishing gear</td>
+            <td>
+                <select id="answer[PN-D]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[27].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[27].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">PN-E</span></td>
+            <td>Fail to report any abandoned gear</td>
+            <td>
+                <select id="answer[PN-E]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[28].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[28].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">SS-A</span></td>
+            <td>Fail to monitor international safety frequencies</td>
+            <td>
+                <select id="answer[SS-A]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[29].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[29].JournalPage" /></td>
+        </tr>
+        <tr>
+            <td><span class="nobr">SS-B</span></td>
+            <td>Carry out-of-date safety equipment</td>
+            <td>
+                <select id="answer[SS-B]" class="input-small" data-bind="options: BooleanValues,value: $root.Incidents()[30].Answer"></select>
+            </td>
+            <td><input class="input-mini" data-bind="value: $root.Incidents()[30].JournalPage" /></td>
+        </tr>
+    </tbody>
+</table>

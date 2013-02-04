@@ -11,22 +11,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @* 
-     * A couple of Chrome Frame options:  
-     * If we set IE=9,chrome=1 then it will use IE 9 if available and then Chrome Frame.
-     * If chrome=1 comes first, then Chrome Frame is preferred.
-     * The implementation below will use Chrome Frame if set, otherwise it will use
-     * the best version of IE on the user's workstation ($diety help us if that's IE7!)
-     * One final option is to set chrome=IE8, which will only replace IE8 and below with Chrome
-     * but pass through to IE9.
+     * If Chrome is asked for and Chrome frame is installed, it will be used.
+     * Otherwise, use the best version of IE that's installed.
      *@
     <!-- Make use of Chrome Frame optional on a per View basis -->
     @if (ViewBag.UseChromeFrame != null && ViewBag.UseChromeFrame)
     {
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=Edge">
     }
     else
     {
-    <meta http-equiv="X-UA-Compatible" content="IE=8, IE=9, IE=10">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     }
     <title>@ViewBag.Title</title>
     @* 
@@ -156,6 +151,7 @@
         "~/bundles/jquery", 
         "~/bundles/jsextlibs"
     )
+    <script src="http://code.jquery.com/jquery-migrate-1.0.0.js"></script>
     <script src="~/Scripts/tubs.js"></script>
 
     @RenderSection("AdditionalScripts", false)

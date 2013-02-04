@@ -23,116 +23,188 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
     using System.Web.Mvc;
+    using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
+    using TubsWeb.ViewModels;
 
     /// <summary>
     /// 
     /// </summary>
     public class Gen3Controller : SuperController
     {
-        private ActionResult Load(Trip tripId, string titleFormat, bool createNew = false)
+        internal Gen3ViewModel LoadViewModel(Trip tripId)
+        {
+            // Build ViewModel from the appropriate Trip sub entity/entities
+            return tripId.Version == Spc.Ofp.Tubs.DAL.Common.WorkbookVersion.v2009 ?
+                Mapper.Map<Trip, Gen3ViewModel>(tripId) :
+                Mapper.Map<TripMonitor, Gen3ViewModel>(tripId.TripMonitor);
+        }
+        
+        
+        internal ActionResult ViewActionImpl(Trip tripId)
         {
             if (null == tripId)
             {
-                return new NoSuchTripResult();
+                return InvalidTripResponse();
             }
 
-            ViewBag.Title = String.Format(titleFormat, tripId.ToString());
-            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
-            string actionName = this.ControllerContext.RouteData.GetRequiredString("action");
+            string formatString =
+                IsEdit() ?
+                    "Edit GEN-3 for {0}" :
+                    "GEN-3 for {0}";
+
+            ViewBag.Title = String.Format(formatString, tripId.ToString());
+
+            // Build ViewModel from the appropriate Trip sub entity/entities
+            var vm = LoadViewModel(tripId);
+
+            // Ensure that, for v2009 workbooks, the ViewModel has 31 possible questions
+            // in the same display order as the printed workbook
+            vm.PrepareIncidents();
+
+            if (IsApiRequest())
+                return GettableJsonNetData(vm);
+
+            // Min/max dates in the ViewBag are only useful outside of API calls
             AddMinMaxDates(tripId);
-            return
-                createNew ?
-                    View(actionName, tripId.TripMonitor ?? new TripMonitor()) :
-                    View(actionName, tripId.TripMonitor);
+            return View(CurrentAction(), vm);
         }
 
         public ActionResult Index(Trip tripId)
         {
-            return Load(tripId, "GEN-3 for trip {0}");
+            return ViewActionImpl(tripId);
         }
 
         [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
-            return Load(tripId, "Edit GEN-3 for trip {0}", true);
+            return ViewActionImpl(tripId);
         }
 
         [HttpPost]
         [EditorAuthorize]
-        public PartialViewResult BlankEditorRow(Trip tripId)
-        {
-            AddMinMaxDates(tripId);
-            return PartialView("_DetailEditorRow", new TripMonitorDetail());
-        }
-
-        [HttpPost]
-        [EditorAuthorize]
-        public ActionResult Edit(Trip tripId, TripMonitor header)
+        [HandleTransactionManually]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
+        public ActionResult Edit(Trip tripId, Gen3ViewModel vm)
         {
             if (null == tripId)
             {
-                return new NoSuchTripResult();
+                return InvalidTripResponse();
             }
 
-            if (null == header)
+            if (null == vm)
             {
-                return View("Edit", new TripMonitor());
+                return ViewActionImpl(tripId);
             }
 
-            // There's no real validation in the header, so we'll start by checking the
-            // date for each detail
-            // At the same time, perform some minor fixups on the entities, like resetting
-            // parent/child relationship and adding audit trail data.
-            var enteredDate = DateTime.Now;
-            if (null != header.Details)
+            // Complex validation here
+            if (null != vm.Notes)
             {
-                foreach (var detail in header.Details)
+                foreach (var note in vm.Notes)
                 {
-                    // (Re)set the association between parent and child
-                    detail.Header = header;
-                    // Set EnteredBy/EnteredDate where necessary
-                    if (default(int) == detail.Id)
+                    if (null != note && note.Date.HasValue)
                     {
-                        detail.EnteredBy = User.Identity.Name;
-                        detail.EnteredDate = enteredDate;
-                    }
-                    if (detail.DetailDate.HasValue)
-                    {
-                        if (!tripId.IsDuringTrip(detail.DetailDate.Value))
+                        if (!tripId.IsDuringTrip(note.Date.Value))
                         {
-                            ModelState.AddModelError("DetailDate", "Date doesn't fall between departure and return dates");
+                            ModelState.AddModelError("Date", "Date doesn't fall between departure and return dates");
                         }
                     }
                 }
             }
 
-            if (ModelState.IsValid)
+            // Simple validation here
+            if (!ModelState.IsValid)
             {
-                header.Trip = tripId;
-                bool isNewHeader = default(int) == header.Id;
-                if (isNewHeader)
-                {
-                    header.EnteredBy = User.Identity.Name;
-                    header.EnteredDate = enteredDate;
-                }
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
 
-                var repo = new TubsRepository<TripMonitor>(MvcApplication.CurrentSession);
-                bool success =
-                    isNewHeader ?
-                        repo.Add(header) :
-                        repo.Update(header);
-                if (success)
-                {
-                    return RedirectToAction("Index", new { tripId = tripId.Id });
-                }
+                return View(CurrentAction(), vm);
             }
 
-            tripId.TripMonitor = header;
-            return View("Edit", tripId);            
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+                if (Spc.Ofp.Tubs.DAL.Common.WorkbookVersion.v2009 == tripId.Version.Value)
+                {
+                    // MockTripMonitor is a disposable container for the two lists of entities
+                    // we _do_ care about
+                    var tm = Mapper.Map<Gen3ViewModel, MockTripMonitor>(vm);
+
+                    var arepo = TubsDataService.GetRepository<Gen3Answer>(MvcApplication.CurrentSession);
+                    foreach (var answer in tm.Answers)
+                    {
+                        answer.Trip = tripId;
+                        answer.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                        if (!answer.IsNew())
+                        {
+                            AuditHelper.BackfillTrail<Gen3Answer>(answer.Id, answer, arepo);
+                        }
+
+                        arepo.Save(answer);
+
+                    }
+
+                    var drepo = TubsDataService.GetRepository<Gen3Detail>(MvcApplication.CurrentSession);
+                    foreach (var detail in tm.Details)
+                    {
+                        detail.Trip = tripId;
+                        detail.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                        if (!detail.IsNew())
+                        {
+                            AuditHelper.BackfillTrail<Gen3Detail>(detail.Id, detail, drepo);
+                        }
+
+                        drepo.Save(detail);
+                    }
+
+                }
+                else
+                {
+                    var tm = Mapper.Map<Gen3ViewModel, TripMonitor>(vm);
+                    tm.Trip = tripId;
+                    tm.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    var repo = TubsDataService.GetRepository<TripMonitor>(MvcApplication.CurrentSession);
+
+                    if (!tm.IsNew())
+                    {
+                        AuditHelper.BackfillTrail<TripMonitor>(tm.Id, tm, repo);
+                    }
+
+                    var drepo = TubsDataService.GetRepository<TripMonitorDetail>(MvcApplication.CurrentSession);
+                    foreach (var detail in tm.Details)
+                    {
+                        detail.Header = tm;
+                        detail.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                        if (!detail.IsNew())
+                        {
+                            AuditHelper.BackfillTrail<TripMonitorDetail>(detail.Id, detail, drepo);
+                        }
+                    }
+
+                    repo.Save(tm);
+                }
+
+                xa.Commit();
+            }
+
+            if (IsApiRequest())
+            {
+                using (var trepo = TubsDataService.GetRepository<Trip>(false))
+                {
+                    var trip = trepo.FindById(tripId.Id);
+                    vm = LoadViewModel(trip);
+                }
+
+                return GettableJsonNetData(vm);
+            }
+
+            // If this isn't an API request (which shouldn't really happen)
+            // always push to the Edit page.  It's been saved, so an Add is counter-productive
+            return RedirectToAction("Edit", "Gen3", new { tripId = tripId.Id });
+
         }
 
     }

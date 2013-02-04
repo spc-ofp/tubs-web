@@ -1,175 +1,72 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.TripMonitor
+﻿@model TubsWeb.ViewModels.Gen3ViewModel
+
+@{
+    ViewBag.Title = "GEN-3 for " + Model.TripNumber;
+}
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
         Tuple.Create("#", "GEN-3")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@if (null == Model)
+@if (!ViewBag.IsReadOnly)
 {
-    <p>No GEN-3 available for this trip.</p>
-    if (!ViewBag.IsReadOnly)
-    {
-        @Html.ActionLink("Add GEN-3", "Edit", new { tripId = ViewBag.TripId })
-    }
+<p>
+    @Html.ActionLink("Edit GEN-3", "Edit")
+</p>
+}
+
+@if (2007 == Model.VersionNumber)
+{
+    Html.RenderPartial("_Questions_v07", Model);
+}
+else if (2009 == Model.VersionNumber)
+{
+    Html.RenderPartial("_Questions_v09", Model);
 }
 else
 {
-    <table class="table table-bordered table-condensed table-striped">
-    <thead>
-        <tr>
-            <th>&nbsp;</th>
-            <th>Question</th>
-            <th>Answer</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>a)</td>
-            <td>Record inaccurate positions on the vessel logsheet</td>
-            <td>@Html.DisplayFor(m => Model.Question1)</td>
-        </tr>
-        <tr>
-            <td>b)</td>
-            <td>Fish in areas that were not covered by any license or access agreement</td>
-            <td>@Html.DisplayFor(m => Model.Question2)</td>
-        </tr>
-        <tr>
-            <td>c)</td>
-            <td>Mis-report catch in the vessel logs or weekly reports</td>
-            <td>@Html.DisplayFor(m => Model.Question3)</td>
-        </tr>
-        <tr>
-            <td>d)</td>
-            <td>Not report catch of commercial species (includeing discards)</td>
-            <td>@Html.DisplayFor(m => Model.Question4)</td>
-        </tr>
-        <tr>
-            <td>e)</td>
-            <td>Not record bycatch and discards</td>
-            <td>@Html.DisplayFor(m => Model.Question5)</td>
-        </tr>
-        <tr>
-            <td>f)</td>
-            <td>Record bycatch and discards inaccurately</td>
-            <td>@Html.DisplayFor(m => Model.Question6)</td>
-        </tr>
-        <tr>
-            <td>g)</td>
-            <td>Target species other than those they are licensed to target</td>
-            <td>@Html.DisplayFor(m => Model.Question7)</td>
-        </tr>
-        <tr>
-            <td>h)</td>
-            <td>Use a fishing method other than the method they are licensed to use</td>
-            <td>@Html.DisplayFor(m => Model.Question8)</td>
-        </tr>
-        <tr>
-            <td>i)</td>
-            <td>Record one species as a different species</td>
-            <td>@Html.DisplayFor(m => Model.Question9)</td>
-        </tr>
-        <tr>
-            <td>j)</td>
-            <td>Catch species of special interest</td>
-            <td>@Html.DisplayFor(m => Model.Question10)</td>
-        </tr>
-        <tr>
-            <td>k)</td>
-            <td>Breach MARPOL regulations</td>
-            <td>@Html.DisplayFor(m => Model.Question11)</td>
-        </tr>
-        <tr>
-            <td>l)</td>
-            <td>Bunker or not report bunkering to national authorities</td>
-            <td>@Html.DisplayFor(m => Model.Question12)</td>
-        </tr>
-        <tr>
-            <td>m)</td>
-            <td>Transfer fish from or to another vessel at sea</td>
-            <td>@Html.DisplayFor(m => Model.Question13)</td>
-        </tr>
-        <tr>
-            <td>n)</td>
-            <td>Request that an event not be reported</td>
-            <td>@Html.DisplayFor(m => Model.Question14)</td>
-        </tr>
-        <tr>
-            <td>o)</td>
-            <td>Mistreat other crew</td>
-            <td>@Html.DisplayFor(m => Model.Question15)</td>
-        </tr>
-        <tr>
-            <td>p)</td>
-            <td>Hinder the observer in the carrying out of their duties</td>
-            <td>@Html.DisplayFor(m => Model.Question16)</td>
-        </tr>
-        <tr>
-            <td>q)</td>
-            <td>Not supply reasonable accomodation, food and facilities to the observer onboard the vessel</td>
-            <td>@Html.DisplayFor(m => Model.Question17)</td>
-        </tr>
-        <tr>
-            <td>r)</td>
-            <td>High grade or cull the catch</td>
-            <td>@Html.DisplayFor(m => Model.Question18)</td>
-        </tr>
-        <tr>
-            <td>s)</td>
-            <td>Not report position to countries when crossing from one zone to another</td>
-            <td>@Html.DisplayFor(m => Model.Question19)</td>
-        </tr>
-        <tr>
-            <td>t)</td>
-            <td>Not display or present a valid (and current) licence document onboard</td>
-            <td>@Html.DisplayFor(m => Model.Question20)</td>
-        </tr>
-    </tbody>
-    </table>
-    <hr />
-    <table class="table table-bordered table-condensed table-striped">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Details</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var detail in @Model.Details)
-    {
-    <tr>
-        <td>
-            @Html.DisplayFor(m => detail.DetailDate, new { format = "d" })
-        </td>
-        <td><div class="large-text">@detail.Comments</div></td>
-    </tr>                      
-    }
-    </tbody>
-    </table>
-    if (!ViewBag.IsReadOnly)
-    {
-        @Html.ActionLink("Add GEN-3", "Edit", new { tripId = ViewBag.TripId })
-    }
+    @: GEN-3 questions not available for this trip
 }
+
+
+<hr />
+<table class="table table-bordered table-condensed table-striped">
+<thead>
+    <tr>
+        <th>Date</th>
+        <th>Details</th>
+    </tr>
+</thead>
+<tbody>
+@foreach (var detail in @Model.Notes)
+{
+<tr>
+    <td>
+        @Html.DisplayFor(m => detail.Date, new { format = "d" })
+    </td>
+    <td><div class="large-text">@detail.Comments</div></td>
+</tr>                      
+}
+</tbody>
+</table>
 
 @section AdditionalScripts {
     @* jQuery function to highlight GEN-3 answers of interest *@
     <script type="text/javascript">
         $(function () {
-            $("td").filter(function () {
+            $("td.yesno").filter(function () {
                 var contents = $(this).text();
                 contents = $.trim(contents);
-                return contents == "True";
+                return contents == "YES";
             }).parent().addClass("lookatme");
         });
     </script>
 }
-
-

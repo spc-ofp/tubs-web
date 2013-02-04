@@ -236,7 +236,10 @@ namespace TubsWeb.Controllers
                 return new NoSuchTripResult();
             }
 
-            var pushpins = tripId.Pushpins.ToList();
+            // Exclude any pushpins that won't display nicely
+            var pushpins = tripId.Pushpins.Where(p => p.CanDisplay()).ToList();           
+            // Sort by date (assumes all timestamps have the same base frame of reference for date)
+            // which occasionally is not true.
             pushpins.Sort(
                 delegate(Pushpin p1, Pushpin p2)
                 {
@@ -411,7 +414,8 @@ namespace TubsWeb.Controllers
             thvm.ReturnDate = returnDate;
 
             // Check to see if the observer code/trip number combo already exists
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var repo = TubsDataService.GetRepository<Trip>(MvcApplication.CurrentSession);
+            //var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
             int existingId = (
                 from t in repo.FilterBy(t => t.Observer.StaffCode == thvm.ObserverCode && t.TripNumber == thvm.TripNumber)
                 select t.Id).FirstOrDefault<int>();
@@ -452,8 +456,9 @@ namespace TubsWeb.Controllers
             }
 
             // Set audit trail data
-            trip.EnteredDate = DateTime.Now;
-            trip.EnteredBy = User.Identity.Name ?? "Unknown User";
+            trip.SetAuditTrail(User.Identity.Name, DateTime.Now);
+            //trip.EnteredDate = DateTime.Now;
+            //trip.EnteredBy = User.Identity.Name ?? "Unknown User";
 
             try
             {

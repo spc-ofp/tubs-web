@@ -217,9 +217,69 @@ namespace TubsWeb.Tests
                 Assert.NotNull(vm);
                 Assert.NotNull(vm.Incidents);
                 Assert.AreEqual(2, vm.Incidents.Count);
+                Assert.True(vm.IncidentByCode.ContainsKey("RS-A"));
                 Assert.NotNull(vm.Notes);
                 Assert.AreEqual(1, vm.Notes.Count);
             }
+        }
+
+        [Test]
+        public void LegacyGen3ToViewModel([Values(70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<TripMonitor, Gen3ViewModel>(trip.TripMonitor);
+                Assert.NotNull(vm);
+                Assert.NotNull(vm.Incidents);
+                Assert.AreEqual(20, vm.Incidents.Count);
+                StringAssert.AreEqualIgnoringCase("NO", vm.Incidents[7].Answer);
+                StringAssert.AreEqualIgnoringCase("YES", vm.Incidents[8].Answer);
+                Assert.NotNull(vm.Notes);
+                Assert.AreEqual(3, vm.Notes.Count);
+            }
+        }
+
+        [Test]
+        public void LegacyGen3ViewModelToEntity()
+        {
+            Mapper.AssertConfigurationIsValid();
+            var vm = new Gen3ViewModel();
+            vm.Incidents = new List<Gen3ViewModel.Incident>(20);
+            for (int i = 0; i < 20; i++)
+            {
+                vm.Incidents.Add(new Gen3ViewModel.Incident() { Answer = "NO", QuestionCode = Char.ToString((char)(97 + i)) });
+            }
+            vm.Incidents[6].Answer = "YES";
+            var entity = Mapper.Map<Gen3ViewModel, TripMonitor>(vm);
+            Assert.NotNull(entity);
+            Assert.True(entity.Question7.HasValue);
+            Assert.True(entity.Question7.Value);
+        }
+
+        [Test]
+        public void Gen3ViewModelToEntity()
+        {
+            // Arrange
+            Mapper.AssertConfigurationIsValid();
+            var vm = new Gen3ViewModel();
+            vm.Incidents = new List<Gen3ViewModel.Incident>(3);
+            vm.Incidents.Add(new Gen3ViewModel.Incident() { Answer = "YES", QuestionCode = "RS-A", JournalPage = 1 });
+            vm.Incidents.Add(new Gen3ViewModel.Incident() { Answer = "YES", QuestionCode = "RS-C", JournalPage = 5 });
+            vm.Incidents.Add(new Gen3ViewModel.Incident() { Answer = "YES", QuestionCode = "NR-A", JournalPage = 3 });
+            vm.Notes = new List<Gen3ViewModel.Note>(2);
+            vm.Notes.Add(new Gen3ViewModel.Note() { Date = DateTime.Now, Comments = "Xyzzy" });
+            vm.Notes.Add(new Gen3ViewModel.Note() { Date = DateTime.Now, Comments = "Plover" });
+            // Act
+            var entity = Mapper.Map<Gen3ViewModel, MockTripMonitor>(vm);
+            // Assert
+            Assert.NotNull(entity);
+            Assert.NotNull(entity.Answers);
+            Assert.AreEqual(3, entity.Answers.Count);
+            Assert.NotNull(entity.Details);
+            Assert.AreEqual(2, entity.Details.Count);
         }
     }
 }

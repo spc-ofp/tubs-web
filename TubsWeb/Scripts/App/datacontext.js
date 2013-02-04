@@ -86,6 +86,13 @@ amplify.request.define(
     $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/PageCount' })
 );
 
+// Request for loading GEN-3 data
+amplify.request.define(
+    "getGen3",
+    "ajax",
+    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-3' })
+);
+
 tubs.getSeaDay = function (tripId, dayNumber, success_cb, error_cb) {
     amplify.request({
         resourceId: "getSeaDay",
@@ -264,6 +271,29 @@ tubs.savePageCounts = function (tripId, pageCounts, success_cb, error_cb) {
         contentType: 'application/json',
         dataType: 'json',
         data: ko.toJSON(pageCounts),
+        success: success_cb,
+        error: error_cb,
+        timeout: saveTimeout
+    });
+};
+
+tubs.getGen3 = function (tripId, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getGen3",
+        data: { "TripId": tripId },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+tubs.saveGen3 = function (tripId, gen3, success_cb, error_cb) {
+    var url = appBase + 'Trip/' + tripId + '/GEN-3/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(gen3),
         success: success_cb,
         error: error_cb,
         timeout: saveTimeout

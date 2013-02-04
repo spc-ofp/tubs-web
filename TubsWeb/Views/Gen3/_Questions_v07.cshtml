@@ -1,0 +1,113 @@
+﻿@model TubsWeb.ViewModels.Gen3ViewModel
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Question</th>
+            <th>Answer</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>a)</td>
+            <td>Record inaccurate positions on the vessel logsheet</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[0].Answer)</td>
+        </tr>
+        <tr>
+            <td>b)</td>
+            <td>Fish in areas that were not covered by any license or access agreement</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[1].Answer)</td>
+        </tr>
+        <tr>
+            <td>c)</td>
+            <td>Mis-report catch in the vessel logs or weekly reports</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[2].Answer)</td>
+        </tr>
+        <tr>
+            <td>d)</td>
+            <td>Not report catch of commercial species (including discards)</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[3].Answer)</td>
+        </tr>
+        <tr>
+            <td>e)</td>
+            <td>Not record bycatch and discards</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[4].Answer)</td>
+        </tr>
+        <tr>
+            <td>f)</td>
+            <td>Record bycatch and discards inaccurately</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[5].Answer)</td>
+        </tr>
+        <tr>
+            <td>g)</td>
+            <td>Target species other than those they are licensed to target</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[6].Answer)</td>
+        </tr>
+        <tr>
+            <td>h)</td>
+            <td>Use a fishing method other than the method they are licensed to use</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[7].Answer)</td>
+        </tr>
+        <tr>
+            <td>i)</td>
+            <td>Record one species as a different species</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[8].Answer)</td>
+        </tr>
+        <tr>
+            <td>j)</td>
+            <td>Catch species of special interest</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[9].Answer)</td>
+        </tr>
+        <tr>
+            <td>k)</td>
+            <td>Breach MARPOL regulations</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[10].Answer)</td>
+        </tr>
+        <tr>
+            <td>l)</td>
+            <td>Bunker or not report bunkering to national authorities</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[11].Answer)</td>
+        </tr>
+        <tr>
+            <td>m)</td>
+            <td>Transfer fish from or to another vessel at sea</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[12].Answer)</td>
+        </tr>
+        <tr>
+            <td>n)</td>
+            <td>Request that an event not be reported</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[13].Answer)</td>
+        </tr>
+        <tr>
+            <td>o)</td>
+            <td>Mistreat other crew</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[14].Answer)</td>
+        </tr>
+        <tr>
+            <td>p)</td>
+            <td>Hinder the observer in the carrying out of their duties</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[15].Answer)</td>
+        </tr>
+        <tr>
+            <td>q)</td>
+            <td>Not supply reasonable accomodation, food and facilities to the observer onboard the vessel</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[16].Answer)</td>
+        </tr>
+        <tr>
+            <td>r)</td>
+            <td>High grade or cull the catch</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[17].Answer)</td>
+        </tr>
+        <tr>
+            <td>s)</td>
+            <td>Not report position to countries when crossing from one zone to another</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[18].Answer)</td>
+        </tr>
+        <tr>
+            <td>t)</td>
+            <td>Not display or present a valid (and current) licence document onboard</td>
+            <td class="yesno">@Html.DisplayFor(m => Model.Incidents[19].Answer)</td>
+        </tr>
+    </tbody>
+</table>
