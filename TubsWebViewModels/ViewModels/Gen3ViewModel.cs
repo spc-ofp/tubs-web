@@ -70,8 +70,8 @@ namespace TubsWeb.ViewModels
         
         public Gen3ViewModel()
         {
-            Incidents = new List<Incident>(30);
-            IncidentByCode = new Dictionary<string, int>();
+            Incidents = new List<Incident>(31);
+            IncidentByCode = new Dictionary<string, int>(31);
             Notes = new List<Note>(6);
         }
 
@@ -99,6 +99,27 @@ namespace TubsWeb.ViewModels
 
                 // Place Incidents into correct display order
                 ArrayList.Adapter((IList)this.Incidents).Sort();
+
+                this.IndexIncidents();
+            }
+        }
+
+        public void IndexIncidents()
+        {
+            lock (this)
+            {
+                this.IncidentByCode.Clear();
+                if (null != this.Incidents)
+                {
+                    for (int i = 0; i < this.Incidents.Count; i++)
+                    {
+                        var incident = this.Incidents[i];
+                        if (null != incident && !String.IsNullOrEmpty(incident.QuestionCode))
+                        {
+                            this.IncidentByCode.Add(incident.QuestionCode, i);
+                        }
+                    }
+                }
             }
         }
 
@@ -119,6 +140,9 @@ namespace TubsWeb.ViewModels
                 return incidents;
             }
         }
+
+        [JsonIgnore]
+        public Dictionary<string, int> IncidentByCode { get; set; }
         
         public string TripNumber { get; set; }
 
@@ -132,9 +156,9 @@ namespace TubsWeb.ViewModels
 
         // Use Knockout to help with common codes
         public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
-        public IList<string> QuestionCodes = new List<string>
+        [JsonIgnore]
+        private static IList<string> QuestionCodes = new List<string>
         {
-            null,
             "RS-A",
             "RS-B",
             "RS-C",
@@ -169,7 +193,6 @@ namespace TubsWeb.ViewModels
         };
 
         public IList<Incident> Incidents { get; set; }
-        public Dictionary<string, int> IncidentByCode { get; set; }
 
         public IList<Note> Notes { get; set; }
 
@@ -181,6 +204,7 @@ namespace TubsWeb.ViewModels
             public string Answer { get; set; }
             // Null for 2007 incidents
             public int? JournalPage { get; set; }
+            public bool _destroy { get; set; }
 
             public int CompareTo(object obj)
             {
@@ -211,6 +235,7 @@ namespace TubsWeb.ViewModels
             public int Id { get; set; }
             public DateTime? Date { get; set; }
             public string Comments { get; set; }
+            public bool _destroy { get; set; }
         }
     }
 }

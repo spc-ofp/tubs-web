@@ -1,5 +1,9 @@
 ﻿@model TubsWeb.ViewModels.PageCountViewModel
 
+@{
+    ViewBag.Title = "Page counts for " + Model.TripNumber;
+}
+
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
@@ -25,54 +29,13 @@
         </tr>
     </thead>
     <tbody>
-    @if (Model is TubsWeb.ViewModels.PurseSeinePageCountViewModel)
+    @foreach (var pc in Model.PageCounts)
     {
-        var pmodel = Model as TubsWeb.ViewModels.PurseSeinePageCountViewModel;
+        if (!pc.Value.HasValue) { continue; }
         <tr>
-            <td>PS-1</td>
-            <td>@Html.DisplayFor(m => pmodel.Ps1Count)</td>
-        </tr>
-        <tr>
-            <td>PS-2</td>
-            <td>@Html.DisplayFor(m => pmodel.Ps2Count)</td>
-        </tr>
-        <tr>
-            <td>PS-3</td>
-            <td>@Html.DisplayFor(m => pmodel.Ps3Count)</td>
-        </tr>
-        <tr>
-            <td>PS-4</td>
-            <td>@Html.DisplayFor(m => pmodel.Ps4Count)</td>
-        </tr>
-        <tr>
-            <td>PS-5</td>
-            <td>@Html.DisplayFor(m => pmodel.Ps5Count)</td>
+            <td>@pc.Key</td>
+            <td>@Html.DisplayFor(m => pc.Value)</td>
         </tr>
     }
-        <tr>
-            <td>GEN-1</td>
-            <td>@Html.DisplayFor(m => Model.Gen1Count)</td>
-        </tr>
-        <tr>
-            <td>GEN-2</td>
-            <td>@Html.DisplayFor(m => Model.Gen2Count)</td>
-        </tr>
-        <tr>
-            <td>GEN-3</td>
-            <td>@Html.DisplayFor(m => Model.Gen3Count)</td>
-        </tr>
-    @if (Model is TubsWeb.ViewModels.PurseSeinePageCountViewModel)
-    {
-        var pmodel = Model as TubsWeb.ViewModels.PurseSeinePageCountViewModel;
-        <tr>
-            <td>GEN-5</td>
-            <td>@Html.DisplayFor(m => pmodel.Gen5Count)</td>
-        </tr>
-    }
-        <tr>
-            <td>GEN-6</td>
-            <td>@Html.DisplayFor(m => Model.Gen6Count)</td>
-        </tr>
-    
     </tbody>
 </table>

@@ -5,43 +5,86 @@
  * jquery
  * knockout
  * knockout.mapping (automatically maps JSON)
- * knockout.asyncCommand (makes it easier to show user activity)
+ * knockout.command (makes it easier to show user activity)
  * knockout.dirtyFlag (avoid unneccesary saves)
  * knockout.activity (fancy UI gadget)
  * amplify (local storage and Ajax mapping
  * toastr (user notification)
- * knockout.custom-bindings (date binding)
  */
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
 "use strict";
 
-tubs.PageCountViewModel = function (data) {
+tubs.PageCountMapping = {
+    'PageCounts': {
+        create: function (options) {
+            return new tubs.PageCount(options.data);
+        }
+    }
+};
+
+tubs.PageCount = function (data) {
     var self = this;
-    ko.mapping.fromJS(data, {}, self);
+    self.Id = ko.observable(data.Id || 0);
+    self.Key = ko.observable(data.Key || null);
+    self.Value = ko.observable(data.Value || 0);
+    self.NeedsFocus = ko.observable(data.NeedsFocus || false);
 
     self.dirtyFlag = new ko.DirtyFlag([
-        self.Ps1Count,
-        self.Ps2Count,
-        self.Ps3Count,
-        self.Ps4Count,
-        self.Ps5Count,
-        self.Gen1Count,
-        self.Gen2Count,
-        self.Gen3Count,
-        self.Gen4Count,
-        self.Gen5Count,
-        self.Gen6Count,
+        self.Key,
+        self.Value
     ], false);
 
     self.isDirty = ko.computed(function () {
         return self.dirtyFlag().isDirty();
     });
 
+    self.clearDirtyFlag = function () {
+        self.dirtyFlag().reset();
+    };
+
+    return self;
+};
+
+tubs.PageCountViewModel = function (data) {
+    var self = this;
+    ko.mapping.fromJS(data, tubs.PageCountMapping, self);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.PageCounts // Add/Remove only
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        // Add/Remove from PageCounts
+        if (self.dirtyFlag().isDirty()) {
+            return true;
+        }
+        // Iterate over PageCounts
+        var hasDirtyChild = false;
+        ko.utils.arrayForEach(self.PageCounts(), function (item) {
+            if (item.isDirty()) {
+                hasDirtyChild = true;
+            }
+        });
+        return hasDirtyChild;
+    });
+
     // Clear the dirty flag for the this entity
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
+        ko.utils.arrayForEach(self.PageCounts(), function (item) {
+            item.clearDirtyFlag();
+        });
+    };
+
+    self.addPageCount = function () {
+        self.PageCounts.push(new tubs.PageCount({ "NeedsFocus": true }));
+    };
+
+    self.removePageCount = function (pageCount) {
+        if (pageCount && pageCount.Id()) { self.PageCounts.destroy(pageCount); }
+        else { self.PageCounts.remove(pageCount); }
     };
 
     // Commands
@@ -50,7 +93,7 @@ tubs.PageCountViewModel = function (data) {
             tubs.getPageCounts(
                 self.TripId(),
                 function (result) {
-                    ko.mapping.fromJS(result, {}, self);
+                    ko.mapping.fromJS(result, tubs.PageCountMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded page counts');
                     complete();
@@ -74,7 +117,7 @@ tubs.PageCountViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
-                    ko.mapping.fromJS(result, {}, self);
+                    ko.mapping.fromJS(result, tubs.PageCountMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved page counts');
                     complete();

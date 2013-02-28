@@ -24,6 +24,7 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Mvc;
     using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
@@ -106,7 +107,7 @@ namespace TubsWeb.Controllers
             {
                 foreach (var note in vm.Notes)
                 {
-                    if (null != note && note.Date.HasValue)
+                    if (null != note && note.Date.HasValue && !note._destroy)
                     {
                         if (!tripId.IsDuringTrip(note.Date.Value))
                         {
@@ -125,8 +126,11 @@ namespace TubsWeb.Controllers
                 return View(CurrentAction(), vm);
             }
 
+            // TODO:  D'Oh!  Forgot to handle Detail deletes...
             using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
+                var deletedNoteIds = vm.Notes.Where(n => n != null && n._destroy).Select(n => n.Id);
+                
                 if (Spc.Ofp.Tubs.DAL.Common.WorkbookVersion.v2009 == tripId.Version.Value)
                 {
                     // MockTripMonitor is a disposable container for the two lists of entities
@@ -150,6 +154,11 @@ namespace TubsWeb.Controllers
                     var drepo = TubsDataService.GetRepository<Gen3Detail>(MvcApplication.CurrentSession);
                     foreach (var detail in tm.Details)
                     {
+                        if (deletedNoteIds.Contains(detail.Id))
+                        {
+                            continue;
+                        }
+
                         detail.Trip = tripId;
                         detail.SetAuditTrail(User.Identity.Name, DateTime.Now);
                         if (!detail.IsNew())
@@ -159,6 +168,8 @@ namespace TubsWeb.Controllers
 
                         drepo.Save(detail);
                     }
+
+                    deletedNoteIds.ToList().ForEach(id => drepo.DeleteById(id));
 
                 }
                 else
@@ -176,6 +187,11 @@ namespace TubsWeb.Controllers
                     var drepo = TubsDataService.GetRepository<TripMonitorDetail>(MvcApplication.CurrentSession);
                     foreach (var detail in tm.Details)
                     {
+                        if (deletedNoteIds.Contains(detail.Id))
+                        {
+                            continue;
+                        }
+                        
                         detail.Header = tm;
                         detail.SetAuditTrail(User.Identity.Name, DateTime.Now);
                         if (!detail.IsNew())
@@ -184,6 +200,7 @@ namespace TubsWeb.Controllers
                         }
                     }
 
+                    deletedNoteIds.ToList().ForEach(id => drepo.DeleteById(id));
                     repo.Save(tm);
                 }
 

@@ -106,7 +106,7 @@ namespace TubsWeb.Controllers
             ViewBag.Message = "Home Page";
             ViewBag.TripsEnteredSince = TripsEnteredSince(30);
             ViewBag.TripsInLastWeek = TripsInLastWeekFor(User.Identity.Name);
-            ViewBag.TripsByYear = TripsByYear();
+            //ViewBag.TripsByYear = TripsByYear();
             return View();
         }
 

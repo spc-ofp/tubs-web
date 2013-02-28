@@ -108,7 +108,6 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.Notes, o => o.MapFrom(s => s.Details))
                 .ForMember(d => d.MonitorId, o => o.MapFrom(s => s.Id))
                 .ForMember(d => d.BooleanValues, o => o.Ignore())
-                .ForMember(d => d.QuestionCodes, o => o.Ignore())
                 .ForMember(d => d.IncidentByCode, o => o.Ignore()) // Not used in pre-2009 view model
                 .ForMember(d => d.Incidents, o => o.Ignore()) // AfterMap
                 .AfterMap((s,d) => 
@@ -141,6 +140,7 @@ namespace TubsWeb.Mapping.Profiles
 
             CreateMap<TripMonitorDetail, Gen3ViewModel.Note>()
                 .ForMember(d => d.Date, o => o.MapFrom(s => s.DetailDate))
+                .ForMember(d => d._destroy, o => o.Ignore())
                 ;
 
 
@@ -178,10 +178,12 @@ namespace TubsWeb.Mapping.Profiles
 
             CreateMap<Gen3Answer, Gen3ViewModel.Incident>()
                 .ForMember(d => d.Answer, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.Answer))
+                .ForMember(d => d._destroy, o => o.Ignore())
                 ;
 
             CreateMap<Gen3Detail, Gen3ViewModel.Note>()
                 .ForMember(d => d.Date, o => o.MapFrom(s => s.DetailDate))
+                .ForMember(d => d._destroy, o => o.Ignore())
                 ;
 
             CreateMap<Trip, Gen3ViewModel>()
@@ -190,24 +192,11 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.Incidents, o => o.MapFrom(s => s.Gen3Answers))
                 .ForMember(d => d.Notes, o => o.MapFrom(s => s.Gen3Details))
                 .ForMember(d => d.BooleanValues, o => o.Ignore())
-                .ForMember(d => d.QuestionCodes, o => o.Ignore())
                 .ForMember(d => d.IncidentByCode, o => o.Ignore()) // AfterMap
                 .ForMember(d => d.VersionNumber, o => o.MapFrom(s => s.Version == DAL.Common.WorkbookVersion.v2009 ? 2009 : 2007))
                 .ForMember(d => d.MonitorId, o => o.UseValue(0))
                 .AfterMap((s,d) => {
-                    // 2009 GEN-3 storage doesn't guarantee an entity for each question.
-                    // Instead, there should only be an entity for each "YES" answer
-                    if (null != d.Incidents)
-                    {
-                        for (int i = 0; i < d.Incidents.Count; i++)
-                        {
-                            var incident = d.Incidents[i];
-                            if (null != incident && !String.IsNullOrEmpty(incident.QuestionCode))
-                            {
-                                d.IncidentByCode.Add(incident.QuestionCode, i);
-                            }
-                        }
-                    }
+                    d.IndexIncidents();
                 })
                 ;
 

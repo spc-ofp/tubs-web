@@ -398,10 +398,12 @@ namespace TubsWeb.Controllers
             // TODO:  Validate time only values via RegEx
 
             var departDate = thvm.DepartureDateOnly.Parse().Merge(thvm.DepartureTimeOnly);
+            Logger.WarnFormat("departDate: {0}", departDate);
             if (!departDate.HasValue)
                 ModelState["DepartureDateOnly"].Errors.Add("Missing or invalid departure date");
 
             var returnDate = thvm.ReturnDateOnly.Parse().Merge(thvm.ReturnTimeOnly);
+            Logger.WarnFormat("returnDate: {0}", returnDate);
             if (!returnDate.HasValue)
                 ModelState["ReturnDateOnly"].Errors.Add("Missing or invalid return date");
 
@@ -457,8 +459,6 @@ namespace TubsWeb.Controllers
 
             // Set audit trail data
             trip.SetAuditTrail(User.Identity.Name, DateTime.Now);
-            //trip.EnteredDate = DateTime.Now;
-            //trip.EnteredBy = User.Identity.Name ?? "Unknown User";
 
             try
             {

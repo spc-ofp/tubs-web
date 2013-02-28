@@ -41,23 +41,25 @@ namespace TubsWeb.Mapping.Profiles
             base.Configure();
 
             CreateMap<DAL.Entities.Trip, PageCountViewModel>()
-                .Include<DAL.Entities.PurseSeineTrip, PurseSeinePageCountViewModel>()
                 .ForMember(d => d.TripId, o => o.MapFrom(s => s.Id))
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => s.SpcTripNumber))
-                .ForMember(d => d.Gen1Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.GEN1).Sum(x => x.FormCount)))
-                .ForMember(d => d.Gen2Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.GEN2).Sum(x => x.FormCount)))
-                .ForMember(d => d.Gen3Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.GEN3).Sum(x => x.FormCount)))
-                .ForMember(d => d.Gen6Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.GEN6).Sum(x => x.FormCount)))
+                .ForMember(d => d.FormKeys, o => o.Ignore())
                 ;
 
-            CreateMap<DAL.Entities.PurseSeineTrip, PurseSeinePageCountViewModel>()
-               .ForMember(d => d.Ps1Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.PS1).Sum(x => x.FormCount)))
-               .ForMember(d => d.Ps2Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.PS2).Sum(x => x.FormCount)))
-               .ForMember(d => d.Ps3Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.PS3).Sum(x => x.FormCount)))
-               .ForMember(d => d.Ps4Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.PS4).Sum(x => x.FormCount)))
-               .ForMember(d => d.Ps5Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.PS5).Sum(x => x.FormCount)))
-               .ForMember(d => d.Gen5Count, o => o.MapFrom(s => s.PageCounts.Where(x => x.FormName == FormNames.GEN5).Sum(x => x.FormCount)))
-               ;
+            CreateMap<DAL.Entities.PageCount, PageCountViewModel.PageCount>()
+                .ForMember(d => d.Key, o => o.MapFrom(s => s.FormName))
+                .ForMember(d => d.Value, o => o.MapFrom(s => s.FormCount))
+                .ForMember(d => d._destroy, o => o.Ignore())
+                ;
+
+            CreateMap<PageCountViewModel.PageCount, DAL.Entities.PageCount>()
+                .ForMember(d => d.Trip, o => o.Ignore()) // Caller's problem
+                .ForMember(d => d.RowVersion, o => o.Ignore()) // Not in VM
+                .ForMember(d => d.EnteredBy, o => o.Ignore()) // Caller's problem
+                .ForMember(d => d.EnteredDate, o => o.Ignore()) // Caller's problem
+                .ForMember(d => d.FormName, o => o.ResolveUsing<FormNameResolver>().FromMember(s => s.Key))
+                .ForMember(d => d.FormCount, o => o.MapFrom(s => s.Value))
+                ;
 
         }
     }

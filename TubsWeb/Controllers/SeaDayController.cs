@@ -166,6 +166,8 @@ namespace TubsWeb.Controllers
                 }
             }
 
+            // TODO:  Sort Events by time of day
+
             if (IsApiRequest())
                 return GettableJsonNetData(sdvm);
 
@@ -205,28 +207,45 @@ namespace TubsWeb.Controllers
             // from actually changing these.  This is here to guard against API bugs
             var seaCodes = sdvm.Keepers.Select(e => e.SeaCode).DefaultIfEmpty();
             var invalidSeaCodes = seaCodes.Where(c => c != null && !sdvm.SeaCodes.Contains(c)).Distinct();
-            if (invalidSeaCodes.Count() > 0)
-                ModelState["SeaCode"].Errors.Add(String.Format("Invalid Sea Code(s): [{0}]", string.Join(",", invalidSeaCodes)));
+            if (invalidSeaCodes.Any())
+            {
+                ModelState.AddModelError(String.Empty, String.Format("Invalid Sea Code(s): [{0}]", string.Join(",", invalidSeaCodes)));
+            }
 
             var detectionCodes = sdvm.Keepers.Select(e => e.DetectionCode).DefaultIfEmpty();
             var invalidDetectionCodes = detectionCodes.Where(c => c != null && !sdvm.DetectionCodes.Contains(c)).Distinct();
-            if (invalidDetectionCodes.Count() > 0)
-                ModelState["DetectionCode"].Errors.Add(String.Format("Invalid Detection Code(s): [{0}]", string.Join(",", invalidDetectionCodes)));
+            if (invalidDetectionCodes.Any())
+            {
+                ModelState.AddModelError(String.Empty, String.Format("Invalid Detection Code(s): [{0}]", string.Join(",", invalidDetectionCodes)));
+            }
 
             var associationCodes = sdvm.Keepers.Select(e => e.AssociationCode).DefaultIfEmpty();
             var invalidAssociationCodes = associationCodes.Where(c => c!= null && !sdvm.AssociationCodes.Contains(c)).Distinct();
-            if (invalidAssociationCodes.Count() > 0)
-                ModelState["AssociationCode"].Errors.Add(String.Format("Invalid Association Code(s): [{0}]", string.Join(",", invalidAssociationCodes)));
+            if (invalidAssociationCodes.Any())
+            {
+                ModelState.AddModelError(String.Empty, String.Format("Invalid Association Code(s): [{0}]", string.Join(",", invalidAssociationCodes)));
+            }
 
-            var invalidDeletes = sdvm.Deleted.Where(e => e.HasSet && e.IsLocked);
-            if (invalidDeletes.Count() > 0)
-                ModelState["ActivityCode"].Errors.Add("Can't delete set activity without confirmation");
+            // IMPORTANT!!!! Although LINQ is cool, it can lead to some subtle bugs:  In this case,
+            // Check for null as the first part of a .Where statement despite what is already done when
+            // the base IEnumerable is constructed in the ViewModel
+            var invalidDeletes = sdvm.Deleted.Where(e => e != null && e.HasSet && e.IsLocked);
+            if (invalidDeletes.Any())
+            {
+                ModelState.AddModelError(String.Empty, "Can't delete set activity without confirmation");
+            }
 
             // In this case, we're trusting the UI to send us good information.  If that turns into a problem, we can
             // bounce the IDs off the database instead
-            var invalidActivities = sdvm.Keepers.Where(e => e.HasSet && !"1".Equals(e.ActivityCode));
-            if (invalidActivities.Count() > 0)
-                ModelState["ActivityCode"].Errors.Add("Can't change Activity Code with associated set");
+            var invalidActivities = sdvm.Keepers.Where(e => e != null && e.HasSet && !"1".Equals(e.ActivityCode));
+            Logger.ErrorFormat("invalidActivities is null? {0}", null == invalidActivities);
+            if (invalidActivities.Any())
+            {               
+                // TODO:  Iterate over Model.Events to find the indexed item(s) with this problem
+                // then set ModelState["Events[n].ActivityCode"]
+                // However, this works for now...
+                ModelState.AddModelError(String.Empty, "Can't change Activity Code with associated set");
+            }
 
         }
 

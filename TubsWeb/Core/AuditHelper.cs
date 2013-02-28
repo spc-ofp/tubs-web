@@ -21,8 +21,11 @@ namespace TubsWeb.Core
             if (null != pkid && null != entity && null != repo)
             {
                 var previous = repo.FindById(pkid);
-                entity.EnteredBy = previous.EnteredBy;
-                entity.EnteredDate = previous.EnteredDate;
+                if (null != previous)
+                {
+                    entity.EnteredBy = previous.EnteredBy;
+                    entity.EnteredDate = previous.EnteredDate;
+                }
             }
         }
     }

@@ -60,15 +60,23 @@
     <div class="row">
         <div class="span2"><strong>Trip Positions</strong></div>
         <div class="span2">
+            @if (null == Model.Pushpins || Model.Pushpins.Count < 1)
+            {
+                @: N/A
+            }
+            else
+            {
             <a id="kmlLink" href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })' download="@(baseFileName)positions.kml">
                 <img src="~/Content/images/google-earth-16x16.png" alt="KML" height="16" width="16" />&nbsp;KML
             </a>
+            }
         </div>
         <div class="span2"><a href="#">Other Formats</a></div>
     </div>
     <div class="row">
         <div class="span2"><strong>Length Frequency</strong></div>
         <div class="span2">
+            @* TODO:  Change this to N/A if no LF data available *@
             @{ var lflink = Url.RouteUrl(TubsWeb.RouteConfig.LengthFrequencyByTrip, new { tripId = ViewBag.TripId });}
             <a id="lfexcelLink" href="@lflink" download="@(baseFileName)lengthfrequency.xlsx">
                 <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel

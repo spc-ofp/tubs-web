@@ -22,73 +22,42 @@
         </button>
         <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
     </p>
-@if (Model is TubsWeb.ViewModels.PurseSeinePageCountViewModel)
-{
-    <div class="control-group">
-        <label for="Ps1Count" class="control-label">PS-1</label>
-        <div class="controls">
-            <input type="number" id="Ps1Count" name="Ps1Count" data-bind="value: Ps1Count" class="input-small" />
-        </div> 
-    </div>
-    <div class="control-group">
-        <label for="Ps2Count" class="control-label">PS-2</label>
-        <div class="controls">
-            <input type="number" id="Ps2Count" name="Ps2Count" data-bind="value: Ps2Count" class="input-small" />
-        </div> 
-    </div>
-    <div class="control-group">
-        <label for="Ps3Count" class="control-label">PS-3</label>
-        <div class="controls">
-            <input type="number" id="Ps3Count" name="Ps3Count" data-bind="value: Ps3Count" class="input-small" />
-        </div> 
-    </div>
-    <div class="control-group">
-        <label for="Ps4Count" class="control-label">PS-4</label>
-        <div class="controls">
-            <input type="number" id="Ps4Count" name="Ps4Count" data-bind="value: Ps4Count" class="input-small" />
-        </div> 
-    </div>
-    <div class="control-group">
-        <label for="Ps5Count" class="control-label">PS-5</label>
-        <div class="controls">
-            <input type="number" id="Ps5Count" name="Ps5Count" data-bind="value: Ps5Count" class="input-small" />
-        </div> 
-    </div>
-}
-    <div class="control-group">
-        <label for="Gen1Count" class="control-label">GEN-1</label>
-        <div class="controls">
-            <input type="number" id="Gen1Count" name="Gen1Count" data-bind="value: Gen1Count" class="input-small" />
-        </div> 
-    </div>
-    <div class="control-group">
-        <label for="Gen2Count" class="control-label">GEN-2</label>
-        <div class="controls">
-            <input type="number" id="Gen2Count" name="Gen2Count" data-bind="value: Gen2Count" class="input-small" />
-        </div> 
-    </div>
-    <div class="control-group">
-        <label for="Gen3Count" class="control-label">GEN-3</label>
-        <div class="controls">
-            <input type="number" id="Gen3Count" name="Gen3Count" data-bind="value: Gen3Count" class="input-small" />
-        </div> 
-    </div>
-@if (Model is TubsWeb.ViewModels.PurseSeinePageCountViewModel)
-{
-    <div class="control-group">
-        <label for="Gen5Count" class="control-label">GEN-3</label>
-        <div class="controls">
-            <input type="number" id="Gen5Count" name="Gen5Count" data-bind="value: Gen5Count" class="input-small" />
-        </div> 
-    </div>
-}
-    <div class="control-group">
-        <label for="Gen6Count" class="control-label">GEN-6</label>
-        <div class="controls">
-            <input type="number" id="Gen6Count" name="Gen6Count" data-bind="value: Gen6Count" class="input-small" />
-        </div> 
-    </div>
+
+    <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.PageCounts().length == 0">Add Page Count</button>
+    <ul class="unstyled page-count-entries" data-bind="foreach: $root.PageCounts">
+        <li>
+            <div class="row-fluid">
+                <div class="span1">
+                    <button type="button"
+                        tabindex="3000"
+                        class="removeItem btn btn-mini btn-danger" 
+                        rel="tooltip" 
+                        title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                </div>
+                <div class="span3">
+                <div class="control-group">
+                    <select class="input-small" data-bind="options: $root.FormKeys, value: $data.Key"></select>
+                    <input type="number" data-bind="value: $data.Value" class="input-mini" />
+                    </div>
+                </div>
+                <div class="span1">
+                <button class="addItem btn btn-mini btn-info" 
+                        type="button"
+                        rel="tooltip" 
+                        title="Click to add row">
+                    <i class="icon-plus icon-white"></i>
+                </button>
+                </div>
+            </div>
+        </li>
+    </ul>
 </form>
+
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
+
 
 @section AdditionalScripts {
     <!-- Ajax data layer -->
@@ -103,6 +72,39 @@
             var viewModel = new tubs.PageCountViewModel(@modelAsJson);
             viewModel.clearDirtyFlag();
             ko.applyBindings(viewModel);
+
+            $(".page-count-entries").on("click", ".removeItem", function() {
+                viewModel.removePageCount(ko.dataFor(this));
+            });
+            $(".page-count-entries").on("click", ".addItem", function() {
+                viewModel.addPageCount();
+            });
+
+            $("#btnAddWhenEmpty").on("click", function () {
+                viewModel.addPageCount();
+            });
+
+            // PageGuide initialization
+            tl.pg.init();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function(e) {
+                if (viewModel.isDirty())
+                {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };  
         });
     </script>
     

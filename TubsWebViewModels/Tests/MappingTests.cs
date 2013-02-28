@@ -77,6 +77,7 @@ namespace TubsWeb.Tests
             {
                 var trip = repo.FindById(tripId);
                 Assert.NotNull(trip);
+                // var entity = Mapper.Map<TransferViewModel.Transfer, Transfer>(transfer);
                 var vm = Mapper.Map<Trip, TransferViewModel>(trip);
                 Assert.NotNull(vm);
                 Assert.AreEqual(tripId, vm.TripId);
@@ -112,13 +113,9 @@ namespace TubsWeb.Tests
             {
                 var trip = repo.FindById(tripId) as PurseSeineTrip;
                 Assert.NotNull(trip);
-                var vm = Mapper.Map<PurseSeineTrip, PurseSeinePageCountViewModel>(trip);
+                var vm = Mapper.Map<PurseSeineTrip, PageCountViewModel>(trip);
                 Assert.NotNull(vm);
-                Assert.AreEqual(1, vm.Ps1Count);
-                Assert.AreEqual(5, vm.Ps2Count);
-                Assert.AreEqual(5, vm.Gen3Count);
-                Assert.False(vm.Gen6Count.HasValue, "GEN-6 count");
-                
+                Assert.GreaterOrEqual(vm.PageCounts.Count, 6);
             }
         }
         
@@ -280,6 +277,19 @@ namespace TubsWeb.Tests
             Assert.AreEqual(3, entity.Answers.Count);
             Assert.NotNull(entity.Details);
             Assert.AreEqual(2, entity.Details.Count);
+        }
+
+        [Test]
+        public void Gen2EntityToViewModel([Values(7)] int sspId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<SpecialSpeciesInteraction>(false))
+            {
+                var ssi = repo.FindById(sspId);
+                Assert.NotNull(ssi, "Entity lookup returned null");
+                var vm = Mapper.Map<SpecialSpeciesInteraction, Gen2ViewModel>(ssi);
+                Assert.NotNull(vm, "AutoMapper view model is null");
+            }
         }
     }
 }

@@ -203,7 +203,9 @@ namespace TubsWeb.Controllers
         {
             var routeValues = new { tripId = tripId.Id };
             IList<NavPill> pills = new List<NavPill>(12);
-            
+
+            pills.Add(new NavPill { Title = "PS-1", Href = Url.Action("Index", "Ps1", routeValues) });
+
             // Don't display pills for data we know we don't have
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.VesselAttributes != null))
             {
@@ -216,6 +218,10 @@ namespace TubsWeb.Controllers
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.VesselNotes != null))
             {
                 pills.Add(new NavPill { Title = "Vessel Comments (PS-1)", Href = Url.Action("Index", "WellContent", routeValues) });
+            }
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.Crew.Count > 0))
+            {
+                pills.Add(new NavPill { Title = "Crew (PS-1)", Href = Url.Action("Index", "Crew", routeValues) });
             }
         }
 
@@ -242,6 +248,12 @@ namespace TubsWeb.Controllers
                 {
                     pills.Add(Tuple.Create("Crew (PS-1)", Url.Action("Index", "Crew", routeValues)));
                 }
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.SeaDays.Count > 0))
+                {
+                    pills.Add(Tuple.Create("Days (PS-2)", Url.Action("List", "SeaDay", routeValues)));
+                }
+                // TODO Use the route for this so that the name looks right
+                pills.Add(Tuple.Create("Sets (PS-3)", Url.Action("List", "FishingSet", routeValues)));
             }
          
             // TODO Split GEN-1 into Sightings and Transfers
@@ -253,25 +265,20 @@ namespace TubsWeb.Controllers
                 pills.Add(Tuple.Create("GEN-3", Url.Action("Index", "Gen3", routeValues)));
             }
             // GEN-5 is Purse Seine only
-            pills.Add(Tuple.Create("GEN-5", Url.Action("Index", "Gen5", routeValues)));
+            if (typeof(PurseSeineTrip) == tripId.GetType())
+            {
+                // TODO:  Hide if read only and no data
+                pills.Add(Tuple.Create("GEN-5", Url.Action("Index", "Gen5", routeValues)));
+            }
+
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.PollutionEvents.Count > 0))
             {
                 pills.Add(Tuple.Create("GEN-6", Url.Action("List", "Gen6", routeValues)));
             }
-            pills.Add(Tuple.Create("Days (PS-2)", Url.Action("List", "SeaDay", routeValues)));
-            // TODO Use the route for this so that the name looks right
-            pills.Add(Tuple.Create("Sets (PS-3)", Url.Action("List", "FishingSet", routeValues)));
-            pills.Add(Tuple.Create("Page Counts", Url.Action("Index", "PageCount", routeValues)));
-            
-            // It's possible that the scan didn't come with a registration cover page.  If not, TUBS has to create it
-            // This URL is outside the system
-            // TODO Figure out the best way to have this URL open in a new window.
-            //string coverPageUrl = GetReportUrl(CoverPage, tripId.Id);
-            //pills.Add(Tuple.Create("Cover Page", coverPageUrl));
-            //string summaryReportUrl = GetReportUrl(PSTripSummary, tripId.Id);
-            //pills.Add(Tuple.Create("Trip Summary", summaryReportUrl));
 
+            pills.Add(Tuple.Create("Page Counts", Url.Action("Index", "PageCount", routeValues)));
             pills.Add(Tuple.Create("Position Audit", Url.Action("PositionAudit", "Trip", routeValues)));
+
             if (!tripId.IsReadOnly)
             {
                 pills.Add(Tuple.Create("Close Trip", Url.Action("Close", "Trip", routeValues)));

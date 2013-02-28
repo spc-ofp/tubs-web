@@ -114,7 +114,7 @@ namespace TubsWeb.Controllers
                 // Deletes first
                 // This I can do in LINQ
                 svm.Sightings.Where(s => s != null && s._destroy).ToList().ForEach(s => repo.DeleteById(s.Id));
-
+                // TODO:  Backfill audit.  I really need to fix this problem...
                 sightings.ForEach(s => repo.Save(s));
                 xa.Commit();
             }
@@ -146,15 +146,65 @@ namespace TubsWeb.Controllers
         }
 
         [HttpPost]
+        [HandleTransactionManually]
         [EditorAuthorize]
-        public ActionResult Transfers(Trip tripId, TransferViewModel tvm)
+        public ActionResult EditTransfers(Trip tripId, TransferViewModel tvm)
         {
             if (null == tripId)
             {
                 return InvalidTripResponse();
             }
 
-            return View(tvm);
+            if (!ModelState.IsValid)
+            {
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+                return View(tvm);
+            }
+
+            var transfers = new List<Transfer>();
+            // I can almost get there with LINQ, but I fear I'd have problems with it
+            // in the Brian Kernighan "twice-as-smart-to-debug" sense.
+            foreach (var transfer in tvm.Transfers)
+            {
+                if (null == transfer || transfer._destroy)
+                    continue;
+                var entity = Mapper.Map<TransferViewModel.Transfer, Transfer>(transfer);
+                if (null != entity)
+                {
+                    entity.Trip = tripId;
+                    entity.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    transfers.Add(entity);
+                }
+            }
+
+
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+                IRepository<Transfer> repo = TubsDataService.GetRepository<Transfer>(MvcApplication.CurrentSession);
+
+                // Deletes first
+                // This I can do in LINQ
+                tvm.Transfers.Where(s => s != null && s._destroy).ToList().ForEach(s => repo.DeleteById(s.Id));
+                // TODO:  Backfill audit.  I really need to fix this problem...
+                transfers.ForEach(s => repo.Save(s));
+                xa.Commit();
+            }
+
+
+            if (IsApiRequest())
+            {
+                using (var trepo = TubsDataService.GetRepository<Trip>(false))
+                {
+                    var t = trepo.FindById(tripId.Id);
+                    Logger.ErrorFormat("Trip has {0} transfer(s)", t.Transfers.Count);
+                    tvm = Mapper.Map<Trip, TransferViewModel>(t);
+                }
+                return GettableJsonNetData(tvm);
+
+            }
+
+            return RedirectToAction("EditTransfers", "Gen1", new { tripId = tripId.Id });
         }
         
         
@@ -193,6 +243,7 @@ namespace TubsWeb.Controllers
         }
         */
 
+        /*
         [HttpPost]
         [EditorAuthorize]
         [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
@@ -255,6 +306,7 @@ namespace TubsWeb.Controllers
             var transfers = repo.FilterBy(t => t.Trip.Id == tripId.Id);
             return PartialView("_EditTransfers", transfers);
         }
+        */
 
     }
 }

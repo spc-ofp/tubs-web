@@ -44,7 +44,7 @@ namespace TubsWeb
                     // jQuery plugins
                     "~/Scripts/activity-indicator-{version}.js",
                     "~/Scripts/jquery.rateit.js",
-                    "~/Scripts/jquery.sparkline.min.js",
+                    //"~/Scripts/jquery.sparkline.min.js", // A jQuery upgrade seems to have busted this.  No big loss.
                     "~/Scripts/jquery.validate.js",
                     "~/Scripts/jquery.validate.unobtrusive.js",
                     "~/Scripts/jquery.unobtrusive-ajax.js",

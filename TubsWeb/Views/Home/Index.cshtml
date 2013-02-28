@@ -8,11 +8,14 @@
     <br />
     <p>@ViewBag.TripsEnteredSince trips entered in the last 30 days.</p>
     <p>You have entered @ViewBag.TripsInLastWeek trip(s) in the last 7 days.</p>
+    @*
     <p>
         Trips by year
         <br />
         <span class="inlinesparkline" style="height: 2em;">@ViewBag.TripsByYear</span>
     </p>
+    *@
+    <br />
     <br />
     <p>
         @Html.RouteLink("My Open Trips", "MyOpenTrips") | 
@@ -29,7 +32,7 @@
 @section AdditionalScripts {
     <script type="text/javascript">
         $(function () {
-            $('.inlinesparkline').sparkline('html', { height: '50px', width: '200px' });
+            //$('.inlinesparkline').sparkline('html', { height: '50px', width: '200px' });
             //$("#accordion").accordion();
         });
     </script>

@@ -1,10 +1,10 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="PurseSeinePageCountViewModel.cs" company="Secretariat of the Pacific Community">
-// Copyright (C) 2012 Secretariat of the Pacific Community
+// <copyright file="SamplingController.cs" company="Secretariat of the Pacific Community">
+// Copyright (C) 2013 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.ViewModels
+namespace TubsWeb.Controllers
 {
     /*
      * This file is part of TUBS.
@@ -23,21 +23,33 @@ namespace TubsWeb.ViewModels
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Newtonsoft.Json;
-    using Spc.Ofp.Tubs.DAL.Common;
+    using System.Web.Mvc;
+    using AutoMapper;
+    using Spc.Ofp.Tubs.DAL;
+    using Spc.Ofp.Tubs.DAL.Entities;
+    using TubsWeb.Core;
+    using TubsWeb.ViewModels;
 
-    /// <summary>
-    /// TODO: Update summary.
-    /// </summary>
-    public class PurseSeinePageCountViewModel : PageCountViewModel
+    public class SamplingController : SuperController
     {
-        public int? Ps1Count { get; set; }
-        public int? Ps2Count { get; set; }
-        public int? Ps3Count { get; set; }
-        public int? Ps4Count { get; set; }
-        public int? Ps5Count { get; set; }
-        public int? Gen5Count { get; set; }
+        internal ActionResult ViewActionImpl(Trip tripId)
+        {
+            var trip = tripId as PurseSeineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            var vm = new object();
+
+
+            return View(CurrentAction(), vm);
+        }
+
+        public ActionResult Index(Trip tripId)
+        {
+            return ViewActionImpl(tripId);
+        }
+
     }
 }

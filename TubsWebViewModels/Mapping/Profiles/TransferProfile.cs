@@ -37,6 +37,30 @@ namespace TubsWeb.Mapping.Profiles
         {
             base.Configure();
 
+            Mapper.CreateMap<TransferViewModel.Transfer, DAL.Entities.Transfer>()
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore())
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
+                .ForMember(d => d.DctNotes, o => o.Ignore())
+                .ForMember(d => d.DctScore, o => o.Ignore())
+                .ForMember(d => d.Trip, o => o.Ignore()) // Caller's responsibility
+                .ForMember(d => d.EezCode, o => o.Ignore())
+                .ForMember(d => d.Vessel, o => o.Ignore()) // TODO Figure out how this works
+                .ForMember(d => d.TransferDateOnly, o => o.MapFrom(s => s.DateOnly))
+                .ForMember(d => d.TransferTimeOnly, o => o.MapFrom(s => s.TimeOnly))
+                .ForMember(d => d.TransferDate, o => o.MapFrom(s => s.DateOnly.Merge(s.TimeOnly)))
+                .ForMember(d => d.VesselName, o => o.MapFrom(s => s.Name))
+                .ForMember(d => d.VesselFlag, o => o.MapFrom(s => s.CountryCode))
+                .ForMember(d => d.VesselType, o => o.ResolveUsing<VesselTypeCodeResolver>().FromMember(s => s.TypeCode))
+                .ForMember(d => d.TonsOfMixed, o => o.MapFrom(s => s.Mixed))
+                .ForMember(d => d.TonsOfSkipjack, o => o.MapFrom(s => s.Skipjack))
+                .ForMember(d => d.TonsOfBigeye, o => o.MapFrom(s => s.Bigeye))
+                .ForMember(d => d.TonsOfYellowfin, o => o.MapFrom(s => s.Yellowfin))
+                .ForMember(d => d.ActionType, o => o.ResolveUsing<ActionCodeResolver>().FromMember(s => s.ActionCode))
+                ;
+
+
             Mapper.CreateMap<DAL.Entities.Transfer, TransferViewModel.Transfer>()
                 .ForMember(d => d._destroy, o => o.Ignore())
                 .ForMember(d => d.NeedsFocus, o => o.Ignore())
@@ -45,7 +69,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.CountryCode, o => o.MapFrom(s => s.VesselFlag))
                 .ForMember(d => d.DateOnly, o => o.MapFrom(s => s.TransferDateOnly))
                 .ForMember(d => d.TimeOnly, o => o.MapFrom(s => s.TransferTimeOnly))
-                .ForMember(d => d.TypeCode, o => o.ResolveUsing<VesselTypeResolver>().FromMember(s => s.VesselType))
+                .ForMember(d => d.TypeCode, o => o.ResolveUsing<TransferVesselResolver>().FromMember(s => s.VesselType))
                 .ForMember(d => d.ActionCode, o => o.ResolveUsing<ActionTypeResolver>().FromMember(s => s.ActionType))
                 .ForMember(d => d.TypeDescription, o => o.MapFrom(s => s.VesselType.HasValue ? s.VesselType.GetDescription() : "N/A"))
                 .ForMember(d => d.ActionDescription, o => o.MapFrom(s => s.ActionType.HasValue ? s.ActionType.GetDescription() : "N/A"))

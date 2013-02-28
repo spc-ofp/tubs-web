@@ -131,8 +131,7 @@ namespace TubsWeb.ViewModels
 
             public string OtherEpirbType { get; set; }
             public int? OtherEpirbCount { get; set; }
-            public string OtherEpirbExpiration { get; set; }
-           
+            public string OtherEpirbExpiration { get; set; }           
 
             public int? LifeRaft1Capacity { get; set; }
             public string LifeRaft1Inspection { get; set; }

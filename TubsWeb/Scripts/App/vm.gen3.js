@@ -32,14 +32,13 @@ tubs.gen3Mapping = {
     }
 };
 
+
 tubs.gen3Incident = function (incidentData) {
     var self = this;
     self.Id = ko.observable(incidentData.Id || 0);
-    self.QuestionCode = ko.observable(incidentData.QuestionCode || '');
-    self.Answer = ko.observable(incidentData.Answer || null);
-    self.JournalPage = ko.observable(incidentData.JournalPage || null);
-    self._destroy = ko.observable(incidentData._destroy || false);
-    self.NeedsFocus = ko.observable(incidentData.NeedsFocus || false);
+    self.QuestionCode = ko.observable(incidentData.QuestionCode);
+    self.Answer = ko.observable(incidentData.Answer);
+    self.JournalPage = ko.observable(incidentData.JournalPage);
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.QuestionCode,
@@ -50,6 +49,10 @@ tubs.gen3Incident = function (incidentData) {
     self.isDirty = ko.computed(function () {
         return self.dirtyFlag().isDirty();
     });
+
+    self.clearDirtyFlag = function () {
+        self.dirtyFlag().reset();
+    };
 
     return self;
 };
@@ -71,6 +74,10 @@ tubs.gen3Note = function (noteData) {
         return self.dirtyFlag().isDirty();
     });
 
+    self.clearDirtyFlag = function () {
+        self.dirtyFlag().reset();
+    };
+
     return self;
 };
 
@@ -79,7 +86,10 @@ tubs.gen3 = function (data) {
     var self = this;
     ko.mapping.fromJS(data, tubs.gen3Mapping, self);
 
+    // TODO:  Adding Incidents to DirtyFlag allows save
+    // at the cost of a false positive
     self.dirtyFlag = new ko.DirtyFlag([
+        self.Incidents,
         self.Notes // Add/Remove only
     ], false /* Add appropriate has function where necessary */);
 
@@ -90,17 +100,16 @@ tubs.gen3 = function (data) {
         // Check each child, bailing on the first
         // dirty child.
         var hasDirtyChild = false;
-        $.each(self.Incidents(), function (i, child) {
-            if (child.isDirty()) {
+        ko.utils.arrayForEach(self.Incidents(), function (item) {
+            if (item.isDirty()) {
                 hasDirtyChild = true;
-                return false;
             }
         });
         if (hasDirtyChild) { return hasDirtyChild; }
-        $.each(self.Notes(), function (i, child) {
-            if (child.isDirty()) {
+
+        ko.utils.arrayForEach(self.Notes(), function (item) {
+            if (item.isDirty()) {
                 hasDirtyChild = true;
-                return false;
             }
         });
         return hasDirtyChild;
@@ -109,10 +118,10 @@ tubs.gen3 = function (data) {
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
         $.each(self.Incidents(), function (index, value) {
-            value.dirtyFlag().reset();
+            value.clearDirtyFlag();
         });
         $.each(self.Notes(), function (index, value) {
-            value.dirtyFlag().reset();
+            value.clearDirtyFlag();
         });
     };
 

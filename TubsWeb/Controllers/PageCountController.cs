@@ -23,6 +23,7 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Linq;
     using System.Web.Mvc;
     using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
@@ -39,9 +40,7 @@ namespace TubsWeb.Controllers
                 return InvalidTripResponse();
             }
 
-            var vm = tripId is PurseSeineTrip ?
-                Mapper.Map<PurseSeineTrip, PurseSeinePageCountViewModel>(tripId as PurseSeineTrip) :
-                Mapper.Map<Trip, PageCountViewModel>(tripId);
+            var vm = Mapper.Map<Trip, PageCountViewModel>(tripId);
 
             if (IsApiRequest())
                 return GettableJsonNetData(vm);
@@ -61,19 +60,57 @@ namespace TubsWeb.Controllers
 
         [HttpPost]
         [EditorAuthorize]
+        [HandleTransactionManually]
+        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public ActionResult Edit(Trip tripId, PageCountViewModel pcvm)
         {
-            var repo = TubsDataService.GetRepository<PageCount>(MvcApplication.CurrentSession);
-            if (tripId is PurseSeineTrip)
+            if (null == tripId)
             {
-                var vm = pcvm as PurseSeinePageCountViewModel;
-                foreach (var pc in tripId.PageCounts)
+                return InvalidTripResponse();
+            }
+
+            if (null == pcvm)
+            {
+                return ViewActionImpl(tripId);
+            }
+
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+                var repo = TubsDataService.GetRepository<PageCount>(MvcApplication.CurrentSession);
+                // Deletes first
+                pcvm.PageCounts.Where(pc => pc != null && pc._destroy).ToList().ForEach(x => repo.DeleteById(x.Id));
+                // Save or update
+                var saves = pcvm.PageCounts.Where(pc => pc != null && !pc._destroy);
+                foreach (var item in saves)
                 {
+                    Logger.ErrorFormat("Saving PageCount with key {0} and value {1}", item.Key, item.Value);
+                    var entity = Mapper.Map<PageCountViewModel.PageCount, PageCount>(item);
+                    if (null == entity) { continue; }
+                    Logger.ErrorFormat("Entity values for Form {0} and Count {1}", entity.FormName, entity.FormCount);
+                    entity.Trip = tripId;
+                    entity.EnteredBy = User.Identity.Name;
+                    entity.EnteredDate = DateTime.Now;
+                    repo.Save(entity);
                     
                 }
+
+                xa.Commit();
             }
-            
-            throw new NotImplementedException("");
+
+            if (IsApiRequest())
+            {
+                using (var trepo = TubsDataService.GetRepository<Trip>(false))
+                {
+                    var trip = trepo.FindById(tripId.Id);
+                    pcvm = Mapper.Map<Trip, PageCountViewModel>(tripId);
+                    return GettableJsonNetData(pcvm);
+                }
+               
+            }
+
+            // If this isn't an API request (which shouldn't really happen)
+            // always push to the Edit page.
+            return RedirectToAction("Edit", "PageCount", new { tripId = tripId.Id });
         }
 
 

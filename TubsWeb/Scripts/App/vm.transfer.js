@@ -136,7 +136,7 @@ tubs.TransferViewModel = function (data) {
 
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
-            tubs.saveSightings(
+            tubs.saveTransfers(
                 self.TripId(),
                 self,
                 function (result) {

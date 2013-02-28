@@ -24,22 +24,48 @@ namespace TubsWeb.ViewModels
      */
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Newtonsoft.Json;
-    using Spc.Ofp.Tubs.DAL.Common;
 
     /// <summary>
     /// Page counts for a trip.
     /// </summary>
     public class PageCountViewModel
     {
+        public PageCountViewModel()
+        {
+            PageCounts = new List<PageCount>(8);
+            FormKeys = new List<string>()
+            {
+                String.Empty,
+                "PS1",
+                "PS2",
+                "PS3",
+                "PS4",
+                "PS5",
+                "GEN1",
+                "GEN2",
+                "GEN3",
+                "GEN5",
+                "GEN6",
+                "LL1",
+                "LL2",
+                "LL3/4"
+            };
+        }
+        
         public int TripId { get; set; }
         public string TripNumber { get; set; }
+        public IList<PageCount> PageCounts { get; set; }
 
-        public int? Gen1Count { get; set; }
-        public int? Gen2Count { get; set; }
-        public int? Gen3Count { get; set; }
-        public int? Gen6Count { get; set; }
+        public IList<string> FormKeys { get; set; }
+
+        public class PageCount
+        {
+            public int Id { get; set; }
+            public string Key { get; set; }
+            public int? Value { get; set; }
+            public bool _destroy { get; set; }
+        }
 
     }
 }

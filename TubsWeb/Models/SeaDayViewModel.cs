@@ -202,7 +202,14 @@ namespace TubsWeb.Models
         {
             get
             {
-                return this.Events.Where(e => (e != null && !e._destroy));
+                foreach (var evt in this.Events)
+                {
+                    if (null != evt && !evt._destroy)
+                    {
+                        yield return evt;
+                    }
+                }
+                //return this.Events.Where(e => (e != null && !e._destroy)) ?? Enumerable.Empty<SeaDayEvent>();
             }
         }
 
@@ -211,7 +218,7 @@ namespace TubsWeb.Models
         {
             get
             {
-                return this.Events.Where(e => (e != null && e._destroy));
+                return this.Events.Where(e => e != null && e._destroy);
             }
         }
 
