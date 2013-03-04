@@ -1,4 +1,8 @@
-﻿/*
+﻿/// <reference path="~/Scripts/knockout-2.2.1.js" />
+/// <reference path="~/Scripts/knockout.mapping-latest.js" />
+/// <reference path="~/Scripts/knockout.command.js" />
+
+/*
 * vm.crew.js
 * Knockout.js ViewModel for editing a PS-2 Daily Log
 * Depends on:

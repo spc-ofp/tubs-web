@@ -54,7 +54,7 @@ namespace TubsWeb.Mapping.Profiles
 
             CreateMap<PageCountViewModel.PageCount, DAL.Entities.PageCount>()
                 .ForMember(d => d.Trip, o => o.Ignore()) // Caller's problem
-                .ForMember(d => d.RowVersion, o => o.Ignore()) // Not in VM
+                //.ForMember(d => d.RowVersion, o => o.Ignore()) // Not in VM
                 .ForMember(d => d.EnteredBy, o => o.Ignore()) // Caller's problem
                 .ForMember(d => d.EnteredDate, o => o.Ignore()) // Caller's problem
                 .ForMember(d => d.FormName, o => o.ResolveUsing<FormNameResolver>().FromMember(s => s.Key))

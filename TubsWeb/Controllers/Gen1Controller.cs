@@ -139,6 +139,9 @@ namespace TubsWeb.Controllers
             return TransferViewActionImpl(tripId);
         }
 
+        // HttpGet without HttpPost should lock out the client from POSTing to
+        // this endpoint
+        [HttpGet]
         [EditorAuthorize]
         public ActionResult EditTransfers(Trip tripId)
         {
@@ -197,7 +200,6 @@ namespace TubsWeb.Controllers
                 using (var trepo = TubsDataService.GetRepository<Trip>(false))
                 {
                     var t = trepo.FindById(tripId.Id);
-                    Logger.ErrorFormat("Trip has {0} transfer(s)", t.Transfers.Count);
                     tvm = Mapper.Map<Trip, TransferViewModel>(t);
                 }
                 return GettableJsonNetData(tvm);

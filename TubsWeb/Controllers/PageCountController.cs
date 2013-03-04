@@ -53,6 +53,8 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId);
         }
 
+        [HttpGet]
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
@@ -102,7 +104,7 @@ namespace TubsWeb.Controllers
                 using (var trepo = TubsDataService.GetRepository<Trip>(false))
                 {
                     var trip = trepo.FindById(tripId.Id);
-                    pcvm = Mapper.Map<Trip, PageCountViewModel>(tripId);
+                    pcvm = Mapper.Map<Trip, PageCountViewModel>(trip);
                     return GettableJsonNetData(pcvm);
                 }
                
