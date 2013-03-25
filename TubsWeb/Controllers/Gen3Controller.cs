@@ -63,6 +63,16 @@ namespace TubsWeb.Controllers
             // Build ViewModel from the appropriate Trip sub entity/entities
             var vm = LoadViewModel(tripId);
 
+            // v2007 workbooks without a TripMonitor result in a null view model
+            // object.  This should fix the issue with the least amount of fuss.
+            if (null == vm)
+            {
+                vm = new Gen3ViewModel();
+                vm.TripId = tripId.Id;
+                vm.VersionNumber = 2007;
+                vm.TripNumber = tripId.SpcTripNumber;
+            }
+
             // Ensure that, for v2009 workbooks, the ViewModel has 31 possible questions
             // in the same display order as the printed workbook
             vm.PrepareIncidents();

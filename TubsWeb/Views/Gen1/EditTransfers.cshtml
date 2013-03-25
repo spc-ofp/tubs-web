@@ -54,8 +54,8 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody data-bind="foreach: Transfers">
-            <tr data-bind="css: { warning: (isDirty() || 0 === Id) }" class="lineitems">
+        <tbody data-bind="foreach: Transfers" class="lineitems">
+            <tr data-bind="css: { warning: (isDirty() || 0 === Id) }">
                 <td>
                     @* Delete button is taken out of the tab order to prevent accidents *@
                     <button type="button"

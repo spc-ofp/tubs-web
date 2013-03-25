@@ -22,6 +22,10 @@
 }
 
 @* TODO Add a confirmation prompt *@
+<p>
+Closing a trip marks the end of data entry.  After being closed, the trip will
+be read only and no further updates will be accepted.
+</p>
 
 @using (Html.BeginForm("Close", "Trip", FormMethod.Post, new { @class = "form well" }))
 {
@@ -30,9 +34,9 @@
         @Html.HiddenFor(m => Model.TripId)
         @Html.LabelFor(m => Model.Comments)
         @Html.TextAreaFor(m => Model.Comments, new { @class = "span6", style = "height: 200px;" })
-        <div class="btn-group">
-                <input type="submit" name="Save" value="Save" class="btn-primary" />
-                <input type="reset" name="Cancel" />
-        </div>
+        <p>
+            <input type="submit" name="Save" value="Save" class="btn btn-primary" />
+            <input type="reset" name="Cancel" class="btn" />
+        </p>
     </fieldset>
 }
