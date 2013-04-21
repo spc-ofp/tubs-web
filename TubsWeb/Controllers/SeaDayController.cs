@@ -23,6 +23,7 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
     using System.Web.Routing;
@@ -136,6 +137,7 @@ namespace TubsWeb.Controllers
             // Based on NeedsRedirect, we should be okay -- the
             // dayNumber should be perfect for the action
             var day = days.Skip(dayNumber - 1).Take(1).FirstOrDefault() as PurseSeineSeaDay;
+            // AsViewModel should have sorted the activities in a day by time
             var sdvm = day.AsViewModel(trip, dayNumber, maxDays);
             sdvm.ActionName = CurrentAction();
 
@@ -165,8 +167,6 @@ namespace TubsWeb.Controllers
                     }
                 }
             }
-
-            // TODO:  Sort Events by time of day
 
             if (IsApiRequest())
                 return GettableJsonNetData(sdvm);
@@ -289,6 +289,14 @@ namespace TubsWeb.Controllers
                 var activities = sdvm.AsActivities();
                 foreach (var activity in activities)
                 {
+                    // Reformat lat/lon to expected format dd.mmmmm or ddd.mmmmm so that
+                    // stored procs operate as expected.
+                    activity.Latitude = activity.Latitude.AsSpcLatitude();
+                    activity.Longitude = activity.Longitude.AsSpcLongitude();
+
+                    // TODO Activity doesn't have decimal versions -- should that be added here or elsewhere?
+                    // In fact, perhaps the above format fix should be elsewhere too.
+                    
                     // If an activity is _new_ and has an activity code of fishing, create a new empty
                     // set.  This will enable easier entry on the PS-3 side.  Set# and Page# should match, so remind users
                     // to check?
@@ -340,11 +348,15 @@ namespace TubsWeb.Controllers
                             // TODO: Re-order the sets according to date
                             // This could get crazy, so perhaps we need to notify the
                             // user somehow...
+                            // Update (16/04/13):  Can do this via stored proc, trick is now
+                            // to figure out how to call stored proc after commit.
                         }
                     }
                 }
 
                 xa.Commit();
+
+                // TODO Call stored proc that sets latd/lond from lat/lon for this s_day_id
             }
 
             // If the save worked, the entity should have been updated with the

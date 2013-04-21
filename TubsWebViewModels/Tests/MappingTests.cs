@@ -280,15 +280,36 @@ namespace TubsWeb.Tests
         }
 
         [Test]
-        public void Gen2EntityToViewModel([Values(7)] int sspId)
+        public void Gen2SightingEntityToViewModel([Values(7)] int sspId)
         {
             Mapper.AssertConfigurationIsValid();
-            using (var repo = TubsDataService.GetRepository<SpecialSpeciesInteraction>(false))
+            using (var repo = TubsDataService.GetRepository<Interaction>(false))
             {
                 var ssi = repo.FindById(sspId);
                 Assert.NotNull(ssi, "Entity lookup returned null");
-                var vm = Mapper.Map<SpecialSpeciesInteraction, Gen2ViewModel>(ssi);
+                var vm = Mapper.Map<Interaction, Gen2ViewModel>(ssi) as Gen2SightingViewModel;              
                 Assert.NotNull(vm, "AutoMapper view model is null");
+                StringAssert.AreEqualIgnoringCase("FAW", vm.SpeciesCode);
+                Assert.True(vm.NumberSighted.HasValue);
+                Assert.AreEqual(8, vm.NumberSighted);
+
+            }
+        }
+
+        [Test]
+        public void Gen2LandedEntityToViewModel([Values(10)] int sspId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Interaction>(false))
+            {
+                var ssi = repo.FindById(sspId);
+                Assert.NotNull(ssi, "Entity lookup returned null");
+                var vm = Mapper.Map<Interaction, Gen2ViewModel>(ssi) as Gen2LandedViewModel;
+                Assert.NotNull(vm, "AutoMapper view model is null");
+                StringAssert.AreEqualIgnoringCase("RHN", vm.SpeciesCode);
+                Assert.AreEqual("A0", vm.LandedConditionCode);
+                
+
             }
         }
     }

@@ -14,6 +14,12 @@
             <text>
             var depDate = new Date('@ViewData[minDateKey]');
             var retDate = new Date('@ViewData[maxDateKey]');
+            // Bootstrap datepicker has some different options.  It's missing the alt-format and a default date.
+            /*
+            format: dd-mm-yy
+            startDate: depDate
+            endDate: retDate
+            */
             $(function () {
                 $(".date").datepicker({ 
                     showOn: "button",

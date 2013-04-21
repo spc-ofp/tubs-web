@@ -69,7 +69,7 @@ namespace TubsWeb
                 "~/Content/bootstrap-responsive.css",
                 "~/Content/bootstrap.css",
                 "~/Content/bootstrap-sticky-footer.css", // Custom for sticky footer
-                "~/Content/datepicker.css", // Bootstrap datepicker
+                "~/Content/bootstrap-datepicker.css",
                 "~/Content/pageguide.css",
                 "~/Content/rateit.css",
                 "~/Content/toastr.css"));

@@ -29,22 +29,17 @@ namespace TubsWeb.Mapping.Profiles
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
 
-    /// <summary>
-    /// TODO: Update summary.
-    /// </summary>
-    public class Gen2Profile : Profile
+    class Gen2Profile : Profile
     {
         protected override void Configure()
         {
             base.Configure();
 
-            CreateMap<Gen2ViewModel, DAL.Entities.SpecialSpeciesInteraction>()
-                .ForMember(d => d.SgTime, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.InteractionId, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.InteractionOther, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.InteractionActivity, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.InteractionIfOther, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.Details, o => o.Ignore()) // AfterMap
+            // ViewModel to DAL
+            CreateMap<Gen2ViewModel, DAL.Entities.Interaction>()
+                .Include<Gen2GearViewModel, DAL.Entities.GearInteraction>()
+                .Include<Gen2SightingViewModel, DAL.Entities.SightingInteraction>()
+                .Include<Gen2LandedViewModel, DAL.Entities.LandedInteraction>()
                 .ForMember(d => d.DctNotes, o => o.Ignore())
                 .ForMember(d => d.DctScore, o => o.Ignore())
                 .ForMember(d => d.EnteredBy, o => o.Ignore())
@@ -53,39 +48,27 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.UpdatedDate, o => o.Ignore())
                 .ForMember(d => d.Trip, o => o.Ignore())
                 .ForMember(d => d.EezId, o => o.Ignore()) // Not in UI
-                .ForMember(d => d.SightingDistanceInNm, o => o.Ignore()) // AfterMap if at all
                 .ForMember(d => d.LandedTimeOnly, o => o.MapFrom(s => s.ShipsTime))
                 .ForMember(d => d.LandedDateOnly, o => o.MapFrom(s => s.ShipsDate))
                 //.ForMember(d => d.LandedDate, o => o.MapFrom(s => s.LandedDateOnly.Merge(s.LandedTimeOnly)))
                 .ForMember(d => d.LandedDate, o => o.Ignore())
-                .ForMember(d => d.SightingCount, o => o.MapFrom(s => s.NumberSighted))
-                .ForMember(d => d.SightingAdultCount, o => o.MapFrom(s => s.NumberOfAdults))
-                .ForMember(d => d.SightingJuvenileCount, o => o.MapFrom(s => s.NumberOfJuveniles))
-                .ForMember(d => d.SgType, o => o.ResolveUsing<InteractionTypeResolver>().FromMember(s => s.InteractionType))
+                ;
+
+            CreateMap<Gen2LandedViewModel, DAL.Entities.LandedInteraction>()
+                ;
+
+            // Details contains the union of "StartOfInteraction" and "EndOfInteraction"
+            CreateMap<Gen2GearViewModel, DAL.Entities.GearInteraction>()
+                .ForMember(d => d.InteractionId, o => o.MapFrom(s => s.VesselActivity)) // need a resolver from string to InteractionActivity
+                .ForMember(d => d.InteractionOther, o => o.MapFrom(s => s.VesselActivityDescription))
+                .ForMember(d => d.Details, o => o.Ignore())
                 .AfterMap((s,d) => 
                 {
-                    switch (d.SgType)
-                    {
-                        case "I":
-                            // String to InteractionActivity? (<-- nullable, not a question)
-                            d.InteractionOther = s.VesselActivityDescription;
-                            break;
-                        case "S":
-                            // String to InteractionActivity? (<-- nullable, not a question)
-                            d.InteractionIfOther = s.VesselActivityDescription;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    // TODO Is this going to work?
-                    // It might be better to have a list of entities that contain both the start and end of the
-                    // interaction.  Otherwise we might get them mixed up... (e.g. start for row 1 is paired with end for row 2)
                     if (null != s.StartOfInteraction)
                     {
                         foreach (var item in s.StartOfInteraction)
                         {
-                            var detail = Mapper.Map<Gen2ViewModel.SpeciesGroup, DAL.Entities.InteractionDetail>(item);
+                            var detail = Mapper.Map<Gen2GearViewModel.SpeciesGroup, DAL.Entities.GearInteractionDetail>(item);
                             d.Details.Add(detail);
                         }
                     }
@@ -94,14 +77,23 @@ namespace TubsWeb.Mapping.Profiles
                     {
                         foreach (var item in s.EndOfInteraction)
                         {
-                            var detail = Mapper.Map<Gen2ViewModel.SpeciesGroup, DAL.Entities.InteractionDetail>(item);
+                            var detail = Mapper.Map<Gen2GearViewModel.SpeciesGroup, DAL.Entities.GearInteractionDetail>(item);
                             d.Details.Add(detail);
                         }
                     }
                 })
                 ;
 
-            CreateMap<Gen2ViewModel.SpeciesGroup, DAL.Entities.InteractionDetail>()
+            CreateMap<Gen2SightingViewModel, DAL.Entities.SightingInteraction>()
+                .ForMember(d => d.SightingDistanceInNm, o => o.Ignore()) // AfterMap if at all
+                .ForMember(d => d.SightingCount, o => o.MapFrom(s => s.NumberSighted))
+                .ForMember(d => d.SightingAdultCount, o => o.MapFrom(s => s.NumberOfAdults))
+                .ForMember(d => d.SightingJuvenileCount, o => o.MapFrom(s => s.NumberOfJuveniles))
+                .ForMember(d => d.InteractionActivity, o => o.MapFrom(s => s.VesselActivity)) // need a resolver from string to InteractionActivity
+                .ForMember(d => d.InteractionIfOther, o => o.MapFrom(s => s.VesselActivityDescription))
+                ;
+
+            CreateMap<Gen2GearViewModel.SpeciesGroup, DAL.Entities.GearInteractionDetail>()
                 .ForMember(d => d.DctNotes, o => o.Ignore())
                 .ForMember(d => d.DctScore, o => o.Ignore())
                 .ForMember(d => d.EnteredBy, o => o.Ignore())
@@ -113,37 +105,39 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.StartOrEnd, o => o.Ignore()) // Managed in ViewModel via two separate lists
                 ;
 
-            CreateMap<DAL.Entities.SpecialSpeciesInteraction, Gen2ViewModel>()
-                .ForMember(d => d.VesselActivity, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.VesselActivityDescription, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.SexCodes, o => o.Ignore()) // UI details
-                .ForMember(d => d.DistanceUnits, o => o.Ignore()) // UI details
+            // DAL to ViewModel
+            CreateMap<DAL.Entities.Interaction, Gen2ViewModel>()
+                .Include<DAL.Entities.GearInteraction, Gen2GearViewModel>()
+                .Include<DAL.Entities.SightingInteraction, Gen2SightingViewModel>()
+                .Include<DAL.Entities.LandedInteraction, Gen2LandedViewModel>()                             
                 .ForMember(d => d.ConditionCodes, o => o.Ignore()) // UI details
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.Trip.SpcTripNumber ?? "This Trip").Trim()))
                 .ForMember(d => d.ShipsDate, o => o.MapFrom(s => s.LandedDateOnly))
                 .ForMember(d => d.ShipsTime, o => o.MapFrom(s => s.LandedTimeOnly))
+ 
+            ;
+
+            CreateMap<DAL.Entities.GearInteraction, Gen2GearViewModel>()
+                .ForMember(d => d.VesselActivity, o => o.MapFrom(s => s.InteractionId))
+                .ForMember(d => d.VesselActivityDescription, o => o.MapFrom(s => s.InteractionDescription))
+                .ForMember(d => d.StartOfInteraction, o => o.MapFrom(s => s.Details.Where(d => d.StartOrEnd == "START")))
+                .ForMember(d => d.EndOfInteraction, o => o.MapFrom(s => s.Details.Where(d => d.StartOrEnd == "END")))
+                ;
+
+            CreateMap<DAL.Entities.SightingInteraction, Gen2SightingViewModel>()
                 .ForMember(d => d.NumberSighted, o => o.MapFrom(s => s.SightingCount))
                 .ForMember(d => d.NumberOfAdults, o => o.MapFrom(s => s.SightingAdultCount))
                 .ForMember(d => d.NumberOfJuveniles, o => o.MapFrom(s => s.SightingJuvenileCount))
-                .ForMember(d => d.StartOfInteraction, o => o.MapFrom(s => s.Details.Where(d => d.StartOrEnd == "START")))
-                .ForMember(d => d.EndOfInteraction, o => o.MapFrom(s => s.Details.Where(d => d.StartOrEnd == "END")))
-                .ForMember(d => d.InteractionType, o => o.ResolveUsing<InteractionCodeResolver>().FromMember(s => s.SgType))
-                .AfterMap((s,d) => 
-                {
-                    switch (s.SgType)
-                    {
-                        case "I":
-                            break;
-                        case "S":
-                            break;
-                        default:
-                            break;
-                    }
-                })
+                .ForMember(d => d.DistanceUnits, o => o.Ignore()) // UI details
+                .ForMember(d => d.VesselActivity, o => o.MapFrom(s => s.InteractionActivity))
+                .ForMember(d => d.VesselActivityDescription, o => o.MapFrom(s => s.InteractionIfOther))
                 ;
 
-            // TODO This needs more work
-            CreateMap<DAL.Entities.InteractionDetail, Gen2ViewModel.SpeciesGroup>()
+            CreateMap<DAL.Entities.LandedInteraction, Gen2LandedViewModel>()
+                .ForMember(d => d.SexCodes, o => o.Ignore()) // UI details
+                ;
+
+            CreateMap<DAL.Entities.GearInteractionDetail, Gen2GearViewModel.SpeciesGroup>()
                 .ForMember(d => d.Count, o => o.MapFrom(s => s.Number))
                 ;
         }

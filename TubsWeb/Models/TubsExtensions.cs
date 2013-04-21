@@ -359,6 +359,7 @@ namespace TubsWeb.Models.ExtensionMethods
                 {
                     var lineItems =
                         from a in day.Activities
+                        orderby a.GetTime()
                         select new SeaDayViewModel.SeaDayEvent
                         {
                             EventId = a.Id,
@@ -381,6 +382,8 @@ namespace TubsWeb.Models.ExtensionMethods
                             /* TODO: At some point we'll have to add an extension method to check this */
                             IsLocked = (Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing == a.ActivityType && a.FishingSet != null)
                         };
+                    // Could do this in a single LINQ statement, but it all compiles down to the same
+                    // code
                     foreach (var e in lineItems) { sdvm.Events.Add(e); }
                 }
             }

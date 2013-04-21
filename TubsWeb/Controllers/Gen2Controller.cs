@@ -51,10 +51,30 @@ namespace TubsWeb.Controllers
             ViewBag.Title = String.Format(titleFormat, pageNumber, maxPages, tripId.ToString());
             string actionName = this.ControllerContext.RouteData.GetRequiredString("action");
             AddMinMaxDates(tripId);
-            return
-                createNew ?
-                    View(actionName, interaction ?? new SpecialSpeciesInteraction()) :
-                    View(actionName, interaction);
+            return View(actionName, interaction);
+        }
+
+        internal ActionResult Load(Trip tripId, int pageNumber)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            int maxPages = tripId.Interactions.Count;
+            if (pageNumber > maxPages)
+            {
+                pageNumber = maxPages;
+            }
+
+            ViewBag.MaxPages = maxPages;
+            ViewBag.CurrentPage = pageNumber;
+            var interaction = tripId.Interactions.Skip(pageNumber - 1).Take(1).FirstOrDefault();
+            ViewBag.TripNumber = tripId.ToString(); // Might already be there from SuperController
+            AddMinMaxDates(tripId);
+            // TODO: This should be a ViewModel, not the data model
+            return View(CurrentAction(), interaction);
+
         }
         
         //

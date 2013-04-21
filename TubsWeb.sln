@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TubsWeb", "TubsWeb\TubsWeb.csproj", "{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotViewerApp", "PivotViewerApp\PivotViewerApp.csproj", "{5980C976-9BA4-481D-9727-D50670C3A02B}"

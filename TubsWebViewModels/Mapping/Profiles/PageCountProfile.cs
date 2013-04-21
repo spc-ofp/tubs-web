@@ -59,6 +59,8 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.EnteredDate, o => o.Ignore()) // Caller's problem
                 .ForMember(d => d.FormName, o => o.ResolveUsing<FormNameResolver>().FromMember(s => s.Key))
                 .ForMember(d => d.FormCount, o => o.MapFrom(s => s.Value))
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
                 ;
 
         }

@@ -2,6 +2,7 @@
 // <copyright file="Gen2ViewModel.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2013 Secretariat of the Pacific Community
 // </copyright>
+// -----------------------------------------------------------------------
 
 namespace TubsWeb.ViewModels
 {
@@ -26,13 +27,9 @@ namespace TubsWeb.ViewModels
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    public class Gen2ViewModel
+    public abstract class Gen2ViewModel
     {
-        // Send down to client for use with Knockout.js
-        public IList<string> SexCodes = new List<string>() { "M", "F", "I", "U" };
-
-        public IList<string> DistanceUnits = new List<string>() { "m", "NM" };
-
+        // Condition codes used in Landed and Gear interactions
         public IList<string> ConditionCodes = new List<string>()
         {
             "A0",
@@ -56,20 +53,12 @@ namespace TubsWeb.ViewModels
             "U4"
         };
 
-        public Gen2ViewModel()
-        {
-            StartOfInteraction = new List<SpeciesGroup>(3);
-            EndOfInteraction = new List<SpeciesGroup>(3);
-        }
-
         // Common data fields
         public string TripNumber { get; set; }
 
         public int TripId { get; set; }
 
         public int Id { get; set; }
-
-        public string InteractionType { get; set; }
 
         public string ShipsDate { get; set; }
 
@@ -82,75 +71,6 @@ namespace TubsWeb.ViewModels
         public string SpeciesCode { get; set; }
 
         public string SpeciesDescription { get; set; }
-
-        // Landed on deck
-        public string LandedConditionCode { get; set; }
-
-        public string LandedConditionDescription { get; set; }
-
-        public string LandedHandling { get; set; }
-
-        public int? LandedLength { get; set; }
-
-        public string LandedLengthCode { get; set; }
-
-        public string LandedSexCode { get; set; }
-
-        public string DiscardedConditionCode { get; set; }
-
-        public string DiscardedConditionDescription { get; set; }
-
-        public string RetrievedTagNumber { get; set; }
-
-        public string RetrievedTagType { get; set; }
-
-        public string RetrievedTagOrganization { get; set; }
-
-        public string PlacedTagNumber { get; set; }
-
-        public string PlacedTagType { get; set; }
-
-        public string PlacedTagOrganization { get; set; }
-
-        // Interactions with vessel or gear           
-        public string VesselActivity { get; set; } // Also used for sighting
-
-        // For use with VesselActivity == 'Other'
-        public string VesselActivityDescription { get; set; } // Also used for sighting
-
-        public IList<SpeciesGroup> StartOfInteraction { get; set; }
-
-        public IList<SpeciesGroup> EndOfInteraction { get; set; }
-
-        public string InteractionDescription { get; set; }
-
-        // Species Sighted
-        public int? NumberSighted { get; set; }
-
-        public int? NumberOfAdults { get; set; }
-
-        public int? NumberOfJuveniles { get; set; }
-
-        public string SightingLength { get; set; }
-
-        public decimal? SightingDistance { get; set; }
-
-        public string SightingDistanceUnit { get; set; }
-
-        public string SightingBehavior { get; set; }
-
-        // The GEN-3 allows entry of up to 3 groups of species for an interaction
-        // with fishing gear/vessel
-        public class SpeciesGroup
-        {
-            public int Id { get; set; }
-
-            public int? Count { get; set; }
-
-            public string ConditionCode { get; set; }
-
-            public string Description { get; set; }
-        }
 
     }
 }

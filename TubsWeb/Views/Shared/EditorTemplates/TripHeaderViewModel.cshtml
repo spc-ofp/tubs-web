@@ -51,12 +51,11 @@
     </div>
     <div class="span2">
         <label>Start Date</label>
-        <div class="input-append">
+        <div class="input-append date datepicker" data-date-format="dd/mm/yy">
             @Html.TextBoxFor(
                 m => Model.DepartureDateOnly,
                 new {
-                    @class = "input-mini datepicker",
-                    data_date_format="dd/mm/yy",
+                    @class = "input-mini",
                     placeholder = "dd/mm/yy",
                     required = string.Empty,
                     data_val = "true",
@@ -95,12 +94,11 @@
     </div>
     <div class="span2">
         <label>End Date</label>
-        <div class="input-append">
+        <div class="input-append date datepicker" data-date-format="dd/mm/yy">
             @Html.TextBoxFor(
                 m => Model.ReturnDateOnly,
                 new {
-                    @class = "input-mini datepicker",
-                    data_date_format="dd/mm/yy",
+                    @class = "input-mini",
                     required = string.Empty,
                     placeholder = "dd/mm/yy",
                     data_val = "true",
