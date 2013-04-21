@@ -19,11 +19,17 @@
 *.bak
 *.ncb
 *.log
+*.log.*
 *.vsp
 *.psess
+*.pubxml
+*.Publish.xml
 
 #NuGet
 packages/
+
+#NUnit
+*.TestResult.xml
 
 
 # Packages #
@@ -44,6 +50,8 @@ packages/
 *.log
 #*.sql
 *.sqlite
+*.mdf
+*.ldf
 
 # OS generated files #
 ######################
