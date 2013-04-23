@@ -1,2 +1,71 @@
 ﻿@model TubsWeb.ViewModels.Gen2GearViewModel
 
+<fieldset>
+    <legend>Vessel Activity</legend>
+    <div class="row">
+        <div class="span12">
+            <strong>Activity:</strong>
+        @if ("Other".Equals(Model.VesselActivity, StringComparison.InvariantCultureIgnoreCase))
+        {
+            @Model.VesselActivityDescription
+        }
+        else
+        { 
+            @Model.VesselActivity
+        }
+        </div>
+    </div>
+</fieldset>
+<br />
+@if (Model.StartOfInteraction.Count > 0)
+{ 
+<table class="table table-bordered table-condensed table-striped" id="startOfInteraction">
+    <caption>Start of Interaction</caption>
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Code</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.StartOfInteraction)
+    { 
+        <tr>
+            <td>@Html.DisplayFor(i => item.Count)</td>
+            <td>@item.ConditionCode</td>
+            <td>@item.Description</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<br />
+}
+@if (Model.StartOfInteraction.Count > 0)
+{ 
+<table class="table table-bordered table-condensed table-striped" id="endOfInteraction">
+    <caption>End of Interaction</caption>
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Code</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.EndOfInteraction)
+    { 
+        <tr>
+            <td>@Html.DisplayFor(i => item.Count)</td>
+            <td>@item.ConditionCode</td>
+            <td>@item.Description</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<br />
+}
+<fieldset>
+    <legend>Description</legend>
+    <p>@Model.InteractionDescription</p>
+</fieldset>

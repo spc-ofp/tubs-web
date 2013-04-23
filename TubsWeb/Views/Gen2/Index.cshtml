@@ -18,7 +18,53 @@
     ViewBag.Title = "GEN-2 Interaction";
 }
 
+<ul class="pager">
+    @if (Model.HasPrevious)
+    {
+        <li>
+            <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Gen2Details, new { tripId = Model.TripId, pageNumber = Model.PreviousPage, action = "Index" })'>Previous Event</a>
+        </li>
+    }
+    
+    @if (Model.HasNext)
+    {
+        <li>
+            <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Gen2Details, new { tripId = Model.TripId, pageNumber = Model.NextPage, action = "Index" })'>Next Event</a>
+        </li>
+    }
+</ul>
+
 @* Common stuff here *@
+<fieldset>
+    <legend>Time and Position</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Ship's Date:</strong> @Html.DisplayFor(m => Model.ShipsDate, new { format = "d" })
+        </div>
+        <div class="span3">
+            <strong>Ship's Time:</strong> @Model.ShipsTime
+        </div>
+        <div class="span3">
+            <strong>Latitude:</strong>  @Model.Latitude
+        </div>
+        <div class="span3">
+            <strong>Longitude:</strong> @Model.Longitude
+        </div>
+    </div>
+</fieldset>
+<br />
+<fieldset>
+    <legend>Species Information</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Species Code:</strong> @Model.SpeciesCode
+        </div>
+        <div class="span9">
+            <strong>Species Description:</strong> @Model.SpeciesDescription
+        </div>
+    </div>
+</fieldset>
+<br />
 
 @* Differentiate by type using the appropriate partial *@
 @if (Model is TubsWeb.ViewModels.Gen2LandedViewModel) { Html.RenderPartial("_LandedDetail", Model); }

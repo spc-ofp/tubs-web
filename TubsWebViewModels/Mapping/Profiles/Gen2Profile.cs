@@ -111,6 +111,10 @@ namespace TubsWeb.Mapping.Profiles
                 .Include<DAL.Entities.SightingInteraction, Gen2SightingViewModel>()
                 .Include<DAL.Entities.LandedInteraction, Gen2LandedViewModel>()                             
                 .ForMember(d => d.ConditionCodes, o => o.Ignore()) // UI details
+                .ForMember(d => d.HasNext, o => o.Ignore())
+                .ForMember(d => d.HasPrevious, o => o.Ignore())
+                .ForMember(d => d.PreviousPage, o => o.Ignore())
+                .ForMember(d => d.NextPage, o => o.Ignore())
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.Trip.SpcTripNumber ?? "This Trip").Trim()))
                 .ForMember(d => d.ShipsDate, o => o.MapFrom(s => s.LandedDateOnly))
                 .ForMember(d => d.ShipsTime, o => o.MapFrom(s => s.LandedTimeOnly))

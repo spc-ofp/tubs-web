@@ -1,2 +1,78 @@
 ﻿@model TubsWeb.ViewModels.Gen2LandedViewModel
 
+<fieldset>
+    <legend>Landed Condition</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Condition Code:</strong> @Model.LandedConditionCode
+        </div>
+        <div class="span9">
+            <strong>Condition Description:</strong> @Model.LandedConditionDescription
+        </div>
+    </div>
+</fieldset>
+<br />
+<fieldset>
+    <legend>Length and Sex</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Length:</strong> @Html.DisplayFor(m => Model.LandedLength)
+        </div>
+        <div class="span3">
+            <strong>Length Code:</strong> @Model.LandedLengthCode
+        </div>
+        <div class="span3">
+            <strong>Sex:</strong> @Model.LandedSexCode
+        </div>
+    </div>
+</fieldset>
+<br />
+<fieldset>
+    <legend>Discarded Condition</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Condition Code:</strong> @Model.DiscardedConditionCode
+        </div>
+        <div class="span9">
+            <strong>Condition Description:</strong> @Model.DiscardedConditionDescription
+        </div>
+    </div>
+</fieldset>
+@* Ignore retrieved tag info if there isn't any to show *@
+@if (!(String.IsNullOrEmpty(Model.RetrievedTagNumber) || String.IsNullOrEmpty(Model.RetrievedTagType) || String.IsNullOrEmpty(Model.RetrievedTagOrganization)))
+{
+<br />
+<fieldset>
+    <legend>Retrieved Tag</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Tag Number:</strong> @Model.RetrievedTagNumber
+        </div>
+        <div class="span3">
+            <strong>Tag Type:</strong> @Model.RetrievedTagType
+        </div>
+        <div class="span3">
+            <strong>Organization:</strong> @Model.RetrievedTagOrganization
+        </div>
+    </div>
+</fieldset>
+<br />
+}
+@* Ignore placed tag info if there isn't any to show *@
+@if (!(String.IsNullOrEmpty(Model.PlacedTagNumber) || String.IsNullOrEmpty(Model.PlacedTagType) || String.IsNullOrEmpty(Model.PlacedTagOrganization)))
+{
+<fieldset>
+    <legend>Placed Tag</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Tag Number:</strong> @Model.PlacedTagNumber
+        </div>
+        <div class="span3">
+            <strong>Tag Type:</strong> @Model.PlacedTagType
+        </div>
+        <div class="span3">
+            <strong>Organization:</strong> @Model.PlacedTagOrganization
+        </div>
+    </div>
+</fieldset>
+}

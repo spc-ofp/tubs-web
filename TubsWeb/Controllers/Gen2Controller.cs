@@ -59,9 +59,16 @@ namespace TubsWeb.Controllers
             // TODO Put MaxPages into ViewModel?
             ViewBag.MaxPages = maxPages;
             ViewBag.CurrentPage = pageNumber;
+
             //var interaction = tripId.Interactions.Skip(pageNumber - 1).Take(1).FirstOrDefault();
             var interaction = SortedInteractions(tripId).Skip(pageNumber - 1).Take(1).FirstOrDefault();
             var vm = Mapper.Map<Interaction, Gen2ViewModel>(interaction);
+
+            // Set some nav properties
+            vm.HasPrevious = pageNumber > 0;
+            vm.PreviousPage = pageNumber - 1;
+            vm.HasNext = pageNumber < maxPages;
+            vm.NextPage = pageNumber + 1;
 
             if (IsApiRequest())
                 return GettableJsonNetData(vm);

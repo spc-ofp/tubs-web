@@ -1,2 +1,51 @@
 ﻿@model TubsWeb.ViewModels.Gen2SightingViewModel
 
+<fieldset>
+    <legend>Vessel Activity</legend>
+    <div class="row">
+        <div class="span12">
+            <strong>Activity:</strong>
+        @if ("Other".Equals(Model.VesselActivity, StringComparison.InvariantCultureIgnoreCase))
+        {
+            @Model.VesselActivityDescription
+        }
+        else
+        { 
+            @Model.VesselActivity
+        }
+        </div>
+    </div>
+</fieldset>
+<br />
+<fieldset>
+    <legend>Numbers and Sizes</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Number Sighted:</strong> @Html.DisplayFor(m => Model.NumberSighted)
+        </div>
+        <div class="span3">
+            <strong>Number of Adults:</strong> @Html.DisplayFor(m => Model.NumberOfAdults)
+        </div>
+        <div class="span3">
+            <strong>Number of Juveniles:</strong> @Html.DisplayFor(m => Model.NumberOfJuveniles)
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="span12">
+            <strong>Estimated Length:</strong> @Model.SightingLength
+        </div>
+    </div>
+</fieldset>
+<br />
+<fieldset>
+    <legend>Distance and Behavior</legend>
+    <div class="row">
+        <div class="span3">
+            <strong>Distance:</strong> @Html.DisplayFor(m => Model.SightingDistance) @if (Model.SightingDistance.HasValue) { @Model.SightingDistanceUnit }
+        </div>
+        <div class="span9">
+            <strong>Behavior:</strong> @Model.SightingBehavior
+        </div>
+    </div>
+</fieldset>

@@ -703,6 +703,8 @@
     <Content Include="Views\Gen2\_GearDetail.cshtml" />
     <Content Include="Views\Gen2\_SightedDetail.cshtml" />
     <Content Include="Views\Gen2\AddLanded.cshtml" />
+    <Content Include="Views\Gen2\AddGear.cshtml" />
+    <Content Include="Views\Gen2\AddSighting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

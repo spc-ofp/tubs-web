@@ -72,5 +72,14 @@ namespace TubsWeb.ViewModels
 
         public string SpeciesDescription { get; set; }
 
+        // Used for navigation
+        public bool HasNext { get; set; }
+
+        public int NextPage { get; set; }
+
+        public bool HasPrevious { get; set; }
+
+        public int PreviousPage { get; set; }
+
     }
 }
