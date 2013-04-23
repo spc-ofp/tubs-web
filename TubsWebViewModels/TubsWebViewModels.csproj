@@ -101,6 +101,7 @@
     <Compile Include="ViewModels\Gen2GearViewModel.cs" />
     <Compile Include="ViewModels\Gen2LandedViewModel.cs" />
     <Compile Include="ViewModels\Gen2SightingViewModel.cs" />
+    <Compile Include="ViewModels\Gen2SummaryViewModel.cs" />
     <Compile Include="ViewModels\Gen2ViewModel.cs" />
     <Compile Include="ViewModels\Gen3ViewModel.cs" />
     <Compile Include="ViewModels\Gen5ViewModel.cs" />

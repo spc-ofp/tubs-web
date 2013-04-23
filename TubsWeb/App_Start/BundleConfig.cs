@@ -29,9 +29,13 @@ namespace TubsWeb
                 .Include("~/Scripts/modernizr-{version}.js"));
 
             // jQuery
+            // NOTE:  jQuery Migrate is now available as a NuGet package (Install-Package jQuery.Migrate)
+            // Unfortunately, it requires jQuery 1.9, so using Migrate to find errors still requires manually adding the script.
+            // NOTE:  The unminified version of jQuery migrate logs errors.  Include the already minified version to skip error logging.
             bundles.Add(new ScriptBundle("~/bundles/jquery")
                 .Include(
-                    "~/Scripts/jquery-{version}.js"                    
+                    "~/Scripts/jquery-{version}.js",
+                    "~/Scripts/jquery-migrate-{version}.js" // The Microsoft stack still uses functions deprecated in 1.8 (and removed in 1.9)
                 ));
 
             // 3rd Party JavaScript files

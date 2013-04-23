@@ -1,81 +1,99 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
-@using Spc.Ofp.Tubs.DAL.Entities
-@using Spc.Ofp.Tubs.DAL.Common
+﻿@model IList<TubsWeb.ViewModels.Gen2SummaryViewModel>
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.SpcTripNumber ?? "This Trip"),
         Tuple.Create("#", "GEN-2 Events")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-<fieldset>
-    <legend>Interactions with Species of Special Interest</legend>
-    @{ Html.RenderPartial("_Interactions", Model.Interactions); }
-</fieldset>
-
 @{
-    AjaxOptions options = new AjaxOptions
-    {
-        HttpMethod = "Post",
-        UpdateTargetId = "gen2Interactions",
-        OnSuccess = String.Format("clearForm('#{0}')", "addInteractionForm")
-    };
+    // TODO Revise title
+    ViewBag.Title = "List of GEN-2 Interactions";
 }
 
-@if (!Model.IsReadOnly)
+@if (@Model.Count < 1)
 {
-    using (Ajax.BeginForm("AddInteraction", null, options, new { id = "addInteractionForm", @class = "form well" }))
-    {
-        @Html.ValidationSummary(false)
-        <fieldset>
-            <legend>Add Interaction</legend>
-            @{ var interaction = new SpecialSpeciesInteraction(); }
-            @Html.EditorFor(i => interaction)
-            <p>
-                <input type="submit" name="Save" value="Save" class="btn btn-primary" />
-                <input type="reset" value="Cancel" name="Cancel" class="btn" />
-            </p>
-        </fieldset>
+    <text>No GEN-2 events recorded for this trip.</text>
+}
+else 
+{
+<table class="table table-bordered table-condensed table-striped" id="gen2Table">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            @* TODO:  I'm uncertain on page unless it's recorded in the database *@
+            <th>Page</th>
+            <th>Date</th>
+            <th>Species Code</th>
+            <th>Interaction Type</th>            
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Select((x, i) => new { Data = x, Index = i }))
+    { 
+        <tr>
+            <td>
+                @{ var detailTarget = Url.Action("Index", "Gen2", new { TripId = ViewBag.TripId, PageNumber = item.Index + 1 }); }
+                @{ var editTarget = Url.Action("Edit", "Gen2", new { TripId = ViewBag.TripId, PageNumber = item.Index + 1 }); }
+                <a href="@detailTarget"><i class="icon-list-alt" title="Details" rel="tooltip"></i></a>
+                @if(!ViewBag.IsReadOnly)
+                {
+                    <text> | </text><a href="@editTarget"><i class="icon-edit" title="Edit" rel="tooltip"></i></a> 
+                }               
+            </td>
+            <td>@item.Data.PageNumber</td>
+            <td>@Html.DisplayFor(i => item.Data.ShipsDate)</td>
+            <td>@item.Data.SpeciesCode</td>
+            <td>@item.Data.InteractionType</td>            
+        </tr>
     }
+    </tbody>
+</table>
 }
 
+<div id="addItemButton" class="btn-group">
+    <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">Add GEN-2&nbsp<span class="caret"></span></a>
+    <ul class="dropdown-menu">
+        @{ 
+            var addLandedUrl = Url.Action("AddLanded", new { tripId = ViewBag.TripId });
+            var addGearUrl = Url.Action("AddGear", new { tripId = ViewBag.TripId });
+            var addSightingUrl = Url.Action("AddSighting", new { tripId = ViewBag.TripId });
+        }
+        <li><a href='@addLandedUrl'>Landed On Deck</a></li>
+        <li><a href='@addGearUrl'>Interacted With Gear</a></li>
+        <li><a href='@addSightingUrl'>Sighted Only</a></li>
+    </ul>
+</div>
+
+<ul id="tlyPageGuide" data-tourtitle="GEN-2 Event Information">
+    <li class="tlypageguide_left" data-tourtarget=".icon-list-alt:first">
+        <div>
+            Click here to view details of this GEN-2 event.
+        </div>
+    </li>
+    <li class="tlypageguide_right" data-tourtarget=".icon-edit:first">
+        <div>
+            Click here to edit details of this GEN-2 event.
+        </div>
+    </li>
+    <li class="tlypageguide_left" data-tourtarget="#addItemButton">
+        <div>
+            Click here to add a new GEN-2.  Select the interaction type from the dropdown.
+        </div>
+    </li>
+</ul>
 
 @section AdditionalScripts {
-    @{ Html.RenderPartial("_DateTimePickerInit"); }
-
-    <script type="text/javascript">
-        $('.interactionType').change(function () {
-            //alert("Got: " + $(this).val()); // Debug code
-            switch ($(this).val()) {
-                case 'S':
-                    $('#subsectionSighted').show();
-                    $('#subsectionGear').hide();
-                    $('#subsectionLanded').hide();
-                    break;
-                case 'I':
-                    $('#subsectionSighted').hide();
-                    $('#subsectionGear').show();
-                    $('#subsectionLanded').hide();
-                    break;
-                case 'L':
-                    $('#subsectionSighted').hide();
-                    $('#subsectionGear').hide();
-                    $('#subsectionLanded').show();
-                    break;
-                default:
-                    // Dunno -- hide 'em all?
-                    $('#subsectionSighted').hide();
-                    $('#subsectionGear').hide();
-                    $('#subsectionLanded').hide();
-                    break;
-            }
-
+    <script>
+        $(document).ready(function () {
+            // PageGuide initialization
+            tl.pg.init();
         });
     </script>
 }

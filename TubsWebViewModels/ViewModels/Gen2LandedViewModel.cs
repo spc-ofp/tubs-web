@@ -27,7 +27,7 @@ namespace TubsWeb.ViewModels
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    class Gen2LandedViewModel : Gen2ViewModel
+    public class Gen2LandedViewModel : Gen2ViewModel
     {
         // Send down to client for use with Knockout.js
         public IList<string> SexCodes = new List<string>() { "M", "F", "I", "U" };

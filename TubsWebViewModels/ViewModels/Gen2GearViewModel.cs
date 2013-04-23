@@ -27,7 +27,7 @@ namespace TubsWeb.ViewModels
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    class Gen2GearViewModel : Gen2ViewModel
+    public class Gen2GearViewModel : Gen2ViewModel
     {
         public Gen2GearViewModel()
         {

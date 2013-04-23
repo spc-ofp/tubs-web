@@ -23,32 +23,16 @@ namespace TubsWeb.ViewModels
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
 
-    public class Gen2SightingViewModel : Gen2ViewModel
+    /// <summary>
+    /// Gen2SummaryViewModel is a lightweight object used when displaying
+    /// a list of GEN-2 entities.
+    /// </summary>
+    public class Gen2SummaryViewModel
     {
-        public IList<string> DistanceUnits = new List<string>() { "m", "NM" };
-        
-        public string VesselActivity { get; set; }
-
-        // For use with VesselActivity == 'Other'
-        public string VesselActivityDescription { get; set; }
-
-        // Species Sighted
-        public int? NumberSighted { get; set; }
-
-        public int? NumberOfAdults { get; set; }
-
-        public int? NumberOfJuveniles { get; set; }
-
-        public string SightingLength { get; set; }
-
-        public decimal? SightingDistance { get; set; }
-
-        public string SightingDistanceUnit { get; set; }
-
-        public string SightingBehavior { get; set; }
+        public int PageNumber { get; set; }
+        public DateTime ShipsDate { get; set; }
+        public string SpeciesCode { get; set; }
+        public string InteractionType { get; set; } 
     }
 }

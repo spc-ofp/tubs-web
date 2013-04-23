@@ -1,0 +1,27 @@
+﻿@model TubsWeb.ViewModels.Gen2GearViewModel
+
+@{
+    ViewBag.Title = "Add GEN-2 (Interacted With Vessel/Gear)";
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "Gen2", new { tripId = ViewBag.TripId}), "GEN-2 Events"),
+        Tuple.Create("#", "Add GEN-2")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@section AdditionalScripts {
+    <script>
+        $(document).ready(function () {
+            // PageGuide initialization
+            tl.pg.init();
+        });
+    </script>
+}
