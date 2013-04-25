@@ -115,6 +115,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.HasPrevious, o => o.Ignore())
                 .ForMember(d => d.PreviousPage, o => o.Ignore())
                 .ForMember(d => d.NextPage, o => o.Ignore())
+                .ForMember(d => d.ActionName, o => o.Ignore())
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.Trip.SpcTripNumber ?? "This Trip").Trim()))
                 .ForMember(d => d.ShipsDate, o => o.MapFrom(s => s.LandedDateOnly))
                 .ForMember(d => d.ShipsTime, o => o.MapFrom(s => s.LandedTimeOnly))
@@ -139,6 +140,7 @@ namespace TubsWeb.Mapping.Profiles
 
             CreateMap<DAL.Entities.LandedInteraction, Gen2LandedViewModel>()
                 .ForMember(d => d.SexCodes, o => o.Ignore()) // UI details
+                .ForMember(d => d.LengthCodes, o => o.Ignore()) // UI details
                 ;
 
             CreateMap<DAL.Entities.GearInteractionDetail, Gen2GearViewModel.SpeciesGroup>()

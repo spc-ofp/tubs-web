@@ -1,4 +1,5 @@
 ﻿@model TubsWeb.ViewModels.Gen2LandedViewModel
+@using Newtonsoft.Json
 
 @{
     ViewBag.Title = "Add GEN-2 (Landed On Deck)";
@@ -17,12 +18,9 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+@{ Html.RenderPartial("_LandedEditor", Model); }
+
 @section AdditionalScripts {
-    <script>
-        $(document).ready(function () {
-            // PageGuide initialization
-            tl.pg.init();
-        });
-    </script>
+    @{ Html.RenderPartial("_LandedEditorScripts", Model); }
 }
 

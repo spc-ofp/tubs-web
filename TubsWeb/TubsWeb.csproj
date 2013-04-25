@@ -591,6 +591,7 @@
     <Content Include="Scripts\App\vm.crew.js" />
     <Content Include="Scripts\App\vm.fad.js" />
     <Content Include="Scripts\App\vm.fishingset.js" />
+    <Content Include="Scripts\App\vm.gen2.js" />
     <Content Include="Scripts\App\vm.pagecounts.js" />
     <Content Include="Scripts\App\vm.ps1.js" />
     <Content Include="Scripts\App\vm.seaday.js" />
@@ -705,6 +706,9 @@
     <Content Include="Views\Gen2\AddLanded.cshtml" />
     <Content Include="Views\Gen2\AddGear.cshtml" />
     <Content Include="Views\Gen2\AddSighting.cshtml" />
+    <Content Include="Views\Shared\_BootstrapDatePicker.cshtml" />
+    <Content Include="Views\Gen2\_LandedEditor.cshtml" />
+    <Content Include="Views\Gen2\_LandedEditorScripts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -65,6 +65,20 @@ amplify.request.define(
     $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Transfers' })
 );
 
+// Request for loading GEN-2 data
+amplify.request.define(
+    "getInteraction",
+    "ajax",
+    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-2/{pageNumber}/Edit' })
+);
+
+// Request for loading GEN-3 data
+amplify.request.define(
+    "getGen3",
+    "ajax",
+    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-3' })
+);
+
 // Request for loading GEN-5 (transfer) data
 amplify.request.define(
     "getFad",
@@ -86,12 +100,6 @@ amplify.request.define(
     $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/PageCount' })
 );
 
-// Request for loading GEN-3 data
-amplify.request.define(
-    "getGen3",
-    "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-3' })
-);
 
 tubs.getSeaDay = function (tripId, dayNumber, success_cb, error_cb) {
     amplify.request({
@@ -185,6 +193,7 @@ tubs.saveSightings = function (tripId, sightings, success_cb, error_cb) {
     });
 };
 
+// GEN-1
 tubs.getTransfers = function (tripId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getTransfers",
@@ -194,6 +203,7 @@ tubs.getTransfers = function (tripId, success_cb, error_cb) {
     });
 };
 
+// GEN-1
 tubs.saveTransfers = function (tripId, transfers, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/Transfers/Edit';
     $.ajax({
@@ -208,6 +218,32 @@ tubs.saveTransfers = function (tripId, transfers, success_cb, error_cb) {
     });
 };
 
+// GEN-2
+tubs.getInteraction = function (tripId, pageNumber, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getInteraction",
+        data: { "TripId": tripId, "PageNumber": pageNumber },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+// GEN-2
+tubs.saveInteraction = function (tripId, interaction, success_cb, error_cb) {
+    var url = appBase + 'Trip/' + tripId + '/GEN-2/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(interaction),
+        success: success_cb,
+        error: error_cb,
+        timeout: saveTimeout
+    });
+};
+
+// GEN-5
 tubs.getFad = function (tripId, fadId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getFad",
@@ -217,6 +253,7 @@ tubs.getFad = function (tripId, fadId, success_cb, error_cb) {
     });
 };
 
+// GEN-5
 tubs.saveFad = function (tripId, fad, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/GEN-5/Edit';
     $.ajax({

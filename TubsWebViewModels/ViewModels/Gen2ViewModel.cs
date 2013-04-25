@@ -23,8 +23,8 @@ namespace TubsWeb.ViewModels
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using Newtonsoft.Json;
 
     public abstract class Gen2ViewModel
@@ -32,6 +32,7 @@ namespace TubsWeb.ViewModels
         // Condition codes used in Landed and Gear interactions
         public IList<string> ConditionCodes = new List<string>()
         {
+            String.Empty,
             "A0",
             "A1",
             "A2",
@@ -60,12 +61,25 @@ namespace TubsWeb.ViewModels
 
         public int Id { get; set; }
 
+        [Required]
+        [Display(Name = "Ship's Date")]
         public string ShipsDate { get; set; }
 
+        [Required]
+        [Display(Name = "Ship's Time")]
+        [RegularExpression(
+            @"^[0-2]\d[0-5]\d",
+            ErrorMessage = "Ship's time must be a valid 24 hour time")]
         public string ShipsTime { get; set; }
 
+        [RegularExpression(
+                @"^[0-8]\d{3}\.?\d{3}[NnSs]$",
+                ErrorMessage = "Latitude must be of the form ddmm.mmmN or ddmm.mmmS")]
         public string Latitude { get; set; }
 
+        [RegularExpression(
+                @"^[0-1]\d{4}\.?\d{3}[EeWw]$",
+                ErrorMessage = "Longitude must be of the form dddmm.mmmE or dddmm.mmmW")]
         public string Longitude { get; set; }
 
         public string SpeciesCode { get; set; }
@@ -80,6 +94,8 @@ namespace TubsWeb.ViewModels
         public bool HasPrevious { get; set; }
 
         public int PreviousPage { get; set; }
+
+        public string ActionName { get; set; }
 
     }
 }

@@ -1,0 +1,234 @@
+﻿@model TubsWeb.ViewModels.Gen2LandedViewModel
+
+@*
+  Created as a partial here rather than down in 'Shared' as it will only ever be used in the context
+  of GEN-2 forms.  'Shared' is a little too full for comfort.
+*@
+
+@{
+    // Set up some navigation URLs
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.Gen2Details, new { tripId = Model.TripId, pageNumber = Model.NextPage, action = "Edit" });
+    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Gen2Details, new { tripId = Model.TripId, pageNumber = Model.PreviousPage, action = "Edit" });    
+}
+
+<form id="gen2LandedForm">
+    <p>
+        @if (Model.HasPrevious)
+        { 
+        <a href='@previousPage' class="btn btn-info">
+            <i class="icon-backward icon-white">&nbsp;Previous Event</i>
+        </a>
+        }
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+
+        @* Allow going to the next event regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+        @if (Model.HasNext)
+        {
+        <a href='@nextPage' id="nextEventButton" class="btn btn-info">
+            Next Set&nbsp;<i class="icon-forward icon-white"></i>
+        </a>
+        }
+    </p>
+    <hr />
+    <fieldset>
+        <legend>Species Landed On Deck</legend>
+    </fieldset>
+    <div class="row-fluid">
+        <div class="span2">
+            <label>Date</label>
+            <div class="input-append date datepicker" data-date-format="dd/mm/yy">
+                @Html.TextBoxFor(
+                    m => Model.ShipsDate,
+                    new
+                    {
+                        data_val = "true",
+                        data_val_required = "Date portion of landing date is required",
+                        data_bind = "value: ShipsDate.formattedDate",
+                        placeholder = "dd/mm/yy",
+                        @class = "input-small"
+                    })
+                <span class="add-on"><i class="icon-calendar"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label>Time</label>
+            <div class="input-append">
+                @Html.TextBoxFor(
+                    m => Model.ShipsTime, 
+                    new { 
+                        data_val_required = "Time portion of landing date is required", 
+                        data_bind = "value: $root.ShipsTime",
+                        placeholder = "HHmm",
+                        @class = "input-mini"
+                    })
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label>Latitude</label>
+            <div>
+                <input data-bind="value: Latitude" class="required input-small" type="text" required placeholder="dd&deg;mm.mmm'"/>
+            </div>
+        </div>
+        <div class="span2">
+            <label>Longitude</label>
+            <div>
+                <input data-bind="value: Longitude" class="required input-medium" type="text" required placeholder="ddd&deg;mm.mmm'"/>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <div class="span2">
+            <label>Species Code</label>
+            <div>
+                <input data-bind="value: SpeciesCode" class="required input-mini" type="text" required />
+            </div>
+        </div>
+        <div class="span10">
+            <label>Species Description</label>
+            <div>
+                <textarea data-bind="value: SpeciesDescription" 
+                          class="span10" 
+                          rows="4" 
+                          placeholder="Use this field to describe some of the identifying features of the species.">
+                </textarea>
+            </div>
+        </div>
+    </div>
+    <fieldset>
+        <legend>Landed</legend>
+    </fieldset>
+    <div class="row-fluid">
+        <div class="span2">
+            <label>Condition Code</label>
+            <div>
+                <select data-bind="options: $root.ConditionCodes, value: LandedConditionCode" class="input-mini"></select>
+            </div>
+        </div>
+        <div class="span10">
+            <label>Condition Description</label>
+            <div>
+                <textarea data-bind="value: LandedConditionDescription" 
+                          class="span10" 
+                          rows="4" 
+                          placeholder="Write a description of the condition of the species when landed.">
+                </textarea>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <div class="span6">
+            <label>Describe Onboard Handling</label>
+            <div>
+                <textarea data-bind="value: LandedHandling" 
+                          class="span12" 
+                          rows="4">
+                </textarea>
+            </div>
+        </div>
+        <div class="span2">
+            <label>Length (cm)</label>
+            <div>
+                <input data-bind="value: LandedLength" class="input-mini" type="number" />
+            </div>
+        </div>
+        <div class="span2">
+            <label>Length Code</label>
+            <select data-bind="options: $root.LengthCodes, value: LandedLengthCode" class="input-mini"></select>
+        </div>
+        <div class="span2">
+            <label>Sex</label>
+            <select data-bind="options: $root.SexCodes, value: LandedSexCode" class="input-mini"></select>
+        </div>
+    </div>
+    <fieldset>
+        <legend>Discarded</legend>
+    </fieldset>
+    <div class="row-fluid">
+        <div class="span2">
+            <label>Condition Code</label>
+            <div>
+                <select data-bind="options: $root.ConditionCodes, value: DiscardedConditionCode" class="input-mini"></select>
+            </div>
+        </div>
+        <div class="span10">
+            <label>Condition Description</label>
+            <div>
+                <textarea data-bind="value: DiscardedConditionDescription" 
+                          class="span10" 
+                          rows="4" 
+                          placeholder="Write a description of the condition of the species when discarded.">
+                </textarea>
+            </div>
+        </div>
+    </div>
+    <fieldset>
+        <legend>Tags</legend>
+    </fieldset>
+    <div class="row-fluid">
+        <div class="span2">
+            <label>Retrieved Number</label>
+            <div>
+                <input type="text" class="input-small" data-bind="value: RetrievedTagNumber" />
+            </div>
+        </div>
+        <div class="span2">
+            <label>Retrieved Type</label>
+            <div>
+                <input type="text" class="input-small" data-bind="value: RetrievedTagType" />
+            </div>
+        </div>
+        <div class="span3">
+            <label>Retrieved Organization</label>
+            <div>
+                <input type="text" data-bind="value: RetrievedTagOrganization" />
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <div class="span2">
+            <label>Placed Number</label>
+            <div>
+                <input type="text" class="input-small" data-bind="value: PlacedTagNumber" />
+            </div>
+        </div>
+        <div class="span2">
+            <label>Placed Type</label>
+            <div>
+                <input type="text" class="input-small" data-bind="value: PlacedTagType" />
+            </div>
+        </div>
+        <div class="span3">
+            <label>Placed Organization</label>
+            <div>
+                <input type="text" data-bind="value: PlacedTagOrganization" />
+            </div>
+        </div>
+    </div>
+    <hr />
+    <p>
+        <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        @* If the next event exists, this button will edit it.  Otherwise, go to add next event *@
+        @* Allow going to the next event regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+        <a href='@nextPage' class="btn btn-info"  data-bind="visible: $root.showNextEventButton()">
+            Next Event&nbsp;<i class="icon-forward icon-white"></i>
+        </a>
+    </p>
+</form>
+
+@* Instructions defined here as this is the easiest place to look at selectors *@
+<ul id="tlyPageGuide" data-tourtitle="Detailed GEN-2 entry instructions">
+    <li class="tlypageguide_top" data-tourtarget="#saveButton">
+        <div>
+            The save button will only be active if there are unsaved changes.
+        </div>
+    </li>
+</ul>
+

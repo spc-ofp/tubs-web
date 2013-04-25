@@ -1,0 +1,32 @@
+﻿@*
+  _BootstrapDatePicker gets minimum and maximum date values from ViewData.
+  If no min/max date values are present, then the datepicker uses the defaults
+  (from inspection of the Javascript, it appears to be -Infinity/Infinity).
+*@
+
+@{
+    var minDateKey = "MinDate";
+    var maxDateKey = "MaxDate";
+    string minDate = String.Empty;
+    string maxDate = String.Empty;
+    bool hasDates = ViewData.ContainsKey(minDateKey) && ViewData.ContainsKey(maxDateKey);
+    if (hasDates)
+    {
+        minDate = ViewData[minDateKey] as string;
+        maxDate = ViewData[maxDateKey] as string;
+    }
+}
+<script>
+    $(function () {
+        var options = {};
+        @if (hasDates) { 
+            <text>
+            options = {
+                startDate: new Date('@minDate'),
+                endDate: new Date('@maxDate')
+            }
+            </text>
+        }
+        $('.datepicker').datepicker(options);
+    });
+</script>

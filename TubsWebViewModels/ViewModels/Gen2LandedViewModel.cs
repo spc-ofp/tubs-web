@@ -30,7 +30,9 @@ namespace TubsWeb.ViewModels
     public class Gen2LandedViewModel : Gen2ViewModel
     {
         // Send down to client for use with Knockout.js
-        public IList<string> SexCodes = new List<string>() { "M", "F", "I", "U" };
+        public IList<string> SexCodes = new List<string>() { String.Empty, "M", "F", "I", "U" };
+
+        public IList<string> LengthCodes = new List<string>() { String.Empty, "UF", "LF" };
 
         // Landed on deck
         public string LandedConditionCode { get; set; }

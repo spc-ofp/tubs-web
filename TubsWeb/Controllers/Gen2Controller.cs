@@ -27,6 +27,7 @@ namespace TubsWeb.Controllers
     using System.Linq;
     using System.Web.Mvc;
     using AutoMapper;
+    using Newtonsoft.Json;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
@@ -56,11 +57,9 @@ namespace TubsWeb.Controllers
                 pageNumber = maxPages;
             }
 
-            // TODO Put MaxPages into ViewModel?
             ViewBag.MaxPages = maxPages;
             ViewBag.CurrentPage = pageNumber;
 
-            //var interaction = tripId.Interactions.Skip(pageNumber - 1).Take(1).FirstOrDefault();
             var interaction = SortedInteractions(tripId).Skip(pageNumber - 1).Take(1).FirstOrDefault();
             var vm = Mapper.Map<Interaction, Gen2ViewModel>(interaction);
 
@@ -69,6 +68,7 @@ namespace TubsWeb.Controllers
             vm.PreviousPage = pageNumber - 1;
             vm.HasNext = pageNumber < maxPages;
             vm.NextPage = pageNumber + 1;
+            vm.ActionName = CurrentAction();
 
             if (IsApiRequest())
                 return GettableJsonNetData(vm);
@@ -126,12 +126,60 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId, pageNumber);
         }
 
+        // Binder can't create an abstract class, but we can put something into the posted data to help it figure out the
+        // correct concrete implementation.
+        [HttpPost]
+        [HandleTransactionManually]
+        [EditorAuthorize]
+        public ActionResult Edit(Trip tripId, [AbstractBind(ConcreteTypeParameter = "interactionType")] Gen2ViewModel vm)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+                return View(vm);
+            }
+
+            var entity = Mapper.Map<Gen2ViewModel, Interaction>(vm);
+            entity.Trip = tripId;
+            entity.SetAuditTrail(User.Identity.Name, DateTime.Now);
+            // TODO:  What else needs setting here?  Audit trail and...
+
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+                IRepository<Interaction> repo = TubsDataService.GetRepository<Interaction>(MvcApplication.CurrentSession);
+                repo.Save(entity);
+                xa.Commit();
+            }
+
+
+            if (IsApiRequest())
+            {
+                using (var trepo = TubsDataService.GetRepository<Interaction>(false))
+                {
+                    var temp = trepo.FindById(entity.Id);
+                    vm = Mapper.Map<Interaction, Gen2ViewModel>(temp);
+                }
+                return GettableJsonNetData(vm);
+
+            }
+
+            // Tricky part here is figuring out the page number
+            return RedirectToAction("Edit", "Gen2", new { tripId = tripId.Id });
+        }
+
         [EditorAuthorize]
         public ActionResult AddLanded(Trip tripId)
         {
             var vm = new Gen2LandedViewModel();
             vm.TripId = tripId.Id;
             vm.TripNumber = tripId.SpcTripNumber;
+            AddMinMaxDates(tripId);
             return View(vm);
         }
 
@@ -141,6 +189,7 @@ namespace TubsWeb.Controllers
             var vm = new Gen2GearViewModel();
             vm.TripId = tripId.Id;
             vm.TripNumber = tripId.SpcTripNumber;
+            AddMinMaxDates(tripId);
             return View(vm);
         }
 
@@ -150,6 +199,7 @@ namespace TubsWeb.Controllers
             var vm = new Gen2SightingViewModel();
             vm.TripId = tripId.Id;
             vm.TripNumber = tripId.SpcTripNumber;
+            AddMinMaxDates(tripId);
             return View(vm);
         }
     }

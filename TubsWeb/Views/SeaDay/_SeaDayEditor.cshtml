@@ -124,9 +124,9 @@
                                 <i class="icon-lock icon-white"></i>
                         </button>
                     </td>
-                    <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini" type="text" required /></td>
-                    <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small" type="text" required /></td>
-                    <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small" type="text" required /></td>
+                    <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini" type="text" required placeholder="HHmm" /></td>
+                    <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small" type="text" required placeholder="dd&deg;mm.mmm'" /></td>
+                    <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small" type="text" required placeholder="ddd&deg;mm.mmm'" /></td>
                     <td><input data-bind="value: EezCode, uniqueName: true" class="input-mini" type="text" /></td>
                     <td><select data-bind="options: $root.ActivityCodes, value: ActivityCode, attr: { disabled: IsLocked() }" class="input-mini"></select></td>
                     <td><input data-bind="value: WindSpeed, uniqueName: true" class="input-mini" type="number" /></td>
