@@ -22,8 +22,7 @@ namespace TubsWeb.ViewModels
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System;
-    using System.Collections;
+    using System.Linq;
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
@@ -31,8 +30,9 @@ namespace TubsWeb.ViewModels
     {
         public Gen2GearViewModel()
         {
-            StartOfInteraction = new List<SpeciesGroup>(3);
-            EndOfInteraction = new List<SpeciesGroup>(3);
+            this.InteractionType = typeof(Gen2GearViewModel).FullName;
+            this.StartOfInteraction = new List<SpeciesGroup>(3);
+            this.EndOfInteraction = new List<SpeciesGroup>(3);
         }
         
         // Interactions with vessel or gear           
@@ -47,6 +47,15 @@ namespace TubsWeb.ViewModels
 
         public string InteractionDescription { get; set; }
 
+        [JsonIgnore]
+        public IEnumerable<SpeciesGroup> Deleted
+        {
+            get
+            {
+                return this.StartOfInteraction.Where(e => e != null && e._destroy).Union(this.EndOfInteraction.Where(e => e != null && e._destroy));
+            }
+        }
+
         // The GEN-2 allows entry of up to 3 groups of species for an interaction
         // with fishing gear/vessel
         public class SpeciesGroup
@@ -58,6 +67,10 @@ namespace TubsWeb.ViewModels
             public string ConditionCode { get; set; }
 
             public string Description { get; set; }
+
+            public bool _destroy { get; set; }
+
+            public bool NeedsFocus { get; set; }
         }
     }
 

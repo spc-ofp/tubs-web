@@ -69,7 +69,7 @@ amplify.request.define(
 amplify.request.define(
     "getInteraction",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-2/{pageNumber}/Edit' })
+    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-2/{PageNumber}/Edit' })
 );
 
 // Request for loading GEN-3 data

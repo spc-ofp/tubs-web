@@ -54,6 +54,17 @@ namespace TubsWeb.ViewModels
             "U4"
         };
 
+        // Vessel activities used in Gear and Sighted interactions
+        public IList<string> Activities = new List<string>()
+        {
+            String.Empty,
+            "Setting",
+            "Hauling",
+            "Searching",
+            "Transiting",
+            "Other"
+        };
+
         // Common data fields
         public string TripNumber { get; set; }
 
@@ -63,7 +74,7 @@ namespace TubsWeb.ViewModels
 
         [Required]
         [Display(Name = "Ship's Date")]
-        public string ShipsDate { get; set; }
+        public DateTime? ShipsDate { get; set; }
 
         [Required]
         [Display(Name = "Ship's Time")]
@@ -86,7 +97,12 @@ namespace TubsWeb.ViewModels
 
         public string SpeciesDescription { get; set; }
 
+        // This property is for the MVC model binder
+        public virtual string InteractionType { get; set; }
+
         // Used for navigation
+        public int PageNumber { get; set; }
+
         public bool HasNext { get; set; }
 
         public int NextPage { get; set; }

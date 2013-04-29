@@ -8,6 +8,7 @@
 * knockout.asyncCommand (makes it easier to show user activity)
 * knockout.dirtyFlag (avoid unneccesary saves)
 * knockout.activity (fancy UI gadget)
+* knockout.mapping
 * amplify (local storage and Ajax mapping
 * toastr (user notification)
 * knockout.custom-bindings (date binding)
@@ -31,40 +32,29 @@ tubs.Gen2Event = function (data) {
     self.SpeciesCode = ko.observable(data.SpeciesCode || '');
     self.SpeciesDescription = ko.observable(data.SpeciesDescription || '');
     self.ActionName = ko.observable(data.ActionName || 'add');
+    self.InteractionType = ko.observable(data.InteractionType || '');
+
+    self.addPattern = /add/i;
+
+    self.isAdd = ko.computed(function () {
+        return self.addPattern.test(self.ActionName());
+    });
+
+    // Only show the "Next Event" button for any Edit
+    // or an Add that has been stored in the database
+    self.showNextEventButton = ko.computed(function () {
+        return !self.isAdd() || (self.Id() != 0);
+    });
 
     return self;
 }
 
 tubs.Gen2LandedEvent = function (data) {
     var self = this;
+
     ko.utils.extend(self, new tubs.Gen2Event(data));
-
-    self.addPattern = /add/i;
-    // This is very important.  The "interactionType" property is used to assist the
-    // MVC model binder choose the correct concrete instance for the abstract class that
-    // is the incoming parameter to save.
-    self.interactionType = ko.observable('TubsWeb.ViewModels.Gen2LandedViewModel');
-
-    // Set landed properties
-    self.LandedConditionCode = ko.observable(data.LandedConditionCode || '');
-    self.LandedConditionDescription = ko.observable(data.LandedConditionDescription || '');
-    self.LandedHandling = ko.observable(data.LandedHandling || '');
-    self.LandedLength = ko.observable(data.LandedLength || null);
-    self.LandedLengthCode = ko.observable(data.LandedLengthCode || '');
-    self.LandedSexCode = ko.observable(data.LandedSexCode || '');
-    self.DiscardedConditionCode = ko.observable(data.DiscardedConditionCode || '');
-    self.DiscardedConditionDescription = ko.observable(data.DiscardedConditionDescription || '');
-    self.RetrievedTagNumber = ko.observable(data.RetrievedTagNumber || '');
-    self.RetrievedTagType = ko.observable(data.RetrievedTagType || '');
-    self.RetrievedTagOrganization = ko.observable(data.RetrievedTagOrganization || '');
-    self.PlacedTagNumber = ko.observable(data.PlacedTagNumber || '');
-    self.PlacedTagType = ko.observable(data.PlacedTagType || '');
-    self.PlacedTagOrganization = ko.observable(data.PlacedTagOrganization || '');
-
-    // Knockout Mapping would do this for us, but we're not using mapping here
-    self.ConditionCodes = data.ConditionCodes;
-    self.SexCodes = data.SexCodes;
-    self.LengthCodes = data.LengthCodes;
+    // If necessary, we can add a custom mapping function
+    ko.mapping.fromJS(data, {}, self); 
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.ShipsDate,
@@ -97,16 +87,6 @@ tubs.Gen2LandedEvent = function (data) {
         self.dirtyFlag().reset();
     };
 
-    self.isAdd = ko.computed(function () {
-        return self.addPattern.test(self.ActionName());
-    });
-
-    // Only show the "Next Day" button for any Edit
-    // or an Add that has been stored in the database
-    self.showNextEventButton = ko.computed(function () {
-        return !self.isAdd() || (self.Id() != 0);
-    });
-
     // Commands
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
@@ -114,7 +94,7 @@ tubs.Gen2LandedEvent = function (data) {
                 self.TripId(),
                 self.PageNumber(),
                 function (result) {
-                    // TODO How do we reload without using mapping?
+                    ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded GEN-2 event');
                     complete();
@@ -131,16 +111,13 @@ tubs.Gen2LandedEvent = function (data) {
         }
     });
 
-    // Somehow need to pass interactionType = 'Gen2LandedViewModel'
-    // outside the JSON data for this request
-    // The cheap fix for this is to add distinct endpoints
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.saveInteraction(
                 self.TripId(),
                 self,
                 function (result) {
-                    // TODO Reload
+                    ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     toastr.success('Saved GEN-2');
                     complete();
@@ -159,4 +136,246 @@ tubs.Gen2LandedEvent = function (data) {
 
     return self;
 
-}
+};
+
+tubs.Gen2GearMapping = {
+    'StartOfInteraction': {
+        create: function (options) {
+            return new tubs.Gen2SpeciesGroup(options.data);
+        }
+    },
+    'EndOfInteraction': {
+        create: function (options) {
+            return new tubs.Gen2SpeciesGroup(options.data);
+        }
+    }
+};
+
+tubs.Gen2SpeciesGroup = function (data) {
+    var self = this;
+    self.Id = ko.observable(data.Id || 0);
+    self.Count = ko.observable(data.Count || null);
+    self.ConditionCode = ko.observable(data.ConditionCode || '');
+    self.Description = ko.observable(data.Description || '');
+    self.NeedsFocus = ko.observable(data.NeedsFocus || false);
+    self._destroy = ko.observable(data._destroy || false);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.Count,
+        self.ConditionCode,
+        self.Description,
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        return self.dirtyFlag().isDirty();
+    });
+
+    self.clearDirtyFlag = function () {
+        self.dirtyFlag().reset();
+    };
+
+    return self;
+};
+
+tubs.Gen2GearEvent = function (data) {
+    var self = this;
+
+    ko.utils.extend(self, new tubs.Gen2Event(data));
+    // If necessary, we can add a custom mapping function
+    ko.mapping.fromJS(data, tubs.Gen2GearMapping, self);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.ShipsDate,
+        self.ShipsTime,
+        self.Latitude,
+        self.Longitude,
+        self.SpeciesCode,
+        self.SpeciesDescription,
+        self.VesselActivity,
+        self.VesselActivityDescription,
+        self.StartOfInteraction, // Add/Remove only
+        self.EndOfInteraction, // Add/Remove only
+        self.InteractionDescription,
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        // Avoid iterating over the events if the header
+        // has changed
+        if (self.dirtyFlag().isDirty()) { return true; }
+        // Check each child event, bailing on the first
+        // dirty child.
+        var hasDirtyChild = false;
+        $.each(self.StartOfInteraction(), function (i, evt) {
+            if (evt.isDirty()) {
+                hasDirtyChild = true;
+                return false;
+            }
+        });
+        if (hasDirtyChild) { return true; }
+        $.each(self.EndOfInteraction(), function (i, evt) {
+            if (evt.isDirty()) {
+                hasDirtyChild = true;
+                return false;
+            }
+        });
+        return hasDirtyChild;
+    });
+
+    self.clearDirtyFlag = function () {
+        $.each(self.StartOfInteraction(), function (index, value) {
+            value.dirtyFlag().reset();
+        });
+        $.each(self.EndOfInteraction(), function (index, value) {
+            value.dirtyFlag().reset();
+        });
+        self.dirtyFlag().reset();
+    };
+
+    self.addStartItem = function () {
+        self.StartOfInteraction.push(new tubs.Gen2SpeciesGroup({ "NeedsFocus": true }));
+    };
+
+    self.removeStartItem = function (evt) {
+        if (evt && evt.Id()) { self.StartOfInteraction.destroy(evt); }
+        else { self.StartOfInteraction.remove(evt); }
+    };
+
+    self.addEndItem = function () {
+        self.EndOfInteraction.push(new tubs.Gen2SpeciesGroup({ "NeedsFocus": true }));
+    };
+
+    self.removeEndItem = function (evt) {
+        if (evt && evt.Id()) { self.EndOfInteraction.destroy(evt); }
+        else { self.EndOfInteraction.remove(evt); }
+    };
+
+    // Commands
+    self.reloadCommand = ko.asyncCommand({
+        execute: function (complete) {
+            tubs.getInteraction(
+                self.TripId(),
+                self.PageNumber(),
+                function (result) {
+                    ko.mapping.fromJS(result, tubs.Gen2GearMapping, self);
+                    self.clearDirtyFlag();
+                    toastr.info('Reloaded GEN-2 event');
+                    complete();
+                },
+                function (xhr, status, error) {
+                    tubs.notify('Failed to reload GEN-2 event', xhr, status);
+                    complete();
+                }
+            );
+        },
+
+        canExecute: function (isExecuting) {
+            return !isExecuting && self.isDirty();
+        }
+    });
+
+    self.saveCommand = ko.asyncCommand({
+        execute: function (complete) {
+            tubs.saveInteraction(
+                self.TripId(),
+                self,
+                function (result) {
+                    ko.mapping.fromJS(result, tubs.Gen2GearMapping, self);
+                    self.clearDirtyFlag();
+                    toastr.success('Saved GEN-2');
+                    complete();
+                },
+                function (xhr, status, error) {
+                    tubs.notify('Failed to save GEN-2', xhr, status);
+                    complete();
+                }
+            );
+        },
+
+        canExecute: function (isExecuting) {
+            return !isExecuting && self.isDirty();
+        }
+    });
+
+    return self;
+};
+
+tubs.GenSightedEvent = function (data) {
+    var self = this;
+    ko.utils.extend(self, new tubs.Gen2Event(data));
+    // If necessary, we can add a custom mapping function
+    ko.mapping.fromJS(data, {}, self);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.ShipsDate,
+        self.ShipsTime,
+        self.Latitude,
+        self.Longitude,
+        self.SpeciesCode,
+        self.SpeciesDescription,
+        self.VesselActivity,
+        self.VesselActivityDescription,
+        self.NumberSighted,
+        self.NumberOfAdults,
+        self.NumberOfJuveniles,
+        self.SightingLength,
+        self.SightingDistance,
+        self.SightingBehavior,
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        return self.dirtyFlag().isDirty();
+    });
+
+    self.clearDirtyFlag = function () {
+        self.dirtyFlag().reset();
+    };
+
+    // Commands
+    self.reloadCommand = ko.asyncCommand({
+        execute: function (complete) {
+            tubs.getInteraction(
+                self.TripId(),
+                self.PageNumber(),
+                function (result) {
+                    ko.mapping.fromJS(result, {}, self);
+                    self.clearDirtyFlag();
+                    toastr.info('Reloaded GEN-2 event');
+                    complete();
+                },
+                function (xhr, status, error) {
+                    tubs.notify('Failed to reload GEN-2 event', xhr, status);
+                    complete();
+                }
+            );
+        },
+
+        canExecute: function (isExecuting) {
+            return !isExecuting && self.isDirty();
+        }
+    });
+
+    self.saveCommand = ko.asyncCommand({
+        execute: function (complete) {
+            tubs.saveInteraction(
+                self.TripId(),
+                self,
+                function (result) {
+                    ko.mapping.fromJS(result, {}, self);
+                    self.clearDirtyFlag();
+                    toastr.success('Saved GEN-2');
+                    complete();
+                },
+                function (xhr, status, error) {
+                    tubs.notify('Failed to save GEN-2', xhr, status);
+                    complete();
+                }
+            );
+        },
+
+        canExecute: function (isExecuting) {
+            return !isExecuting && self.isDirty();
+        }
+    });
+
+    return self;
+};

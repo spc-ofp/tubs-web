@@ -1,9 +1,4 @@
-﻿@model TubsWeb.ViewModels.Gen2LandedViewModel
-
-@*
-  Created as a partial here rather than down in 'Shared' as it will only ever be used in the context
-  of GEN-2 forms.  'Shared' is a little too full for comfort.
-*@
+﻿@model TubsWeb.ViewModels.Gen2SightingViewModel
 
 @{
     // Set up some navigation URLs
@@ -11,7 +6,7 @@
     var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Gen2Details, new { tripId = Model.TripId, pageNumber = Model.PreviousPage, action = "Edit" });    
 }
 
-<form id="gen2LandedForm">
+<form id="gen2SightedForm">
     <p>
         @if (Model.HasPrevious)
         { 
@@ -35,7 +30,7 @@
     </p>
     <hr />
     <fieldset>
-        <legend>Species Landed On Deck</legend>
+        <legend>Species Sighted</legend>
     </fieldset>
     <div class="row-fluid">
         <div class="span2">
@@ -100,115 +95,65 @@
             </div>
         </div>
     </div>
-    <fieldset>
-        <legend>Landed</legend>
-    </fieldset>
+    <hr />
     <div class="row-fluid">
         <div class="span2">
-            <label>Condition Code</label>
+            <label>Vessel Activity</label>
             <div>
-                <select data-bind="options: $root.ConditionCodes, value: LandedConditionCode" class="input-mini"></select>
+                <select data-bind="options: $root.Activities, value: VesselActivity" class="input-small"></select>
             </div>
         </div>
-        <div class="span10">
-            <label>Condition Description</label>
+        <div class="span4">
+            <label>Description (if other)</label>
             <div>
-                <textarea data-bind="value: LandedConditionDescription" 
-                          class="span10" 
-                          rows="4" 
-                          placeholder="Write a description of the condition of the species when landed.">
-                </textarea>
+                <input type="text" data-bind="value: VesselActivityDescription" class="input-medium" />
             </div>
         </div>
     </div>
     <hr />
     <div class="row-fluid">
-        <div class="span6">
-            <label>Describe Onboard Handling</label>
+        <div class="span2">
+            <label>Number Sighted</label>
             <div>
-                <textarea data-bind="value: LandedHandling" 
-                          class="span12" 
+                <input data-bind="value: NumberSighted" class="input-mini" type="number" />
+            </div>
+        </div>
+        <div class="span2">
+            <label>Number of Adults</label>
+            <div>
+                <input data-bind="value: NumberOfAdults" class="input-mini" type="number" />
+            </div>
+        </div>
+        <div class="span2">
+            <label>Number of Juveniles</label>
+            <div>
+                <input data-bind="value: NumberOfJuveniles" class="input-mini" type="number" />
+            </div>
+        </div>
+        <div class="span6">
+            <label>Estimate Overall Length</label>
+            <div>
+                <input data-bind="value: SightingLength" class="input-xlarge" type="text" />
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <div class="span3">
+            <label>Distance From Vessel</label>
+            <div>
+                <input data-bind="value: SightingDistance" class="input-mini" type="number" />
+                <select data-bind="options:  $root.DistanceUnits, value: SightingDistanceUnit" class="input-small"></select>
+            </div>
+        </div>
+        <div class="span8">
+            <label>Describe the Interaction</label>
+            <div>
+                <textarea data-bind="value: SightingBehavior" 
+                          class="span12"
+                          placeholder="Make detailed notes on the interaction." 
                           rows="4">
                 </textarea>
-            </div>
-        </div>
-        <div class="span2">
-            <label>Length (cm)</label>
-            <div>
-                <input data-bind="value: LandedLength" class="input-mini" type="number" />
-            </div>
-        </div>
-        <div class="span2">
-            <label>Length Code</label>
-            <select data-bind="options: $root.LengthCodes, value: LandedLengthCode" class="input-mini"></select>
-        </div>
-        <div class="span2">
-            <label>Sex</label>
-            <select data-bind="options: $root.SexCodes, value: LandedSexCode" class="input-mini"></select>
-        </div>
-    </div>
-    <fieldset>
-        <legend>Discarded</legend>
-    </fieldset>
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Condition Code</label>
-            <div>
-                <select data-bind="options: $root.ConditionCodes, value: DiscardedConditionCode" class="input-mini"></select>
-            </div>
-        </div>
-        <div class="span10">
-            <label>Condition Description</label>
-            <div>
-                <textarea data-bind="value: DiscardedConditionDescription" 
-                          class="span10" 
-                          rows="4" 
-                          placeholder="Write a description of the condition of the species when discarded.">
-                </textarea>
-            </div>
-        </div>
-    </div>
-    <fieldset>
-        <legend>Tags</legend>
-    </fieldset>
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Retrieved Number</label>
-            <div>
-                <input type="text" class="input-small" data-bind="value: RetrievedTagNumber" />
-            </div>
-        </div>
-        <div class="span2">
-            <label>Retrieved Type</label>
-            <div>
-                <input type="text" class="input-small" data-bind="value: RetrievedTagType" />
-            </div>
-        </div>
-        <div class="span3">
-            <label>Retrieved Organization</label>
-            <div>
-                <input type="text" data-bind="value: RetrievedTagOrganization" />
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Placed Number</label>
-            <div>
-                <input type="text" class="input-small" data-bind="value: PlacedTagNumber" />
-            </div>
-        </div>
-        <div class="span2">
-            <label>Placed Type</label>
-            <div>
-                <input type="text" class="input-small" data-bind="value: PlacedTagType" />
-            </div>
-        </div>
-        <div class="span3">
-            <label>Placed Organization</label>
-            <div>
-                <input type="text" data-bind="value: PlacedTagOrganization" />
             </div>
         </div>
     </div>
@@ -235,4 +180,3 @@
         </div>
     </li>
 </ul>
-

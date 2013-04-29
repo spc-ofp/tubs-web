@@ -17,11 +17,8 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+@{ Html.RenderPartial("_GearEditor", Model); }
+
 @section AdditionalScripts {
-    <script>
-        $(document).ready(function () {
-            // PageGuide initialization
-            tl.pg.init();
-        });
-    </script>
+    @{ Html.RenderPartial("_GearEditorScripts", Model); }
 }

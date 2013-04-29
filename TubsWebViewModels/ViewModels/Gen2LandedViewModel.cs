@@ -29,6 +29,11 @@ namespace TubsWeb.ViewModels
 
     public class Gen2LandedViewModel : Gen2ViewModel
     {
+        public Gen2LandedViewModel()
+        {
+            this.InteractionType = typeof(Gen2LandedViewModel).FullName;
+        }
+        
         // Send down to client for use with Knockout.js
         public IList<string> SexCodes = new List<string>() { String.Empty, "M", "F", "I", "U" };
 

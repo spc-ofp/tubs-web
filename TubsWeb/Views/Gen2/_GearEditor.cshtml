@@ -1,9 +1,4 @@
-﻿@model TubsWeb.ViewModels.Gen2LandedViewModel
-
-@*
-  Created as a partial here rather than down in 'Shared' as it will only ever be used in the context
-  of GEN-2 forms.  'Shared' is a little too full for comfort.
-*@
+﻿@model TubsWeb.ViewModels.Gen2GearViewModel
 
 @{
     // Set up some navigation URLs
@@ -11,11 +6,11 @@
     var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Gen2Details, new { tripId = Model.TripId, pageNumber = Model.PreviousPage, action = "Edit" });    
 }
 
-<form id="gen2LandedForm">
+<form id="gen2GearForm">
     <p>
         @if (Model.HasPrevious)
         { 
-        <a href='@previousPage' id="previousEventButton" class="btn btn-info">
+        <a href='@previousPage' class="btn btn-info">
             <i class="icon-backward icon-white"></i>
         </a>
         }
@@ -29,13 +24,13 @@
         @if (Model.HasNext)
         {
         <a href='@nextPage' id="nextEventButton" class="btn btn-info">
-            Next Event&nbsp;<i class="icon-forward icon-white"></i>
+            Next Set&nbsp;<i class="icon-forward icon-white"></i>
         </a>
         }
     </p>
     <hr />
     <fieldset>
-        <legend>Species Landed On Deck</legend>
+        <legend>Interactions With Vessel or Vessel Gear</legend>
     </fieldset>
     <div class="row-fluid">
         <div class="span2">
@@ -100,115 +95,112 @@
             </div>
         </div>
     </div>
-    <fieldset>
-        <legend>Landed</legend>
-    </fieldset>
+    <hr />
     <div class="row-fluid">
         <div class="span2">
-            <label>Condition Code</label>
+            <label>Vessel Activity</label>
             <div>
-                <select data-bind="options: $root.ConditionCodes, value: LandedConditionCode" class="input-mini"></select>
+                <select data-bind="options: $root.Activities, value: VesselActivity" class="input-small"></select>
             </div>
         </div>
-        <div class="span10">
-            <label>Condition Description</label>
+        <div class="span4">
+            <label>Description (if other)</label>
             <div>
-                <textarea data-bind="value: LandedConditionDescription" 
-                          class="span10" 
-                          rows="4" 
-                          placeholder="Write a description of the condition of the species when landed.">
-                </textarea>
+                <input type="text" data-bind="value: VesselActivityDescription" class="input-medium" />
             </div>
         </div>
     </div>
+    <fieldset>
+        <legend>Start of Interaction</legend>
+    </fieldset>
+    <div class="row-fluid">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Number</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: $root.StartOfInteraction" class="landedStarts">
+                <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
+                    <td>
+                        @* Delete button is taken out of the tab order to prevent accidents *@
+                        <button type="button"
+                                tabindex="3000"
+                                class="removeItem btn btn-mini btn-danger" 
+                                rel="tooltip" 
+                                title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                    </td>
+                    <td><input data-bind="hasfocus: NeedsFocus, value: Count, uniqueName: true" class="input-mini" type="number" /></td>
+                    <td><select data-bind="options: $root.ConditionCodes, value: ConditionCode" class="input-mini" /></td>
+                    <td><input data-bind="value: Description" class="input-large" /></td>
+                    <td>
+                        <button class="addItem btn btn-mini btn-info" 
+                                type="button"
+                                rel="tooltip" 
+                                title="Click to add row">
+                            <i class="icon-plus icon-white"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="btnAddStartWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.StartOfInteraction().length == 0">Add Item</button>
+    </div>
+    <hr />
+    <fieldset>
+        <legend>End of Interaction</legend>
+    </fieldset>
+    <div class="row-fluid">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Number</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: $root.EndOfInteraction" class="landedEnds">
+                <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
+                    <td>
+                        @* Delete button is taken out of the tab order to prevent accidents *@
+                        <button type="button"
+                                tabindex="3000"
+                                class="removeItem btn btn-mini btn-danger" 
+                                rel="tooltip" 
+                                title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+                    </td>
+                    <td><input data-bind="hasfocus: NeedsFocus, value: Count, uniqueName: true" class="input-mini" type="number" /></td>
+                    <td><select data-bind="options: $root.ConditionCodes, value: ConditionCode" class="input-mini" /></td>
+                    <td><input data-bind="value: Description" class="input-large" /></td>
+                    <td>
+                        <button class="addItem btn btn-mini btn-info" 
+                                type="button"
+                                rel="tooltip" 
+                                title="Click to add row">
+                            <i class="icon-plus icon-white"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="btnAddEndWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.EndOfInteraction().length == 0">Add Item</button>
+    </div>
     <hr />
     <div class="row-fluid">
-        <div class="span6">
-            <label>Describe Onboard Handling</label>
+        <div class="span12">
+            <label>Describe the Interaction</label>
             <div>
-                <textarea data-bind="value: LandedHandling" 
-                          class="span12" 
+                <textarea data-bind="value: InteractionDescription" 
+                          class="span12"
+                          placeholder="Make detailed notes on the interaction." 
                           rows="4">
                 </textarea>
-            </div>
-        </div>
-        <div class="span2">
-            <label>Length (cm)</label>
-            <div>
-                <input data-bind="value: LandedLength" class="input-mini" type="number" />
-            </div>
-        </div>
-        <div class="span2">
-            <label>Length Code</label>
-            <select data-bind="options: $root.LengthCodes, value: LandedLengthCode" class="input-mini"></select>
-        </div>
-        <div class="span2">
-            <label>Sex</label>
-            <select data-bind="options: $root.SexCodes, value: LandedSexCode" class="input-mini"></select>
-        </div>
-    </div>
-    <fieldset>
-        <legend>Discarded</legend>
-    </fieldset>
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Condition Code</label>
-            <div>
-                <select data-bind="options: $root.ConditionCodes, value: DiscardedConditionCode" class="input-mini"></select>
-            </div>
-        </div>
-        <div class="span10">
-            <label>Condition Description</label>
-            <div>
-                <textarea data-bind="value: DiscardedConditionDescription" 
-                          class="span10" 
-                          rows="4" 
-                          placeholder="Write a description of the condition of the species when discarded.">
-                </textarea>
-            </div>
-        </div>
-    </div>
-    <fieldset>
-        <legend>Tags</legend>
-    </fieldset>
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Retrieved Number</label>
-            <div>
-                <input type="text" class="input-small" data-bind="value: RetrievedTagNumber" />
-            </div>
-        </div>
-        <div class="span2">
-            <label>Retrieved Type</label>
-            <div>
-                <input type="text" class="input-small" data-bind="value: RetrievedTagType" />
-            </div>
-        </div>
-        <div class="span3">
-            <label>Retrieved Organization</label>
-            <div>
-                <input type="text" data-bind="value: RetrievedTagOrganization" />
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Placed Number</label>
-            <div>
-                <input type="text" class="input-small" data-bind="value: PlacedTagNumber" />
-            </div>
-        </div>
-        <div class="span2">
-            <label>Placed Type</label>
-            <div>
-                <input type="text" class="input-small" data-bind="value: PlacedTagType" />
-            </div>
-        </div>
-        <div class="span3">
-            <label>Placed Organization</label>
-            <div>
-                <input type="text" data-bind="value: PlacedTagOrganization" />
             </div>
         </div>
     </div>
@@ -235,4 +227,3 @@
         </div>
     </li>
 </ul>
-

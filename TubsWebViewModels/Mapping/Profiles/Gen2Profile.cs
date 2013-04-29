@@ -22,6 +22,7 @@ namespace TubsWeb.Mapping.Profiles
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
     using System.Linq;
     using AutoMapper;
     using DAL = Spc.Ofp.Tubs.DAL;
@@ -50,8 +51,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.EezId, o => o.Ignore()) // Not in UI
                 .ForMember(d => d.LandedTimeOnly, o => o.MapFrom(s => s.ShipsTime))
                 .ForMember(d => d.LandedDateOnly, o => o.MapFrom(s => s.ShipsDate))
-                //.ForMember(d => d.LandedDate, o => o.MapFrom(s => s.LandedDateOnly.Merge(s.LandedTimeOnly)))
-                .ForMember(d => d.LandedDate, o => o.Ignore())
+                .ForMember(d => d.LandedDate, o => o.MapFrom(s => s.ShipsDate.Merge(s.ShipsTime)))
                 ;
 
             CreateMap<Gen2LandedViewModel, DAL.Entities.LandedInteraction>()
@@ -68,8 +68,13 @@ namespace TubsWeb.Mapping.Profiles
                     {
                         foreach (var item in s.StartOfInteraction)
                         {
-                            var detail = Mapper.Map<Gen2GearViewModel.SpeciesGroup, DAL.Entities.GearInteractionDetail>(item);
-                            d.Details.Add(detail);
+                            // Don't bother to convert entities being destroyed
+                            if (null != item && !item._destroy)
+                            { 
+                                var detail = Mapper.Map<Gen2GearViewModel.SpeciesGroup, DAL.Entities.GearInteractionDetail>(item);
+                                detail.StartOrEnd = "START";
+                                d.AddDetail(detail);
+                            }
                         }
                     }
 
@@ -77,8 +82,13 @@ namespace TubsWeb.Mapping.Profiles
                     {
                         foreach (var item in s.EndOfInteraction)
                         {
-                            var detail = Mapper.Map<Gen2GearViewModel.SpeciesGroup, DAL.Entities.GearInteractionDetail>(item);
-                            d.Details.Add(detail);
+                            // Don't bother to convert entities being destroyed
+                            if (null != item && !item._destroy)
+                            {
+                                var detail = Mapper.Map<Gen2GearViewModel.SpeciesGroup, DAL.Entities.GearInteractionDetail>(item);
+                                detail.StartOrEnd = "END";
+                                d.AddDetail(detail);
+                            }
                         }
                     }
                 })
@@ -109,17 +119,19 @@ namespace TubsWeb.Mapping.Profiles
             CreateMap<DAL.Entities.Interaction, Gen2ViewModel>()
                 .Include<DAL.Entities.GearInteraction, Gen2GearViewModel>()
                 .Include<DAL.Entities.SightingInteraction, Gen2SightingViewModel>()
-                .Include<DAL.Entities.LandedInteraction, Gen2LandedViewModel>()                             
+                .Include<DAL.Entities.LandedInteraction, Gen2LandedViewModel>()
+                .ForMember(d => d.InteractionType, o => o.Ignore()) // MVC model binder plumbing       
                 .ForMember(d => d.ConditionCodes, o => o.Ignore()) // UI details
-                .ForMember(d => d.HasNext, o => o.Ignore())
-                .ForMember(d => d.HasPrevious, o => o.Ignore())
-                .ForMember(d => d.PreviousPage, o => o.Ignore())
-                .ForMember(d => d.NextPage, o => o.Ignore())
-                .ForMember(d => d.ActionName, o => o.Ignore())
+                .ForMember(d => d.Activities, o => o.Ignore()) // UI details
+                .ForMember(d => d.HasNext, o => o.Ignore()) // UI details
+                .ForMember(d => d.HasPrevious, o => o.Ignore()) // UI details
+                .ForMember(d => d.PreviousPage, o => o.Ignore()) // UI details
+                .ForMember(d => d.NextPage, o => o.Ignore()) // UI details
+                .ForMember(d => d.ActionName, o => o.Ignore()) // UI details
+                .ForMember(d => d.PageNumber, o => o.Ignore()) // UI details
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.Trip.SpcTripNumber ?? "This Trip").Trim()))
                 .ForMember(d => d.ShipsDate, o => o.MapFrom(s => s.LandedDateOnly))
                 .ForMember(d => d.ShipsTime, o => o.MapFrom(s => s.LandedTimeOnly))
- 
             ;
 
             CreateMap<DAL.Entities.GearInteraction, Gen2GearViewModel>()
@@ -145,6 +157,8 @@ namespace TubsWeb.Mapping.Profiles
 
             CreateMap<DAL.Entities.GearInteractionDetail, Gen2GearViewModel.SpeciesGroup>()
                 .ForMember(d => d.Count, o => o.MapFrom(s => s.Number))
+                .ForMember(d => d._destroy, o => o.Ignore())
+                .ForMember(d => d.NeedsFocus, o => o.Ignore())
                 ;
         }
     }

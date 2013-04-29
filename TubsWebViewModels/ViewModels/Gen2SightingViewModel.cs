@@ -29,7 +29,12 @@ namespace TubsWeb.ViewModels
 
     public class Gen2SightingViewModel : Gen2ViewModel
     {
-        public IList<string> DistanceUnits = new List<string>() { "m", "NM" };
+        public Gen2SightingViewModel()
+        {
+            this.InteractionType = typeof(Gen2SightingViewModel).FullName;
+        }
+
+        public IList<string> DistanceUnits = new List<string>() { String.Empty, "m", "NM" };
         
         public string VesselActivity { get; set; }
 

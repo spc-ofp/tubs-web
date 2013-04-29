@@ -1,0 +1,32 @@
+﻿@model TubsWeb.ViewModels.Gen2ViewModel
+
+@{
+    string titleSuffix = String.Empty;
+    if (Model is TubsWeb.ViewModels.Gen2GearViewModel) { titleSuffix = " (Interacted With Gear)"; }
+    if (Model is TubsWeb.ViewModels.Gen2LandedViewModel) { titleSuffix = " (Landed On Deck)"; }
+    if (Model is TubsWeb.ViewModels.Gen2SightingViewModel) { titleSuffix = " (Sighted Only)"; }
+    ViewBag.Title = "Edit GEN-2" + titleSuffix;
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("List", "Gen2", new { tripId = ViewBag.TripId}), "GEN-2 Events"),
+        Tuple.Create("#", "Edit GEN-2")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@if (Model is TubsWeb.ViewModels.Gen2LandedViewModel) { Html.RenderPartial("_LandedEditor", Model); }
+@if (Model is TubsWeb.ViewModels.Gen2GearViewModel) { Html.RenderPartial("_GearEditor", Model); }
+@if (Model is TubsWeb.ViewModels.Gen2SightingViewModel) { Html.RenderPartial("_SightedEditor", Model); }
+
+@section AdditionalScripts {
+    @if (Model is TubsWeb.ViewModels.Gen2LandedViewModel) { Html.RenderPartial("_LandedEditorScripts", Model); }
+    @if (Model is TubsWeb.ViewModels.Gen2GearViewModel) { Html.RenderPartial("_GearEditorScripts", Model); }
+    @if (Model is TubsWeb.ViewModels.Gen2SightingViewModel) { Html.RenderPartial("_SightedEditorScripts", Model); }
+}

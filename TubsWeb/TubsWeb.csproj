@@ -218,6 +218,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Api\PageCountController.cs" />
+    <Compile Include="Controllers\Api\TripApiController.cs" />
     <Compile Include="Controllers\AuxiliariesController.cs" />
     <Compile Include="Controllers\Gen2Controller.cs" />
     <Compile Include="Controllers\Gen5Controller.cs" />
@@ -709,6 +710,11 @@
     <Content Include="Views\Shared\_BootstrapDatePicker.cshtml" />
     <Content Include="Views\Gen2\_LandedEditor.cshtml" />
     <Content Include="Views\Gen2\_LandedEditorScripts.cshtml" />
+    <Content Include="Views\Gen2\Edit.cshtml" />
+    <Content Include="Views\Gen2\_GearEditor.cshtml" />
+    <Content Include="Views\Gen2\_GearEditorScripts.cshtml" />
+    <Content Include="Views\Gen2\_SightedEditor.cshtml" />
+    <Content Include="Views\Gen2\_SightedEditorScripts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

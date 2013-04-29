@@ -33,9 +33,18 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.ViewModels;
 
+    /// <summary>
+    /// Controller for GEN-2 data.
+    /// </summary>
     public class Gen2Controller : SuperController
     {
 
+        /// <summary>
+        /// SortedInteractions ensures that all the methods in this controller use the same
+        /// sort algorithm so that page numbers are consistent throughout the app.
+        /// </summary>
+        /// <param name="tripId">Trip with interactions</param>
+        /// <returns>IEnumerable of Interaction entities sorted by date and then species code</returns>
         internal IEnumerable<Interaction> SortedInteractions(Trip tripId)
         {
             return
@@ -64,6 +73,7 @@ namespace TubsWeb.Controllers
             var vm = Mapper.Map<Interaction, Gen2ViewModel>(interaction);
 
             // Set some nav properties
+            vm.PageNumber = pageNumber;
             vm.HasPrevious = pageNumber > 0;
             vm.PreviousPage = pageNumber - 1;
             vm.HasNext = pageNumber < maxPages;
@@ -74,6 +84,15 @@ namespace TubsWeb.Controllers
                 return GettableJsonNetData(vm);
 
             AddMinMaxDates(tripId);            
+            return View(CurrentAction(), vm);
+        }
+
+        internal ActionResult AddImpl(Trip tripId, Gen2ViewModel vm)
+        {
+            vm.TripId = tripId.Id;
+            vm.TripNumber = tripId.SpcTripNumber;
+            vm.ActionName = CurrentAction();
+            AddMinMaxDates(tripId);
             return View(CurrentAction(), vm);
         }
 
@@ -121,6 +140,24 @@ namespace TubsWeb.Controllers
         }
 
         [EditorAuthorize]
+        public ActionResult AddLanded(Trip tripId)
+        {
+            return AddImpl(tripId, new Gen2LandedViewModel());
+        }
+
+        [EditorAuthorize]
+        public ActionResult AddGear(Trip tripId)
+        {
+            return AddImpl(tripId, new Gen2GearViewModel());
+        }
+
+        [EditorAuthorize]
+        public ActionResult AddSighting(Trip tripId)
+        {
+            return AddImpl(tripId, new Gen2SightingViewModel());
+        }
+
+        [EditorAuthorize]
         public ActionResult Edit(Trip tripId, int pageNumber)
         {
             return ViewActionImpl(tripId, pageNumber);
@@ -131,7 +168,7 @@ namespace TubsWeb.Controllers
         [HttpPost]
         [HandleTransactionManually]
         [EditorAuthorize]
-        public ActionResult Edit(Trip tripId, [AbstractBind(ConcreteTypeParameter = "interactionType")] Gen2ViewModel vm)
+        public ActionResult Edit(Trip tripId, [AbstractBind(ConcreteTypeParameter = "InteractionType")] Gen2ViewModel vm)
         {
             if (null == tripId)
             {
@@ -147,13 +184,37 @@ namespace TubsWeb.Controllers
 
             var entity = Mapper.Map<Gen2ViewModel, Interaction>(vm);
             entity.Trip = tripId;
+            // TODO:  Parent/child entities like this, where it is unlikely that operations will be
+            // done on the child alone should manage the full audit trail here
             entity.SetAuditTrail(User.Identity.Name, DateTime.Now);
-            // TODO:  What else needs setting here?  Audit trail and...
 
             using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
                 IRepository<Interaction> repo = TubsDataService.GetRepository<Interaction>(MvcApplication.CurrentSession);
+                IRepository<GearInteractionDetail> drepo = TubsDataService.GetRepository<GearInteractionDetail>(MvcApplication.CurrentSession);
+
+                // Delete detail objects as appropriate
+                if (vm is Gen2GearViewModel)
+                {                    
+                    // Deletes first
+                    var gvm = vm as Gen2GearViewModel;                    
+                    gvm.Deleted.ToList().ForEach(i => drepo.DeleteById(i.Id));
+                }
+
                 repo.Save(entity);
+
+                // Save details after the entity
+                if (vm is Gen2GearViewModel)
+                {
+                    var gentity = entity as GearInteraction;
+                    gentity.Details.ToList().ForEach(d =>
+                    {
+                        d.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                        //drepo.Update(d, d.Id != default(int));
+                        drepo.Save(d);
+                    }); 
+                }
+
                 xa.Commit();
             }
 
@@ -169,38 +230,30 @@ namespace TubsWeb.Controllers
 
             }
 
-            // Tricky part here is figuring out the page number
-            return RedirectToAction("Edit", "Gen2", new { tripId = tripId.Id });
-        }
+            // Load trip on a new session and look for the interaction that matches the one
+            // that was just saved.  That will give us the correct "page number" until
+            // the inclusion of page number in the model gets worked out.
+            // This is subject to a race condition, but I'm not going to worry about it
+            // for what I feel is a very unlikely occurrence.
+            int pageNumber = 1;
+            using (var tripRepo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var temp = tripRepo.FindById(tripId.Id);
+                var interactions = SortedInteractions(temp);
 
-        [EditorAuthorize]
-        public ActionResult AddLanded(Trip tripId)
-        {
-            var vm = new Gen2LandedViewModel();
-            vm.TripId = tripId.Id;
-            vm.TripNumber = tripId.SpcTripNumber;
-            AddMinMaxDates(tripId);
-            return View(vm);
-        }
+                foreach (var item in interactions)
+                {
+                    if (item.Id == entity.Id)
+                    {
+                        break;
+                    }
 
-        [EditorAuthorize]
-        public ActionResult AddGear(Trip tripId)
-        {
-            var vm = new Gen2GearViewModel();
-            vm.TripId = tripId.Id;
-            vm.TripNumber = tripId.SpcTripNumber;
-            AddMinMaxDates(tripId);
-            return View(vm);
-        }
+                    pageNumber++;
+                }
+            }
 
-        [EditorAuthorize]
-        public ActionResult AddSighting(Trip tripId)
-        {
-            var vm = new Gen2SightingViewModel();
-            vm.TripId = tripId.Id;
-            vm.TripNumber = tripId.SpcTripNumber;
-            AddMinMaxDates(tripId);
-            return View(vm);
+            return RedirectToAction("Edit", "Gen2", new { tripId = tripId.Id, pageNumber = pageNumber });
         }
+        
     }
 }
