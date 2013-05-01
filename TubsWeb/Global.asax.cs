@@ -137,10 +137,11 @@ namespace TubsWeb
             json.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat;
 
             RegisterGlobalFilters(GlobalFilters.Filters);
+            // WebApiConfig needs to happen before RouteConfig
+            WebApiConfig.Register(GlobalConfiguration.Configuration);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            // TODO
-            //WebApiConfig.Register(GlobalConfiguration.Configuration);
+            
 
             // AutoMapper is used to convert entities to viewmodels (and vice versa)
             MappingConfig.Configure();

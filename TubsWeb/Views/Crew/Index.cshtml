@@ -12,11 +12,11 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@{ Html.RenderPartial("_Crew"); }
-
 @if (!ViewBag.IsReadOnly)
 {
 <p>
-    @Html.ActionLink("Edit Crew", "Edit")
+    @Html.ActionLink("Edit Crew", "Edit", null, new { @class = "btn btn-primary" })
 </p>
 }
+
+@{ Html.RenderPartial("_Crew"); }

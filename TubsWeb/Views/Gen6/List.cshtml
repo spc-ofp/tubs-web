@@ -16,5 +16,5 @@
 
 @if (!ViewBag.IsReadOnly)
 {
-    @Html.ActionLink("Add GEN-6 Event", "Add", new { tripId = ViewBag.TripId })
+    @Html.ActionLink("Add GEN-6 Event", "Add", new { tripId = ViewBag.TripId }, new { @class = "btn btn-primary" })
 }

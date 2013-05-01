@@ -35,12 +35,14 @@
     <tbody>
     @foreach (var set in @Model)
     {
+        var detailTarget = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" });
+        var editTarget = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Edit" });
         <tr>
             <td>
-                <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" })'>Details</a>
-                @if (!ViewBag.IsReadOnly)
+                <a href="@detailTarget"><i class="icon-list-alt" title="Details" rel="tooltip"></i></a>
+                @if(!ViewBag.IsReadOnly)
                 {
-                   <text>| </text><a href='@Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Edit" })'>Edit</a>
+                    <text> | </text><a href="@editTarget"><i class="icon-edit" title="Edit" rel="tooltip"></i></a> 
                 }
             </td>
             <td>@set.SetNumber</td>

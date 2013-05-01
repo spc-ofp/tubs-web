@@ -9,9 +9,18 @@
 
 @{
     var counter = (int)ViewData["counter"];
+    var detailTarget = Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.Trip.Id, dayNumber = counter, action = "Index" });
+    var editTarget = Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.Trip.Id, dayNumber = counter, action = "Edit" });
 }
 
-<tr @HasGen3(Model.Gen3Events) >   
+<tr @HasGen3(Model.Gen3Events) >
+    <td>
+        <a href="@detailTarget"><i class="icon-list-alt" title="Details" rel="tooltip"></i></a>
+        @if(!ViewBag.IsReadOnly)
+        {
+            <text> | </text><a href="@editTarget"><i class="icon-edit" title="Edit" rel="tooltip"></i></a> 
+        } 
+    </td> 
     <td>@Html.DisplayFor(m => Model.StartOfDay)</td>
     <td>@Html.DisplayFor(m => Model.UtcStartOfDay)</td>
     <td>@Model.FloatingObjectsNoSchool</td>
@@ -20,11 +29,4 @@
     <td>@Model.FadsWithSchool</td>
     <td>@Model.FreeSchools</td>
     <td>@Html.DisplayFor(m => @Model.Gen3Events)</td>
-    <td>
-        <a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.Trip.Id, dayNumber = counter, action = "Index" })'>Activities</a>
-        @if (!ViewBag.IsReadOnly)
-        {
-           <text>| </text><a href='@Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.Trip.Id, dayNumber = counter, action = "Edit" })'>Edit</a>
-        }
-    </td>
 </tr>

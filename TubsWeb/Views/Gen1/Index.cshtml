@@ -22,14 +22,14 @@
         <div class="tab-pane active" id="1">
         @if(!ViewBag.IsReadOnly)
         {
-            <p>@Html.ActionLink("Edit sightings", "EditSightings")</p>
+            <p>@Html.ActionLink("Edit sightings", "EditSightings", null, new { @class = "btn btn-primary" })</p>
         }
         @{ Html.RenderPartial("_Sightings", Model.Sightings); }
         </div>
         <div class="tab-pane" id="2">
         @if(!ViewBag.IsReadOnly)
         {
-            <p>@Html.ActionLink("Edit transfers", "EditTransfers")</p>
+            <p>@Html.ActionLink("Edit transfers", "EditTransfers", null, new { @class = "btn btn-primary" })</p>
         }     
         @{ Html.RenderPartial("_Transfers", Model.Transfers); }
         </div>

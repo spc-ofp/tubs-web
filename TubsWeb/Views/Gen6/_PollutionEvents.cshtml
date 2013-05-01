@@ -34,9 +34,10 @@
     <tbody>
     @foreach (var item in Model.Select((x, i) => new { Data = x, Index = i }))
     {
+        var detailTarget = Url.Action("Index", "Gen6", new { tripId = ViewBag.TripId, pageNumber = item.Index + 1 });
         <tr>
             <td>
-                @Html.ActionLink("Details", "Index", "Gen6", new { tripId = ViewBag.TripId, pageNumber = item.Index + 1 }, null)
+                <a href="@detailTarget"><i class="icon-list-alt" title="Details" rel="tooltip"></i></a>
             </td>
             <td>@Html.DisplayFor(m => item.Data.IncidentDate)</td>
             <td>@item.Data.Latitude / @item.Data.Longitude (@item.Data.EezId)</td>

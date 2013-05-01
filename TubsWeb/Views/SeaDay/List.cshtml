@@ -18,5 +18,5 @@
 @* *@
 @if (!ViewBag.IsReadOnly)
 {
-    @Html.ActionLink("Add new PS-2", "Add", "SeaDay", new { tripId = ViewBag.TripId, dayNumber = (1 + Model.Count()) }, null)
+    @Html.ActionLink("Add new PS-2", "Add", "SeaDay", new { tripId = ViewBag.TripId, dayNumber = (1 + Model.Count()) }, new { @class = "btn btn-primary" })
 }

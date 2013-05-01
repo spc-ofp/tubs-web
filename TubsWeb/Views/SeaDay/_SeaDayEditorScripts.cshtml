@@ -35,6 +35,14 @@
             viewModel.addEvent();
         });
 
+        /*
+        // Auto-advance not working as I'd expect it.  FIDO
+        $("#seaDayForm").on("keyup", ".advance", function () {
+            if ($(this).val().length == $(this).attr('maxlength'))
+                $(this).next(':input').focus();
+        });
+        */
+
         // PageGuide initialization
         tl.pg.init();
 

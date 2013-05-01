@@ -53,7 +53,8 @@
                            name="ShipsTime"
                            type="text"
                            data-bind="value: ShipsTime"
-                           class="input-mini" />
+                           maxlength="4"
+                           class="input-mini advance" />
                     <span class="add-on"><i class="icon-time"></i></span>
                 </div>
             </div>
@@ -75,7 +76,8 @@
                            name="UtcTime"
                            type="text"
                            data-bind="value: UtcTime"
-                           class="input-mini" />
+                           maxlength="4"
+                           class="input-mini advance" />
                     <span class="add-on"><i class="icon-time"></i></span>
                 </div>
             </div>
@@ -124,10 +126,10 @@
                                 <i class="icon-lock icon-white"></i>
                         </button>
                     </td>
-                    <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini" type="text" required placeholder="HHmm" /></td>
-                    <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small" type="text" required placeholder="dd&deg;mm.mmm'" /></td>
-                    <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small" type="text" required placeholder="ddd&deg;mm.mmm'" /></td>
-                    <td><input data-bind="value: EezCode, uniqueName: true" class="input-mini" type="text" /></td>
+                    <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini advance" type="text" required placeholder="HHmm" maxlength="4"/></td>
+                    <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small advance" type="text" required placeholder="dd&deg;mm.mmm'" maxlength="9" /></td>
+                    <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small advance" type="text" required placeholder="ddd&deg;mm.mmm'" maxlength="10"/></td>
+                    <td><input data-bind="value: EezCode, uniqueName: true" class="input-mini advance" type="text" maxlength="2" /></td>
                     <td><select data-bind="options: $root.ActivityCodes, value: ActivityCode, attr: { disabled: IsLocked() }" class="input-mini"></select></td>
                     <td><input data-bind="value: WindSpeed, uniqueName: true" class="input-mini" type="number" /></td>
                     <td><input data-bind="value: WindDirection, uniqueName: true" class="input-mini" type="number" /></td>

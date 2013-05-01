@@ -37,7 +37,7 @@ namespace TubsWeb.ViewModels
         // Send down to client for use with Knockout.js
         public IList<string> SexCodes = new List<string>() { String.Empty, "M", "F", "I", "U" };
 
-        public IList<string> LengthCodes = new List<string>() { String.Empty, "UF", "LF" };
+        public IList<string> LengthCodes = new List<string>() { String.Empty, "UF", "LF", "TW", "TL", "CL" };
 
         // Landed on deck
         public string LandedConditionCode { get; set; }

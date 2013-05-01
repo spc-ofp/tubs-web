@@ -121,7 +121,7 @@ namespace TubsWeb.Controllers
                 summary.InteractionType =
                     interaction is SightingInteraction ? "Sighted Only" :
                     interaction is LandedInteraction ? "Landed On Deck" :
-                    interaction is GearInteraction ? "Interacted with gear" :
+                    interaction is GearInteraction ? "Interacted With Gear" :
                     "Unknown Interaction";
 
                 currentPage++;

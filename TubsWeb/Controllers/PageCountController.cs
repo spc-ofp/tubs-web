@@ -115,28 +115,5 @@ namespace TubsWeb.Controllers
             return RedirectToAction("Edit", "PageCount", new { tripId = tripId.Id });
         }
 
-
-
-        /*
-        [HttpPost]
-        [EditorAuthorize]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
-        public PartialViewResult AddPageCount(Trip tripId, PageCount pageCount)
-        {
-            var repo = new TubsRepository<PageCount>(MvcApplication.CurrentSession);            
-
-            if (ModelState.IsValid)
-            {
-                pageCount.Trip = tripId;
-                pageCount.EnteredBy = User.Identity.Name;
-                pageCount.EnteredDate = DateTime.Now;
-                repo.Add(pageCount);
-            }
-
-            var pageCounts = repo.FilterBy(t => t.Trip.Id == tripId.Id);
-            return PartialView("_PageCounts", pageCounts);
-        }
-        */
-
     }
 }
