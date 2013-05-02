@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Trip>
+﻿@model PagedList.IPagedList<Spc.Ofp.Tubs.DAL.Entities.TripHeader>
+@using PagedList.Mvc;
+@using PagedList;
 
 <h3>@ViewBag.Title</h3>
 
@@ -24,29 +26,11 @@
 @{ Html.RenderPartial("_Trips", Model); }
 
 @{
-    // Bootstrap will disable a link if the container has the class 'disabled'.
-    string classForPrevious = ViewBag.HasPrevious ? String.Empty : "disabled";
-    string classForNext = ViewBag.HasNext ? String.Empty : "disabled";
     string actionName = ViewBag.ActionName ?? "Index";
 }
 
-@* TODO In the future, change this to 10 or 11 pages (fewer only if there are fewer than 10 pages) *@
-<div id="pager" class="pagination">
-    <ul>
-        <li class="@classForPrevious"><a href='@Url.Action(actionName, new { page = (ViewBag.CurrentPage - 1) })'>&larr;</a></li>
-        @{
-            int minPage = Math.Max(0, (ViewBag.CurrentPage ?? 0) - 5);
-            int maxPage = Math.Min((ViewBag.CurrentPage ?? 0) + 5, ViewBag.PageCount);
-        }
-        @for (int i = minPage; i <= maxPage; i++)
-        {
-            string classForThis = i == ViewBag.CurrentPage ? "active" : String.Empty;
-            <li class="@classForThis">
-                @Html.ActionLink((i + 1).ToString(), actionName, new { page = i })
-            </li>
-        }
-        <li class="@classForNext"><a href='@Url.Action(actionName, new { page = (ViewBag.CurrentPage + 1) })'>&rarr;</a></li>
-    </ul>
+<div id="pager">
+@Html.PagedListPager(Model, page => Url.Action(actionName, new { page }))
 </div>
 
 @section AdditionalScripts {

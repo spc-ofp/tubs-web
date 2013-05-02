@@ -41,10 +41,10 @@ else
             <td>
                 @{ var detailTarget = Url.Action("Index", "Gen2", new { TripId = ViewBag.TripId, PageNumber = item.Index + 1 }); }
                 @{ var editTarget = Url.Action("Edit", "Gen2", new { TripId = ViewBag.TripId, PageNumber = item.Index + 1 }); }
-                <a href="@detailTarget"><i class="icon-list-alt" title="Details" rel="tooltip"></i></a>
+                <a href="@detailTarget"><i class="icon-list-alt icon-large" title="Details" rel="tooltip"></i></a>
                 @if(!ViewBag.IsReadOnly)
                 {
-                    <text> | </text><a href="@editTarget"><i class="icon-edit" title="Edit" rel="tooltip"></i></a> 
+                    <text> | </text><a href="@editTarget"><i class="icon-edit icon-large" title="Edit" rel="tooltip"></i></a> 
                 }               
             </td>
             <td>@item.Data.PageNumber</td>

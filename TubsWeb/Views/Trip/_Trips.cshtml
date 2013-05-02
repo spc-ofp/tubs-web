@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.Trip>
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.TripHeader>
 @using System.Web.Configuration
 
 @{
@@ -44,7 +44,7 @@
                 @if (!String.IsNullOrEmpty(item.Vessel.RegisteredCountryCode))
                 {
                     var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", item.Vessel.RegisteredCountryCode.ToLower()));
-                    <img src="@imgLink" alt="@item.Vessel.RegisteredCountryCode" title="@item.Vessel.RegisteredCountryCode" />
+                    <img src="@imgLink" alt="@item.Vessel.RegisteredCountryCode" title="@item.Vessel.RegisteredCountryCode" width="16" height="11" />
                 }
                 @Html.DisplayFor(i => item.Vessel.Name)
             </td>

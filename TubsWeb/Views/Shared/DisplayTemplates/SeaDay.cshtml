@@ -15,10 +15,10 @@
 
 <tr @HasGen3(Model.Gen3Events) >
     <td>
-        <a href="@detailTarget"><i class="icon-list-alt" title="Details" rel="tooltip"></i></a>
+        <a href="@detailTarget"><i class="icon-list-alt icon-large" title="Details" rel="tooltip"></i></a>
         @if(!ViewBag.IsReadOnly)
         {
-            <text> | </text><a href="@editTarget"><i class="icon-edit" title="Edit" rel="tooltip"></i></a> 
+            <text> | </text><a href="@editTarget"><i class="icon-edit icon-large" title="Edit" rel="tooltip"></i></a> 
         } 
     </td> 
     <td>@Html.DisplayFor(m => Model.StartOfDay)</td>

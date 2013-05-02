@@ -313,6 +313,10 @@
     <Content Include="Content\datetimepicker.css" />
     <Content Include="Content\debug.html" />
     <Content Include="Content\delete.gif" />
+    <Content Include="Content\font-awesome-ie7.min.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\font\fontawesome-webfont.svg" />
     <Content Include="Content\images\25px-Feed-icon.png" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\appbar.unlock.png" />
@@ -595,6 +599,10 @@
     <Content Include="Global.asax" />
     <Content Include="PivotViewerAppTestPage.aspx" />
     <Content Include="PivotViewerAppTestPage.html" />
+    <Content Include="Content\font\fontawesome-webfont.woff" />
+    <Content Include="Content\font\fontawesome-webfont.ttf" />
+    <Content Include="Content\font\fontawesome-webfont.eot" />
+    <Content Include="Content\font\FontAwesome.otf" />
     <None Include="NWebsecConfig\HttpHeaderSecurityModuleConfig.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -684,7 +692,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="App_Code\TubsHelpers.cshtml" />
-    <Content Include="Views\Trip\Index.cshtml" />
     <Content Include="Views\Trip\NotFound.cshtml" />
     <Content Include="Views\Trip\Details.cshtml" />
     <Content Include="Views\Trip\_TripSummary.cshtml" />
@@ -729,6 +736,7 @@
     <Content Include="Views\Gen2\_GearEditorScripts.cshtml" />
     <Content Include="Views\Gen2\_SightedEditor.cshtml" />
     <Content Include="Views\Gen2\_SightedEditorScripts.cshtml" />
+    <Content Include="Views\Trip\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

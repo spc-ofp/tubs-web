@@ -21,6 +21,11 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+@{
+    // Might as well display total trip catch here.
+    decimal? totalCatch = 0;
+}
+
 <table class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>
@@ -37,21 +42,30 @@
     {
         var detailTarget = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" });
         var editTarget = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Edit" });
+        var currentCatch = set.CatchList.Sum(sc => sc.MetricTonsObserved);
+        totalCatch += currentCatch;
         <tr>
-            <td>
-                <a href="@detailTarget"><i class="icon-list-alt" title="Details" rel="tooltip"></i></a>
+            <td class="nobr">
+                <a href="@detailTarget"><i class="icon-list-alt icon-large" title="Details" rel="tooltip"></i></a>
                 @if(!ViewBag.IsReadOnly)
                 {
-                    <text> | </text><a href="@editTarget"><i class="icon-edit" title="Edit" rel="tooltip"></i></a> 
+                    <text> | </text><a href="@editTarget"><i class="icon-edit icon-large" title="Edit" rel="tooltip"></i></a> 
                 }
             </td>
             <td>@set.SetNumber</td>
             <td>@set.Activity.SchoolAssociation.GetDescription()</td>
             <td>@IsSkunk(set.CatchList)</td>
-            <td>@set.CatchList.Sum(sc => sc.MetricTonsObserved)</td>
+            <td>@Html.DisplayFor(i => currentCatch)</td>
             <td><div class="large-text">@set.Comments</div></td>
         </tr>
     }
     </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="4">Total Catch</th>
+            <th>@Html.DisplayFor(i => totalCatch) mT</th>
+            <th>&nbsp;</th>
+        </tr>
+    </tfoot>
 </table>
 

@@ -29,6 +29,8 @@ namespace TubsWeb.Controllers
     using System.ServiceModel.Syndication;
     using System.Web.Configuration;
     using System.Web.Mvc;
+    using PagedList;
+    using PagedList.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common; // For date utilities
     using Spc.Ofp.Tubs.DAL.Entities;
@@ -91,55 +93,45 @@ namespace TubsWeb.Controllers
         {
             // TODO Convert this to Troy Goode's PagedList implementation
             // https://github.com/TroyGoode/PagedList
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trips = repo.GetPagedList((page ?? 0) * itemsPerPage, itemsPerPage);
-            ViewBag.HasPrevious = trips.HasPrevious;
-            ViewBag.HasNext = trips.HasNext;
-            ViewBag.CurrentPage = (page ?? 0);
-            int tripCount = Math.Max(repo.All().Count() - 1, 0);
-            ViewBag.PageCount = (tripCount + itemsPerPage - 1) / itemsPerPage;
-            ViewBag.TotalRows = tripCount;
-            return View(trips.Entities);
+            var repo = TubsDataService.GetRepository<TripHeader>(MvcApplication.CurrentStatelessSession);
+            var pageNumber = page ?? 1;
+            var entities = repo.All().ToPagedList(pageNumber, itemsPerPage);
+            //int tripCount = Math.Max(repo.All().Count() - 1, 0);
+            ViewBag.TotalRows = entities.TotalItemCount;
+            return View(entities);
         }
 
-        // TODO Order by EnteredDate descending
         public ActionResult MyTrips(int? page, int itemsPerPage = 15)
         {
             string filterCriteria = User.Identity.Name.WithoutDomain().ToUpper();
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trips = repo.GetPagedList(t => t.EnteredBy.ToUpper().Contains(filterCriteria), (page ?? 0) * itemsPerPage, itemsPerPage);
-            ViewBag.HasPrevious = trips.HasPrevious;
-            ViewBag.HasNext = trips.HasNext;
-            ViewBag.CurrentPage = (page ?? 0);
-
-            int tripCount = Math.Max(repo.FilterBy(t => t.EnteredBy.ToUpper().Contains(filterCriteria)).Count() - 1, 0);
-            ViewBag.Title = "My Trips";
-            ViewBag.PageCount = (tripCount + itemsPerPage - 1) / itemsPerPage;
-            ViewBag.TotalRows = tripCount;
+            var repo = TubsDataService.GetRepository<TripHeader>(MvcApplication.CurrentStatelessSession);
+            var pageNumber = page ?? 1;
+            var entities = 
+                repo.FilterBy(t => t.EnteredBy.ToUpper()
+                    .Contains(filterCriteria))
+                    .OrderByDescending(t => t.EnteredDate)
+                    .ToPagedList(pageNumber, itemsPerPage);
+            ViewBag.TotalRows = entities.TotalItemCount;
             ViewBag.ActionName = "MyTrips";
             ViewBag.FilterCriteria = filterCriteria; // For debug use
-            return View("Index", trips.Entities);
+            return View("Index", entities);
         }
 
         public ActionResult MyOpenTrips(int? page, int itemsPerPage = 15)
         {
             string filterCriteria = User.Identity.Name.WithoutDomain().ToUpper();
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
-            var trips = repo.GetPagedList(
-                t => t.EnteredBy.ToUpper().Contains(filterCriteria) && !t.ClosedDate.HasValue, 
-                (page ?? 0) * itemsPerPage, 
-                itemsPerPage);
-            ViewBag.HasPrevious = trips.HasPrevious;
-            ViewBag.HasNext = trips.HasNext;
-            ViewBag.CurrentPage = (page ?? 0);
+            var repo = TubsDataService.GetRepository<TripHeader>(MvcApplication.CurrentStatelessSession);
+            var pageNumber = page ?? 1;
+            var entities =
+                repo.FilterBy(t => t.EnteredBy.ToUpper().Contains(filterCriteria) && !t.ClosedDate.HasValue)
+                    .OrderByDescending(t => t.EnteredDate)
+                    .ToPagedList(pageNumber, itemsPerPage);
 
-            int tripCount = Math.Max(repo.FilterBy(t => t.EnteredBy.ToUpper().Contains(filterCriteria)).Count() - 1, 0);
             ViewBag.Title = "My Open Trips";
-            ViewBag.PageCount = (tripCount + itemsPerPage - 1) / itemsPerPage;
-            ViewBag.TotalRows = tripCount;
+            ViewBag.TotalRows = entities.TotalItemCount;
             ViewBag.ActionName = "MyOpenTrips";
             ViewBag.FilterCriteria = filterCriteria; // For debug use
-            return View("Index", trips.Entities);
+            return View("Index", entities);
         }
 
         // TODO Add start/end year criteria
@@ -150,17 +142,14 @@ namespace TubsWeb.Controllers
             if (String.IsNullOrEmpty(staffCode) && String.IsNullOrEmpty(vessel) && String.IsNullOrEmpty(program))
                 throw new Exception("No criteria, no can do.");
 
-            Expression<Func<Trip, bool>> IsMatch = trip =>
-                (String.IsNullOrEmpty(staffCode) || trip.Observer.StaffCode == staffCode) &&
+            Expression<Func<TripHeader, bool>> IsMatch = trip =>
+                (String.IsNullOrEmpty(staffCode) || trip.StaffCode == staffCode) &&
                 (String.IsNullOrEmpty(vessel) || trip.Vessel.Name.ToUpper().Contains(vessel.ToUpper())) &&
                 (String.IsNullOrEmpty(program) || trip.ProgramCode.ToString() == program);
 
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var repo = TubsDataService.GetRepository<TripHeader>(MvcApplication.CurrentStatelessSession);
             var trips = repo.FilterBy(IsMatch);
-            ViewBag.HasPrevious = false;
-            ViewBag.HasNext = false;
-            ViewBag.CurrentPage = 0;
-            ViewBag.PageCount = 1;
+
             ViewBag.TotalRows = trips.Count();
             ViewBag.ActionName = "Search";
             return PartialView("_Trips", trips);
@@ -201,7 +190,7 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         public ActionResult Rss()
         {
-            var repo = new TubsRepository<Trip>(MvcApplication.CurrentSession);
+            var repo = TubsDataService.GetRepository<TripHeader>(MvcApplication.CurrentStatelessSession);
             var lastTen = repo.All().OrderByDescending(t => t.EnteredDate).Take(10).ToList();
             string formatString = Url.Content("~/Trip/{0}");
             var feedItems =
