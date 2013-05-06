@@ -81,6 +81,7 @@
     <Compile Include="Mapping\Profiles\SetProfile.cs" />
     <Compile Include="Mapping\Profiles\SightingProfile.cs" />
     <Compile Include="Mapping\Profiles\TransferProfile.cs" />
+    <Compile Include="Mapping\Profiles\TripInfoProfile.cs" />
     <Compile Include="Mapping\Resolvers\ActionCodeResolver.cs" />
     <Compile Include="Mapping\Resolvers\BooleanResolver.cs" />
     <Compile Include="Mapping\Resolvers\EnumDescriptionResolver.cs" />
@@ -88,10 +89,12 @@
     <Compile Include="Mapping\Resolvers\FadOriginResolver.cs" />
     <Compile Include="Mapping\Resolvers\FadTypeResolver.cs" />
     <Compile Include="Mapping\Resolvers\FormNameResolver.cs" />
+    <Compile Include="Mapping\Resolvers\InteractionActivityResolver.cs" />
     <Compile Include="Mapping\Resolvers\InteractionTypeResolver.cs" />
     <Compile Include="Mapping\Resolvers\LengthUnitResolver.cs" />
     <Compile Include="Mapping\Resolvers\SamplingProtocolResolver.cs" />
     <Compile Include="Mapping\Resolvers\TransferVesselResolver.cs" />
+    <Compile Include="Mapping\Resolvers\UsageCodeResolver.cs" />
     <Compile Include="Mapping\Resolvers\VesselTypeCodeResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\MapperSetup.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="ViewModels\Gen3ViewModel.cs" />
     <Compile Include="ViewModels\Gen5ViewModel.cs" />
     <Compile Include="ViewModels\LengthFrequencyViewModel.cs" />
+    <Compile Include="ViewModels\LongLineTripInfoViewModel.cs" />
     <Compile Include="ViewModels\PageCountViewModel.cs" />
     <Compile Include="ViewModels\Ps1ViewModel.cs" />
     <Compile Include="ViewModels\PurseSeineSetViewModel.cs" />

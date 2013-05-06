@@ -54,6 +54,50 @@ namespace TubsWeb.Tests
         }
 
         [Test]
+        public void TripEntityToLongLineTripInfoViewModel([Values(4177)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId) as LongLineTrip;
+                Assert.NotNull(trip);
+                Assert.NotNull(trip.Gear, "Gear entity is null");
+                Assert.NotNull(trip.Inspection, "Safety Inspection entity is null");
+                var vm = Mapper.Map<LongLineTrip, LongLineTripInfoViewModel>(trip);
+                Assert.NotNull(vm, "AutoMapper yielded a null ViewModel");
+                Assert.AreEqual(tripId, vm.TripId);
+                Assert.NotNull(vm.Characteristics);
+                Assert.NotNull(vm.Gear);
+                Assert.NotNull(vm.Inspection);
+                Assert.NotNull(vm.Refrigeration);
+                StringAssert.AreEqualIgnoringCase("NC", vm.Characteristics.CountryCode.Trim());
+            }
+        }
+
+        // Not a real test -- Used to find an otherwise difficult to find NPE
+        // in AutoMapper
+        [Test]
+        public void ChildEntityToViewModel([Values(4177)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<LongLineGear>(true))
+            {
+                var gear = repo.FindBy(g => g.Trip.Id == tripId);
+                Assert.NotNull(gear);
+                var vm = Mapper.Map<LongLineGear, LongLineTripInfoViewModel.FishingGear>(gear);
+                Assert.NotNull(vm, "AutoMapper yielded a null ViewModel (LongLineGear)");
+            }
+
+            using (var repo = TubsDataService.GetRepository<SafetyInspection>(true))
+            {
+                var inspection = repo.FindBy(i => i.Trip.Id == tripId);
+                Assert.NotNull(inspection);
+                var vm = Mapper.Map<SafetyInspection, LongLineTripInfoViewModel.SafetyInspection>(inspection);
+                Assert.NotNull(vm, "AutoMapper yielded a null ViewModel (SafetyInspection)");
+            }
+        }
+
+        [Test]
         public void TripEntityToSightingViewModel([Values(70)] int tripId)
         {
             Mapper.AssertConfigurationIsValid();

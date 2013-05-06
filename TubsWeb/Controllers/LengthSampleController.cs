@@ -51,10 +51,10 @@ namespace TubsWeb.Controllers
             return View(lfvm);
         }
 
-        public ReportResult AllSamples(Trip tripId)
+        internal ReportResult AllSamples(PurseSeineTrip trip)
         {
             var repo = TubsDataService.GetRepository<LengthSample>(MvcApplication.CurrentSession);
-            var samples = repo.FilterBy(s => s.Header.Set.Activity.Day.Trip.Id == tripId.Id);
+            var samples = repo.FilterBy(s => s.Header.Set.Activity.Day.Trip.Id == trip.Id);
 
             var items =
                 from s in samples
@@ -73,8 +73,39 @@ namespace TubsWeb.Controllers
                 };
 
             var report = new Report(items.ToReportSource());
-            report.TextFields.Title = string.Format("Length frequency summary for trip {0}", tripId.SpcTripNumber);
+            report.TextFields.Title = string.Format("Length frequency summary for trip {0}", trip.SpcTripNumber);
             return new ReportResult(report);
+        }
+
+        internal ReportResult AllSamples(LongLineTrip trip)
+        {
+            var repo = TubsDataService.GetRepository<LongLineCatch>(MvcApplication.CurrentSession);
+            var samples = repo.FilterBy(s => s.FishingSet.Trip.Id == trip.Id);
+
+            var items =
+                from s in samples
+                orderby s.FishingSet.SetNumber
+                select new LengthSampleLineItem
+                {
+                    SetDate = s.FishingSet.SetDate,
+                    //Latitude = s.FishingSet.EventList.Where(sh => sh.)
+                    SetNumber = s.FishingSet.SetNumber.HasValue ? s.FishingSet.SetNumber.Value : -1,
+                    SequenceNumber = s.SampleNumber.HasValue ? s.SampleNumber.Value : -1,
+                    SpeciesCode = s.SpeciesCode,
+                    Length = s.Length.HasValue ? s.Length.Value : -1
+                };
+
+            var report = new Report(items.ToReportSource());
+            report.TextFields.Title = string.Format("Length frequency summary for trip {0}", trip.SpcTripNumber);
+            return new ReportResult(report);
+        }
+
+        public ReportResult AllSamples(Trip tripId)
+        {
+            return
+                tripId is PurseSeineTrip ? AllSamples(tripId as PurseSeineTrip) :
+                tripId is LongLineTrip ? AllSamples(tripId as LongLineTrip) :
+                new ReportResult(new Report());
         }
 
         /// <summary>

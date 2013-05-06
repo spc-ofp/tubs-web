@@ -45,7 +45,12 @@
     <div class="row">
         <div class="span2"><strong>Trip Summary</strong></div>
         @{ 
-            string tripSummaryUrl = String.Format(formatString, "PS-TripSummary", ViewBag.TripId);
+            string reportName =
+                Model is Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip ? "PS-TripSummary" :
+                Model is Spc.Ofp.Tubs.DAL.Entities.LongLineTrip ? "LL-TripSummary" :
+                Model is Spc.Ofp.Tubs.DAL.Entities.PoleAndLineTrip ? "PL-TripSummary" :
+                String.Empty;
+            string tripSummaryUrl = String.Format(formatString, reportName, ViewBag.TripId);
             string externalPdf = tripSummaryUrl + "&rs:Format=PDF";
         }
         <div class="span2">

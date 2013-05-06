@@ -1,0 +1,75 @@
+﻿@model TubsWeb.ViewModels.LongLineTripInfoViewModel.CrewNationality
+
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#crewNationality">
+            <i class="icon-chevron-right"></i> Crew Nationality
+        </a>
+    </div>
+    <div id="crewNationality" class="accordion-body collapse">
+        <div class="accordion-inner">
+            @if (null == Model)
+            {
+                @: No Nationality Information
+            }
+            else
+            {
+            @* Captain / Fishing Master *@
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Captain</strong></label>
+                    <span>@Model.CaptainCountryCode</span>
+                </div>
+                <div class="span3">
+                    <label><strong>Fishing Master</strong></label>
+                    <span>@Model.MasterCountryCode</span>
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Other Crew</strong></label>
+                    <span>@Model.GroupOneCountryCode</span>
+                </div>
+                <div class="span3">
+                    <label><strong>How Many?</strong></label>
+                    <span>@Model.GroupOneCount</span>
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Other Crew</strong></label>
+                    <span>@Model.GroupTwoCountryCode</span>
+                </div>
+                <div class="span3">
+                    <label><strong>How Many?</strong></label>
+                    <span>@Model.GroupTwoCount</span>
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Other Crew</strong></label>
+                    <span>@Model.GroupThreeCountryCode</span>
+                </div>
+                <div class="span3">
+                    <label><strong>How Many?</strong></label>
+                    <span>@Model.GroupThreeCount</span>
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Other Crew</strong></label>
+                    <span>@Model.GroupFourCountryCode</span>
+                </div>
+                <div class="span3">
+                    <label><strong>How Many?</strong></label>
+                    <span>@Model.GroupFourCount</span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+﻿@model TubsWeb.ViewModels.LongLineTripInfoViewModel.VesselCharacteristics
+
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#characteristics">
+            <i class="icon-chevron-down"></i> Vessel
+        </a>
+    </div>
+    <div id="characteristics" class="accordion-body collapse in">
+        <div class="accordion-inner">
+            @if (null == Model)
+            {
+                @: No Vessel Information
+            }
+            else
+            {            
+            @* Owner / Registration Number / IRCS *@
+            <div class="row-fluid">
+                <div class="span4">
+                    <label><strong>Owner</strong></label>
+                    <span>@(Model.Owner ?? "N/A")</span>
+                </div>
+                <div class="span4">
+                    <label><strong>Country Registration Number</strong></label>
+                    <span>@Model.RegistrationNumber</span>
+                </div>
+                <div class="span4">
+                    <label><strong>IRCS</strong></label>
+                    <span>@(Model.Ircs ?? "N/A")</span>
+                </div>
+            </div>
+            <hr />
+            @* Captain / ID Document / Document Number / Flag *@
+            <div class="row-fluid">
+                <div class="span4">
+                    <label><strong>Vessel Captain</strong></label>
+                    <span>@Model.Captain</span>
+                </div>
+                <div class="span3">
+                    <label><strong>ID Document</strong></label>
+                    <span>@Model.CaptainDocument</span>
+                </div>
+                <div class="span4">
+                    <label><strong>Document Number</strong></label>
+                    <span>@Model.CaptainDocumentNumber</span>
+                </div>
+                <div class="span1">
+                    <label><strong>Flag</strong></label>
+                    <span>@Model.CountryCode</span>
+                </div>
+            </div>
+            <hr />
+            @* Fishing Master / ID Document / Document Number / Hold Capacity *@
+            <div class="row-fluid">
+                <div class="span4">
+                    <label><strong>Fishing Master</strong></label>
+                    <span>@Model.Master</span>
+                </div>
+                <div class="span3">
+                    <label><strong>ID Document</strong></label>
+                    <span>@Model.MasterDocument</span>
+                </div>
+                <div class="span4">
+                    <label><strong>Document Number</strong></label>
+                    <span>@Model.MasterDocumentNumber</span>
+                </div>
+                <div class="span1">
+                    <label><strong>Hold Capacity</strong></label>
+                    <span>@Model.HoldCapacity</span>
+                </div>
+            </div>
+            <hr />
+            @* Licenses / Length / Gross Tonnage *@
+            <div class="row-fluid"> 
+                <div class="span8">
+                    <label><strong>Licenses</strong></label>
+                    <span>@Model.PermitNumbers</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Length</strong></label>
+                    <span>@Html.DisplayFor(m => Model.Length) @Model.LengthUnits</span>
+                </div>
+                <div class="span2">
+                    <label><strong>Gross Tonnage</strong></label>
+                    <span>@Html.DisplayFor(m => Model.GrossTonnage) mT</span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+

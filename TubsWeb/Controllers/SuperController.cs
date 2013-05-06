@@ -199,6 +199,7 @@ namespace TubsWeb.Controllers
             return "Index".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
         }
 
+        // This is still a work in progress
         private void AddTripNavbar(PurseSeineTrip tripId)
         {
             var routeValues = new { tripId = tripId.Id };
@@ -227,7 +228,6 @@ namespace TubsWeb.Controllers
 
         protected void AddTripNavbar(Trip tripId)
         {
-
             var routeValues = new { tripId = tripId.Id };
 
             IList<Tuple<string, string>> pills = new List<Tuple<string, string>>(12);
@@ -236,30 +236,53 @@ namespace TubsWeb.Controllers
             {
                 var pstrip = tripId as PurseSeineTrip;
                 pills.Add(Tuple.Create("PS-1", Url.Action("Index", "Ps1", routeValues)));
-                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.Electronics.Count > 0))
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.Electronics.Any()))
                 {
                     pills.Add(Tuple.Create("Electronics (PS-1)", Url.Action("List", "Electronics", routeValues)));
                 }
-                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.WellContent.Count > 0))
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.WellContent.Any()))
                 {
                     pills.Add(Tuple.Create("Well Content (PS-1)", Url.Action("Index", "WellContent", routeValues)));
                 }
-                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.Crew.Count > 0))
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.Crew.Any()))
                 {
                     pills.Add(Tuple.Create("Crew (PS-1)", Url.Action("Index", "Crew", routeValues)));
                 }
-                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.SeaDays.Count > 0))
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.SeaDays.Any()))
                 {
                     pills.Add(Tuple.Create("Days (PS-2)", Url.Action("List", "SeaDay", routeValues)));
                 }
                 // TODO Use the route for this so that the name looks right
                 pills.Add(Tuple.Create("Sets (PS-3)", Url.Action("List", "FishingSet", routeValues)));
             }
+
+            if (typeof(LongLineTrip) == tripId.GetType())
+            {
+                var lltrip = tripId as LongLineTrip;
+                pills.Add(Tuple.Create("LL-1", Url.Action("Index", "TripInfo", routeValues)));
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && lltrip.Electronics.Any()))
+                {
+                    pills.Add(Tuple.Create("Electronics (LL-1)", Url.Action("List", "Electronics", routeValues)));
+                }
+
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly || lltrip.FishingSets.Any()))
+                {
+                    pills.Add(Tuple.Create("Sets (LL-2/3)", Url.Action("List", "SetHaul", routeValues)));
+                }
+            }
          
-            // TODO Split GEN-1 into Sightings and Transfers
             // Hide pills if trip is closed and no such entity exists
-            pills.Add(Tuple.Create("GEN-1", Url.Action("Index", "Gen1", routeValues)));
-            pills.Add(Tuple.Create("GEN-2", Url.Action("List", "Gen2", routeValues)));
+            bool hasGen1 = tripId.Sightings.Any() || tripId.Transfers.Any();
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && hasGen1))
+            {
+                pills.Add(Tuple.Create("GEN-1", Url.Action("Index", "Gen1", routeValues)));
+            }
+            
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.Interactions.Any()))
+            {
+                pills.Add(Tuple.Create("GEN-2", Url.Action("List", "Gen2", routeValues)));
+            }
+            
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.TripMonitor != null))
             {
                 pills.Add(Tuple.Create("GEN-3", Url.Action("Index", "Gen3", routeValues)));
@@ -271,12 +294,16 @@ namespace TubsWeb.Controllers
                 pills.Add(Tuple.Create("GEN-5", Url.Action("Index", "Gen5", routeValues)));
             }
 
-            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.PollutionEvents.Count > 0))
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.PollutionEvents.Any()))
             {
                 pills.Add(Tuple.Create("GEN-6", Url.Action("List", "Gen6", routeValues)));
             }
 
-            pills.Add(Tuple.Create("Page Counts", Url.Action("Index", "PageCount", routeValues)));
+            if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.PageCounts.Any()))
+            { 
+                pills.Add(Tuple.Create("Page Counts", Url.Action("Index", "PageCount", routeValues)));
+            }
+
             pills.Add(Tuple.Create("Position Audit", Url.Action("PositionAudit", "Trip", routeValues)));
 
             if (!tripId.IsReadOnly)

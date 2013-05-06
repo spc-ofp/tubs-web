@@ -1,0 +1,62 @@
+﻿@model TubsWeb.ViewModels.LongLineTripInfoViewModel.FishingGear
+
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#fishingGear">
+            <i class="icon-chevron-right"></i> Fishing Gear
+        </a>
+    </div>
+    <div id="fishingGear" class="accordion-body collapse">
+        <div class="accordion-inner">
+            @if (null == Model)
+            {
+                @: No Gear Information
+            }
+            else
+            { 
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Gear</th>
+                        <th>Is Installed</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mainline Hauler</td>
+                        <td>@Html.DisplayFor(m => Model.HasMainlineHauler)</td>
+                        <td>@Model.MainlineHaulerUsage</td>
+                    </tr>
+                    <tr>
+                        <td>Branchline Hauler</td>
+                        <td>@Html.DisplayFor(m => Model.HasBranchlineHauler)</td>
+                        <td>@Model.BranchlineHaulerUsage</td>
+                    </tr>
+                    <tr>
+                        <td>Line Shooter</td>
+                        <td>@Html.DisplayFor(m => Model.HasLineShooter)</td>
+                        <td>@Model.LineShooterUsage</td>
+                    </tr>
+                    <tr>
+                        <td>Automatic Bait Thrower</td>
+                        <td>@Html.DisplayFor(m => Model.HasBaitThrower)</td>
+                        <td>@Model.BaitThrowerUsage</td>
+                    </tr>
+                    <tr>
+                        <td>Automatic Branchline Attacher</td>
+                        <td>@Html.DisplayFor(m => Model.HasBranchlineAttacher)</td>
+                        <td>@Model.BranchlineAttacherUsage</td>
+                    </tr>
+                    <tr>
+                        <td>Weighing Scales</td>
+                        <td>@Html.DisplayFor(m => Model.HasWeighingScales)</td>
+                        <td>@Model.WeighingScalesUsage</td>
+                    </tr>
+                </tbody>
+            </table>
+            @* TODO terminal gear *@
+            }
+        </div>
+    </div>
+</div>

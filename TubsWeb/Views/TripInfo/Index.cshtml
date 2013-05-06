@@ -1,0 +1,95 @@
+﻿@model TubsWeb.ViewModels.LongLineTripInfoViewModel
+
+@{
+    ViewBag.Title = "LL-1 for " + Model.TripNumber;
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
+        Tuple.Create("#", "LL-1")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@if (!ViewBag.IsReadOnly)
+{
+<p>
+    @Html.ActionLink("Edit LL-1", "Edit", null, new { @class = "btn btn-primary" })
+</p>
+}
+
+<div class="accordion" id="ll-accordion">
+@{ 
+    Html.RenderPartial("_VesselCharacteristics", Model.Characteristics);
+    Html.RenderPartial("_CrewNationality", Model.Nationality);
+    Html.RenderPartial("_FishingGear", Model.Gear);
+    Html.RenderPartial("_SafetyInspection", Model.Inspection);
+    Html.RenderPartial("_RefrigerationMethod", Model.Refrigeration);
+}
+    
+@* Waste Disposal (no separate class) *@
+@if (Model.VersionNumber == 2009)
+{
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#wasteDisposal">
+        <i class="icon-chevron-right"></i> Waste Disposal
+      </a>
+    </div>
+    <div id="wasteDisposal" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <div class="row-fluid">
+            <div class="span3">
+                <label><strong>Has Waste Disposal?</strong></label>
+                <p>@Model.HasWasteDisposal</p>
+            </div>
+            <div class="span9">
+                <label><strong>Description</strong></label>
+                <p>@Model.WasteDisposalDescription</p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- accordion-group -->
+}
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#comments">
+        <i class="icon-chevron-right"></i> Observations / Comments / Other Gear / Unusual Use of Gear
+      </a>
+    </div>
+    <div id="comments" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p>@Model.Comments</p>
+      </div>
+    </div>
+  </div><!-- accordion-group -->
+</div>
+
+@section AdditionalScripts {
+    <script>
+        /*
+         * Implementation based on this coffeescript/haml note:
+         * http://coderwall.com/p/j4wxbg
+         * and this JSFiddle:
+         * http://jsfiddle.net/D2RLR/251/
+         * The former provided most of the information, while the latter helped to translate it
+         * into JavaScript.
+         * It depends on a specific structure and that the icon is correct for the first item in
+         * the accordion.
+         */
+        $(function () {
+            $('.accordion').on('show', function (e) {
+                $(e.target).prev('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-down icon-chevron-right');
+            });
+            $('.accordion').on('hide', function (e) {
+                $(e.target).prev('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-down icon-chevron-right');
+            });
+        });
+    </script>
+}

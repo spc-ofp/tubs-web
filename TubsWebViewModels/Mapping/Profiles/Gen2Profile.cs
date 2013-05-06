@@ -59,7 +59,7 @@ namespace TubsWeb.Mapping.Profiles
 
             // Details contains the union of "StartOfInteraction" and "EndOfInteraction"
             CreateMap<Gen2GearViewModel, DAL.Entities.GearInteraction>()
-                .ForMember(d => d.InteractionId, o => o.MapFrom(s => s.VesselActivity)) // need a resolver from string to InteractionActivity
+                .ForMember(d => d.InteractionId, o => o.ResolveUsing<InteractionActivityResolver>().FromMember(s => s.VesselActivity))
                 .ForMember(d => d.InteractionOther, o => o.MapFrom(s => s.VesselActivityDescription))
                 .ForMember(d => d.Details, o => o.Ignore())
                 .AfterMap((s,d) => 
@@ -96,10 +96,11 @@ namespace TubsWeb.Mapping.Profiles
 
             CreateMap<Gen2SightingViewModel, DAL.Entities.SightingInteraction>()
                 .ForMember(d => d.SightingDistanceInNm, o => o.Ignore()) // AfterMap if at all
+                .ForMember(d => d.SightingDistanceUnit, o => o.ResolveUsing<LengthUnitResolver>().FromMember(s => s.SightingDistanceUnit))
                 .ForMember(d => d.SightingCount, o => o.MapFrom(s => s.NumberSighted))
                 .ForMember(d => d.SightingAdultCount, o => o.MapFrom(s => s.NumberOfAdults))
                 .ForMember(d => d.SightingJuvenileCount, o => o.MapFrom(s => s.NumberOfJuveniles))
-                .ForMember(d => d.InteractionActivity, o => o.MapFrom(s => s.VesselActivity)) // need a resolver from string to InteractionActivity
+                .ForMember(d => d.InteractionActivity, o => o.ResolveUsing<InteractionActivityResolver>().FromMember(s => s.VesselActivity))
                 .ForMember(d => d.InteractionIfOther, o => o.MapFrom(s => s.VesselActivityDescription))
                 ;
 

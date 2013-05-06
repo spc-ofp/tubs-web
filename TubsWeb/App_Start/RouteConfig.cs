@@ -30,6 +30,7 @@ namespace TubsWeb
     {
         // TODO Add documentation to all these strings
         public static string Ps1 = "Ps1";
+        public static string TripInfo = "TripInfo"; // LL-1
         public static string Electronics = "Electronics";
         public static string SafetyInspection = "SafetyInspection";
         public static string Crew = "Crew";
@@ -49,6 +50,7 @@ namespace TubsWeb
         public static string Gen6Details = "Gen6Details";
         public static string Gen6 = "Gen6";
         public static string Sets = "Sets";
+        public static string SetHaul = "SetHaul";
         public static string LengthSamples = "LengthSamples";
         public static string LengthFrequencyByTrip = "LengthFrequencyByTrip";
         public static string SeaDayById = "SeaDayById";
@@ -139,6 +141,13 @@ namespace TubsWeb
                 name: Ps1,
                 url: "Trip/{tripId}/PS-1/{action}",
                 defaults: new { controller = "Ps1", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: TripInfo,
+                url: "Trip/{tripId}/LL-1/{action}",
+                defaults: new { controller = "TripInfo", action = "Index" },
                 constraints: new { tripId = IsPositiveInteger }
             );
 
@@ -337,6 +346,14 @@ namespace TubsWeb
                 "Trip/{tripId}/{action}",
                 new { controller = "Trip", action = "Details" },
                 new { tripId = IsPositiveInteger }
+            );
+
+            // Milestone!  First Long Line route!
+            routes.MapRoute(
+                name: SetHaul,
+                url: "Trip/{tripId}/SetHaul/{setNumber}/{action}",
+                defaults: new { controller = "SetHaul", action = "List", setNumber = UrlParameter.Optional },
+                constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger }
             );
 
             // Can this route replace the fairly generic routes?

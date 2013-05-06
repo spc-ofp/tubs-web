@@ -1,0 +1,58 @@
+﻿@model TubsWeb.ViewModels.LongLineTripInfoViewModel.RefrigerationMethod
+
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#refrigeration">
+            <i class="icon-chevron-right"></i> Refrigeration Method
+        </a>
+    </div>
+    <div id="refrigeration" class="accordion-body collapse">
+        <div class="accordion-inner">
+            @if (null == Model)
+            {
+                @: No Gear Information
+            }
+            else
+            { 
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Is Installed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Blast Freeze</td>
+                        <td>@Html.DisplayFor(m => Model.HasBlastFreeze)</td>
+                    </tr>
+                    <tr>
+                        <td>Ice</td>
+                        <td>@Html.DisplayFor(m => Model.HasIce)</td>
+                    </tr>
+                    <tr>
+                        <td>Refrigerated Sea Water/Brine</td>
+                        <td>@Html.DisplayFor(m => Model.HasRefrigeratedBrine)</td>
+                    </tr>
+                    <tr>
+                        <td>Chilled Sea Water</td>
+                        <td>@Html.DisplayFor(m => Model.HasChilledSeawater)</td>
+                    </tr>
+                    <tr>
+                        <td>Other Storage</td>
+                        <td>@Html.DisplayFor(m => Model.HasOther)</td>
+                    </tr>
+                </tbody>
+                @if(!String.IsNullOrEmpty(Model.Description))
+                {
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>Description:</strong> @Model.Description</td>
+                    </tr>
+                </tfoot>
+                }
+            </table>
+            }
+        </div>
+    </div>
+</div>

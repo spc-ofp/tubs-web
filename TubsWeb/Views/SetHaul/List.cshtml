@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.LongLineSet>
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create("#", "Sets")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<table class="table table-bordered table-condensed table-striped" id="setHaulTable">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Set #</th>
+            <th>Start Of Set</th>
+            <th>Hooks Per Basket</th>
+            <th>Baskets</th>
+            <th>Hooks</th>
+            <th>Target Species</th>
+            <th>GEN-3 Event?</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var set in @Model)
+    {
+        var detailTarget = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" });
+        var editTarget = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Edit" });
+        // Could also do comma separated list...
+        string species = 
+            String.Format(
+                "{0} / {1} / {2}",
+                (set.IsTargetingTuna.HasValue && set.IsTargetingTuna.Value) ? "TUN" : "-",
+                (set.IsTargetingSwordfish.HasValue && set.IsTargetingSwordfish.Value) ? "SWO" : "-",
+                (set.IsTargetingSharks.HasValue && set.IsTargetingSharks.Value) ? "SHK" : "-"                
+            );
+                       
+        <tr>
+            <td class="nobr">
+                <a href="@detailTarget"><i class="icon-list-alt icon-large" title="Details" rel="tooltip"></i></a>
+                @if(!ViewBag.IsReadOnly)
+                {
+                    <text> | </text><a href="@editTarget"><i class="icon-edit icon-large" title="Edit" rel="tooltip"></i></a> 
+                }
+            </td>
+            <td>@set.SetNumber</td>
+            <td>@Html.DisplayFor(s => set.SetDate)</td>
+            <td>@Html.DisplayFor(s => set.HooksPerBasket)</td>
+            <td>@Html.DisplayFor(s => set.TotalBasketCount)</td>
+            <td>@Html.DisplayFor(s => set.TotalHookCount)</td>
+            <td class="nobr">@species</td>
+            <td>@Html.DisplayFor(s => set.Gen3Events)</td>
+        </tr>
+    }
+    </tbody>
+    <!--
+    <tfoot>
+        <tr>
+            <th colspan="6">&nbsp;</th>
+        </tr>
+    </tfoot>
+    -->
+</table>

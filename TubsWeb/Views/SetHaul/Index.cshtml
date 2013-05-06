@@ -1,0 +1,14 @@
+﻿@model Spc.Ofp.Tubs.DAL.Entities.LongLineSet
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.SpcTripNumber as string),
+        Tuple.Create(Url.Action("List", "SetHaul", new { tripId = ViewBag.TripId }), "Sets"),
+        Tuple.Create("#", String.Format("Set {0} of {1}", Model.SetNumber, 0))
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
