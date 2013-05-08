@@ -23,6 +23,12 @@ var saveTimeout = 10000 /* 10 seconds */
  * After much screwing around, this looks to be
  * a portable solution.  MVC puts the virtual directory
  * app root into every page for us.
+ * TODO:  MVC can create dynamic JavaScript.  If we create this file
+ * dynamically, it can be cached and potentially we won't have
+ * Amplify (re)defining requests on every page load
+ * http://blog.pmunin.com/2013/04/dynamic-javascript-css-in-aspnet-mvc.html
+ * http://stackoverflow.com/questions/16092473/dynamically-generated-javascript-css-in-asp-net-mvc
+ * http://www.codeproject.com/Articles/171695/Dynamic-CSS-using-Razor-Engine
  */
 var appBase = '/';
 var start = $('#applicationHome');

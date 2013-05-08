@@ -757,6 +757,7 @@
     <Content Include="Views\TripInfo\_SafetyInspection.cshtml" />
     <Content Include="Views\TripInfo\_RefrigerationMethod.cshtml" />
     <Content Include="Views\TripInfo\_CrewNationality.cshtml" />
+    <Content Include="Views\Trip\Map.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -814,16 +815,10 @@
     <Content Include="Views\Shared\EditorTemplates\CrewMemberModel.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Gen1\EditSightings_ori.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Gen1\_EditSightings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Gen1\_EditSighting.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Gen1\EditTransfers_ori.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Gen1\_EditTransfers.cshtml" />

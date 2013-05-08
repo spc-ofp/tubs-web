@@ -246,6 +246,20 @@ namespace TubsWeb.Controllers
             return new KmlResult(tripDoc);
         }
 
+        public ActionResult Map(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return new NoSuchTripResult();
+            }
+
+            ViewBag.Title = String.Format("Positions for trip {0}", tripId.SpcTripNumber);
+            ViewBag.TripId = tripId.Id;
+            ViewBag.TripNumber = tripId.SpcTripNumber;
+
+            return View();
+        }
+
         public ActionResult PositionAudit(Trip tripId)
         {
             if (null == tripId)

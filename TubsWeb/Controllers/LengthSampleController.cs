@@ -23,13 +23,14 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
+    using AutoMapper;
     using DoddleReport;
     using DoddleReport.Web;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using AutoMapper;
     using TubsWeb.ViewModels;
 
     public class LengthSampleController : SuperController
@@ -80,26 +81,46 @@ namespace TubsWeb.Controllers
         internal ReportResult AllSamples(LongLineTrip trip)
         {
             var repo = TubsDataService.GetRepository<LongLineCatch>(MvcApplication.CurrentSession);
-            var samples = repo.FilterBy(s => s.FishingSet.Trip.Id == trip.Id);
+            var samples = repo.FilterBy(s => s.FishingSet.Trip.Id == trip.Id).OrderBy(s => s.FishingSet.SetNumber);
 
-            var items =
-                from s in samples
-                orderby s.FishingSet.SetNumber
-                select new LengthSampleLineItem
+            // It would be cool if I could use LINQ like I do for Purse Seine, but NHibernate doesn't like the
+            // cool LINQ project necessary to find the Lat/Lon for the start of set
+            // Latitude = s.FishingSet.EventList.Where(sh => sh.ActivityType == Spc.Ofp.Tubs.DAL.Common.HaulActivityType.StartOfSet).First().Latitude
+
+            IList<LengthSampleLineItem> items = new List<LengthSampleLineItem>(samples.Count());
+            foreach (var sample in samples)
+            {
+                string latitude = String.Empty;
+                string longitude = String.Empty;
+                string eez = String.Empty;
+
+                var startOfSet = sample.FishingSet.EventList.Where(sh => sh.ActivityType == Spc.Ofp.Tubs.DAL.Common.HaulActivityType.StartOfSet).FirstOrDefault();
+                if (null != startOfSet)
                 {
-                    SetDate = s.FishingSet.SetDate,
-                    //Latitude = s.FishingSet.EventList.Where(sh => sh.)
-                    SetNumber = s.FishingSet.SetNumber.HasValue ? s.FishingSet.SetNumber.Value : -1,
-                    SequenceNumber = s.SampleNumber.HasValue ? s.SampleNumber.Value : -1,
-                    SpeciesCode = s.SpeciesCode,
-                    Length = s.Length.HasValue ? s.Length.Value : -1
-                };
+                    latitude = startOfSet.Latitude;
+                    longitude = startOfSet.Longitude;
+                    eez = startOfSet.EezCode;
+                }
+                items.Add(new LengthSampleLineItem() 
+                { 
+                    SetDate = sample.FishingSet.SetDate,
+                    Latitude = latitude,
+                    Longitude = longitude,
+                    Eez = eez,
+                    SetNumber = sample.FishingSet.SetNumber.HasValue ? sample.FishingSet.SetNumber.Value : -1,
+                    SequenceNumber = sample.SampleNumber.HasValue ? sample.SampleNumber.Value : -1, // All 1 for obstrip_id 4177?
+                    SpeciesCode = sample.SpeciesCode,
+                    Length = sample.Length.HasValue ? sample.Length.Value : -1
+                });
+                
+            }
 
             var report = new Report(items.ToReportSource());
             report.TextFields.Title = string.Format("Length frequency summary for trip {0}", trip.SpcTripNumber);
             return new ReportResult(report);
         }
 
+        // GET: "Trip/{tripId}/LengthFrequency.xlsx" 
         public ReportResult AllSamples(Trip tripId)
         {
             return

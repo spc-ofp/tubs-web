@@ -33,6 +33,8 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
+    using AutoMapper;
+    using TubsWeb.ViewModels;
 
     /// <summary>
     /// SetHaulController manages LL-2/3 data.
@@ -123,17 +125,16 @@ namespace TubsWeb.Controllers
                 return InvalidTripResponse();
             }
 
-            var sets =
-                TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession)
-                    .FilterBy(s => s.Trip.Id == tripId.Id)
-                    .OrderBy(s => s.SetNumber);
+            // Unlike PS data, set number looks pretty sane in the database
+            // so we can navigate directly by tripId and setNumber
 
             // This LINQ method results in a trip to the database
             // (select count(1) from ... where obstrip_id = ?)
             // It's also worth mentioning that if an Add/Edit has
             // a 'bad' setNumber param, we'll be running this query twice
             // I expect SQL Server to be able to handle that...
-            int maxSets = sets.Count();
+            int maxSets = trip.FishingSets.Count();
+
             var checkpoint = NeedsRedirect(tripId.Id, setNumber, maxSets);
             if (checkpoint.Item1)
                 return new RedirectToRouteResult(checkpoint.Item2);
@@ -146,11 +147,37 @@ namespace TubsWeb.Controllers
                 if (setNumber > maxSets) { setNumber = maxSets; }
             }
 
-            // Based on NeedsRedirect, we should be okay -- the
-            // setNumber should be perfect for the action
-            var set = sets.Skip(setNumber - 1).Take(1).FirstOrDefault() as LongLineSet;
+            // If this is an Add, then we won't find the entity.  Better to create a new
+            // empty ViewModel, set some minimal properties, and throw it back to the user
+            if (IsAdd())
+            {
+                var addVm = new LongLineSetViewModel();
+                addVm.TripId = tripId.Id;
+                addVm.TripNumber = tripId.SpcTripNumber;
+                addVm.HasNext = false;
+                addVm.HasPrevious = true;
+                addVm.SetNumber = setNumber;
+                addVm.PreviousSet = setNumber - 1;
+                addVm.MaxSets = maxSets;
 
-            return View(CurrentAction(), set);
+                return View(CurrentAction(), addVm);
+            }
+
+            var repo = TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession);
+            // NeedsRedirect should have protected us from a really crazy SetNumber here
+            var fset = repo.FilterBy(s => s.Trip.Id == tripId.Id && s.SetNumber == setNumber).FirstOrDefault();
+            var vm = Mapper.Map<LongLineSet, LongLineSetViewModel>(fset);
+
+            // Additional properties not set by AutoMapper
+            vm.HasPrevious = setNumber > 1;
+            vm.HasNext = setNumber < maxSets;
+            vm.NextSet = setNumber + 1;
+            vm.PreviousSet = setNumber - 1;
+
+            if (IsApiRequest())
+                return GettableJsonNetData(vm);
+
+            return View(CurrentAction(), vm);
         }
 
         public ActionResult Index(Trip tripId, int setNumber)

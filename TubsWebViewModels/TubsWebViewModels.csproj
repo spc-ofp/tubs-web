@@ -75,6 +75,7 @@
     <Compile Include="Mapping\Profiles\Gen3Profile.cs" />
     <Compile Include="Mapping\Profiles\Gen5Profile.cs" />
     <Compile Include="Mapping\Profiles\LengthFrequencyProfile.cs" />
+    <Compile Include="Mapping\Profiles\LongLineSetProfile.cs" />
     <Compile Include="Mapping\Profiles\PageCountProfile.cs" />
     <Compile Include="Mapping\Profiles\Ps1Profile.cs" />
     <Compile Include="Mapping\Profiles\Ps1ViewModelProfile.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="ViewModels\Gen3ViewModel.cs" />
     <Compile Include="ViewModels\Gen5ViewModel.cs" />
     <Compile Include="ViewModels\LengthFrequencyViewModel.cs" />
+    <Compile Include="ViewModels\LongLineSetViewModel.cs" />
     <Compile Include="ViewModels\LongLineTripInfoViewModel.cs" />
     <Compile Include="ViewModels\PageCountViewModel.cs" />
     <Compile Include="ViewModels\Ps1ViewModel.cs" />

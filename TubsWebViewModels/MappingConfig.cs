@@ -20,6 +20,7 @@ namespace TubsWeb
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile<SetProfile>();
+                cfg.AddProfile<LongLineSetProfile>();
                 cfg.AddProfile<TripInfoProfile>();
                 cfg.AddProfile<Ps1Profile>();
                 cfg.AddProfile<Ps1ViewModelProfile>();

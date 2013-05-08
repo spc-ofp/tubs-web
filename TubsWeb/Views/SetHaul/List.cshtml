@@ -17,12 +17,14 @@
         <tr>
             <th>&nbsp;</th>
             <th>Set #</th>
-            <th>Start Of Set</th>
-            <th>Hooks Per Basket</th>
-            <th>Baskets</th>
+            <th>Start Of Set</th>            
             <th>Hooks</th>
+            <th>Hooks Per Basket</th>
+            <th>Floatline Length</th>
+            <th>Setting Speed</th>
             <th>Target Species</th>
-            <th>GEN-3 Event?</th>
+            <th>Bait</th>
+            <th>GEN-3 Event?</th> @* TODO disregard at SPC *@
         </tr>
     </thead>
     <tbody>
@@ -30,14 +32,8 @@
     {
         var detailTarget = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" });
         var editTarget = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Edit" });
-        // Could also do comma separated list...
-        string species = 
-            String.Format(
-                "{0} / {1} / {2}",
-                (set.IsTargetingTuna.HasValue && set.IsTargetingTuna.Value) ? "TUN" : "-",
-                (set.IsTargetingSwordfish.HasValue && set.IsTargetingSwordfish.Value) ? "SWO" : "-",
-                (set.IsTargetingSharks.HasValue && set.IsTargetingSharks.Value) ? "SHK" : "-"                
-            );
+        string species = String.Join(",", set.TargetSpecies);
+        string baits = String.Join(",", set.BaitSpecies);
                        
         <tr>
             <td class="nobr">
@@ -48,11 +44,13 @@
                 }
             </td>
             <td>@set.SetNumber</td>
-            <td>@Html.DisplayFor(s => set.SetDate)</td>
-            <td>@Html.DisplayFor(s => set.HooksPerBasket)</td>
-            <td>@Html.DisplayFor(s => set.TotalBasketCount)</td>
+            <td class="nobr">@Html.DisplayFor(s => set.SetDate, new { format = "s"})</td>
             <td>@Html.DisplayFor(s => set.TotalHookCount)</td>
+            <td>@Html.DisplayFor(s => set.HooksPerBasket)</td>
+            <td>@Html.DisplayFor(s => set.FloatlineLength) m</td>
+            <td>@Html.DisplayFor(s => set.VesselSpeed, new { format = "F1" }) kts</td>
             <td class="nobr">@species</td>
+            <td class="nobr">@baits</td>
             <td>@Html.DisplayFor(s => set.Gen3Events)</td>
         </tr>
     }
