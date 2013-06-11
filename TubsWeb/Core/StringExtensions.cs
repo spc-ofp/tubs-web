@@ -8,8 +8,19 @@ namespace TubsWeb.Core
 {
     using System;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static class StringExtensions
     {
+        /// <summary>
+        /// Trip the Active Directory domain from a username.
+        /// It only works with the classic format of
+        /// DOMAIN\username and not
+        /// username@DOMAIN
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public static string WithoutDomain(this string username)
         {
             if (String.IsNullOrEmpty(username))
@@ -25,6 +36,11 @@ namespace TubsWeb.Core
             return username.Substring(slash + 1);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stringValue"></param>
+        /// <returns></returns>
         public static string NullSafeToUpper(this string stringValue)
         {
             return null == stringValue ? null : stringValue.ToUpper();

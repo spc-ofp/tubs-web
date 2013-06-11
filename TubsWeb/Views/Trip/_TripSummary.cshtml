@@ -1,7 +1,13 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+﻿@model TubsWeb.ViewModels.TripSummaryViewModel
+
+@{
+    // Not too happy about the fieldset here (maybe move it to the calling view?)
+    // but for now this will at least hide the legend in the modal
+    string legendText = (null != ViewBag.IsModal && ViewBag.IsModal) ? String.Empty : "Trip Summary";
+}
 
 <fieldset>
-    <legend>Trip Summary</legend>
+    <legend>@legendText</legend>
 
 @* 
     I don't normally like using tables for anything but tabular information, but I think we can stretch the
@@ -10,7 +16,7 @@
     <table class="table table-striped table-bordered table-condensed">
         <tr>
             <td>Observer:</td>
-            <td>@Model.Observer.ToString()</td>
+            <td>@Model.ObserverName</td>
             <td>Program:</td>
             <td>@Model.ProgramCode</td>
         </tr>
@@ -28,15 +34,15 @@
         </tr>
         <tr>
             <td>Vessel Name:</td>
-            <td>@Html.DisplayFor(m => m.Vessel.Name)</td>
+            <td>@Html.DisplayFor(m => m.VesselName)</td>
             <td>Vessel Flag:</td>
             <td>
-                @if (!String.IsNullOrEmpty(Model.Vessel.RegisteredCountryCode))
+                @if (!String.IsNullOrEmpty(Model.VesselFlag))
                 {
-                    var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", Model.Vessel.RegisteredCountryCode.ToLower()));
-                    <img src="@imgLink" alt="@Model.Vessel.RegisteredCountryCode" title="@Model.Vessel.RegisteredCountryCode" /> @:&nbsp;
+                    var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", Model.VesselFlag.ToLower()));
+                    <img src="@imgLink" alt="@Model.VesselFlag" title="@Model.VesselFlag" /> @:&nbsp;
                 }
-                @Html.DisplayFor(m => m.Vessel.RegisteredCountryCode)
+                @Html.DisplayFor(m => m.VesselFlag)
             </td>
         </tr>
         <tr>
@@ -46,33 +52,20 @@
             <td>@Model.ReturnPort.ToString()</td>
         </tr>
         <!-- Add Sea days and sets for PS trips -->
-        @if (Model is Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip)
+        @if ("S".Equals(Model.GearCode))
         {
-            var pstrip = Model as Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip;
             <tr>
                 <td>Sea Days:</td>
-                <td>
-                    @pstrip.SeaDays.Count.ToString()
-                    @if (pstrip.DepartureDate.HasValue && pstrip.ReturnDate.HasValue)
-                    {
-                        var dateDiff = pstrip.DepartureDate.Value.Subtract(pstrip.ReturnDate.Value);
-                        string suffix = ((int)Math.Abs(dateDiff.TotalDays)).ToString();
-                        @: / @suffix
-                    }
+                <td>@Model.SeaDayCount
+                    /
+                    @Model.ExpectedSeaDayCount
                 </td>
                 <td>Sets:</td>
-                @{
-                    var setcount = (
-                        from d in pstrip.SeaDays
-                        from a in d.Activities
-                        where a.ActivityType.HasValue && a.ActivityType.Value == Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing
-                        select 1
-                    ).Sum();                              
-                }
-                <td>@setcount</td>
+                <td>@Model.SetCount</td>
             </tr> 
         }  
     
+        @* TODO Add this to the VM
         @if (Model.IsSpillSampled.HasValue && Model.IsSpillSampled.Value)
         {
         <tr>
@@ -82,6 +75,7 @@
             <td>@Html.DisplayFor(m => m.SpillTripNumber)</td>
         </tr>
         }
+        *@
         <tr>
             <td>Entered By:</td>
             <td>@Model.EnteredBy</td>
@@ -95,9 +89,17 @@
             <td>@Html.DisplayFor(m => m.ClosedDate, new { format = "dd/MM/yy" })</td>
             <td>Entry Comments:</td>
             <td>
+                @* Modal doesn't work with large-text plugin *@
+                @if (null != ViewBag.IsModal && ViewBag.IsModal)
+                {
+                    @: &nbsp;
+                }
+                else
+                {
                 <div class="large-text">
-                    @Html.DisplayFor(m => m.Comments)
+                    @Html.DisplayFor(m => m.EntryComments)
                 </div>
+                }
             </td>
         </tr>
         }

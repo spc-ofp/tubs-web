@@ -1,0 +1,55 @@
+﻿<div class="row editor-row">
+    <div class="span5">
+        <label>Start/End positions observed directly?</label>
+        <select id="StartEndPositionsObserved" name="StartEndPositionsObserved" class="input-small" data-bind="options: $root.BooleanValues, value: StartEndPositionsObserved"></select>
+    </div>
+    @* StartEndPositionsObserved *@
+</div>
+<hr />
+<div class="row editor-row">
+    <div class="span1q compact-header">&nbsp;</div>
+    <div class="span1 compact-header"><strong>Time</strong></div>
+    <div class="span2 compact-header"><strong>Latitude</strong></div>
+    <div class="span2 compact-header"><strong>Longitude</strong></div>
+</div>
+<div class="row editor-row">
+    <div class="form-horizontal compact-row">
+        <label class="span1q"><strong>Start Set</strong></label>
+        <input type="text" class="span1" placeholder="HHmm"/>
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'"/>
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'"/>
+    </div>
+</div>
+<div class="row editor-row">
+    <div class="form-horizontal compact-row">
+        <label class="span1q"><strong>End Set</strong></label>
+        <input type="text" class="span1" placeholder="HHmm"/>
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'"/>
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'"/>
+    </div>
+</div>
+<div class="row editor-row">
+    <div class="form-horizontal compact-row">
+        <label class="span1q"><strong>Start Haul</strong></label>
+        <input type="text" class="span1" placeholder="HHmm"/>
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'"/>
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'"/>
+    </div>
+</div>
+@* Knockout for-each goes here *@
+<div class="row editor-row">
+    <div class="form-horizontal compact-row">
+        <label class="span1q">&nbsp;</label>
+        <input type="text" class="span1" placeholder="HHmm"/>
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'"/>
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'"/>
+        <button type="button" class="btn btn-danger" tabindex="5000"><i class="icon-minus-sign icon-white"></i> Delete</button>
+    </div>
+</div>
+<div class="row editor-row">
+    <div class="form-horizontal compact-row">
+        <label class="span1q">&nbsp;</label>
+        <button type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i> Add</button>
+    </div>
+</div>
+

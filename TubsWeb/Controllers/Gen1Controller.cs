@@ -31,6 +31,9 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.ViewModels;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class Gen1Controller : SuperController
     {
 

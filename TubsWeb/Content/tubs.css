@@ -1,0 +1,79 @@
+﻿/*
+ * This file is part of TUBS.
+ *
+ * TUBS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *  
+ * TUBS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *  
+ * You should have received a copy of the GNU Affero General Public License
+ * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
+ */    
+
+/*
+ * Sticky footer implementation.
+ * Okay as far as it goes, but could use some work.   
+ */
+html, body {
+    height: 100%;
+}
+
+footer 
+{
+    padding: 20px 0 20px 0;
+    border-top: 1px solid #000;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -63px;
+}
+
+.push {
+    height: 63px;
+}
+        
+.wrapper > .container,
+.wrapper > .container-fluid {
+    padding-top: 60px;
+}
+
+/*
+ * compact-header resets the margin on
+ * a div inside a row-fluid.
+ * Use this for the header labels
+ * This is part of rebuilding multiple row forms
+ * using multiple divs instead of a table
+ */
+.row-fluid div.compact-header {
+    margin-left: 5px;
+}
+
+/*
+ * compact-row adds some padding to the
+ * row containing the form.  Without this, the
+ * HTML inputs would sit on top of one another.
+ */
+div.compact-row {
+    padding-bottom: 5px;
+}
+
+/* We can no longer depend on top padding body to ensure that all content falls below the toolbar */
+.padded {
+    padding-top: 60px;
+}
+
+/*
+    * snap-content is transparent without an explicit background color
+    * http://stackoverflow.com/questions/16726270/twitter-bootstrap-and-snap-js
+    */
+.snap-content {
+    background: white;
+}

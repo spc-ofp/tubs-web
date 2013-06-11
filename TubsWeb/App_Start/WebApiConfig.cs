@@ -22,20 +22,56 @@ namespace TubsWeb
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Web.Http;
-    using TubsWeb.Controllers.Api;
-    
+    using System.Web.Http.OData.Builder;
+    using Microsoft.Data.Edm;
+
+    /// <summary>
+    /// Configure WebApi support, including OData metadata
+    /// </summary>
     public static class WebApiConfig
     {
+        // OData routes go into the same table as MVC routes, so ensure uniqueness
+        public static string SeaDays = "ApiSeaDays";
+
+        /// <summary>
+        /// Regular expression to enforce that a number is a positive integer value.
+        /// </summary>
+        public const string IsPositiveInteger = @"^\d+$";
+        
         public static void Register(HttpConfiguration config)
         {
+            // From here
+            // http://blogs.msdn.com/b/webdev/archive/2013/01/29/getting-started-with-asp-net-webapi-odata-in-3-simple-steps.aspx
+            config.Routes.MapODataRoute(
+                routeName: "OData",
+                routePrefix: "odata",
+                model: GetModel()
+            );
+
+            // Support WCF
+            // From this Gist, may not be operable
+            // https://gist.github.com/bastervrugt/3917081
+            // More info:
+            // From this StackOverflow question
+            // http://stackoverflow.com/questions/12971174/asp-net-web-api-wrong-odata-entitycontainer-schema-namespace
+            //config.Routes.MapHttpRoute(
+            //    "OData.$metadata", 
+            //    "api/$metadata", 
+            //    new { Controller = "ODataMetadata", Action = "GetMetadata" }
+            //);
+
+            //config.Routes.MapHttpRoute(
+            //    "OData.servicedoc", 
+            //    "api/", 
+            //    new { Controller = "ODataMetadata", Action = "GetServiceDocument" }
+            //);
+
             config.Routes.MapHttpRoute(
-                name: "TripApi",
-                routeTemplate: "api/trip/{id}",
-                defaults: new { controller = "TripApi", id = RouteParameter.Optional }
+                name: SeaDays,
+                routeTemplate: "api/trip/{tripId}/day/{dayNumber}",
+                defaults: new { Controller = "SeaDay", dayNumber = RouteParameter.Optional },
+                constraints: new { tripId = IsPositiveInteger, dayNumber = IsPositiveInteger } 
             );
 
             config.Routes.MapHttpRoute(
@@ -49,5 +85,15 @@ namespace TubsWeb
             // For more information, visit http://go.microsoft.com/fwlink/?LinkId=279712.
             //config.EnableQuerySupport();
         }
+
+        public static IEdmModel GetModel()
+        {
+            ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
+            modelBuilder.EntitySet<TubsWeb.ViewModels.TripSummaryViewModel>("Trips");
+            modelBuilder.EntitySet<Spc.Ofp.Tubs.DAL.Entities.Observer>("Observers");
+            return modelBuilder.GetEdmModel();
+
+        }
+
     }
 }

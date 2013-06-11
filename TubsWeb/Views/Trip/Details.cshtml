@@ -1,11 +1,11 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.Trip
+﻿@model TubsWeb.ViewModels.TripSummaryViewModel
 @using Spc.Ofp.Tubs.DAL.Entities
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create("#", Model.SpcTripNumber)
     };
 }
@@ -22,8 +22,13 @@
 @* TODO Add downloads for CSV downloads of GEN-1, GEN-2, GEN-6, Days, and Sets *@
 @* TODO Better yet, figure out how to push this all into the controller.  This is too messy for Razor *@
 
+@{
+    // TODO:  It would be even better if this only showed for people not in the editors group...
+    string confirmDownload = "This is confidential data subject to a data disclosure policy.  Continue?";
+}
+
 <fieldset>
-    <legend>Downloads</legend>
+    <legend><i class="icon-download-alt"></i> Downloads</legend>
 
     <div class="row">
         <div class="span2"><strong>Cover Page</strong></div>
@@ -44,9 +49,9 @@
         <div class="span2"><strong>Trip Summary</strong></div>
         @{ 
             string reportName =
-                Model is Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip ? "PS-TripSummary" :
-                Model is Spc.Ofp.Tubs.DAL.Entities.LongLineTrip ? "LL-TripSummary" :
-                Model is Spc.Ofp.Tubs.DAL.Entities.PoleAndLineTrip ? "PL-TripSummary" :
+                "S".Equals(Model.GearCode) ? "PS-TripSummary" :
+                "L".Equals(Model.GearCode) ? "LL-TripSummary" :
+                "P".Equals(Model.GearCode) ? "PL-TripSummary" :
                 String.Empty;
             string tripSummaryUrl = String.Format(formatString, reportName, ViewBag.TripId);
             string externalPdf = tripSummaryUrl + "&rs:Format=PDF";
@@ -63,7 +68,7 @@
     <div class="row">
         <div class="span2"><strong>Trip Positions</strong></div>
         <div class="span2">
-            @if (null == Model.Pushpins || Model.Pushpins.Count < 1)
+            @if (!Model.HasPositions)
             {
                 @: N/A
             }
@@ -81,12 +86,45 @@
         <div class="span2">
             @* TODO:  Change this to N/A if no LF data available *@
             @{ var lflink = Url.RouteUrl(TubsWeb.RouteConfig.LengthFrequencyByTrip, new { tripId = ViewBag.TripId });}
-            <a id="lfexcelLink" href="@lflink" download="@(baseFileName)lengthfrequency.xlsx">
+            <a id="lfexcelLink" href="@lflink" download="@(baseFileName)lengthfrequency.xlsx" data-trigger="confirm" data-content="@confirmDownload">
+                <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2"><strong>Quick Summary</strong></div>
+        <div class="span2">
+            @* TODO:  Change this to N/A if no LF data available *@
+            @{ var tslink = Url.RouteUrl(TubsWeb.RouteConfig.ExcelTripSummary, new { tripId = ViewBag.TripId });}
+            <a id="tsexcelLink" href="@tslink" download="@(baseFileName)TripSummary.xlsx">
                 <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel
             </a>
         </div>
     </div>
 </fieldset>
+
+@* The following infrastructure moves the trip close form to a Bootstrap modal form *@
+<div id="closeModal" class="modal hide fade" tabindex="-1" role="dialog">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="closeModalLabel">Close Trip</h3>
+  </div> 
+@using (Html.BeginForm("Close", "Trip", FormMethod.Post, new { @class = "form well" }))
+{
+    <div class="modal-body">
+        <p>
+            Closing a trip marks the end of data entry. After being closed, the trip will be read only and no further updates will be accepted.
+        </p>        
+        @Html.HiddenFor(m => Model.Id)
+        <label for="Comments">Entry Comments</label>
+        <textarea id="Comments" name="Comments" class="span6" rows="2" style="height: 200px;"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button type="submit" name="Save" value="Save" class="btn btn-primary">Save</button>
+    </div>
+}
+</div>
 
 <ul id="tlyPageGuide" data-tourtitle="Trip data navigation">
     <li class="tlypageguide_right" data-tourtarget="#subsectionNavbar">
@@ -141,13 +179,15 @@
         IEnumerable<Tuple<string, string>> navpills = ViewBag.NavPills;
         if (null != navpills)
         {
-            Html.RenderPartial("_VerticalTripNavBar", navpills);   
+            Html.RenderPartial("_VerticalTripNavBar", navpills);
         }
     }
 
 }
 
 @section AdditionalScripts {
+    @* Sco.js integrates with Bootstrap and adds some useful features *@
+    @System.Web.Optimization.Scripts.Render("~/bundles/scojs")
     <script>
         $(function () {
             $('.large-text').trunk8({

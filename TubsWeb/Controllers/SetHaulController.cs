@@ -95,28 +95,15 @@ namespace TubsWeb.Controllers
             }
 
             return Tuple.Create(needsRedirect, rvd);
-        }
+        }       
         
-        
-        public ActionResult List(Trip tripId)
-        {
-            var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
-            var repo = TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession);
-            var sets =
-                TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession)
-                    .FilterBy(s => s.Trip.Id == tripId.Id)
-                    .OrderBy(s => s.SetNumber);
-
-            ViewBag.Title = String.Format("Sets for {0}", tripId.ToString());
-            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
-            return View(sets);
-        }
-
+        /// <summary>
+        /// ViewActionImpl implements the process of getting a set
+        /// by trip and set number.
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
         internal ActionResult ViewActionImpl(Trip tripId, int setNumber)
         {
             var trip = tripId as LongLineTrip;
@@ -124,6 +111,10 @@ namespace TubsWeb.Controllers
             {
                 return InvalidTripResponse();
             }
+
+            // It was getting crazy to duplicate views for what is essentially the
+            // same thing
+            string viewName = (IsAdd() || IsEdit()) ? "_Editor" : CurrentAction();
 
             // Unlike PS data, set number looks pretty sane in the database
             // so we can navigate directly by tripId and setNumber
@@ -154,43 +145,77 @@ namespace TubsWeb.Controllers
                 var addVm = new LongLineSetViewModel();
                 addVm.TripId = tripId.Id;
                 addVm.TripNumber = tripId.SpcTripNumber;
-                addVm.HasNext = false;
-                addVm.HasPrevious = true;
+                addVm.SetNavDetails(setNumber, maxSets);
+                addVm.HasNext = false; // Force it
                 addVm.SetNumber = setNumber;
-                addVm.PreviousSet = setNumber - 1;
-                addVm.MaxSets = maxSets;
-
-                return View(CurrentAction(), addVm);
+                return View(viewName, addVm);
             }
 
             var repo = TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession);
             // NeedsRedirect should have protected us from a really crazy SetNumber here
             var fset = repo.FilterBy(s => s.Trip.Id == tripId.Id && s.SetNumber == setNumber).FirstOrDefault();
             var vm = Mapper.Map<LongLineSet, LongLineSetViewModel>(fset);
-
-            // Additional properties not set by AutoMapper
-            vm.HasPrevious = setNumber > 1;
-            vm.HasNext = setNumber < maxSets;
-            vm.NextSet = setNumber + 1;
-            vm.PreviousSet = setNumber - 1;
+            vm.SetNavDetails(setNumber, maxSets);
 
             if (IsApiRequest())
                 return GettableJsonNetData(vm);
 
-            return View(CurrentAction(), vm);
+            return View(viewName, vm);
         }
 
+        /// <summary>
+        /// List all sets associated with this Longline trip.
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
+        public ActionResult List(Trip tripId)
+        {
+            var trip = tripId as LongLineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            var repo = TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession);
+            var sets =
+                TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession)
+                    .FilterBy(s => s.Trip.Id == tripId.Id)
+                    .OrderBy(s => s.SetNumber);
+
+            ViewBag.Title = String.Format("Sets for {0}", tripId.ToString());
+            ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
+            return View(sets);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
         public ActionResult Index(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
         [EditorAuthorize]
         public ActionResult Add(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
         [EditorAuthorize]
         public ActionResult Edit(Trip tripId, int setNumber)
         {

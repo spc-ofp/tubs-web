@@ -1,0 +1,83 @@
+@using System.Web.Optimization
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @RenderSection("AdditionalCss", false)
+    <!-- Use Modernizr instead of html5shim / html5shiv, at least until it breaks -->
+    @Scripts.Render("~/bundles/modernizr")
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    
+</head>
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Tuna Observer Data System (TUBS)</a>
+          <div class="nav-collapse">
+            <!-- Conditionally replace Bootstrap static nav with RenderSection(...) -->
+            @if (IsSectionDefined("NavBar"))
+            {
+                @RenderSection("NavBar")
+            }
+            else
+            {
+                <ul class="nav pull-left">
+                    <li><a href="@Url.Content("~/")">Home</a></li>
+                </ul>
+            }
+            @{ Html.RenderPartial("_UserWidget"); }
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    @* Keep a single layout base page for the entire app *@
+    @{
+        bool hasSidebar = IsSectionDefined("Sidebar");
+        string containerClass = "container";
+        if (hasSidebar || (ViewBag.UseFluid != null && ViewBag.UseFluid))
+        {
+            containerClass = "container-fluid";
+        }       
+    }
+    <div class="wrapper">
+        <div class="@containerClass">
+        @if (hasSidebar)
+        {
+            <div class="span3">@RenderSection("Sidebar")</div>
+            <div class="span9">@RenderBody()</div>
+        }
+        else
+        {
+            @RenderBody()
+        }          
+        </div> 
+        <div class="push"><!--//--></div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->   
+    @Scripts.Render(
+        "~/bundles/jquery", 
+        "~/bundles/jsextlibs"
+    )
+    <script src="~/Scripts/tubs.js"></script>
+
+    @RenderSection("AdditionalScripts", false)
+    @RenderSection("scripts", required: false)
+</body>
+</html>

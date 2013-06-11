@@ -29,15 +29,19 @@ namespace TubsWeb.Controllers
     using System.ServiceModel.Syndication;
     using System.Web.Configuration;
     using System.Web.Mvc;
+    using AutoMapper;
     using PagedList;
-    using PagedList.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common; // For date utilities
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
+    using TubsWeb.ViewModels;
 
+    /// <summary>
+    /// Controller for Trip, TripHeader, and TripHeaderViewModel entities
+    /// </summary>
     public class TripController : SuperController
     {
         /// <summary>
@@ -83,24 +87,34 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         private IQueryable<Trip> SearchImpl(SearchCriteria criteria)
         {
+            // TODO:  Yank this in favor of IQueryable<TripHeader>
             return TubsDataService.Search(MvcApplication.CurrentStatelessSession, criteria);
         }
 
 
-        //
-        // GET: /Trip/
+        /// <summary>
+        /// Get a list of trips
+        /// </summary>
+        /// <example>GET: /Trip/</example>
+        /// <param name="page">Page number.  Assumed to be first page if not provided.</param>
+        /// <param name="itemsPerPage">Items per page.  Set to 15 if not provided.</param>
+        /// <returns></returns>
         public ActionResult Index(int? page, int itemsPerPage = 15)
         {
-            // TODO Convert this to Troy Goode's PagedList implementation
-            // https://github.com/TroyGoode/PagedList
             var repo = TubsDataService.GetRepository<TripHeader>(MvcApplication.CurrentStatelessSession);
             var pageNumber = page ?? 1;
             var entities = repo.All().ToPagedList(pageNumber, itemsPerPage);
-            //int tripCount = Math.Max(repo.All().Count() - 1, 0);
             ViewBag.TotalRows = entities.TotalItemCount;
             return View(entities);
         }
 
+        /// <summary>
+        /// Get a list of trips entered by the current logged in user.
+        /// </summary>
+        /// <example>GET: /Trip/MyTrips</example>
+        /// <param name="page">Page number.  Assumed to be first page if not provided.</param>
+        /// <param name="itemsPerPage">Items per page.  Set to 15 if not provided.</param>
+        /// <returns></returns>
         public ActionResult MyTrips(int? page, int itemsPerPage = 15)
         {
             string filterCriteria = User.Identity.Name.WithoutDomain().ToUpper();
@@ -117,6 +131,13 @@ namespace TubsWeb.Controllers
             return View("Index", entities);
         }
 
+        /// <summary>
+        /// Get a list of incomplete trips entered by the current logged in user.
+        /// </summary>
+        /// <example>GET: /Trip/MyOpenTrips</example>
+        /// <param name="page">Page number.  Assumed to be first page if not provided.</param>
+        /// <param name="itemsPerPage">Items per page.  Set to 15 if not provided.</param>
+        /// <returns></returns>
         public ActionResult MyOpenTrips(int? page, int itemsPerPage = 15)
         {
             string filterCriteria = User.Identity.Name.WithoutDomain().ToUpper();
@@ -213,16 +234,25 @@ namespace TubsWeb.Controllers
             feed.Generator = "Tuna Observer System (TUBS)";
             // TODO Set image
             // The framework sets a single author into the managingEditor property.  More than one and they're all a10:author
+            // TODO: Read this from web.config
             feed.Authors.Add(new SyndicationPerson("coreyc@spc.int", "Corey Cole", "http://www.spc.int/oceanfish/en/ofpsection/data-management"));
 
             return new RssResult(feed);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
         public ActionResult Positions(Trip tripId)
         {
+            // TODO:  Along with ModelBinder, could I create an
+            // attribute that returns InvalidTripResponse if
+            // the result of ModelBinder is null?
             if (null == tripId)
             {
-                return new NoSuchTripResult();
+                return InvalidTripResponse();
             }
 
             // Exclude any pushpins that won't display nicely
@@ -246,11 +276,16 @@ namespace TubsWeb.Controllers
             return new KmlResult(tripDoc);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
         public ActionResult Map(Trip tripId)
         {
             if (null == tripId)
             {
-                return new NoSuchTripResult();
+                return InvalidTripResponse();
             }
 
             ViewBag.Title = String.Format("Positions for trip {0}", tripId.SpcTripNumber);
@@ -260,6 +295,11 @@ namespace TubsWeb.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
         public ActionResult PositionAudit(Trip tripId)
         {
             if (null == tripId)
@@ -288,50 +328,81 @@ namespace TubsWeb.Controllers
             return View(auditResults);
         }
 
-        // GET: /Trip/Details/1
+        public PartialViewResult DetailModal(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                // TODO: Figure out how to manage this as a partial
+            }
+
+            var vm = Mapper.Map<Trip, TripSummaryViewModel>(tripId);
+            ViewBag.IsModal = true;
+            return PartialView("_TripSummary", vm);
+        }
+
         /// <summary>
         /// Retrieves Trip details for display.
         /// NOTE:  Trip is retrieved by TripModelBinder -- the caller actually passes in the
         /// integer TripId.  If no such trip exists, the ModelBinder will return null.
         /// </summary>
-        /// <param name="id">Trip</param>
+        /// <example>GET: /Trip/Details/1</example>
+        /// <param name="tripId">Trip</param>
         /// <returns></returns>
         public ActionResult Details(Trip tripId)
         {
             if (null == tripId)
             {
-                return new NoSuchTripResult();
+                return InvalidTripResponse();
             }
 
-            AddTripNavbar(tripId);
-            ViewBag.Title = tripId.ToString();
-            ViewBag.BaseDownloadName = string.Format("{0}_{1}_", tripId.Observer.StaffCode, tripId.TripNumber);
-            return View(tripId);
+            // ViewBag means nothing for an API request
+            if (!IsApiRequest())
+            {
+                AddTripNavbar(tripId);
+                ViewBag.Title = tripId.ToString();
+                ViewBag.BaseDownloadName = 
+                    string.Format(
+                        "{0}_{1}_",
+                        tripId.Observer.StaffCode.NullSafeTrim(), 
+                        tripId.TripNumber.NullSafeTrim());
+            }
+
+            var vm = Mapper.Map<Trip, TripSummaryViewModel>(tripId);
+
+            if (IsApiRequest())
+                return GettableJsonNetData(vm);
+            
+            return View(vm);
         }
 
-        [EditorAuthorize]
-        public ActionResult Close(Trip tripId)
-        {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
+        //[EditorAuthorize]
+        //public ActionResult Close(Trip tripId)
+        //{
+        //    if (null == tripId)
+        //    {
+        //        return new NoSuchTripResult();
+        //    }
 
-            if (tripId.IsReadOnly)
-            {
-                return RedirectToAction("Details", "Trip", new { tripId = tripId.Id });
-            }
+        //    if (tripId.IsReadOnly)
+        //    {
+        //        return RedirectToAction("Details", "Trip", new { tripId = tripId.Id });
+        //    }
 
-            ViewBag.Title = tripId.ToString();
-            ViewBag.TripNumber = tripId.SpcTripNumber;
-            TripClosureViewModel tcvm = new TripClosureViewModel()
-            {
-                TripId = tripId.Id
-            };
+        //    ViewBag.Title = tripId.ToString();
+        //    ViewBag.TripNumber = tripId.SpcTripNumber;
+        //    TripClosureViewModel tcvm = new TripClosureViewModel()
+        //    {
+        //        TripId = tripId.Id
+        //    };
 
-            return View(tcvm);
-        }
+        //    return View(tcvm);
+        //}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tcvm"></param>
+        /// <returns></returns>
         [HttpPost]
         [EditorAuthorize]
         public ActionResult Close(TripClosureViewModel tcvm)
@@ -349,30 +420,31 @@ namespace TubsWeb.Controllers
             }
 
             // Idempotent -- if the trip is already closed, just push to the details page
-            if (trip.IsReadOnly)
+            if (!trip.IsReadOnly)
             {
-                return RedirectToAction("Details", "Trip", new { tripId = trip.Id });
+                trip.ClosedDate = DateTime.Now;
+                trip.Comments = tcvm.Comments;
+                try
+                {
+                    repo.Update(trip);
+                }
+                catch (Exception ex)
+                {
+                    Flash("Unable to close trip -- contact technical support");
+                    Logger.Error("Error while closing trip", ex);
+                }
+                
             }
 
-            // Just in case we have to push back to the edit form
-            ViewBag.Title = trip.ToString();
-            ViewBag.TripNumber = trip.SpcTripNumber;
-
-            trip.ClosedDate = DateTime.Now;
-            trip.Comments = tcvm.Comments;
-            try
-            {
-                repo.Update(trip);
-                return RedirectToAction("Details", "Trip", new { tripId = trip.Id });
-            }
-            catch (Exception ex)
-            {
-                Flash("Unable to close trip -- contact technical support");
-                Logger.Error("Error while closing trip", ex);
-            }
-            return View(tcvm);
+            // Pull page just for closing trip.  Modal is fine, although may want to make it larger.
+            //return View(tcvm);
+            return RedirectToAction("Details", "Trip", new { tripId = trip.Id });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [EditorAuthorize]
         public ActionResult Create()
         {
@@ -387,10 +459,15 @@ namespace TubsWeb.Controllers
             return View(thvm);
         }
 
-        //
-        // This method is a little verbose, but then it's probably the most complex
-        // CRUD operation in the application.
-        //
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// This method is a little verbose, but then it's probably one of the most complex
+        /// CRUD operation in the application.
+        /// </remarks>
+        /// <param name="thvm"></param>
+        /// <returns></returns>
         [HttpPost]
         [EditorAuthorize]
         public ActionResult Create(TripHeaderViewModel thvm)

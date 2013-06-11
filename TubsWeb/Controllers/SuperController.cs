@@ -226,6 +226,11 @@ namespace TubsWeb.Controllers
             }
         }
 
+        /// <summary>
+        /// AddTripNavBar adds a list of titles and links for use in navigating within
+        /// a trip.  Data is set into ViewBag.NavPills
+        /// </summary>
+        /// <param name="tripId">Trip used to construct navigation links.</param>
         protected void AddTripNavbar(Trip tripId)
         {
             var routeValues = new { tripId = tripId.Id };
@@ -314,9 +319,16 @@ namespace TubsWeb.Controllers
                 pills.Add(Tuple.Create("Map", Url.Action("Map", "Trip", routeValues)));
             }
 
-            if (!tripId.IsReadOnly)
+            //if (!tripId.IsReadOnly)
+            //{
+            //    pills.Add(Tuple.Create("Close Trip", Url.Action("Close", "Trip", routeValues)));
+            //}
+
+            // Check edit permissions.  Without edit privileges, user can't close trip, but why
+            // tempt people with forbidden fruit?
+            if (!tripId.IsReadOnly && User.IsInRole(EditorAuthorizeAttribute.EditorGroups()))
             {
-                pills.Add(Tuple.Create("Close Trip", Url.Action("Close", "Trip", routeValues)));
+                pills.Add(Tuple.Create("Close Trip", "#closeModal"));
             }
 
             ViewBag.NavPills = pills;

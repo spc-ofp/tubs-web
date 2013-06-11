@@ -141,23 +141,5 @@ namespace TubsWeb.Models
             public string Code { get; set; }
             public string Label { get; set; }
         }
-
-        /*
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (!this.DepartureDate.HasValue)
-            {
-                yield return new ValidationResult("Departure Date is required", new string[] { "DepartureDate" });
-            }
-            if (!this.ReturnDate.HasValue)
-            {
-                yield return new ValidationResult("Return Date is required", new string[] { "ReturnDate" });
-            }
-            if (this.VesselId == default(int))
-            {
-                yield return new ValidationResult("Vessel is required", new string[] { "VesselId" });
-            }
-        }
-        */
     }
 }

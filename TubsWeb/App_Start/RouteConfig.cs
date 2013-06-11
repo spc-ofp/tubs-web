@@ -53,6 +53,7 @@ namespace TubsWeb
         public static string SetHaul = "SetHaul";
         public static string LengthSamples = "LengthSamples";
         public static string LengthFrequencyByTrip = "LengthFrequencyByTrip";
+        public static string ExcelTripSummary = "ExcelTripSummary";
         public static string SeaDayById = "SeaDayById";
         public static string SeaDays = "SeaDays";
         public static string Gear = "Gear";
@@ -75,7 +76,7 @@ namespace TubsWeb
         {
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            routes.MapReportingRoute(); // TODO Check that this doesn't break anything
+            routes.MapReportingRoute(); // For DoddleReports
 
             routes.MapRoute(
                 name: MyOpenTrips,
@@ -195,8 +196,6 @@ namespace TubsWeb
                 new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
-            // TODO This is going to be tricky with the Gen2Details routing
-            // TODO Change the default action to Index 
             routes.MapRoute(
                 Gen2,
                 "Trip/{tripId}/GEN-2/{action}",
@@ -227,7 +226,6 @@ namespace TubsWeb
                 new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
-            // TODO Change the default action to Index
             routes.MapRoute(
                 Gen6,
                 "Trip/{tripId}/GEN-6/{action}/{pageNumber}",
@@ -243,22 +241,6 @@ namespace TubsWeb
                 defaults: new { controller = "FishingSet", action = "List", setNumber = UrlParameter.Optional },
                 constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger }
             );
-
-            /*
-            routes.MapRoute(
-                SetDetails,
-                "Trip/{tripId}/Sets/{setNumber}/{action}",
-                new { controller = "FishingSet", action = "Index" },
-                new { tripId = @"\d+", setNumber = @"\d+" }
-            );
-
-            routes.MapRoute(
-                Sets,
-                "Trip/{tripId}/Sets/",
-                new { controller = "FishingSet", action = "List" },
-                new { tripId = @"\d+" }
-            );
-            */
 
             // Although length samples are subordinate to Sets, they'll be available at a higher level
             // for a more readable URL.
@@ -276,30 +258,13 @@ namespace TubsWeb
                 constraints: new { tripId = IsPositiveInteger }
             );
 
-            /*
-            // dayNumber is not an ID, it's a number between 1 and the number of sea days in the trip
-            // FIXME:  Add another route that gets directly to SeaDay by Id
             routes.MapRoute(
-                SeaDayDetails,
-                "Trip/{tripId}/Days/{dayNumber}",
-                new { controller = "SeaDay", action = "Index" },
-                new { tripId = @"\d+", dayNumber = @"\d+" }
+                name: ExcelTripSummary,
+                url: "Trip/{tripId}/TripSummary.xlsx",
+                defaults: new { controller = "Export", action = "Summary" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
-            routes.MapRoute(
-                SeaDayViewModel,
-                "Trip/{tripId}/EditDay/{dayNumber}",
-                new { controller = "SeaDay", action = "EditDay" },
-                new { tripId = @"\d+", dayNumber = @"\d+" }
-            );
-
-            routes.MapRoute(
-                SeaDays,
-                "Trip/{tripId}/Days/{action}",
-                new { controller = "SeaDay", action = "List" },
-                new { tripId = @"\d+" }
-            );
-            */
             routes.MapRoute(
                 name: SeaDays,
                 url: "Trip/{tripId}/Days/{dayNumber}/{action}",
@@ -313,12 +278,6 @@ namespace TubsWeb
                 defaults: new { controller = "SeaDay", action = "Index" },
                 constraints: new { tripId = IsPositiveInteger, dayId = IsPositiveInteger }
             );
-
-            // Trip/{tripId}/Days/{dayNumber}/{action}
-            // action in (Index, Edit, Add)
-
-            // Trip/{tripId}/DayById/{dayId}/{action}
-            // action in (Index, Edit)
 
             routes.MapRoute(
                 Gear,

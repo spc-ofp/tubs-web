@@ -35,6 +35,14 @@ namespace TubsWeb.ViewModels
             this.IntermediateHaulPositions = new List<Position>(16);
         }
 
+        public void SetNavDetails(int setNumber, int maxSets)
+        {
+            this.HasPrevious = setNumber > 1;
+            this.HasNext = setNumber < maxSets;
+            this.NextSet = setNumber + 1;
+            this.PreviousSet = setNumber - 1;
+        }
+
         // Use Knockout to help with common codes
         public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
         public IList<string> VelocityUnits = new List<string> { String.Empty, "m/s", "kts" };

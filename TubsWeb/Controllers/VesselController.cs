@@ -34,7 +34,7 @@ namespace TubsWeb.Controllers
     [SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
     public class VesselController : SuperController
-    {        
+    {                
         public JsonResult Find(string term)
         {
             var repo = new TubsRepository<Vessel>(MvcApplication.CurrentSession);

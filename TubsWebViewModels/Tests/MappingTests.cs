@@ -35,42 +35,34 @@ namespace TubsWeb.Tests
     public class MappingTests
     {
         [Test]
-        public void TripEntityToPs1ViewModel([Values(70)] int tripId)
+        public void SeaDayEntityToViewModel([Values(431)] int dayId)
         {
             Mapper.AssertConfigurationIsValid();
-            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            using (var repo = TubsDataService.GetRepository<PurseSeineSeaDay>(false))
             {
-                var trip = repo.FindById(tripId) as PurseSeineTrip;
-                Assert.NotNull(trip);
-                var vm = Mapper.Map<PurseSeineTrip, Ps1ViewModel>(trip);
-                Assert.NotNull(vm);
-                Assert.AreEqual(tripId, vm.TripId);
-                Assert.NotNull(vm.Characteristics);
-                Assert.NotNull(vm.Gear);
-                Assert.NotNull(vm.Inspection);
-                Assert.NotNull(vm.Characteristics.CountryCode);
-                StringAssert.AreEqualIgnoringCase("VU", vm.Characteristics.CountryCode.Trim());
+                var day = repo.FindById(dayId);
+                Assert.NotNull(day);
+                var vm = Mapper.Map<PurseSeineSeaDay, SeaDayViewModel>(day);
+                Assert.NotNull(vm, "AutoMapper yielded a null ViewModel (SeaDayViewModel)");
+                Assert.AreEqual(dayId, vm.DayId);
+                Assert.AreEqual(6, vm.Events.Count);
             }
         }
 
         [Test]
-        public void TripEntityToLongLineTripInfoViewModel([Values(4177)] int tripId)
+        public void SeaDayViewModelRoundTrip([Values(431)] int dayId)
         {
             Mapper.AssertConfigurationIsValid();
-            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            using (var repo = TubsDataService.GetRepository<PurseSeineSeaDay>(false))
             {
-                var trip = repo.FindById(tripId) as LongLineTrip;
-                Assert.NotNull(trip);
-                Assert.NotNull(trip.Gear, "Gear entity is null");
-                Assert.NotNull(trip.Inspection, "Safety Inspection entity is null");
-                var vm = Mapper.Map<LongLineTrip, LongLineTripInfoViewModel>(trip);
-                Assert.NotNull(vm, "AutoMapper yielded a null ViewModel");
-                Assert.AreEqual(tripId, vm.TripId);
-                Assert.NotNull(vm.Characteristics);
-                Assert.NotNull(vm.Gear);
-                Assert.NotNull(vm.Inspection);
-                Assert.NotNull(vm.Refrigeration);
-                StringAssert.AreEqualIgnoringCase("NC", vm.Characteristics.CountryCode.Trim());
+                var day = repo.FindById(dayId);
+                Assert.NotNull(day);
+                var vm = Mapper.Map<PurseSeineSeaDay, SeaDayViewModel>(day);
+                Assert.NotNull(vm, "AutoMapper yielded a null ViewModel (SeaDayViewModel)");
+                var rtDay = Mapper.Map<SeaDayViewModel, PurseSeineSeaDay>(vm);
+                Assert.NotNull(rtDay);
+                Assert.AreEqual(day.Activities.Count, rtDay.Activities.Count);
+                Assert.AreEqual(day.Activities[0].LocalTime, rtDay.Activities[0].LocalTime);
             }
         }
 
@@ -94,72 +86,6 @@ namespace TubsWeb.Tests
                 Assert.NotNull(inspection);
                 var vm = Mapper.Map<SafetyInspection, LongLineTripInfoViewModel.SafetyInspection>(inspection);
                 Assert.NotNull(vm, "AutoMapper yielded a null ViewModel (SafetyInspection)");
-            }
-        }
-
-        [Test]
-        public void TripEntityToSightingViewModel([Values(70)] int tripId)
-        {
-            Mapper.AssertConfigurationIsValid();
-            using (var repo = TubsDataService.GetRepository<Trip>(false))
-            {
-                var trip = repo.FindById(tripId);
-                Assert.NotNull(trip);
-                var vm = Mapper.Map<Trip, SightingViewModel>(trip);
-                Assert.NotNull(vm);
-                Assert.AreEqual(tripId, vm.TripId);
-                Assert.NotNull(vm.Sightings);
-                Assert.GreaterOrEqual(vm.Sightings.Count, 20);
-            }
-        }
-
-        [Test]
-        public void TripEntityToTransferViewModel([Values(111)] int tripId)
-        {
-            Mapper.AssertConfigurationIsValid();
-            using (var repo = TubsDataService.GetRepository<Trip>(false))
-            {
-                var trip = repo.FindById(tripId);
-                Assert.NotNull(trip);
-                // var entity = Mapper.Map<TransferViewModel.Transfer, Transfer>(transfer);
-                var vm = Mapper.Map<Trip, TransferViewModel>(trip);
-                Assert.NotNull(vm);
-                Assert.AreEqual(tripId, vm.TripId);
-                Assert.NotNull(vm.Transfers);
-                Assert.GreaterOrEqual(vm.Transfers.Count, 5);
-            }
-        }
-
-        [Test]
-        public void TripEntityToCrewViewModel([Values(103)] int tripId)
-        {
-            Mapper.AssertConfigurationIsValid();
-            using (var repo = TubsDataService.GetRepository<Trip>(false))
-            {
-                var trip = repo.FindById(tripId) as PurseSeineTrip;
-                Assert.NotNull(trip);
-                var vm = Mapper.Map<PurseSeineTrip, CrewViewModel>(trip);
-                Assert.NotNull(vm);
-                Assert.NotNull(vm.Captain);
-                StringAssert.AreEqualIgnoringCase("James T. Kirk", vm.Captain.Name);
-                Assert.NotNull(vm.ChiefEngineer);
-                Assert.NotNull(vm.Navigator);
-                Assert.NotNull(vm.Cook);
-                Assert.GreaterOrEqual(vm.Hands.Count, 2);
-            }
-        }
-
-        [Test]
-        public void TripEntityToPageCountViewModel([Values(70)] int tripId)
-        {
-            Mapper.AssertConfigurationIsValid();
-            using (var repo = TubsDataService.GetRepository<Trip>(false))
-            {
-                var trip = repo.FindById(tripId) as PurseSeineTrip;
-                Assert.NotNull(trip);
-                var vm = Mapper.Map<PurseSeineTrip, PageCountViewModel>(trip);
-                Assert.NotNull(vm);
-                Assert.GreaterOrEqual(vm.PageCounts.Count, 6);
             }
         }
 

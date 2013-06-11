@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Models
+namespace TubsWeb.ViewModels
 {
     /*
      * This file is part of TUBS.
@@ -26,11 +26,14 @@ namespace TubsWeb.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
-    using System.Web.Mvc;
+    using System.Runtime.Serialization;
     using Newtonsoft.Json;
+    using Spc.Ofp.Tubs.DAL.Common;
 
     /// <summary>
     /// ViewModel for PS-2 data.
+    /// </summary>
+    /// <remarks>
     /// VERY IMPORTANT NOTE!!!!!!!!
     /// DON'T USE ARRAYS IN A VIEW MODEL!!!!!
     /// The default model binder freaks out when it trys to fill an array, and the
@@ -44,7 +47,7 @@ namespace TubsWeb.Models
     /// Third Note:  Properties added/removed from root level view model are automatically managed
     /// by knockout.mapping plugin.  Properties added to SeaDayEvent are _NOT_ managed and need
     /// to be reflected in the vm.seaday.js file.  Failure to do so will result in LINQ errors
-    /// </summary>
+    /// </remarks>
     public class SeaDayViewModel
     {
         #region v2009 Activity Codes
@@ -108,6 +111,16 @@ namespace TubsWeb.Models
             SeaCodes = new List<string>() { string.Empty, "C", "S", "M", "R", "V" };
         }
 
+        public void SetNavDetails(int dayNumber, int maxDays)
+        {
+            this.DayNumber = dayNumber;
+            this.MaxDays = maxDays;
+            this.NextDay = dayNumber + 1;
+            this.PreviousDay = dayNumber - 1;
+            this.HasNext = dayNumber < maxDays;
+            this.HasPrevious = dayNumber > 1;
+        }
+
         // UX state
         public string TripNumber { get; set; }
         public bool HasNext { get; set; }
@@ -120,6 +133,7 @@ namespace TubsWeb.Models
         // Again UX state, to let the display path know if
         // this object exists in the database.
         [JsonIgnore]
+        [IgnoreDataMember]
         public bool IsEmpty
         {
             get
@@ -198,6 +212,7 @@ namespace TubsWeb.Models
 
         // Entries to be deleted will have a '_destroy' property of true
         [JsonIgnore]
+        [IgnoreDataMember]
         public IEnumerable<SeaDayEvent> Keepers
         {
             get
@@ -209,11 +224,11 @@ namespace TubsWeb.Models
                         yield return evt;
                     }
                 }
-                //return this.Events.Where(e => (e != null && !e._destroy)) ?? Enumerable.Empty<SeaDayEvent>();
             }
         }
 
         [JsonIgnore]
+        [IgnoreDataMember]
         public IEnumerable<SeaDayEvent> Deleted
         {
             get
@@ -295,10 +310,12 @@ namespace TubsWeb.Models
 
             // Display only, so no need to include in JSON
             [JsonIgnore]
+            [IgnoreDataMember]
             public string ActivityIconPath { get; set; }
 
             // Display only, so no need to include in JSON
             [JsonIgnore]
+            [IgnoreDataMember]
             public string SpeedAndDirection
             {
                 get

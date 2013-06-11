@@ -1,0 +1,43 @@
+﻿<div class="row editor-row">
+    <div class="span1 compact-header"><strong>Time</strong></div>
+    <div class="span6 compact-header"><strong>Comments</strong></div>
+</div>
+@*
+ * Knockout allows containerless binding.  That's why there's a knockout call inside HTML comments
+ * http://knockoutjs.com/documentation/foreach-binding.html
+ *@
+<!-- ko foreach: $data.Comments -->
+<div class="row editor-row">
+    <div class="form-horizontal compact-row comment-row">
+        <input type="text" class="span1" placeholder="HHmm"/>
+        <input type="text" class="span6" />
+        <button type="button" class="btn btn-danger removeItem" tabindex="5000"><i class="icon-minus-sign icon-white"></i> Delete</button>
+    </div>
+</div>
+<!-- /ko -->
+<div class="row">
+    <div class="span2" style="margin-left: 30px;">
+        <button id="addCommentButton" type="button" class="btn btn-info addItem"><i class="icon-plus-sign icon-white"></i> Add Comment</button>
+    </div>
+</div>
+<hr />
+@* For flow reasons, this might belong in the 'Comments' section rather than here *@
+<div class="row">
+    <div class="span2">
+        <label>Total Baskets Observed</label>
+        <input type="number" class="input-mini" />
+    </div>
+    <div class="span2">
+        <label>GEN-3<br />Events?</label>
+        <select class="input-mini" data-bind="options: $root.BooleanValues, value: HasGen3Event"></select>
+    </div>
+    <div class="span2">
+        <label>Journal<br />Page</label>
+        <input type="number" class="input-mini" />
+    </div>
+    <div class="span2">
+        @* Dirty hack, but it works well enough:  The label is the same size as the other labels in the row *@
+        <label>&nbsp;<br />&nbsp;</label>
+        <a href="#" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></a>
+    </div>  
+</div>     

@@ -23,16 +23,16 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
     using System.Web.Routing;
+    using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
-    using TubsWeb.Models;
     using TubsWeb.Models.ExtensionMethods;
+    using TubsWeb.ViewModels;
 
     /// <summary>
     /// SeaDayController manages PS-2 Daily Log data.
@@ -137,8 +137,20 @@ namespace TubsWeb.Controllers
             // Based on NeedsRedirect, we should be okay -- the
             // dayNumber should be perfect for the action
             var day = days.Skip(dayNumber - 1).Take(1).FirstOrDefault() as PurseSeineSeaDay;
-            // AsViewModel should have sorted the activities in a day by time
-            var sdvm = day.AsViewModel(trip, dayNumber, maxDays);
+            var sdvm = Mapper.Map<PurseSeineSeaDay, SeaDayViewModel>(day);
+            // It would be really cool if I could do the following setup in AutoMapper...
+            if (IsAdd())
+            {
+                sdvm = new SeaDayViewModel();
+                sdvm.TripId = trip.Id;
+                sdvm.TripNumber = trip.SpcTripNumber;
+                sdvm.VersionNumber = trip.Version == WorkbookVersion.v2009 ? 2009 : 2007;
+                sdvm.ActivityCodes = sdvm.VersionNumber == 2009 ?
+                    SeaDayViewModel.v2009ActivityCodes :
+                    SeaDayViewModel.v2007ActivityCodes;
+            }
+            // Set the few properties on sdvm that aren't set by AutoMapper
+            sdvm.SetNavDetails(dayNumber, maxDays);
             sdvm.ActionName = CurrentAction();
 
             if (sdvm.NeedsDates() && (IsAdd() || IsEdit()))
@@ -270,7 +282,7 @@ namespace TubsWeb.Controllers
 
             // Try this for now, refactor later (if at all)
             // drepo for (d)ay, erepo for (e)vent (aka Activity).
-            var seaDay = sdvm.AsEntity();
+            var seaDay = Mapper.Map<SeaDayViewModel, PurseSeineSeaDay>(sdvm);
 
             using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
@@ -286,9 +298,8 @@ namespace TubsWeb.Controllers
                 // Deletes first
                 sdvm.Deleted.ToList().ForEach(e => erepo.DeleteById(e.EventId));
 
-                var activities = sdvm.AsActivities();
-                foreach (var activity in activities)
-                {
+                foreach (var activity in seaDay.Activities)
+                {                    
                     // Reformat lat/lon to expected format dd.mmmmm or ddd.mmmmm so that
                     // stored procs operate as expected.
                     activity.Latitude = activity.Latitude.AsSpcLatitude();
@@ -384,7 +395,8 @@ namespace TubsWeb.Controllers
 
                     var day = repo.FindById(seaDay.Id) as PurseSeineSeaDay;
 
-                    sdvm = day.AsViewModel(tripId, dayNumber, maxDays);
+                    sdvm = Mapper.Map<PurseSeineSeaDay, SeaDayViewModel>(day);
+                    sdvm.SetNavDetails(dayNumber, maxDays);
                     sdvm.ActionName = CurrentAction();
                 }
 

@@ -48,6 +48,26 @@
       }
       
       .nobr { white-space: nowrap; }
+
+        /* div.compact-header, div.compact-row, editor-row, and span1q are all part of using divs to contain multi-row inputs instead of a table */
+        .row div.compact-header {
+            margin-left: 10px;
+        }
+
+        .editor-row
+        {
+            margin-left: 10px;
+        }
+
+        /* Bigger than span1 (60px), but smaller than span2 (140px) */
+        .span1q
+        {
+            width: 80px;
+        }
+
+        div.compact-row {
+            padding-bottom: 5px;
+        }
     </style>
     @RenderSection("AdditionalCss", false) 
 

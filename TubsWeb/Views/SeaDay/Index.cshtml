@@ -1,4 +1,4 @@
-﻿@model TubsWeb.Models.SeaDayViewModel
+﻿@model TubsWeb.ViewModels.SeaDayViewModel
 
 @{
     ViewBag.Title = string.Format("Day {0} of {1} for {2}", Model.DayNumber, Model.MaxDays, Model.TripNumber);
@@ -8,7 +8,7 @@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
         Tuple.Create(Url.Action("List", "SeaDay", new { tripId = Model.TripId }), "Sea Days"),
         Tuple.Create("#", String.Format("Day {0} of {1}", Model.DayNumber, Model.MaxDays))

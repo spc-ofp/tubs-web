@@ -1,0 +1,178 @@
+﻿@*
+ * No filling of data via Razor -- this is all Knockout.
+ * NOTE:  row, _NOT_ row-fluid
+ * TODO:  Go back and make the same changes on PS forms
+ *@
+<fieldset>
+    <legend>Start Of Set</legend>
+    <div class="row">
+        <div class="span2">
+            <label for="ShipsDate">Ship's Date</label>
+            <div class="input-append">
+                <input id="ShipsDate"
+                        name="ShipsDate"
+                        type="text"
+                        data-val="true"
+                        data-val-required="Date portion of start of day is required"
+                        data-bind="value: ShipsDate"
+                        class="input-mini" />
+                <span class="add-on"><i class="icon-calendar"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label for="ShipsTime">Ship's Time</label>
+            <div class="input-append">
+                <input id="ShipsTime"
+                        name="ShipsTime"
+                        type="text"
+                        data-bind="value: ShipsTime"
+                        maxlength="4"
+                        class="input-mini advance" />
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label for="UtcDate">UTC Date</label>
+            <div class="input-append">
+                <input id="UtcDate"
+                        name="UtcDate"
+                        type="text"
+                        data-bind="value: UtcDate"
+                        class="input-mini" />
+                <span class="add-on"><i class="icon-calendar"></i></span>
+            </div>
+        </div>
+        <div class="span2">
+            <label for="UtcTime">UTC Time</label>
+            <div class="input-append">
+                <input id="UtcTime"
+                        name="UtcTime"
+                        type="text"
+                        data-bind="value: UtcTime"
+                        maxlength="4"
+                        class="input-mini advance" />
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<hr />
+<fieldset>
+    <legend>Longline Set Specifications</legend>
+    <div class="row">
+        <div class="span2">
+            <ul class="unstyled">
+                <li>
+                    <label for="HooksPerBasket">Hooks Per Basket</label>                        
+                    <input id="HooksPerBasket"
+                            name="HooksPerBasket"
+                            type="number"
+                            data-bind="value: HooksPerBasket"
+                            class="input-mini" />
+                </li>
+                <li>
+                    <label for="TotalBaskets">Total No. Of Baskets</label>                        
+                    <input id="TotalBaskets"
+                            name="TotalBaskets"
+                            type="number"
+                            data-bind="value: TotalBaskets"
+                            class="input-mini" />
+                </li>
+                <li>
+                    <label for="TotalHooks">Total No. Of Hooks</label>                        
+                    <input id="TotalHooks"
+                            name="TotalHooks"
+                            type="number"
+                            data-bind="value: TotalHooks"
+                            class="input-mini" />
+                </li>
+                <li>
+                    <label for="FloatlineLength">Length of Floatline (m)</label>                        
+                    <input id="FloatlineLength"
+                            name="FloatlineLength"
+                            type="number"
+                            data-bind="value: FloatlineLength"
+                            class="input-mini" />
+                </li>
+            </ul>
+        </div>
+        <div class="span3">
+            <ul class="unstyled">
+                <li>
+                    <div class="form-horizontal">
+                        <label for="LineSettingSpeed">Line Setting Speed</label>                        
+                        <input id="LineSettingSpeed"
+                                name="LineSettingSpeed"
+                                type="number"
+                                data-bind="value: LineSettingSpeed"
+                                class="input-mini" />
+                        <select id="LineSettingSpeedUnit" 
+                                name="LineSettingSpeedUnit" 
+                                data-bind="options: $root.VelocityUnits, value: LineSettingSpeed"
+                                class="input-mini"></select>
+                    </div>
+                </li>
+                <li>
+                    <label for="BranchlineSetInterval">Branchline Set Interval (s)</label>                        
+                    <input id="BranchlineSetInterval"
+                            name="BranchlineSetInterval"
+                            type="number"
+                            data-bind="value: BranchlineSetInterval"
+                            class="input-mini" />
+                </li>
+                <li>
+                    <label for="DistanceBetweenBranchlines">Between Branchlines (m)</label>                        
+                    <input id="DistanceBetweenBranchlines"
+                            name="DistanceBetweenBranchlines"
+                            type="number"
+                            data-bind="value: DistanceBetweenBranchlines"
+                            class="input-mini" />
+                </li>
+                <li>
+                    <label for="BranchlineLength">Length of Branchlines (m)</label>                        
+                    <input id="BranchlineLength"
+                            name="BranchlineLength"
+                            type="number"
+                            data-bind="value: BranchlineLength"
+                            class="input-mini" />
+                </li>
+            </ul>
+        </div>
+        <div class="span2">
+            <ul class="unstyled">
+                <li>
+                    <label for="VesselSpeed">Vessel Speed (kts)</label>                        
+                    <input id="VesselSpeed"
+                            name="VesselSpeed"
+                            type="number"
+                            data-bind="value: VesselSpeed"
+                            class="input-mini" />
+                </li>
+                <li>
+                    <label for="SharkLineCount">No. Of Shark Lines</label>                        
+                    <input id="SharkLineCount"
+                            name="SharkLineCount"
+                            type="number"
+                            data-bind="value: SharkLineCount"
+                            class="input-mini" />
+                </li>
+                <li>
+                    <label for="SharkLineLength">Length of Shark Lines (m)</label>                        
+                    <input id="SharkLineLength"
+                            name="SharkLineLength"
+                            type="number"
+                            data-bind="value: SharkLineLength"
+                            class="input-mini" />
+                </li>
+                <li>
+                    <label for="WasTdrDeployed">Were TDRs Deployed</label>
+                    <select id="WasTdrDeployed"
+                            name="WasTdrDeployed"
+                            class="input-mini"
+                            data-bind="options: $root.BooleanValues, value: WasTdrDeployed"></select>                
+                </li>
+            </ul>        
+        </div>             
+    </div>  
+</fieldset>  
+        

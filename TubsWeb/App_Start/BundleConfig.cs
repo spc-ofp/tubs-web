@@ -69,15 +69,37 @@ namespace TubsWeb
                     "~/Scripts/toastr.js"
                  ));
 
+            // sco.js includes more components than what is present
+            // but this is the minimum of what is used in TUBS
+            bundles.Add(new ScriptBundle("~/bundles/scojs")
+                .Include(
+                    "~/Scripts/sco.confirm.js",
+                    "~/Scripts/sco.modal.js",
+                    "~/Scripts/sco.panes.js",
+                    "~/Scripts/sco.tab.js"
+                ));
+
+            // Typeahead is, at least at present, a fairly uncommon facility
+            // Initial use isn't too promising.  Requires specific JSON
+            // return format and CSS wizardry
+            bundles.Add(new ScriptBundle("~/bundles/typeahead")
+                .Include(
+                    "~/Scripts/typeahead.js",
+                    "~/Scripts/hogan-{version}.js"
+                ));
+
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap-responsive.css",
                 "~/Content/bootstrap.css",
-                "~/Content/bootstrap-sticky-footer.css", // Custom for sticky footer
-                "~/Content/bootstrap-datepicker.css",
+                "~/Content/font-awesome.css",
+                "~/Content/bootstrap-datepicker.css",                
                 "~/Content/pageguide.css",
                 "~/Content/rateit.css",
                 "~/Content/toastr.css",
-                "~/Content/font-awesome.css"));
+                "~/Content/scojs.css", // Trial of Sco.js
+                "~/Content/tubs.css" // Custom for sticky footer
+                ));
         }
     }
 }

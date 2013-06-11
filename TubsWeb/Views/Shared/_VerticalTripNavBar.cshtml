@@ -1,8 +1,17 @@
 ﻿@model IEnumerable<Tuple<string, string>>
 
 <ul id="subsectionNavbar" class="nav nav-tabs nav-stacked">
-    @foreach (var pill in Model)
+@foreach (var pill in Model)
+{
+    @* This is a very ugly hack while I work out how to fix creation of the nav pills *@
+    if ("Close Trip".Equals(@pill.Item1, StringComparison.InvariantCultureIgnoreCase))
     {
-    <li><a href='@pill.Item2'>@pill.Item1</a></li>
+        <li><a href="#closeModal" data-toggle="modal">Close Trip</a></li>
     }
+    else
+    { 
+        <li><a href='@pill.Item2'>@pill.Item1</a></li>
+    }
+        
+}
 </ul>

@@ -11,7 +11,7 @@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
         Tuple.Create(Url.Action("List", "FishingSet", new { tripId = Model.TripId }), "Sets"),
         Tuple.Create("#", String.Format("Set {0} of {1}", Model.SetNumber, Model.MaxSets))

@@ -11,7 +11,7 @@
     <caption>@ViewBag.TotalRows Trips</caption>
     <thead>
         <tr>
-            <th>Trip Id</th>
+            <th>&nbsp;</th>
             @if (IsInstalledAtSpc)
             {
             <th>Program</th>
@@ -27,9 +27,12 @@
     <tbody>
     @foreach (var item in Model)
     {
+        var detailTarget = Url.RouteUrl(TubsWeb.RouteConfig.TripDetails, new { tripId = item.Id, action = "Details" });
+        var modalTarget = Url.Action("DetailModal", new { tripId = item.Id });
         <tr>
-            <td>
-                @Html.ActionLink(item.Id.ToString(), "Details", new { tripId = item.Id })
+            <td class="nobr">
+                <a href="@detailTarget"><i class="icon-list-alt icon-large" title="Details" rel="tooltip"></i></a>&nbsp;
+                <a href="#detailModal" data-toggle="modal" data-remote="@modalTarget"><i class="icon-info icon-large" title="Quick Summary" rel="tooltip"></i></a>
             </td>
             @if (IsInstalledAtSpc)
             {
@@ -64,3 +67,17 @@
     }
     </tbody>
 </table>
+
+@* Use a modal dialog to quickly show data for trip *@
+<div id="detailModal" class="modal hide fade">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Trip Summary</h3>
+  </div>
+  <div class="modal-body" id="fooDiv">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn close" data-dismiss="modal">Close</a>
+  </div>
+</div>

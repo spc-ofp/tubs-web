@@ -19,7 +19,7 @@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.Trip.SpcTripNumber ?? "This Trip"),
         Tuple.Create(Url.Action("List", "Gen6", new { tripId = ViewBag.TripId }), "GEN-6 Events"),
         Tuple.Create("#", String.Format("Page {0} of {1}", ViewBag.CurrentPage, ViewBag.MaxPages))

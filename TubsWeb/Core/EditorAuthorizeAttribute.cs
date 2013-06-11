@@ -18,14 +18,19 @@ namespace TubsWeb.Core
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class EditorAuthorizeAttribute : AuthorizeAttribute
     {
-        public EditorAuthorizeAttribute()
+        public static string EditorGroups()
         {
             string groups = WebConfigurationManager.AppSettings["EditorGroups"];
             if (string.IsNullOrEmpty(groups))
             {
                 groups = @"NT AUTHORITY\Authenticated Users";
             }
-            Roles = groups;
+            return groups;
+        }
+        
+        public EditorAuthorizeAttribute()
+        {
+            Roles = EditorGroups();
         }
     }
 }

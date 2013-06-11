@@ -5,7 +5,7 @@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber as string),
         Tuple.Create(Url.Action("Index", "Gen3", new { tripId = Model.TripId }), "GEN-3"),
         Tuple.Create("#", "Edit GEN-3")

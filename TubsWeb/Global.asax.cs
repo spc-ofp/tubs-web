@@ -60,9 +60,17 @@ namespace TubsWeb
              */
             BeginRequest += delegate
             {
+                // NOTE:  While researching another issue, it was noted that
+                // this pattern may result in transactions on the request of static content
+                // like CSS and graphics.  If it can be solved in a few minutes, it might be
+                // worth looking into preventing a transaction for static content
                 if (!HttpContext.Current.Items.Contains(ISessionKey))
                 {
+                    // If we're running on the Intranet, return a vanilla session
                     CurrentSession = TubsDataService.GetSession();
+
+                    // If we're running on the public Internet, add a session filter
+                    // for the parent entity of the current logged in user
                 }
                 if (!HttpContext.Current.Items.Contains(IStatelessSessionKey))
                 {
@@ -122,14 +130,17 @@ namespace TubsWeb
 
         protected void Application_Start()
         {
+            // Turn off classic ASPX
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new RazorViewEngine());
+            
             // Hard to get Log4net working if you don't call this -- D'Oh!
             log4net.Config.XmlConfigurator.Configure();
 
             AreaRegistration.RegisterAllAreas();
             // Trip is the only model worth binding.
             ModelBinderProviders.BinderProviders.Add(new TripModelBinderProvider());
-            // Requires WebApi package(s)
-            // Install-Package Microsoft.AspNet.WebApi.WebHost
+
             var f = GlobalConfiguration.Configuration.Formatters.OfType<JsonMediaTypeFormatter>().First();
             f.SerializerSettings.Converters.Add(new IsoDateTimeConverter());
             var json = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
@@ -140,8 +151,7 @@ namespace TubsWeb
             // WebApiConfig needs to happen before RouteConfig
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
-            
+            BundleConfig.RegisterBundles(BundleTable.Bundles);            
 
             // AutoMapper is used to convert entities to viewmodels (and vice versa)
             MappingConfig.Configure();

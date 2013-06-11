@@ -1,0 +1,188 @@
+﻿@model TubsWeb.ViewModels.LongLineSetViewModel
+@using Newtonsoft.Json
+
+@* TODO Put current breadcrumb title into ViewBag in the controller *@
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber as string),
+        Tuple.Create(Url.Action("List", "SetHaul", new { tripId = Model.TripId }), "Sets"),
+        Tuple.Create("#", String.Format("Adding Set {0}", Model.SetNumber))
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@{
+    // Set up some navigation URLs
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = Model.TripId, dayNumber = Model.NextSet, action = Model.HasNext ? "Edit" : "Add" });
+    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = Model.TripId, dayNumber = Model.PreviousSet, action = "Edit" });    
+}
+
+@* 
+ * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+ * when the first 'dirtying' change occurs.
+ *@
+<p>
+    @if (Model.HasPrevious)
+    {
+    <a href='@previousPage' class="btn btn-info">
+        <i class="icon-backward icon-white"></i>&nbsp;Previous Set
+    </a>
+    }
+    <button id="saveButton" type="submit" class="btn btn-primary" >Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" >
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
+    @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+    <a href='@nextPage' id="nextSetButton" class="btn btn-info" >
+        Next Set&nbsp;<i class="icon-forward icon-white"></i>
+    </a>
+</p>
+
+<br />
+
+<div class="tabbable tabs-top">
+    <ul id="formSections" class="nav nav-tabs">
+        <li class="active"><a href="#specs" data-toggle="tab">Set Specifications</a></li>
+        <li><a href="#bait" data-toggle="tab">Target Species / Bait Used</a></li>
+        @* This may move somewhere else in the list... *@
+        <li><a href="#unusual" data-toggle="tab">Unusual Details</a></li>
+        <li><a href="#log" data-toggle="tab">Set Log / Haul Log</a></li>
+        <li><a href="#comments" data-toggle="tab">Comments</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="specs">
+            @{ Html.RenderPartial("_SpecificationEditor"); }        
+        </div>
+        <div class="tab-pane" id="bait">
+            @{ Html.RenderPartial("_BaitEditor"); }
+        </div>
+        <div class="tab-pane" id="unusual">
+            @{ Html.RenderPartial("_DetailsEditor"); }
+        </div>
+        <div class="tab-pane" id="log">
+            @{ Html.RenderPartial("_LogEditor"); }
+        </div>
+        <div class="tab-pane" id="comments">
+            @{ Html.RenderPartial("_CommentsEditor"); }
+        </div>
+    </div>
+</div>
+
+<ul id="tlyPageGuide" data-tourtitle="Detailed LL-2/3 entry instructions">
+    <li class="tlypageguide_top" data-tourtarget="#saveButton">
+        <div>
+            The save button will only be active if there are unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#reloadButton">
+        <div>
+            Use the reload button to discard any unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#nextSetButton">
+        <div>
+            Use this button to move to the next set.  If the LL-2/3 for
+            the next set has not yet been entered, this will start a new entry form.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#ShipsDate">
+        <div>
+            Enter the date portion of the start of set (in ship's time).  Entry must be of
+            the form dd/mm/yy.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#ShipsTime">
+        <div>
+            Enter the time portion of the start of set (in ship's time).  Entry must be of
+            the form HHmm.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#UtcDate">
+        <div>
+            Enter the date portion of the start of set (in UTC time).  Entry must be of
+            the form dd/mm/yy.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#UtcTime">
+        <div>
+            Enter the time portion of the start of set (in UTC time).  Entry must be of
+            the form HHmm.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget=".addItem:first">
+        <div>
+            Click here to add another row.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget=".removeItem:first">
+        <div>
+            Click here to remove this row.  The row won't be deleted until
+            you click on the 'Save' button.  Until then, you can undo the delete
+            by using the 'Reload' button.
+        </div>
+    </li>
+    <!-- TODO:  Figure out how to add pageguide to Knockout bound items -->
+    @* We can probably put some entities in here and add the appropriate class after the list has one item...*@
+</ul>
+
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
+
+@section AdditionalScripts {
+    <script src="~/Scripts/knockout.viewmodel.2.0.2.min.js"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <script>
+        /*
+         * Tab advance functionality from StackOverflow
+         * http://stackoverflow.com/questions/9252127/how-to-change-twitter-bootstrap-tab-when-button-is-pressed
+         */
+        function nextTab() {
+            $('#formSections li.active').next().find('a[data-toggle="tab"]').click();
+        }
+
+        var customMapping = {
+            extend: {
+                "{root}.Comments": function (Comments) {
+                    Comments.Remove = function (comment) {
+                        alert('Yo Dawg!');
+                        if (comment && comment.Id()) { Comments.destroy(comment); }
+                        else { Comments.remove(comment) };
+                    }
+                }
+            }
+        };
+
+        $(document).ready(function () {
+            // Add some click handlers
+            $('.nextTabButton').on("click", function () {
+                nextTab();
+            });
+
+            $("#addCommentButton").on("click", function () {
+                viewModel.Comments.push({});
+            });
+
+            $(".comment-row").on("click", ".removeItem", function () {
+                viewModel.Comments.Remove(ko.dataFor(this));
+            });
+
+            $(".comment-row")
+
+            var viewModel = ko.viewmodel.fromModel(@modelAsJson , customMapping);
+            viewModel.Comments = viewModel.Comments || ko.observableArray([]);
+            ko.applyBindings(viewModel);
+
+            // PageGuide initialization
+            tl.pg.init();
+        });
+    </script> 
+}
+

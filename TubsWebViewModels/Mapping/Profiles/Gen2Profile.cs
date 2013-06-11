@@ -137,7 +137,7 @@ namespace TubsWeb.Mapping.Profiles
 
             CreateMap<DAL.Entities.GearInteraction, Gen2GearViewModel>()
                 .ForMember(d => d.VesselActivity, o => o.MapFrom(s => s.InteractionId))
-                .ForMember(d => d.VesselActivityDescription, o => o.MapFrom(s => s.InteractionDescription))
+                .ForMember(d => d.VesselActivityDescription, o => o.MapFrom(s => s.InteractionOther)) // Should fix problem
                 .ForMember(d => d.StartOfInteraction, o => o.MapFrom(s => s.Details.Where(d => d.StartOrEnd == "START")))
                 .ForMember(d => d.EndOfInteraction, o => o.MapFrom(s => s.Details.Where(d => d.StartOrEnd == "END")))
                 ;

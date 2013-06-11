@@ -19,6 +19,7 @@ namespace TubsWeb
         {
             Mapper.Initialize(cfg =>
             {
+                cfg.AddProfile<SeaDayProfile>();
                 cfg.AddProfile<SetProfile>();
                 cfg.AddProfile<LongLineSetProfile>();
                 cfg.AddProfile<TripInfoProfile>();
@@ -32,7 +33,8 @@ namespace TubsWeb
                 cfg.AddProfile<Gen2Profile>();
                 cfg.AddProfile<Gen3Profile>();
                 cfg.AddProfile<Gen5Profile>();
-                cfg.AddProfile<PageCountProfile>();                
+                cfg.AddProfile<PageCountProfile>();
+                cfg.AddProfile<TripSummaryProfile>();
                 // Trim all strings.  If the trimmed string is empty, return a null
                 Mapper.CreateMap<string, string>().ConvertUsing(s =>
                 {

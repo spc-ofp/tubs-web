@@ -92,7 +92,15 @@ namespace TubsWeb.Mapping.Profiles
                 {
                     if (null != s)
                     {
-                        d.MaxSets = ((Spc.Ofp.Tubs.DAL.Entities.LongLineTrip)s.Trip).FishingSets.Count;
+                        // NUnit was complaining about this, so rather than one-line it, be a little more
+                        // verbose with some null checks.
+                        //d.MaxSets = ((Spc.Ofp.Tubs.DAL.Entities.LongLineTrip)s.Trip).FishingSets.Count;
+                        var trip = s.Trip as Spc.Ofp.Tubs.DAL.Entities.LongLineTrip;
+                        if (null != trip)
+                        {
+                            d.MaxSets = trip.FishingSets.Count;
+                        }
+                        
                     }
                 })
                 ;

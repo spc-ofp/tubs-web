@@ -11,7 +11,7 @@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        Tuple.Create(Url.Action("Index", "Trip"), "Trips"),
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.TripNumber ?? "This Trip"),
         Tuple.Create(Url.Action("Index", "Gen1", new { tripId = ViewBag.TripId }), "GEN-1 Events"),
         Tuple.Create("#", "Edit GEN-1 Transfers")
