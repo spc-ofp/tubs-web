@@ -276,6 +276,7 @@
     <Compile Include="Controllers\SamplingController.cs" />
     <Compile Include="Controllers\SetHaulController.cs" />
     <Compile Include="Controllers\TripInfoController.cs" />
+    <Compile Include="Controllers\UnitTestController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Controllers\VesselDetailsController.cs" />
     <Compile Include="Controllers\WellContentController.cs" />
@@ -626,6 +627,7 @@
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\pageguide.css" />
     <Content Include="Content\pageguide.min.css" />
+    <Content Include="Content\qunit-1.11.0.css" />
     <Content Include="Content\rateit.css" />
     <Content Include="Content\scojs.css" />
     <Content Include="Content\star.gif" />
@@ -1019,6 +1021,7 @@
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\pageguide.js" />
     <Content Include="Scripts\pageguide.min.js" />
+    <Content Include="Scripts\qunit-1.11.0.js" />
     <Content Include="Scripts\sco.ajax.js" />
     <Content Include="Scripts\sco.collapse.js" />
     <Content Include="Scripts\sco.confirm.js" />
@@ -1124,6 +1127,7 @@
     <Content Include="Views\SetHaul\_LogEditor.cshtml" />
     <Content Include="Views\SetHaul\_Editor.cshtml" />
     <Content Include="Views\SetHaul\_CommentsEditor.cshtml" />
+    <Content Include="Views\UnitTest\SetHaul.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

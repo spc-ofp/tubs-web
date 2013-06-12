@@ -1,0 +1,200 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@section AdditionalCss {
+    <link rel="stylesheet" href="~/Content/qunit-1.11.0.css" />
+}
+
+@section AdditionalScripts {
+    @* QUnit is kinda required here *@
+    <script src="~/Scripts/qunit-1.11.0.js"></script>
+    @* viewmodel plugin here until it's added to the basic bundle *@
+    <script src="~/Scripts/knockout.viewmodel.2.0.2.min.js"></script>
+    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.sethaul.js"></script>
+
+    @* Inline data here *@
+    <script>
+        // Not exactly what comes from the server
+        // Some values have been changed to protect
+        // sensitive data
+        var setHaulModelAsJson = {
+            "BooleanValues": [
+              null,
+              "YES",
+              "NO"
+            ],
+            "VelocityUnits": [
+              "",
+              "m/s",
+              "kts"
+            ],
+            "TripNumber": "DJB / 11-02",
+            "HasNext": true,
+            "HasPrevious": true,
+            "VersionNumber": 2007,
+            "TripId": 4309,
+            "SetId": 1004,
+            "SetNumber": 2,
+            "MaxSets": 10,
+            "NextSet": 3,
+            "PreviousSet": 1,
+            "HooksPerBasket": 30,
+            "TotalBaskets": 79,
+            "TotalHooks": 2370,
+            "FloatlineLength": 12,
+            "LineSettingSpeed": 5.0,
+            "LineSettingSpeedUnit": "MetersPerSecond",
+            "BranchlineSetInterval": 6,
+            "DistanceBetweenBranchlines": 30.0,
+            "BranchlineLength": 14.0,
+            "VesselSpeed": 6.0,
+            "SharkLineCount": null,
+            "SharkLineLength": null,
+            "WasTdrDeployed": "NO",
+            "IsTargetingTuna": "YES",
+            "IsTargetingSwordfish": "NO",
+            "IsTargetingShark": "NO",
+            "LightStickCount": null,
+            "TotalObservedBaskets": 79,
+            "HasGen3Event": "N/A",
+            "DiaryPage": null,
+            "ShipsDate": "2011-04-19T00:00:00",
+            "ShipsTime": null,
+            "UtcDate": "2011-04-18T00:00:00",
+            "UtcTime": "1806",
+            "UnusualDetails": "TEMPERATURE EDM 27C CAP AU 300.\r\n2 PETITES HIRONDELLES A CUL  DU BATEAU",
+            "StartEndPositionsObserved": "YES",
+            "StartOfSet": {
+                "Id": 11524,
+                "LocalTime": "0507",
+                "Latitude": "1840.273S",
+                "Longitude": "15925.237E",
+                "_destroy": false,
+                "NeedsFocus": false
+            },
+            "EndOfSet": {
+                "Id": 11525,
+                "LocalTime": "0918",
+                "Latitude": "1844.051S",
+                "Longitude": "15954.224E",
+                "_destroy": false,
+                "NeedsFocus": false
+            },
+            "StartOfHaul": {
+                "Id": 11526,
+                "LocalTime": "1256",
+                "Latitude": "1844.925S",
+                "Longitude": "15935.132E",
+                "_destroy": false,
+                "NeedsFocus": false
+            },
+            "EndOfHaul": {
+                "Id": 11536,
+                "LocalTime": "2306",
+                "Latitude": "1853.417S",
+                "Longitude": "15951.911E",
+                "_destroy": false,
+                "NeedsFocus": false
+            },
+            "IntermediateHaulPositions": [
+              {
+                  "Id": 11527,
+                  "LocalTime": "1400",
+                  "Latitude": "1847.841S",
+                  "Longitude": "15939.489E",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              },
+              {
+                  "Id": 11528,
+                  "LocalTime": "1500",
+                  "Latitude": "1848.158S",
+                  "Longitude": "15940.277E",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              },
+              {
+                  "Id": 11529,
+                  "LocalTime": "1600",
+                  "Latitude": "1849.296S",
+                  "Longitude": "15943.145E",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              },
+              {
+                  "Id": 11535,
+                  "LocalTime": "2200",
+                  "Latitude": "1852.982S",
+                  "Longitude": "15951.751E",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              }
+            ],
+            "Comments": [
+            ]
+        };
+    </script>
+
+    @* Unit tests here *@
+    <script>
+        /// <reference path="../qunit-1.11.0.js" />
+        /// 
+        'use strict';
+
+        module("Longline SetHaul");
+        test("Create viewmodel", function () {
+            var viewModel = new tubs.SetHaul(setHaulModelAsJson);
+            ok(viewModel, "ViewModel not null");
+            equal(viewModel.TripNumber(), "DJB / 11-02", "TripNumber correct");
+            ok(viewModel.IntermediateHaulPositions().length > 0, "ViewModel has haul positions");
+            equal(viewModel.Comments().length, 0, "ViewModel has no comments");
+            equal(viewModel.ShipsDate.formattedDate(), "19/04/11", "ShipsDate formatted correctly");
+            viewModel = null;
+        });
+        test("Modify haul positions", function () {
+            var viewModel = new tubs.SetHaul(setHaulModelAsJson);
+            ok(!viewModel.isDirty(), "ViewModel not dirty");
+            var first_position = viewModel.IntermediateHaulPositions()[0];
+            ok(first_position, "First position not null");
+            equal(first_position._destroy(), false, "First position not marked for deletion");
+            equal(viewModel.IntermediateHaulPositions().length, 4, "Correct number of positions");
+            viewModel.IntermediateHaulPositions.Remove(first_position);
+            equal(viewModel.IntermediateHaulPositions().length, 4, "Still correct number of positions");
+            // It looks like Knockout itself removes the observability of this property...
+            equal(first_position._destroy, true, "First position marked for deletion");
+            ok(viewModel.isDirty(), "ViewModel is dirty");
+            viewModel = null;
+        });
+        test("Dirty flag", function () {
+            var viewmodel = new tubs.SetHaul(setHaulModelAsJson);
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.IsTargetingShark("YES");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ko.viewmodel.updateFromModel(viewmodel, setHaulModelAsJson);
+            equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
+            viewmodel = null;
+        });
+        test("Dirty flag - children", function () {
+            var viewmodel = new tubs.SetHaul(setHaulModelAsJson);
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var first_position = viewmodel.IntermediateHaulPositions()[0];
+            // LocalTime = 1400
+            first_position.LocalTime("1401");
+            ok(viewmodel.isDirty(), "viewmodel is dirty after change to position member");
+            viewmodel = null;
+        });
+        test("Async commands", function () {
+            var viewmodel = new tubs.SetHaul(setHaulModelAsJson);
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.VesselSpeed(6.1);
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(),  "save enabled on dirty viewmodel");
+            viewmodel = null;
+        });
+    </script>
+}

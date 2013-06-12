@@ -31,59 +31,30 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL;
     using TubsWeb.Models;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class HomeController : SuperController
     {
-        private static string CountByYear = 
-        @"select 
-            COUNT(datepart(yy, dep_date)) as year_count
-            ,DATEPART(yy, dep_date) as trip_year 
-          from 
-            obsv.trip 
-          group by DATEPART(yy, dep_date) 
-          order by DATEPART(yy, dep_date) ASC";
-
-        /// <summary>
-        /// TripsByYear returns a string representation
-        /// of the count of trips by year.
-        /// </summary>
-        /// <returns></returns>
-        private string TripsByYear()
-        {
-            var tripsByYear = TubsDataService.Execute(CountByYear);
-
-            var years =
-                from object[] row in tripsByYear
-                select (int)row[1];
-
-            int minYear = years.Min();
-            int maxYear = years.Max();
-
-            StringBuilder dataBuilder = new StringBuilder(32);
-
-            foreach (int year in Enumerable.Range(minYear, (maxYear - minYear) + 1))
-            {
-                int tripCount = (
-                    from object[] row in tripsByYear
-                    where (int)row[1] == year
-                    select (int)row[0]).FirstOrDefault();
-
-                if (dataBuilder.Length > 0)
-                {
-                    dataBuilder.Append(",");
-                }
-                dataBuilder.Append(tripCount);
-            }
-            
-            return dataBuilder.ToString();
-        }
         
+        /// <summary>
+        /// TripsEnteredSince returns the number of trips entered/registered by the
+        /// currently logged in user
+        /// </summary>
+        /// <param name="daysBack"></param>
+        /// <returns></returns>
         private int TripsEnteredSince(int daysBack)
         {
-            string query = @"select count(*) from obsv.trip where DATEADD(dd, ?, GETDATE()) < entered_dtime";
+            string query = @"select count(1) from obsv.trip where DATEADD(dd, ?, GETDATE()) < entered_dtime";
             var results = TubsDataService.Execute(query, daysBack * -1);
             return (int)results[0];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private int TripsInLastWeekFor(string user)
         {
             // Chomp the domain off user
@@ -96,17 +67,20 @@ namespace TubsWeb.Controllers
             // Prefix with a wildcard
             user = "%" + user.ToUpper();
 
-            string query = @"select count(*) from obsv.trip where DATEADD(dd, -7, GETDATE()) < entered_dtime AND UPPER(entered_by) like ?";
+            string query = @"select count(1) from obsv.trip where DATEADD(dd, -7, GETDATE()) < entered_dtime AND UPPER(entered_by) like ?";
             var results = TubsDataService.Execute(query, user);
             return (int)results[0];            
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             ViewBag.Message = "Home Page";
             ViewBag.TripsEnteredSince = TripsEnteredSince(30);
             ViewBag.TripsInLastWeek = TripsInLastWeekFor(User.Identity.Name);
-            //ViewBag.TripsByYear = TripsByYear();
             return View();
         }
 
@@ -155,11 +129,19 @@ namespace TubsWeb.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Action for displaying the confidentiality disclaimer.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Confidentiality()
         {
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Reports()
         {
             // Not exactly this, but similar
