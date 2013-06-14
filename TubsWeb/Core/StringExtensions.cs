@@ -64,7 +64,7 @@ namespace TubsWeb.Core
             if (stringValue.IndexOf('.') > -1)
                 return stringValue;
 
-            return stringValue.Substring(0, 2) + "." + stringValue.Substring(2);
+            return stringValue.Substring(0, 4) + "." + stringValue.Substring(4);
 
         }
 
@@ -86,7 +86,7 @@ namespace TubsWeb.Core
             if (stringValue.IndexOf('.') > -1)
                 return stringValue;
 
-            return stringValue.Substring(0, 3) + "." + stringValue.Substring(3);
+            return stringValue.Substring(0, 5) + "." + stringValue.Substring(5);
 
         }
     }

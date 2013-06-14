@@ -1,5 +1,6 @@
 ﻿@model TubsWeb.ViewModels.PageCountViewModel
 @using Newtonsoft.Json
+@using System.Web.Optimization
 
 @* For now, create this in the View. *@
 @{
@@ -58,8 +59,8 @@
 *@
 
 
-
 @section AdditionalScripts {
+    @Scripts.Render("~/bundles/knockout")
     <!-- Ajax data layer -->
     <script src="~/Scripts/App/errorlogger.js"></script>
     <script src="~/Scripts/App/datacontext.js"></script>
@@ -69,9 +70,9 @@
 
     <script>
         $(document).ready(function () {
-            var viewModel = new tubs.PageCountViewModel(@modelAsJson);
-            viewModel.clearDirtyFlag();
+            var viewModel = new tubs.PageCountViewModel(@modelAsJson);            
             ko.applyBindings(viewModel);
+            viewModel.clearDirtyFlag();
 
             $(".page-count-entries").on("click", ".removeItem", function() {
                 viewModel.removePageCount(ko.dataFor(this));

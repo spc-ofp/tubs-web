@@ -33,6 +33,7 @@ namespace TubsWeb.ViewModels
         public LongLineSetViewModel()
         {
             this.IntermediateHaulPositions = new List<Position>(16);
+            this.Baits = new List<Bait>(5);
         }
 
         public void SetNavDetails(int setNumber, int maxSets)
@@ -46,11 +47,13 @@ namespace TubsWeb.ViewModels
         // Use Knockout to help with common codes
         public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
         public IList<string> VelocityUnits = new List<string> { String.Empty, "m/s", "kts" };
-            // UX state
+        
+        // UX state
         public string TripNumber { get; set; }
         public bool HasNext { get; set; }
         public bool HasPrevious { get; set; }
         public int VersionNumber { get; set; }
+        public string ActionName { get; set; }
 
         public int TripId { get; set; }
         public int SetId { get; set; }
@@ -78,9 +81,11 @@ namespace TubsWeb.ViewModels
         public int? SharkLineLength { get; set; }
         public string WasTdrDeployed { get; set; }
 
-        public string IsTargetingTuna { get; set; }
-        public string IsTargetingSwordfish { get; set; }
-        public string IsTargetingShark { get; set; }
+        public bool? IsTargetingTuna { get; set; }
+        public bool? IsTargetingSwordfish { get; set; }
+        public bool? IsTargetingShark { get; set; }
+
+        public List<Bait> Baits { get; set; }
 
         public int? LightStickCount { get; set; }
 
@@ -175,8 +180,27 @@ namespace TubsWeb.ViewModels
             }
         }
 
-        // TODO Bait looks like a candidate for a separate table
-        // with a child entity
+        // Bait data is stored in the set table using columns with numeric suffixes
+        // There should really be an l_bait table that links back to l_set_id, but
+        // I'm not going to go there -- my replacement can deal with it
+        public class Bait
+        {
+            public string Species { get; set; }
+            public int? Weight { get; set; }
+            public string Hooks { get; set; }
+
+            [JsonIgnore]
+            public bool Show
+            {
+                get
+                {
+                    return !String.IsNullOrEmpty(this.Species) ||
+                           this.Weight.HasValue ||
+                           !String.IsNullOrEmpty(this.Hooks);
+                           
+                }
+            }
+        }
 
         public class Position
         {

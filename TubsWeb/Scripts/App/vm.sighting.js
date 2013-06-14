@@ -18,7 +18,6 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
 
 tubs.sightingMapping = {
     'Sightings': {
@@ -29,6 +28,7 @@ tubs.sightingMapping = {
 };
 
 tubs.sighting = function (eventData) {
+    'use strict';
     var self = this;
     self.Id = ko.observable(eventData.Id || 0);
     self.DateOnly = ko.observable(eventData.DateOnly || null).extend({ isoDate: 'DD/MM/YY' });
@@ -46,7 +46,7 @@ tubs.sighting = function (eventData) {
     self.PhotoFrame = ko.observable(eventData.PhotoFrame || '');
     self.Comments = ko.observable(eventData.Comments || '');
     self.NeedsFocus = ko.observable(eventData.NeedsFocus || false);
-    self._destroy = ko.observable(eventData._destroy || false);
+    self._destroy = ko.observable(eventData._destroy || false); //ignore jslint
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.DateOnly,
@@ -86,7 +86,7 @@ tubs.SightingViewModel = function (data) {
         // has changed
         if (self.dirtyFlag().isDirty()) { return true; }
         var hasDirtyChild = false;
-        $.each(self.Sightings(), function (i, evt) {
+        $.each(self.Sightings(), function (i, evt) { //ignore jslint
             if (evt.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -95,7 +95,7 @@ tubs.SightingViewModel = function (data) {
     });
 
     self.clearDirtyFlag = function () {
-        $.each(self.Sightings(), function (index, value) {
+        $.each(self.Sightings(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
     };
@@ -109,7 +109,7 @@ tubs.SightingViewModel = function (data) {
     self.removeEvent = function (evt) {
         if (evt && evt.Id()) { self.Sightings.destroy(evt); }
         else { self.Sightings.remove(evt); }
-    }
+    };
 
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {

@@ -1,0 +1,203 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.crew.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "TripId": 103,
+            "TripNumber": "DJB / 10-01",
+            "Captain": {
+                "Id": 17,
+                "Job": 37,
+                "Name": "James T. Kirk",
+                "Years": 7,
+                "Nationality": "US",
+                "Comments": "Beware the corbomite.",
+                "_destroy": false
+            },
+            "Navigator": {
+                "Id": 19,
+                "Job": 38,
+                "Name": "Hikaru Sulu",
+                "Years": null,
+                "Nationality": null,
+                "Comments": "Oh My!",
+                "_destroy": false
+            },
+            "Mate": {
+                "Id": 20,
+                "Job": 39,
+                "Name": "Spock",
+                "Years": 10,
+                "Nationality": null,
+                "Comments": null,
+                "_destroy": false
+            },
+            "ChiefEngineer": {
+                "Id": 18,
+                "Job": 40,
+                "Name": "Montgomery Scott",
+                "Years": 5,
+                "Nationality": null,
+                "Comments": "She canna take much more...",
+                "_destroy": false
+            },
+            "AssistantEngineer": {
+                "Id": 0,
+                "Job": 41,
+                "Name": null,
+                "Years": null,
+                "Nationality": null,
+                "Comments": null,
+                "_destroy": false
+            },
+            "DeckBoss": {
+                "Id": 0,
+                "Job": 42,
+                "Name": null,
+                "Years": null,
+                "Nationality": null,
+                "Comments": null,
+                "_destroy": false
+            },
+            "Cook": {
+                "Id": 21,
+                "Job": 43,
+                "Name": "Bender B. Rodriguez",
+                "Years": null,
+                "Nationality": null,
+                "Comments": "Salt and capers.  Tasty!",
+                "_destroy": false
+            },
+            "HelicopterPilot": {
+                "Id": 22,
+                "Job": 44,
+                "Name": "Turanga Leela",
+                "Years": 3,
+                "Nationality": null,
+                "Comments": "LIC # 1BDI",
+                "_destroy": false
+            },
+            "SkiffMan": {
+                "Id": 23,
+                "Job": 45,
+                "Name": "Phillip J. Fry",
+                "Years": null,
+                "Nationality": null,
+                "Comments": "Shut up and take my money",
+                "_destroy": false
+            },
+            "WinchMan": {
+                "Id": 0,
+                "Job": 46,
+                "Name": null,
+                "Years": null,
+                "Nationality": null,
+                "Comments": null,
+                "_destroy": false
+            },
+            "Hands": [
+              {
+                  "Id": 49,
+                  "Job": 107,
+                  "Name": "John A. Zoidberg",
+                  "Years": null,
+                  "Nationality": "DC",
+                  "Comments": "Need a crewmember?  Why not Zoidberg?",
+                  "_destroy": false
+              },
+              {
+                  "Id": 36965,
+                  "Job": 107,
+                  "Name": "Flexo",
+                  "Years": 1,
+                  "Nationality": "MX",
+                  "Comments": "I'm the Cook's evil twin",
+                  "_destroy": false
+              },
+              {
+                  "Id": 36977,
+                  "Job": 107,
+                  "Name": "Joe Blow",
+                  "Years": 1,
+                  "Nationality": null,
+                  "Comments": null,
+                  "_destroy": false
+              }
+            ]
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("Purse Seine Crew", {
+            setup: function () {
+                viewmodel = new tubs.psCrewViewModel(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-01", "TripNumber correct");
+            ok(viewmodel.Captain, "Captain sub-entity not null");
+            ok(viewmodel.Navigator, "Navigator sub-entity not null");
+            ok(viewmodel.DeckBoss, "DeckBoss sub-entity not null");
+            equal(viewmodel.Hands().length, 3, "Correct number of hands");
+        });
+        test("Dirty flag", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.WinchMan.Comments("Sweet gorilla of Manila!");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            equal(viewmodel.isDirty(), false, "viewmodel is clean after reset");
+            // Uncomment when this moves to knockout.viewmodel plugin
+            //ko.viewmodel.updateFromModel(viewmodel, modelAsJson);
+            //equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
+        });
+        test("Async commands", function () {
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.Mate.Comments("Live long and prosper");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+        test("Change deckhand property", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var zoidberg = viewmodel.Hands()[0];
+            ok(zoidberg, "Generic deck hand mapped correctly");
+            zoidberg.Years(5);
+            ok(viewmodel.isDirty(), "viewmodel is dirty after deck hand change");
+        });
+        test("Add/remove new deckhand", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.addHand();
+            ok(viewmodel.isDirty(), "viewmodel is dirty after creating hand");
+            equal(viewmodel.Hands().length, 4, "Correct number of hands");
+            var hand = viewmodel.Hands().slice(-1)[0];
+            ok(hand, "New deckhand not null");
+            equal(hand.Id(), 0, "New deckhand has no primary key");
+            viewmodel.removeHand(hand);
+            equal(viewmodel.Hands().length, 3, "Correct number of hands");
+        });
+        test("Remove existing deckhand", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var zoidberg = viewmodel.Hands()[0];
+            viewmodel.removeHand(zoidberg);
+            ok(viewmodel.isDirty(), "viewmodel is dirty after removing hand");
+            equal(viewmodel.Hands().length, 3, "Correct number of hands");
+        });
+    </script>
+}

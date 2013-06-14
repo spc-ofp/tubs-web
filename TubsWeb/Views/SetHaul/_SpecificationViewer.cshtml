@@ -1,0 +1,89 @@
+﻿@model TubsWeb.ViewModels.LongLineSetViewModel
+<fieldset>
+    <legend>Start Of Set</legend>
+    <div class="row">
+        <div class="span3">
+            <label><strong>Ship's Date</strong></label>
+            <div>@Html.DisplayFor(m => Model.ShipsDate, new { format = "d" })</div>
+        </div>
+        <div class="span3">
+            <label><strong>Ship's Time</strong></label>
+            <div>@Model.ShipsTime</div>
+        </div>
+        <div class="span3">
+            <label><strong>UTC Date</strong></label>
+            <div>@Html.DisplayFor(m => Model.UtcDate, new { format = "d" })</div>
+        </div>
+        <div class="span3">
+            <label><strong>UTC Time</strong></label>
+            <div>@Model.UtcTime</div>
+        </div>
+    </div>
+</fieldset>
+<hr />
+<fieldset>
+    <legend>Longline Set Specifications</legend>
+    <div class="row">
+        <div class="span3">
+            <ul class="unstyled">
+                <li>
+                    <label><strong>Hooks Per Basket</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.HooksPerBasket)</div>
+                </li>
+                <li>
+                    <label><strong>Total No. Of Baskets</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.TotalBaskets)</div>
+                </li>
+                <li>
+                    <label><strong>Total No. Of Hooks</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.TotalHooks)</div>
+                </li>
+                <li>
+                    <label><strong>Length of Floatline</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.FloatlineLength) m</div>
+                </li>
+            </ul>
+        </div>
+        <div class="span3">
+            <ul class="unstyled">
+                <li>
+                    @* TODO:  Need a friendlier display for LineSettingSpeedUnit *@
+                    <label><strong>Line Setting Speed</strong></label>
+                    <div>@Html.DisplayFor(m => m.LineSettingSpeed, new { format = "F1" }) @Model.LineSettingSpeedUnit</div>
+                </li>
+                <li>
+                    <label><strong>Branchline Set Interval</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.BranchlineSetInterval) s</div>
+                </li>
+                <li>
+                    <label><strong>Between Branchlines</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.DistanceBetweenBranchlines, new { format = "F1" }) m</div>
+                </li>
+                <li>
+                    <label><strong>Length of Branchlines</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.BranchlineLength, new { format = "F1" }) m</div>
+                </li>
+            </ul>
+        </div>
+        <div class="span3">
+            <ul class="unstyled">
+                <li>
+                    <label><strong>Vessel Speed</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.VesselSpeed, new { format = "F1" }) kts</div>
+                </li>
+                <li>
+                    <label><strong>No. Of Shark Lines</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.SharkLineCount)</div>
+                </li>
+                <li>
+                    <label><strong>Length of Shark Lines (m)</strong></label>                        
+                    <div>@Html.DisplayFor(m => m.SharkLineLength)</div>
+                </li>
+                <li>
+                    <label><strong>Were TDRs Deployed</strong></label>
+                    <div>@Model.WasTdrDeployed</div>                
+                </li>
+            </ul>        
+        </div>             
+    </div>  
+</fieldset>

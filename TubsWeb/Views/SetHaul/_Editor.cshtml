@@ -1,5 +1,6 @@
 ﻿@model TubsWeb.ViewModels.LongLineSetViewModel
 @using Newtonsoft.Json
+@using System.Web.Optimization
 
 @* TODO Put current breadcrumb title into ViewBag in the controller *@
 @* For now, create this in the View. *@
@@ -17,8 +18,8 @@
 
 @{
     // Set up some navigation URLs
-    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = Model.TripId, dayNumber = Model.NextSet, action = Model.HasNext ? "Edit" : "Add" });
-    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = Model.TripId, dayNumber = Model.PreviousSet, action = "Edit" });    
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = Model.TripId, setNumber = Model.NextSet, action = Model.HasNext ? "Edit" : "Add" });
+    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = Model.TripId, setNumber = Model.PreviousSet, action = "Edit" });    
 }
 
 @* 
@@ -28,20 +29,21 @@
 <p>
     @if (Model.HasPrevious)
     {
-    <a href='@previousPage' class="btn btn-info">
-        <i class="icon-backward icon-white"></i>&nbsp;Previous Set
-    </a>
+    <a href='@previousPage' class="btn btn-info"><i class="icon-backward icon-white"></i>&nbsp;Previous Set</a>
     }
-    <button id="saveButton" type="submit" class="btn btn-primary" >Save</button>
-    <button id="reloadButton" type="button" class="btn btn-warning" >
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
         <i class="icon-refresh icon-white"></i>&nbsp;Reload
     </button>
     <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
     @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
     @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-    <a href='@nextPage' id="nextSetButton" class="btn btn-info" >
+    @if (Model.HasNext)
+    {
+    <a href='@nextPage' id="nextSetButton" class="btn btn-info" data-bind="visible: $root.showNextItem()">
         Next Set&nbsp;<i class="icon-forward icon-white"></i>
     </a>
+    }
 </p>
 
 <br />
@@ -50,7 +52,6 @@
     <ul id="formSections" class="nav nav-tabs">
         <li class="active"><a href="#specs" data-toggle="tab">Set Specifications</a></li>
         <li><a href="#bait" data-toggle="tab">Target Species / Bait Used</a></li>
-        @* This may move somewhere else in the list... *@
         <li><a href="#unusual" data-toggle="tab">Unusual Details</a></li>
         <li><a href="#log" data-toggle="tab">Set Log / Haul Log</a></li>
         <li><a href="#comments" data-toggle="tab">Comments</a></li>
@@ -137,7 +138,10 @@
 
 
 @section AdditionalScripts {
-    <script src="~/Scripts/knockout.viewmodel.2.0.2.min.js"></script>
+    @Scripts.Render("~/bundles/knockout")
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.sethaul.js"></script>
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
     <script>
         /*
@@ -147,18 +151,6 @@
         function nextTab() {
             $('#formSections li.active').next().find('a[data-toggle="tab"]').click();
         }
-
-        var customMapping = {
-            extend: {
-                "{root}.Comments": function (Comments) {
-                    Comments.Remove = function (comment) {
-                        alert('Yo Dawg!');
-                        if (comment && comment.Id()) { Comments.destroy(comment); }
-                        else { Comments.remove(comment) };
-                    }
-                }
-            }
-        };
 
         $(document).ready(function () {
             // Add some click handlers
@@ -176,9 +168,13 @@
 
             $(".comment-row")
 
-            var viewModel = ko.viewmodel.fromModel(@modelAsJson , customMapping);
-            viewModel.Comments = viewModel.Comments || ko.observableArray([]);
+            var viewModel = new tubs.SetHaul(@modelAsJson);
             ko.applyBindings(viewModel);
+            // This is the trick:  
+            // applyBindings will coerce certain values from null to something else
+            // If the dirty flag is cleared _after_ the bindings are set, then this is the
+            // "normal" state for the viewmodel
+            viewModel.clearDirtyFlag();
 
             // PageGuide initialization
             tl.pg.init();

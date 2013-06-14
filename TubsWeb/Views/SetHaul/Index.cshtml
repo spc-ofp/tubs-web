@@ -1,32 +1,17 @@
 ﻿@model TubsWeb.ViewModels.LongLineSetViewModel
 
 @{
-    // Switch to full width layout
-    ViewBag.UseFluid = true;
+    string titleSuffix = String.Format("Set {0} of {1}", Model.SetNumber, Model.MaxSets);
+    ViewBag.Title = String.Format("{0}: {1}", Model.TripNumber, titleSuffix);
 }
-
-@section Sidebar {
-<div class="span3 bs-docs-sidebar">
-    <ul class="nav nav-list bs-docs-sidenav">
-        <li><a href="#startOfSet"><i class="icon-chevron-right"></i> Start Of Set</a></li>
-        <li><a href="#setSpecifications"><i class="icon-chevron-right"></i> Set Specifications</a></li>
-        <li><a href="#targetSpecies"><i class="icon-chevron-right"></i> Target Species And Bait</a></li>
-        <li><a href="#details"><i class="icon-chevron-right"></i> Unusual Set Details</a></li>
-        <li><a href="#setHaulLog"><i class="icon-chevron-right"></i> Set/Haul Log</a></li>
-        <li><a href="#comments"><i class="icon-chevron-right"></i> Comments</a></li>
-        <li><a href="#other"><i class="icon-chevron-right"></i> Other Information</a></li>
-    </ul>
-</div>
-}
-
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber as string),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
         Tuple.Create(Url.Action("List", "SetHaul", new { tripId = Model.TripId }), "Sets"),
-        Tuple.Create("#", String.Format("Set {0} of {1}", Model.SetNumber, Model.MaxSets))
+        Tuple.Create("#", titleSuffix)
     };
 }
 
@@ -48,239 +33,30 @@
     }
 </ul>
 
-<fieldset id="startOfSet">
-    <legend>Start Of Set</legend>
-    <div class="row-fluid">
-        <div class="span3">
-            <label><strong>Ship's Date:</strong></label>
-            <div>@Html.DisplayFor(m => Model.ShipsDate, new { format = "d" })</div>
+<div class="tabbable tabs-top">
+    <ul id="formSections" class="nav nav-tabs">
+        <li class="active"><a href="#specs" data-toggle="tab">Set Specifications</a></li>
+        <li><a href="#bait" data-toggle="tab">Target Species / Bait Used</a></li>
+        @* This may move somewhere else in the list... *@
+        <li><a href="#unusual" data-toggle="tab">Unusual Details</a></li>
+        <li><a href="#log" data-toggle="tab">Set Log / Haul Log</a></li>
+        <li><a href="#comments" data-toggle="tab">Comments</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="specs">
+            @{ Html.RenderPartial("_SpecificationViewer", Model); }        
         </div>
-        <div class="span3">
-            <label><strong>Ship's Time:</strong></label>
-            <div>@Model.ShipsTime</div>
+        <div class="tab-pane" id="bait">
+            @{ Html.RenderPartial("_BaitViewer", Model); }
         </div>
-        <div class="span3">
-            <label><strong>UTC Date:</strong></label>
-            <div>@Html.DisplayFor(m => Model.UtcDate, new { format = "d" })</div>
+        <div class="tab-pane" id="unusual">
+            @{ Html.RenderPartial("_DetailsViewer", Model); }
         </div>
-        <div class="span3">
-            <label><strong>UTC Time:</strong></label>
-            <div>@Model.UtcTime</div>
+        <div class="tab-pane" id="log">
+            @{ Html.RenderPartial("_LogViewer", Model); }
         </div>
-    </div>
-</fieldset>
-<hr />
-<fieldset id="setSpecifications">
-    <legend>Longline Set Specifications</legend>
-    <div class="row-fluid">
-        <div class="span3">
-            <label><strong>Number Of Hooks Per Basket</strong></label>
-            <div>@Html.DisplayFor(m => m.HooksPerBasket)</div>
-        </div>
-        <div class="span3">
-            <label><strong>Total Number Of Baskets</strong></label>
-            <div>@Html.DisplayFor(m => m.TotalBaskets)</div>
-        </div>
-        <div class="span3">
-            <label><strong>Total Number Of Hooks</strong></label>
-            <div>@Html.DisplayFor(m => m.TotalHooks)</div>
-        </div>
-        <div class="span3">
-            <label><strong>Length Of Floatline</strong></label>
-            <div>@Html.DisplayFor(m => m.FloatlineLength) m</div>
+        <div class="tab-pane" id="comments">
+            @{ Html.RenderPartial("_CommentsViewer", Model); }
         </div>
     </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span3">
-            <label><strong>Line Setting Speed</strong></label>
-            <div>@Html.DisplayFor(m => m.LineSettingSpeed, new { format = "F1" }) @Model.LineSettingSpeedUnit</div>
-        </div>
-        <div class="span3">
-            <label><strong>Branchline Set Interval</strong></label>
-            <div>@Html.DisplayFor(m => m.BranchlineSetInterval) s</div>
-        </div>
-        <div class="span3">
-            <label><strong>Between Branchlines</strong></label>
-            <div>@Html.DisplayFor(m => m.DistanceBetweenBranchlines, new { format = "F1" }) m</div>
-        </div>
-        <div class="span3">
-            <label><strong>Length Of Branchlines</strong></label>
-            <div>@Html.DisplayFor(m => m.BranchlineLength, new { format = "F1" }) m</div>
-        </div>
-    </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span3">
-            <label><strong>Vessel Speed For Setting</strong></label>
-            <div>@Html.DisplayFor(m => m.VesselSpeed, new { format = "F1" }) kts</div>
-        </div>
-        <div class="span3">
-            <label><strong>Number Of Shark Lines</strong></label>
-            <div>@Html.DisplayFor(m => m.SharkLineCount)</div>
-        </div>
-        <div class="span3">
-            <label><strong>Length Of Shark Lines</strong></label>
-            <div>@Html.DisplayFor(m => m.SharkLineLength) m</div>
-        </div>
-        <div class="span3">
-            <label><strong>Were TDRs Deployed</strong></label>
-            <div>@Model.WasTdrDeployed</div>
-        </div>
-    </div>
-</fieldset>
-<hr />
-<fieldset id="targetSpecies">
-    <legend>Target Species And Bait</legend>
-    <div class="row-fluid">
-        <div class="span4">
-            <label><strong>Targeting Tuna</strong></label>
-            <div>@Model.IsTargetingTuna</div>
-        </div>
-        <div class="span4">
-            <label><strong>Targeting Swordfish</strong></label>
-            <div>@Model.IsTargetingSwordfish</div>
-        </div>
-        <div class="span4">
-            <label><strong>Targeting Shark</strong></label>
-            <div>@Model.IsTargetingShark</div>
-        </div>
-    </div>
-    <hr />
-    <table class="table table-striped table-bordered table-condensed">
-        <caption>Bait Used</caption>
-        <thead>
-            <tr>
-                <th>Species</th>
-                <th>Weight (kg)</th>
-                <th>Hook Numbers</th>
-            </tr>
-        </thead>
-        <tbody>
-            @* TODO *@
-        </tbody>
-    </table>
-    <div class="row-fluid">
-        <div class="span4">
-            <label><strong>Number Of Light Sticks</strong></label>
-            <div>@Html.DisplayFor(m => m.LightStickCount)</div>
-        </div>
-    </div>
-</fieldset>
-<hr />
-<fieldset id="details">
-    <legend>Unusual Set Details</legend>
-    <p>@Model.UnusualDetails</p>
-</fieldset>
-<hr />
-<fieldset id="setHaulLog">
-    <legend>Set/Haul Log</legend>
-    <table class="table table-striped table-bordered table-condensed">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Time</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-            </tr>
-        </thead>
-        <tbody>
-        @* TODO Icon may be hot-dogging, but we'll let the users decide *@
-        @if (null != Model.StartOfSet)
-        {
-            <tr>
-                <td><i class="icon-circle-arrow-down"></i> Start Set</td>
-                <td>@Model.StartOfSet.LocalTime</td>
-                <td>@Model.StartOfSet.Latitude</td>
-                <td>@Model.StartOfSet.Longitude</td>
-            </tr>
-        }
-        @if (null != Model.EndOfSet)
-        { 
-            <tr>
-                <td><i class="icon-circle-arrow-down"></i> End Set</td>
-                <td>@Model.EndOfSet.LocalTime</td>
-                <td>@Model.EndOfSet.Latitude</td>
-                <td>@Model.EndOfSet.Longitude</td>
-            </tr>        
-        }
-        @if (null != Model.StartOfHaul)
-        { 
-            <tr>
-                <td><i class="icon-circle-arrow-up"></i> Start Haul</td>
-                <td>@Model.StartOfHaul.LocalTime</td>
-                <td>@Model.StartOfHaul.Latitude</td>
-                <td>@Model.StartOfHaul.Longitude</td>
-            </tr>
-        }
-        @foreach (var item in Model.IntermediateHaulPositions)
-        {
-            if (null == item) { continue; }
-            <tr>
-                <td><i class="icon-circle-arrow-up"></i> Hauling</td>
-                <td>@item.LocalTime</td>
-                <td>@item.Latitude</td>
-                <td>@item.Longitude</td>
-            </tr>
-        }
-        @if (null != Model.EndOfHaul)
-        { 
-            <tr>
-                <td><i class="icon-circle-arrow-up"></i> End Haul</td>
-                <td>@Model.EndOfHaul.LocalTime</td>
-                <td>@Model.EndOfHaul.Latitude</td>
-                <td>@Model.EndOfHaul.Longitude</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</fieldset>
-<hr />
-<fieldset id="comments">
-    <legend>Comments</legend>
-    <table class="table table-striped table-bordered table-condensed">
-        <thead>
-            <tr>
-                <th>Time</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach(var comment in Model.Comments)
-        {
-            if (null == comment) { continue; }
-            <tr>
-                <td>@comment.LocalTime</td>
-                <td>@comment.Details</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</fieldset>
-<hr />
-<fieldset id="other">
-    <legend>Other Information</legend>
-    <div class="row-fluid">
-        <div class="span4">
-            <label><strong>Total Baskets Observed</strong></label>
-            <div>@Html.DisplayFor(m => m.TotalObservedBaskets)</div>
-        </div>
-        <div class="span4">
-            <label><strong>GEN-3 Events?</strong></label>
-            <div>@Model.HasGen3Event</div>
-        </div>
-        <div class="span4">
-            <label><strong>Diary Page</strong></label>
-            <div>@Model.DiaryPage</div>
-        </div>
-    </div>
-</fieldset>
-<hr />
-
-@section AdditionalScripts {
-    <script>
-        $(function () {
-            $('.bs-docs-sidebar').affix();
-        });
-    </script>
-}
+</div>

@@ -1,22 +1,18 @@
-﻿String.prototype.endsWith = function (str) { return (this.match(str + "$") == str); }
+﻿String.prototype.endsWith = function (str) {
+    return (this.match(str + "$") === str);
+};
 
-// TODO The UX on this is funky.  Better to replace it with an "open in new window" doohickey.
-// Use jTruncate jQuery plugin to automatically truncate large text
-// http://www.jeremymartin.name/projects.php?project=jTruncate
 $(document).ready(function () {
-    /*
-    $('.large-text').jTruncate({
-        length: 50,
-        minTrail: 10
-    });
-    */
 
     /* Stolen from here */
     /* http://stackoverflow.com/questions/2335553/jquery-how-to-catch-enter-key-and-change-event-to-tab */
     $(".autotab").on('keyup', function () {
-        var val = $(this).val();
-        if (val.length == $(this).attr("maxlength")) {
-            var inputs = $(this).closest('form').find(':input:visible');
+        var val,
+            inputs;
+
+        val = $(this).val();
+        if (val.length === $(this).attr("maxlength")) {
+            inputs = $(this).closest('form').find(':input:visible');
             inputs.eq(inputs.index(this) + 1).focus();
         }
     });
@@ -31,16 +27,16 @@ function clearFormEx(formName) {
                 .val('')
                 .removeAttr('checked')
                 .removeAttr('selected');
-}
+};
 
 // Clear any form values
 // Used for the Ajax "add to table" archetype.
 function clearForm(formName) {
     $(':input', formName).each(function () {
         var type = this.type.toLowerCase();
-        if (type == 'text' || type == 'password' || type == 'textarea' || type == 'range') {
+        if (type === 'text' || type === 'password' || type === 'textarea' || type === 'range') {
             this.value = "";
-        } else if (type == 'hidden') {
+        } else if (type === 'hidden') {
             // Fixes problem with clearing out numeric hidden values that map to not-nullable
             // properties in the data access layer
             if (this.name.endsWith(".Id")) {
@@ -48,10 +44,12 @@ function clearForm(formName) {
             } else {
                 this.value = "";
             }
-        } else if (type == 'select-one' || type == 'select-multi') {
+        } else if (type === 'select-one' || type === 'select-multi') {
             this.selectedIndex = -1;
-        } else if (type == 'radio' || type == 'checkbox') {
-            if (this.checked) { this.checked = false; }
+        } else if (type === 'radio' || type === 'checkbox') {
+            if (this.checked) {
+                this.checked = false;
+            }
         }
     });
-}
+};

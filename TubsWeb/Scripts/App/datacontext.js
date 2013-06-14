@@ -1,11 +1,16 @@
-﻿/*
- * datacontext.js provides a central location
- * for defining amplify requests.
- * Assumes Amplify.js is loaded (duh!)
+﻿/**
+ * @file Central location for defining data services.
+ * Uses Amplify.js for loading data, jQuery
+ * AJAX for saving.
+ * @author Corey Cole <corey.cole@gmail.com>
+ * @copyright Secretariat of the Pacific Community, 2013
  */
 
 /// <reference path="../amplify.js" />
 var tubs = tubs || {};
+
+// TODO: I believe these variables are in the global namespace,
+// not the 'tubs' namespace
 
 // Since we're only using AmplifyJS for (re)load
 // requests, the settings are very similar across
@@ -17,7 +22,7 @@ var defaultSettings = {
     timeout: 10000 /* 10 seconds */
 };
 
-var saveTimeout = 10000 /* 10 seconds */
+var saveTimeout = 10000; /* 10 seconds */
 
 /*
  * After much screwing around, this looks to be
@@ -106,7 +111,13 @@ amplify.request.define(
     $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/PageCount' })
 );
 
-
+/**
+ * Load PS-2 data for a given sea day.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} dayNumber Location of the day within the trip
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getSeaDay = function (tripId, dayNumber, success_cb, error_cb) {
     amplify.request({
         resourceId: "getSeaDay",
@@ -116,6 +127,14 @@ tubs.getSeaDay = function (tripId, dayNumber, success_cb, error_cb) {
     });
 };
 
+/**
+ * Save PS-2 data for a given sea day.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} dayNumber Location of the day within the trip
+ * @param seaDay Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.saveSeaDay = function (tripId, dayNumber, seaDay, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/Days/' + dayNumber + '/Edit';
     $.ajax({
@@ -130,6 +149,12 @@ tubs.saveSeaDay = function (tripId, dayNumber, seaDay, success_cb, error_cb) {
     });
 };
 
+/**
+ * Load crew for a given trip
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getCrew = function (tripId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getCrew",
@@ -139,6 +164,13 @@ tubs.getCrew = function (tripId, success_cb, error_cb) {
     });
 };
 
+/**
+ * Save crew data for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param crew Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.saveCrew = function (tripId, crew, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/Crew/Edit';
     $.ajax({
@@ -153,6 +185,13 @@ tubs.saveCrew = function (tripId, crew, success_cb, error_cb) {
     });
 };
 
+/**
+ * Get PS-3 data for a given fishing set.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} setNumber Location of the set within the trip
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getFishingSet = function (tripId, setNumber, success_cb, error_cb) {
     amplify.request({
         resourceId: "getFishingSet",
@@ -162,6 +201,14 @@ tubs.getFishingSet = function (tripId, setNumber, success_cb, error_cb) {
     });
 };
 
+/**
+ * Save PS-3 data for a given fishing set.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} setNumber Location of the set within the trip
+ * @param fishingSet Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/Sets/' + setNumber + '/Edit';
     $.ajax({
@@ -174,8 +221,14 @@ tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error
         error: error_cb,
         timeout: saveTimeout
     });
-}
+};
 
+/**
+ * Get GEN-1 Sightings for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getSightings = function (tripId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getSightings",
@@ -185,6 +238,13 @@ tubs.getSightings = function (tripId, success_cb, error_cb) {
     });
 };
 
+/**
+ * Save GEN-1 Sightings for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param sightings Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.saveSightings = function (tripId, sightings, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/Sightings/Edit';
     $.ajax({
@@ -199,7 +259,12 @@ tubs.saveSightings = function (tripId, sightings, success_cb, error_cb) {
     });
 };
 
-// GEN-1
+/**
+ * Get GEN-1 Transfers for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getTransfers = function (tripId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getTransfers",
@@ -209,7 +274,13 @@ tubs.getTransfers = function (tripId, success_cb, error_cb) {
     });
 };
 
-// GEN-1
+/**
+ * Save GEN-1 Transfers for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param transfers Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.saveTransfers = function (tripId, transfers, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/Transfers/Edit';
     $.ajax({
@@ -224,7 +295,13 @@ tubs.saveTransfers = function (tripId, transfers, success_cb, error_cb) {
     });
 };
 
-// GEN-2
+/**
+ * Get GEN-2 interaction for a given trip and page number.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} pageNumber Location within the pages of GEN-2 data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getInteraction = function (tripId, pageNumber, success_cb, error_cb) {
     amplify.request({
         resourceId: "getInteraction",
@@ -234,7 +311,13 @@ tubs.getInteraction = function (tripId, pageNumber, success_cb, error_cb) {
     });
 };
 
-// GEN-2
+/**
+ * Save GEN-2 interaction for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param interaction Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.saveInteraction = function (tripId, interaction, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/GEN-2/Edit';
     $.ajax({
@@ -249,7 +332,13 @@ tubs.saveInteraction = function (tripId, interaction, success_cb, error_cb) {
     });
 };
 
-// GEN-5
+/**
+ * Get GEN-5 details for a given trip and FAD record.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} fadId FAD primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getFad = function (tripId, fadId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getFad",
@@ -259,7 +348,13 @@ tubs.getFad = function (tripId, fadId, success_cb, error_cb) {
     });
 };
 
-// GEN-5
+/**
+ * Save GEN-5 FAD for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param fad Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.saveFad = function (tripId, fad, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/GEN-5/Edit';
     $.ajax({
@@ -274,6 +369,12 @@ tubs.saveFad = function (tripId, fad, success_cb, error_cb) {
     });
 };
 
+/**
+ * Get PS-1 details for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getPs1 = function (tripId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getPs1",
@@ -283,6 +384,13 @@ tubs.getPs1 = function (tripId, success_cb, error_cb) {
     });
 };
 
+/**
+ * Save PS-1 details for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param ps1 Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.savePs1 = function (tripId, ps1, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/PS-1/Edit';
     $.ajax({
@@ -297,6 +405,12 @@ tubs.savePs1 = function (tripId, ps1, success_cb, error_cb) {
     });
 };
 
+/**
+ * Get page counts for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getPageCounts = function (tripId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getPageCounts",
@@ -306,6 +420,13 @@ tubs.getPageCounts = function (tripId, success_cb, error_cb) {
     });
 };
 
+/**
+ * Save PS-1 details for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param pageCounts Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.savePageCounts = function (tripId, pageCounts, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/PageCount/Edit';
     $.ajax({
@@ -320,6 +441,12 @@ tubs.savePageCounts = function (tripId, pageCounts, success_cb, error_cb) {
     });
 };
 
+/**
+ * Get GEN-3 details for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.getGen3 = function (tripId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getGen3",
@@ -329,6 +456,13 @@ tubs.getGen3 = function (tripId, success_cb, error_cb) {
     });
 };
 
+/**
+ * Save GEN-3 details for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param gen3 Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
 tubs.saveGen3 = function (tripId, gen3, success_cb, error_cb) {
     var url = appBase + 'Trip/' + tripId + '/GEN-3/Edit';
     $.ajax({

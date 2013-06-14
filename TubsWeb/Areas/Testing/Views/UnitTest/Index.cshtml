@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@section AdditionalCss {
+    @Styles.Render("~/Content/css")
+}
+
+<div class="wrapper">
+    <div class="container">
+
+        <p>
+            This page contains links to all available JavaScript unit tests for TUBS.
+            Click on a link to run the unit test and see the results.
+        </p>
+        <ul class="unstyled">
+        @{
+            var controller = ViewContext.Controller.GetType();
+            var methods = controller.GetMethods()
+                .Where(m => m.ReturnType.ToString() == "System.Web.Mvc.ActionResult");
+
+            foreach(var method in methods)
+            {
+                <li>@Html.ActionLink(@method.Name, @method.Name, "UnitTest")</li>
+            }
+        }
+        </ul>
+
+    </div>
+    <div class="push"><!--//--></div>
+</div>
+

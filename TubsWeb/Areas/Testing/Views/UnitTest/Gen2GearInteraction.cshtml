@@ -1,0 +1,127 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.gen2.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "ConditionCodes": [
+              "",
+              "A0",
+              "A1",
+              "A2",
+              "A3",
+              "A4",
+              "A5",
+              "A6",
+              "A7",
+              "A8",
+              "D",
+              "D1",
+              "D2",
+              "D3",
+              "D4",
+              "U",
+              "U1",
+              "U2",
+              "U3",
+              "U4"
+            ],
+            "Activities": [
+              "",
+              "Setting",
+              "Hauling",
+              "Searching",
+              "Transiting",
+              "Other"
+            ],
+            "VesselActivity": "Setting",
+            "VesselActivityDescription": null,
+            "StartOfInteraction": [
+              {
+                  "Id": 131,
+                  "Count": 2,
+                  "ConditionCode": "A1",
+                  "Description": "swimming around vessel feeding on damage and under",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              }
+            ],
+            "EndOfInteraction": [
+              {
+                  "Id": 132,
+                  "Count": 6,
+                  "ConditionCode": "A1",
+                  "Description": "swimming down and up blowing water out from the no",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              }
+            ],
+            "InteractionDescription": "the whale was swimming around the vessel, down and up blowing water out from the nose and feeding on damaged fish thrown overboard",
+            "TripNumber": "DJB / 10-04",
+            "TripId": 12611,
+            "Id": 2962,
+            "ShipsDate": "2010-11-10T00:00:00",
+            "ShipsTime": "0650",
+            "Latitude": "0724.264S",
+            "Longitude": "15018.616E",
+            "SpeciesCode": "FAW",
+            "SpeciesDescription": "The whale was black incolour with 1 holes on forehead. Blowing water out from it. The length is about 540 cm",
+            "InteractionType": "TubsWeb.ViewModels.Gen2GearViewModel",
+            "PageNumber": 1,
+            "HasNext": false,
+            "NextPage": 2,
+            "HasPrevious": true,
+            "PreviousPage": 0,
+            "ActionName": "Edit"
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("GEN-2 Interaction", {
+            setup: function () {
+                viewmodel = new tubs.Gen2GearEvent(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber correct");
+            equal(viewmodel.VesselActivity(), "Setting", "Vessel activity mapped correctly");
+            equal(viewmodel.StartOfInteraction().length, 1, "Start of interaction list mapped correctly");
+            equal(viewmodel.EndOfInteraction().length, 1, "End of interaction list mapped correctly");
+            equal(viewmodel.InteractionType(), "TubsWeb.ViewModels.Gen2GearViewModel", "Type mapped correctly");
+            equal(viewmodel.VesselActivityDescription(), null, "No vessel activity description");
+        });
+        test("Dirty flag", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.SpeciesDescription("With a purposeful grimace and a terrible sound, He pulls the spitting high-tension wires down.");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            equal(viewmodel.isDirty(), false, "viewmodel is clean after reset");
+            // Uncomment when this moves to knockout.viewmodel plugin
+            //ko.viewmodel.updateFromModel(viewmodel, modelAsJson);
+            //equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
+        });
+        test("Async commands", function () {
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.SpeciesDescription("A tiger shark is furry, orange and white, right?");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+    </script>
+}

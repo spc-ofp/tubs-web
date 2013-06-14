@@ -1,0 +1,40 @@
+﻿@model TubsWeb.ViewModels.LongLineSetViewModel
+<fieldset>
+    <legend>Target Species</legend>
+    <div class="row">
+            <div class="span4">
+                <label><strong>Targeting Tuna</strong></label>
+                <div>@Html.DisplayFor(m => m.IsTargetingTuna)</div>
+            </div>
+            <div class="span4">
+                <label><strong>Targeting Swordfish</strong></label>
+                <div>@Html.DisplayFor(m => m.IsTargetingSwordfish)</div>
+            </div>
+            <div class="span4">
+                <label><strong>Targeting Shark</strong></label>
+                <div>@Html.DisplayFor(m => m.IsTargetingShark)</div>
+            </div>
+    </div>
+</fieldset>
+<hr />
+<table class="table table-striped table-bordered table-condensed">
+    <caption>Bait Used</caption>
+    <thead>
+        <tr>
+            <th>Species</th>
+            <th>Weight (kg)</th>
+            <th>Hook Numbers</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var bait in Model.Baits)
+    { 
+        if (!bait.Show) { continue; }
+        <tr>
+            <td>@Html.DisplayFor(m => bait.Species)</td>
+            <td>@Html.DisplayFor(m => bait.Weight)</td>
+            <td>@Html.DisplayFor(m => bait.Hooks)</td>
+        </tr>
+    }
+    </tbody>
+</table>

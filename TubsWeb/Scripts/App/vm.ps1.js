@@ -16,7 +16,7 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
+
 tubs.Ps1Mapping = {
     'Characteristics': {
         create: function (options) {
@@ -36,6 +36,7 @@ tubs.Ps1Mapping = {
 };
 
 tubs.Ps1VesselCharacteristics = function (data) {
+    'use strict';
     var self = this;
     ko.mapping.fromJS(data, {}, self);
 
@@ -113,13 +114,13 @@ tubs.SafetyInspection = function (data) {
         self.LifejacketProvided,
         self.LifejacketSizeOk,
         self.LifejacketAvailability,
-        self.BuoyCount, 
+        self.BuoyCount,
         self.Epirb406Count,
         self.Epirb406Expiration,
-        self.OtherEpirbType, 
+        self.OtherEpirbType,
         self.OtherEpirbCount,
         self.OtherEpirbExpiration,
-        self.LifeRaft1Capacity, 
+        self.LifeRaft1Capacity,
         self.LifeRaft1Inspection,
         self.LifeRaft1LastOrDue,
         self.LifeRaft2Capacity,
@@ -128,7 +129,7 @@ tubs.SafetyInspection = function (data) {
         self.LifeRaft3Capacity,
         self.LifeRaft3Inspection,
         self.LifeRaft3LastOrDue,
-        self.LifeRaft4Capacity, 
+        self.LifeRaft4Capacity,
         self.LifeRaft4Inspection,
         self.LifeRaft4LastOrDue
     ], false);
@@ -218,4 +219,4 @@ tubs.Ps1ViewModel = function (data) {
     });
 
     return self;
-}
+};

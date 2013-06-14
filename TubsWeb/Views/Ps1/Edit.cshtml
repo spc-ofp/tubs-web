@@ -1,5 +1,6 @@
 ﻿@model TubsWeb.ViewModels.Ps1ViewModel
 @using Newtonsoft.Json
+@using System.Web.Optimization
 
 @{
     ViewBag.Title = "Edit PS-1 for " + Model.TripNumber;
@@ -85,12 +86,7 @@
 
 
 @section AdditionalScripts {
-    <!-- ISODate extension -->
-    <script src="~/Scripts/knockout.custom-bindings.js"></script>
-
-    <!-- String hashCode implementation -->    
-    <script src="~/Scripts/spc.utilities.js"></script>
-    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    @Scripts.Render("~/bundles/knockout")
 
     <!-- Ajax data layer -->
     <script src="~/Scripts/App/errorlogger.js"></script>
@@ -105,9 +101,9 @@
             $('.accordion').on('hide', function (e) {
                 $(e.target).prev('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-down icon-chevron-right');
             });
-            var viewModel = new tubs.Ps1ViewModel(@modelAsJson);
-            viewModel.clearDirtyFlag();
+            var viewModel = new tubs.Ps1ViewModel(@modelAsJson);           
             ko.applyBindings(viewModel);
+            viewModel.clearDirtyFlag();
 
             /* TODO: Extract this into a common script for the whole application */
             window.onbeforeunload = function(e) {

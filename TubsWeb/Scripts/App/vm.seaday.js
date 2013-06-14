@@ -3,7 +3,6 @@
  * Knockout.js ViewModel for editing a PS-2 Daily Log
  * Depends on:
  * jquery
- * json2
  * knockout
  * knockout.mapping (automatically maps JSON)
  * knockout.asyncCommand (makes it easier to show user activity)
@@ -12,7 +11,6 @@
  * amplify (local storage and Ajax mapping
  * toastr (user notification)
  * knockout.custom-bindings (date binding)
- * spc.utilities (String hashCode)
  */
 
 /// <reference name="../knockout-2.1.0.debug.js" />
@@ -21,7 +19,7 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
+
 // This mapping is used to override the default
 // JSON mapper for the named property (or properties).
 // In this case, the 'Events' property of the mapped JSON
@@ -55,6 +53,7 @@ tubs.psSeaDayMapping = {
 // https://github.com/ericmbarnard/Knockout-Validation/wiki/Native-Rules
 //
 tubs.psEvent = function (eventData) {
+    'use strict';
     /// <summary>A single event during purse seine trip.</summary>
     var self = this;
     self.EventId = ko.observable(eventData.EventId || 0);
@@ -84,7 +83,7 @@ tubs.psEvent = function (eventData) {
     self.HasSet = ko.observable(eventData.HasSet || false);
     self.HasGen5 = ko.observable(eventData.HasGen5 || false);
     self.NeedsFocus = ko.observable(eventData.NeedsFocus || false);
-    self._destroy = ko.observable(eventData._destroy || false);
+    self._destroy = ko.observable(eventData._destroy || false); //ignore jslint
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.Time,
@@ -147,7 +146,7 @@ tubs.psSeaDay = function (data) {
     // Only show the "Next Day" button for any Edit
     // or an Add that has been stored in the database
     self.showNextDayButton = ko.computed(function () {
-        return !self.isAdd() || (self.DayId() != 0);
+        return !self.isAdd() || (self.DayId() !== 0);
     });
 
     self.isDirty = ko.computed(function () {
@@ -157,7 +156,7 @@ tubs.psSeaDay = function (data) {
         // Check each child event, bailing on the first
         // dirty child.
         var hasDirtyChild = false;
-        $.each(self.Events(), function (i, evt) {
+        $.each(self.Events(), function (i, evt) { //ignore jslint
             if (evt.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -170,7 +169,7 @@ tubs.psSeaDay = function (data) {
     // child entities stored in the Events observableArray
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
-        $.each(self.Events(), function (index, value) {
+        $.each(self.Events(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
     };
@@ -194,7 +193,7 @@ tubs.psSeaDay = function (data) {
     self.removeEvent = function (evt) {
         if (evt && evt.EventId()) { self.Events.destroy(evt); }
         else { self.Events.remove(evt); }
-    }
+    };
 
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
@@ -257,7 +256,7 @@ tubs.psSeaDayReplacer = function (key, value) {
     // only return the value for keys that we're interested in using
     // for 'hashing'
     // http://stackoverflow.com/questions/4910567/json-stringify-how-to-exclude-certain-fields-from-the-json-string
-    if (key == "IsLocked") {
+    if (key === "IsLocked") {
         return undefined;
     }
     return value;

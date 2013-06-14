@@ -23,17 +23,13 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
     using System.Web.Routing;
+    using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
-    using TubsWeb.Models;
-    using TubsWeb.Models.ExtensionMethods;
-    using AutoMapper;
     using TubsWeb.ViewModels;
 
     /// <summary>
@@ -148,6 +144,7 @@ namespace TubsWeb.Controllers
                 addVm.SetNavDetails(setNumber, maxSets);
                 addVm.HasNext = false; // Force it
                 addVm.SetNumber = setNumber;
+                addVm.ActionName = CurrentAction();
                 return View(viewName, addVm);
             }
 
@@ -156,6 +153,7 @@ namespace TubsWeb.Controllers
             var fset = repo.FilterBy(s => s.Trip.Id == tripId.Id && s.SetNumber == setNumber).FirstOrDefault();
             var vm = Mapper.Map<LongLineSet, LongLineSetViewModel>(fset);
             vm.SetNavDetails(setNumber, maxSets);
+            vm.ActionName = CurrentAction();
 
             if (IsApiRequest())
                 return GettableJsonNetData(vm);

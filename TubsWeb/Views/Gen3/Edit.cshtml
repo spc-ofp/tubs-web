@@ -1,5 +1,6 @@
 ﻿@model TubsWeb.ViewModels.Gen3ViewModel
 @using Newtonsoft.Json
+@using System.Web.Optimization
 
 @* For now, create this in the View. *@
 @{
@@ -87,17 +88,16 @@
 
 @section AdditionalScripts {
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
-    <!-- ISODate extension -->
-    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+    @Scripts.Render("~/bundles/knockout")
     <!-- Ajax data layer -->
     <script src="~/Scripts/App/errorlogger.js"></script>
     <script src="~/Scripts/App/datacontext.js"></script>
     <script src="~/Scripts/App/vm.gen3.js"></script>
     <script>
         $(document).ready(function () {
-            var viewModel = new tubs.gen3(@modelAsJson);
-            viewModel.clearDirtyFlag();
+            var viewModel = new tubs.gen3(@modelAsJson);            
             ko.applyBindings(viewModel);
+            viewModel.clearDirtyFlag();
 
             $(".gen3Notes").on("click", ".removeItem", function() {
                 viewModel.removeNote(ko.dataFor(this));

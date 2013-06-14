@@ -1,5 +1,6 @@
 ﻿@model TubsWeb.ViewModels.CrewViewModel
 @using Newtonsoft.Json
+@using System.Web.Optimization
 
 @* For now, create this in the View. *@
 @{
@@ -11,11 +12,6 @@
         Tuple.Create("#", "Edit Crew")
     };
 }
-
-<!-- Experiment with data-confirm and unobtrusive javascript -->
-@*
-<button type="button" class="btn btn-info" data-confirm="Yo Dawg">Click me</button>
-*@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 @* TODO:  Add a Knockout submit binding to the form? *@
@@ -152,60 +148,19 @@
     </li>
 </ul>
 
-@*
-<!-- Twitter Bootstrap modal dialog. -->
-<div id="modalTemplate" class="modal hide fade">
-    <div class="modal-header">
-        <h3>Confirm</h3>
-    </div>
-    <div id="modalBody" class="modal-body">    
-    </div>
-    <div class="modal-footer">
-        <a id="modal-yes" href="#" class="btn">Close</a>
-        <a id="modal-no" href="#" class="btn btn-primary">Save changes</a>
-    </div>
-</div>
-*@
-
 @*<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>*@
 
-
 @section AdditionalScripts {
+    @Scripts.Render("~/bundles/knockout")
     <script src="~/Scripts/App/errorlogger.js"></script>
     <script src="~/Scripts/App/datacontext.js"></script>  
     <script src="~/Scripts/App/vm.crew.js"></script>
-    <!-- ClickHandler function for opening/closing Twitter modal dialog. -->
-    @*
-    <script>
-        // From here
-        // http://stackoverflow.com/questions/8105556/how-do-i-explicitly-execute-default-action-from-jquery-event/8135983#8135983
-        var confirmClickHandler = function (event) {
-            if ($(event.currentTarget).data('isConfirming')) return;
-            var message = event.currentTarget.attributes['data-confirm'].value;
-            event.preventDefault();
-            $('#modalBody').html(message);
-            $('#modal-yes').on("click", function () {
-                $('#modalTemplate').modal('hide');
-                $(event.currentTarget).data('isConfirming', true);
-                event.currentTarget.click();
-                $(event.currentTarget).data('isConfirming', null);
-            });
-            $('#modal-no').on("click", function () {
-                $('#modalTemplate').modal('hide');
-            });
-            $('#modalTemplate').modal('show');
-        }; 
-    </script>
-    *@
- 
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
     <script>          
         $(document).ready(function () {
-            //Doesn't work with Knockout.  Will need some work, but that can come later...
-            //$("body").delegate("[data-confirm]", "click", confirmClickHandler);
-            var viewModel = new tubs.psCrewViewModel(@modelAsJson);
-            viewModel.clearDirtyFlag();
+            var viewModel = new tubs.psCrewViewModel(@modelAsJson);            
             ko.applyBindings(viewModel);
+            viewModel.clearDirtyFlag();
 
             $('.deckhands').on("click", ".removeItem", function() {
                 viewModel.removeHand(ko.dataFor(this));

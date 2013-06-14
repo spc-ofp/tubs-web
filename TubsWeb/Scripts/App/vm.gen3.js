@@ -3,7 +3,6 @@
  * Knockout.js ViewModel for editing a GEN-3
  * Depends on:
  * jquery
- * json2
  * knockout
  * knockout.mapping (automatically maps JSON)
  * knockout.asyncCommand (makes it easier to show user activity)
@@ -17,7 +16,6 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
 
 tubs.gen3Mapping = {
     'Notes': {
@@ -34,6 +32,7 @@ tubs.gen3Mapping = {
 
 
 tubs.gen3Incident = function (incidentData) {
+    'use strict';
     var self = this;
     self.Id = ko.observable(incidentData.Id || 0);
     self.QuestionCode = ko.observable(incidentData.QuestionCode);
@@ -58,11 +57,12 @@ tubs.gen3Incident = function (incidentData) {
 };
 
 tubs.gen3Note = function (noteData) {
+    'use strict';
     var self = this;
     self.Id = ko.observable(noteData.Id || 0);
     self.Date = ko.observable(noteData.Date || null).extend({ isoDate: 'DD/MM/YY' });
     self.Comments = ko.observable(noteData.Comments || null);
-    self._destroy = ko.observable(noteData._destroy || false);
+    self._destroy = ko.observable(noteData._destroy || false); //ignore jslint
     self.NeedsFocus = ko.observable(noteData.NeedsFocus || false);
 
     self.dirtyFlag = new ko.DirtyFlag([
@@ -82,7 +82,7 @@ tubs.gen3Note = function (noteData) {
 };
 
 tubs.gen3 = function (data) {
-
+    'use strict';
     var self = this;
     ko.mapping.fromJS(data, tubs.gen3Mapping, self);
 
@@ -91,7 +91,7 @@ tubs.gen3 = function (data) {
     self.dirtyFlag = new ko.DirtyFlag([
         self.Incidents,
         self.Notes // Add/Remove only
-    ], false /* Add appropriate has function where necessary */);
+    ], false);
 
     self.isDirty = ko.computed(function () {
         // Avoid iterating over the events if the header
@@ -117,10 +117,10 @@ tubs.gen3 = function (data) {
 
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
-        $.each(self.Incidents(), function (index, value) {
+        $.each(self.Incidents(), function (index, value) { //ignore jslint
             value.clearDirtyFlag();
         });
-        $.each(self.Notes(), function (index, value) {
+        $.each(self.Notes(), function (index, value) { //ignore jslint
             value.clearDirtyFlag();
         });
     };
@@ -141,7 +141,7 @@ tubs.gen3 = function (data) {
     self.removeNote = function (evt) {
         if (evt && evt.Id()) { self.Notes.destroy(evt); }
         else { self.Notes.remove(evt); }
-    }
+    };
 
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
@@ -187,4 +187,4 @@ tubs.gen3 = function (data) {
     });
 
     return self;
-}
+};

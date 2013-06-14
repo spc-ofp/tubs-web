@@ -9,30 +9,36 @@
 // Updated to handle null or invalid values
 ko.bindingHandlers.date = {
     init: function (element, valueAccessor, allBindingsAccessor) {
-        var allBindings = allBindingsAccessor();
-        var valueUnwrapped = ko.utils.unwrapObservable(valueAccessor());
-        // I'm using day/month/year as a default.  Don't like it?  Set formatString in your binding!
-        var formatString = allBindings.formatString || 'DD/MM/YY';
+        var allBindings,
+            valueUnwrapped,
+            formatString,
+            date,
+            dateString;
+
+        allBindings = allBindingsAccessor();
+        valueUnwrapped = ko.utils.unwrapObservable(valueAccessor());
+        formatString = allBindings.formatString || 'DD/MM/YY';
 
         // Convert the value using moment.js
-        var date = moment(valueUnwrapped);
+        date = moment(valueUnwrapped);
 
         // Use a blank string if moment.js couldn't figure it out
-        var dateString = date ? date.format(formatString) : '';
+        dateString = date ? date.format(formatString) : '';
         if (element.type) {
             $(element).val(dateString);
         } else {
             $(element).text(dateString);
         }
     },
+    /*
+     * Is this binding still in use?  Also, can we ignore the allBindingsAccessor argument?
+     */
     update: function (element, valueAccessor, allBindingsAccessor) {
         // This might be the trick here:
         // http://stackoverflow.com/questions/7704268/formatting-rules-for-numbers-in-knockoutjs
         if (element.type) {
-            var newValue = $(element).val();
-            var valueUnwrapped = ko.utils.unwrapObservable(valueAccessor());
-            //console.log("Writing new value");
-            //valueAccessor()(newValue);
+            var newValue = $(element).val(),
+                valueUnwrapped = ko.utils.unwrapObservable(valueAccessor());
         }
         // ko.bindingHandlers.text.update(element, function() { return formattedValue; });
     }
@@ -48,21 +54,22 @@ ko.extenders.isoDate = function (target, formatString) {
     /// <param name="formatString" optional="false" type="String"></param>
     target.formattedDate = ko.computed({
         read: function () {
+            var dt;
             if (!target()) {
                 return;
             }
-            var dt = moment(target());
+            dt = moment(target());
             return dt.format(formatString);
         },
         write: function (value) {
+            var shortDate,
+                dt,
+                formatted;
             if (value) {
-                var shortDate = value.indexOf("/") > 0;
+                shortDate = value.indexOf("/") > 0;
                 // TODO:  Replace hard-coded value with 'formatString' argument?
-                var dt = shortDate ? moment(value, "DD/MM/YY") : moment(value);
-                //console.log("value: " + value);
-                //console.log("dt: " + dt);
-                var formatted = dt.format();
-                //console.log("formatted: " + formatted);
+                dt = shortDate ? moment(value, "DD/MM/YY") : moment(value);
+                formatted = dt.format();
                 target(formatted);
             }
         }

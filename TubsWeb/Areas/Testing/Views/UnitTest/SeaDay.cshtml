@@ -1,0 +1,34 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.seaday.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {};
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("GEN-5 (FAD)", {
+            setup: function () {
+                viewmodel = new tubs.psSeaDay(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-01", "TripNumber correct");
+        });
+    </script>
+}

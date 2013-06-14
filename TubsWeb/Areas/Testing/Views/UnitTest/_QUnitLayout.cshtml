@@ -1,0 +1,39 @@
+﻿@using System.Web.Optimization
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/Content/qunit-1.11.0.css" />
+    @RenderSection("AdditionalCss", false)
+</head>
+<body>
+    @RenderBody()
+
+    @Scripts.Render(
+        "~/bundles/jquery", 
+        "~/bundles/jsextlibs",
+        "~/bundles/knockout"
+    )
+
+    <script src="~/Scripts/qunit-1.11.0.js"></script>
+    @* 
+     * This could be managed with a single script section,
+     * but I think this makes it more clear _how_ to lay this out
+     *@
+    @RenderSection("ScriptsUnderTest", false)
+
+    @*
+     * This may or may not be replaced with Ajax mocking
+     *@
+    @RenderSection("TestData", false)
+
+    @*
+     * The raison d'etre for this whole area
+     *@
+    @RenderSection("TestScript", false)
+
+
+    @* For the purposes of this layout, maybe split the script sections into two *@
+    @RenderSection("AdditionalScripts", false)
+</body>
+</html>

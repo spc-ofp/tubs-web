@@ -1,0 +1,154 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.ps1.js"></script>
+}
+
+@section TestData {
+    @* Inline data here *@
+    <script>
+        // Not exactly what comes from the server
+        // Some values have been changed to protect
+        // sensitive data
+        var modelAsJson = {
+            "BooleanValues": [
+              null,
+              "YES",
+              "NO"
+            ],
+            "NetUnits": [
+              null,
+              "M",
+              "Y",
+              "F"
+            ],
+            "MeshUnits": [
+              null,
+              "CM",
+              "IN"
+            ],
+            "RangeUnits": [
+              null,
+              "KM",
+              "NM"
+            ],
+            "TripNumber": "DJB / 10-05",
+            "VersionNumber": 2007,
+            "TripId": 69,
+            "PermitNumbers": null,
+            "VesselDeparturePort": null,
+            "VesselDepartureDate": null,
+            "Characteristics": {
+                "Id": 1,
+                "Owner": null,
+                "RegistrationNumber": "501-XXXX",
+                "CountryCode": "JP",
+                "Ircs": null,
+                "Length": null,
+                "LengthUnits": null,
+                "GrossTonnage": 349.0,
+                "SpeedboatCount": 2,
+                "AuxiliaryBoatCount": null,
+                "TenderBoatAnswer": null,
+                "SkiffMake": "YANMAR",
+                "SkiffPower": 4000,
+                "CruiseSpeed": 14.0,
+                "HelicopterMake": null,
+                "HelicopterModel": null,
+                "HelicopterRegistration": null,
+                "HelicopterRange": null,
+                "HelicopterRangeUnits": null,
+                "HelicopterColor": null,
+                "HelicopterServiceOtherCount": null
+            },
+            "Gear": {
+                "Id": 1,
+                "PowerblockMake": "MITSUI",
+                "PowerblockModel": "MARCO",
+                "PurseWinchMake": "MITSUI",
+                "PurseWinchModel": "MARCO",
+                "NetDepth": 200,
+                "NetDepthUnits": null,
+                "NetLength": 1700,
+                "NetLengthUnits": null,
+                "NetStripCount": 17,
+                "NetMeshSize": 17,
+                "NetMeshUnits": null,
+                "Brail1Capacity": 5.0,
+                "Brail2Capacity": null,
+                "BrailType": "JAPAN BRAILING STAINLESS STEEL ROUNDED ON TOP WITH SHORT HANDLE AND A NOB ENCIRCLE AND SUSPENDED BELOW WITH CHAINS ON THE BOTTOM.  THERE IS A MOUTH FOR OPENING AND CLOSING"
+            },
+            "Page1Comments": null,
+            "HasWasteDisposal": null,
+            "WasteDisposalDescription": null,
+            "Inspection": {
+                "Id": 1,
+                "LifejacketProvided": null,
+                "LifejacketSizeOk": "NO",
+                "LifejacketAvailability": null,
+                "BuoyCount": 4,
+                "Epirb406Count": 1,
+                "Epirb406Expiration": "7-12",
+                "OtherEpirbType": "Unknown",
+                "OtherEpirbCount": null,
+                "OtherEpirbExpiration": null,
+                "LifeRaft1Capacity": 25,
+                "LifeRaft1Inspection": "00/11",
+                "LifeRaft1LastOrDue": "D",
+                "LifeRaft2Capacity": null,
+                "LifeRaft2Inspection": null,
+                "LifeRaft2LastOrDue": null,
+                "LifeRaft3Capacity": null,
+                "LifeRaft3Inspection": null,
+                "LifeRaft3LastOrDue": null,
+                "LifeRaft4Capacity": null,
+                "LifeRaft4Inspection": null,
+                "LifeRaft4LastOrDue": null
+            },
+            "Page2Comments": null
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        module("PS-1");
+        test("Create viewmodel", function () {
+            var viewmodel = new tubs.Ps1ViewModel(modelAsJson);
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-05", "TripNumber correct");
+            ok(viewmodel.Inspection, "Inspection sub-entity not null");
+            ok(viewmodel.Characteristics, "Characteristics sub-entity not null");
+            ok(viewmodel.Gear, "Gear sub-entity not null");
+            viewmodel = null;
+        });
+        test("Dirty flag", function () {
+            var viewmodel = new tubs.Ps1ViewModel(modelAsJson);
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.Page1Comments("Yo dawg, I heard you like QUnit");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            equal(viewmodel.isDirty(), false, "viewmodel is clean after reset");
+            // Uncomment when this moves to knockout.viewmodel plugin
+            //ko.viewmodel.updateFromModel(viewmodel, modelAsJson);
+            //equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
+            viewmodel = null;
+        });
+        test("Async commands", function () {
+            var viewmodel = new tubs.Ps1ViewModel(modelAsJson);
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.Characteristics.CruiseSpeed(14.1);
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+            viewmodel = null;
+        });
+    </script>
+}
+

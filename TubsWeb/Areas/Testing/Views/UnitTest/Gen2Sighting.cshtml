@@ -1,0 +1,116 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.gen2.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "DistanceUnits": [
+              "",
+              "m",
+              "NM"
+            ],
+            "ConditionCodes": [
+              "",
+              "A0",
+              "A1",
+              "A2",
+              "A3",
+              "A4",
+              "A5",
+              "A6",
+              "A7",
+              "A8",
+              "D",
+              "D1",
+              "D2",
+              "D3",
+              "D4",
+              "U",
+              "U1",
+              "U2",
+              "U3",
+              "U4"
+            ],
+            "Activities": [
+              "",
+              "Setting",
+              "Hauling",
+              "Searching",
+              "Transiting",
+              "Other"
+            ],
+            "VesselActivity": "Other",
+            "VesselActivityDescription": "BROKEN NET",
+            "NumberSighted": 8,
+            "NumberOfAdults": 8,
+            "NumberOfJuveniles": null,
+            "SightingLength": "110 cm",
+            "SightingDistance": 70.000,
+            "SightingDistanceUnit": "106",
+            "SightingBehavior": "SWIMMING",
+            "TripNumber": "DJB / 10-04",
+            "TripId": 70,
+            "Id": 7,
+            "ShipsDate": "2010-08-17T00:00:00",
+            "ShipsTime": "1235",
+            "Latitude": "0100.961S",
+            "Longitude": "16435.761E",
+            "SpeciesCode": "FAW",
+            "SpeciesDescription": "SWIMMIN 310 degrees NNW",
+            "InteractionType": "TubsWeb.ViewModels.Gen2SightingViewModel",
+            "PageNumber": 1,
+            "HasNext": false,
+            "NextPage": 2,
+            "HasPrevious": true,
+            "PreviousPage": 0,
+            "ActionName": "Edit"
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("GEN-2 Sighting", {
+            setup: function () {
+                viewmodel = new tubs.GenSightedEvent(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber correct");
+            equal(viewmodel.InteractionType(), "TubsWeb.ViewModels.Gen2SightingViewModel", "Type mapped correctly");
+            equal(viewmodel.NumberSighted(), 8, "Number sighted mapped correctly");
+            equal(viewmodel.ShipsDate.formattedDate(), "17/08/10", "ISODate extension works");
+        });
+        test("Dirty flag", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.SpeciesDescription("With a purposeful grimace and a terrible sound, He pulls the spitting high-tension wires down.");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            equal(viewmodel.isDirty(), false, "viewmodel is clean after reset");
+            // Uncomment when this moves to knockout.viewmodel plugin
+            //ko.viewmodel.updateFromModel(viewmodel, modelAsJson);
+            //equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
+        });
+        test("Async commands", function () {
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.SpeciesDescription("A tiger shark is furry, orange and white, right?");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+    </script>
+}

@@ -23,9 +23,10 @@
 @helper FormatLatitude(double? latitude) {
     if (latitude.HasValue && Math.Abs(latitude.Value) <= 90) {
         string hemisphere = latitude.Value < 0 ? "S" : "N";
-        int degrees = Math.Abs((int)latitude.Value);
+        int degrees = Math.Abs(latitude.Value > 0 ? (int)Math.Floor(latitude.Value) : (int)Math.Ceiling(latitude.Value));
+        //int degrees = Math.Abs((int)latitude.Value);
         double decimalMinutes = Math.Abs(latitude.Value % 1);
-        double minutes = decimalMinutes * 60;
+        double minutes = decimalMinutes * 60.0;
         string output = String.Format("{0:D2} {1:00.000}{2}", degrees, minutes, hemisphere);
         @: @output     
     } else {

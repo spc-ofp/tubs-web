@@ -1,0 +1,259 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.fishingset.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "TargetSpecies": [
+              "SKJ",
+              "YFT",
+              "BET"
+            ],
+            "BooleanValues": [
+              null,
+              "YES",
+              "NO"
+            ],
+            "FateCodes": [
+              "RWW",
+              "RHG",
+              "RGG",
+              "RPT",
+              "RCC",
+              "ROR",
+              "RFR",
+              "DFR",
+              "DTS",
+              "DGD",
+              "DVF",
+              "DUS",
+              "DSD",
+              "DWD",
+              "DPQ",
+              "DPA",
+              "DPD",
+              "DPU",
+              "DOR"
+            ],
+            "TripNumber": "DJB / 10-04",
+            "HasNext": true,
+            "HasPrevious": true,
+            "VersionNumber": 2007,
+            "CrossesDayBoundary": false,
+            "TripId": 70,
+            "ActivityId": 3738,
+            "SetId": 284,
+            "SetNumber": 2,
+            "MaxSets": 22,
+            "NextSet": 3,
+            "PreviousSet": 1,
+            "LogbookDate": "2010-08-13T00:00:00",
+            "LogbookTime": "1726",
+            "SkiffOff": "2010-08-13T17:26:00",
+            "SkiffOffTimeOnly": "1726",
+            "WinchOnTimeOnly": "1735",
+            "RingsUpTimeOnly": "1759",
+            "BeginBrailingTimeOnly": "2145",
+            "EndBrailingTimeOnly": "2155",
+            "EndOfSetTimeOnly": "2301",
+            "WeightOnboardObserved": 13.000,
+            "WeightOnboardFromLog": 10.000,
+            "RetainedTonnageObserved": 24.000,
+            "RetainedTonnageFromLog": 25.000,
+            "NewOnboardTotalObserved": 37.000,
+            "NewOnboardTotalFromLog": 35.000,
+            "TonsOfTunaObserved": 23.902,
+            "SumOfBrail1": 4.700,
+            "SumOfBrail2": null,
+            "SizeOfBrail1": 5.0,
+            "SizeOfBrail2": null,
+            "TotalCatch": 23.960,
+            "ContainsSkipjack": "NO",
+            "ContainsYellowfin": "YES",
+            "ContainsLargeYellowfin": "N/A",
+            "ContainsBigeye": "NO",
+            "ContainsLargeBigeye": "N/A",
+            "SkipjackPercentage": null,
+            "YellowfinPercentage": 100,
+            "LargeYellowfinPercentage": null,
+            "LargeYellowfinCount": null,
+            "BigeyePercentage": null,
+            "LargeBigeyePercentage": null,
+            "LargeBigeyeCount": null,
+            "TonsOfSkipjackObserved": null,
+            "TonsOfYellowfinObserved": 23.902,
+            "TonsOfBigeyeObserved": null,
+            "LargeSpecies": "YFT",
+            "LargeSpeciesPercentage": 30,
+            "LargeSpeciesCount": 12,
+            "ByCatch": [
+              {
+                  "Id": 1079,
+                  "_destroy": false,
+                  "SpeciesCode": "AML",
+                  "FateCode": "DFR",
+                  "ObservedWeight": 0.030,
+                  "ObservedCount": 8,
+                  "LogbookWeight": null,
+                  "LogbookCount": null,
+                  "Comments": null,
+                  "NeedsFocus": false
+              },
+              {
+                  "Id": 1080,
+                  "_destroy": false,
+                  "SpeciesCode": "OCS",
+                  "FateCode": "DFR",
+                  "ObservedWeight": 0.010,
+                  "ObservedCount": 5,
+                  "LogbookWeight": null,
+                  "LogbookCount": null,
+                  "Comments": null,
+                  "NeedsFocus": false
+              },
+              {
+                  "Id": 1081,
+                  "_destroy": false,
+                  "SpeciesCode": "OCS",
+                  "FateCode": "RCC",
+                  "ObservedWeight": 0.008,
+                  "ObservedCount": 3,
+                  "LogbookWeight": null,
+                  "LogbookCount": null,
+                  "Comments": null,
+                  "NeedsFocus": false
+              }
+            ],
+            "TargetCatch": [
+              {
+                  "Id": 1077,
+                  "_destroy": false,
+                  "SpeciesCode": "YFT",
+                  "FateCode": "RCC",
+                  "ObservedWeight": 0.010,
+                  "ObservedCount": null,
+                  "LogbookWeight": null,
+                  "LogbookCount": null,
+                  "Comments": null,
+                  "NeedsFocus": false
+              },
+              {
+                  "Id": 1078,
+                  "_destroy": false,
+                  "SpeciesCode": "YFT",
+                  "FateCode": "RWW",
+                  "ObservedWeight": 23.901,
+                  "ObservedCount": null,
+                  "LogbookWeight": 25.000,
+                  "LogbookCount": null,
+                  "Comments": null,
+                  "NeedsFocus": false
+              }
+            ],
+            "RecoveredTagCount": 0,
+            "Comments": "No tag fish recovered"
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("Purse Seine Fishing Set", {
+            setup: function () {
+                viewmodel = new tubs.psSet(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber correct");
+            equal(viewmodel.ByCatch().length, 3, "Correct number of bycatch records");
+            equal(viewmodel.TargetCatch().length, 2, "Correct number of target catch records");
+        });
+        test("Computed Catch", function () {
+            equal(viewmodel.computedCatch(), 23.5, "Computed catch correct");
+            equal(viewmodel.showCatchTotalNote(), false, "Computed catch close to recorded value");
+            viewmodel.TotalCatch(24.1);
+            ok(viewmodel.showCatchTotalNote(), "Computed catch not close to recorded value");
+        });
+        test("Dirty flag", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.Comments("Sweet gorilla of Manila!");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            equal(viewmodel.isDirty(), false, "viewmodel is clean after reset");
+            // Uncomment when this moves to knockout.viewmodel plugin
+            //ko.viewmodel.updateFromModel(viewmodel, modelAsJson);
+            //equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
+        });
+        test("Async commands", function () {
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.Comments("Live long and prosper");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+        test("Change bycatch property", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var bycatch = viewmodel.ByCatch()[0];
+            equal(bycatch.SpeciesCode(), "AML", "bycatch mapped correctly");
+            bycatch.SpeciesCode("RHN");
+            ok(viewmodel.isDirty(), "viewmodel is dirty after bycatch change");
+        });
+        test("Change target catch property", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var tcatch = viewmodel.TargetCatch()[0];
+            equal(tcatch.SpeciesCode(), "YFT", "target catch mapped correctly");
+            tcatch.FateCode("DTS");
+            ok(viewmodel.isDirty(), "viewmodel is dirty after target catch change");
+        });
+        test("Add/remove new bycatch", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.addByCatch();
+            ok(viewmodel.isDirty(), "viewmodel is dirty after creating bycatch record");
+            equal(viewmodel.ByCatch().length, 4, "Correct number of bycatch records");
+            var bycatch = viewmodel.ByCatch().slice(-1)[0];
+            ok(bycatch, "New record not null");
+            equal(bycatch.Id(), 0, "New record has no primary key");
+            viewmodel.removeByCatch(bycatch);
+            equal(viewmodel.ByCatch().length, 3, "Correct number of records");
+        });
+        test("Remove existing bycatch", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var bycatch = viewmodel.ByCatch()[0];
+            viewmodel.removeByCatch(bycatch);
+            ok(viewmodel.isDirty(), "viewmodel is dirty after removing existing record");
+            equal(viewmodel.ByCatch().length, 3, "Correct number of records");
+        });
+        test("Add/remove new target catch", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.addTargetCatch();
+            ok(viewmodel.isDirty(), "viewmodel is dirty after creating record");
+            equal(viewmodel.TargetCatch().length, 3, "Correct number of records");
+            var tcatch = viewmodel.TargetCatch().slice(-1)[0];
+            ok(tcatch, "New record not null");
+            equal(tcatch.Id(), 0, "New record has no primary key");
+            viewmodel.removeTargetCatch(tcatch);
+            equal(viewmodel.TargetCatch().length, 2, "Correct number of records");
+        });
+        test("Remove existing target catch", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var tcatch = viewmodel.TargetCatch()[0];
+            viewmodel.removeTargetCatch(tcatch);
+            ok(viewmodel.isDirty(), "viewmodel is dirty after removing record");
+            equal(viewmodel.TargetCatch().length, 2, "Correct number of records");
+        });
+    </script>
+}

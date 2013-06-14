@@ -14,7 +14,7 @@
                         type="text"
                         data-val="true"
                         data-val-required="Date portion of start of day is required"
-                        data-bind="value: ShipsDate"
+                        data-bind="value: ShipsDate.formattedDate"
                         class="input-mini" />
                 <span class="add-on"><i class="icon-calendar"></i></span>
             </div>
@@ -37,7 +37,7 @@
                 <input id="UtcDate"
                         name="UtcDate"
                         type="text"
-                        data-bind="value: UtcDate"
+                        data-bind="value: UtcDate.formattedDate"
                         class="input-mini" />
                 <span class="add-on"><i class="icon-calendar"></i></span>
             </div>

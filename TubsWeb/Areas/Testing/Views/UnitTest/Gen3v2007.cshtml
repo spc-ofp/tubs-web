@@ -1,0 +1,217 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.gen3.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "BooleanValues": [
+              null,
+              "YES",
+              "NO"
+            ],
+            "TripNumber": "DJB / 10-04",
+            "TripId": 70,
+            "MonitorId": 62,
+            "VersionNumber": 2007,
+            "Incidents": [
+              {
+                  "Id": 0,
+                  "QuestionCode": "a",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "b",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "c",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "d",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "e",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "f",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "g",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "h",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "i",
+                  "Answer": "YES",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "j",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "k",
+                  "Answer": "YES",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "l",
+                  "Answer": "YES",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "m",
+                  "Answer": "YES",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "n",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "o",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "p",
+                  "Answer": "YES",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "q",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "r",
+                  "Answer": "YES",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "s",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              },
+              {
+                  "Id": 0,
+                  "QuestionCode": "t",
+                  "Answer": "NO",
+                  "JournalPage": null,
+                  "_destroy": false
+              }
+            ],
+            "Notes": [
+              {
+                  "Id": 1,
+                  "Date": "2010-08-28T00:00:00",
+                  "Comments": "The Yellowfin in well no. 3 starboard.  There is mix tuna (YFT & SKJ) but in the logsheet was only SKJ.",
+                  "_destroy": false
+              },
+              {
+                  "Id": 2,
+                  "Date": "2010-08-10T00:00:00",
+                  "Comments": "I saw the crew throw overboard the waste of plastic, metals, and vessel gear waste.",
+                  "_destroy": false
+              },
+              {
+                  "Id": 3,
+                  "Date": "2010-08-28T00:00:00",
+                  "Comments": "We transfer fish to other vessel at sea because were full load.",
+                  "_destroy": false
+              }
+            ]
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("GEN-3", {
+            setup: function () {
+                viewmodel = new tubs.gen3(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber correct");
+        });
+        test("Dirty flag", function () {
+        });
+        test("Async commands", function () {
+        });
+        test("Change note property", function () {
+        });
+        test("Add/remove new note", function () {
+        });
+        test("Remove existing note", function () {
+        });
+    </script>
+}
+

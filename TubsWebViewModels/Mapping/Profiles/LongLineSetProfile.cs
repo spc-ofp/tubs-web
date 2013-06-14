@@ -33,6 +33,16 @@ namespace TubsWeb.Mapping.Profiles
     
     public class LongLineSetProfile : Profile
     {
+        internal LongLineSetViewModel.Bait Build(string species, int? weight, string hooks)
+        {
+            return new LongLineSetViewModel.Bait()
+            {
+                Species = species,
+                Weight = weight,
+                Hooks = hooks
+            };
+        }
+        
         protected override void Configure()
         {
             base.Configure();
@@ -64,6 +74,8 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.PreviousSet, o => o.Ignore())
                 .ForMember(d => d.BooleanValues, o => o.Ignore())
                 .ForMember(d => d.VelocityUnits, o => o.Ignore())
+                .ForMember(d => d.ActionName, o => o.Ignore())
+                .ForMember(d => d.Baits, o => o.Ignore()) // AfterMap
                 .ForMember(d => d.SetId, o => o.MapFrom(s => s.Id))
                 .ForMember(d => d.TripId, o => o.MapFrom(s => s.Trip.Id))
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.Trip.SpcTripNumber ?? "This Trip").Trim()))
@@ -71,9 +83,9 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.TotalBaskets, o => o.MapFrom(s => s.TotalBasketCount))
                 .ForMember(d => d.TotalHooks, o => o.MapFrom(s => s.TotalHookCount))
                 .ForMember(d => d.WasTdrDeployed, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.TdrDeployed))
-                .ForMember(d => d.IsTargetingTuna, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.IsTargetingTuna))
-                .ForMember(d => d.IsTargetingSwordfish, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.IsTargetingSwordfish))
-                .ForMember(d => d.IsTargetingShark, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.IsTargetingSharks))
+                .ForMember(d => d.IsTargetingTuna, o => o.MapFrom(s => s.IsTargetingTuna))
+                .ForMember(d => d.IsTargetingSwordfish, o => o.MapFrom(s => s.IsTargetingSwordfish))
+                .ForMember(d => d.IsTargetingShark, o => o.MapFrom(s => s.IsTargetingSharks))
                 .ForMember(d => d.TotalObservedBaskets, o => o.MapFrom(s => s.TotalBasketsObserved))
                 .ForMember(d => d.HasGen3Event, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.Gen3Events))
                 .ForMember(d => d.ShipsTime, o => o.MapFrom(s => s.LocalTime))
@@ -92,6 +104,12 @@ namespace TubsWeb.Mapping.Profiles
                 {
                     if (null != s)
                     {
+                        d.Baits.Add(Build(s.BaitSpecies1Code, s.BaitSpecies1Weight, s.BaitSpecies1Hooks));
+                        d.Baits.Add(Build(s.BaitSpecies2Code, s.BaitSpecies2Weight, s.BaitSpecies2Hooks));
+                        d.Baits.Add(Build(s.BaitSpecies3Code, s.BaitSpecies3Weight, s.BaitSpecies3Hooks));
+                        d.Baits.Add(Build(s.BaitSpecies4Code, s.BaitSpecies4Weight, s.BaitSpecies4Hooks));
+                        d.Baits.Add(Build(s.BaitSpecies5Code, s.BaitSpecies5Weight, s.BaitSpecies5Hooks));
+                        
                         // NUnit was complaining about this, so rather than one-line it, be a little more
                         // verbose with some null checks.
                         //d.MaxSets = ((Spc.Ofp.Tubs.DAL.Entities.LongLineTrip)s.Trip).FishingSets.Count;

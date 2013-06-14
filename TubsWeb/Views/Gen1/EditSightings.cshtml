@@ -1,5 +1,6 @@
 ﻿@model TubsWeb.ViewModels.SightingViewModel
 @using Newtonsoft.Json
+@using System.Web.Optimization
 
 @{ 
     // Switch to full width layout
@@ -102,7 +103,8 @@
 
 @section AdditionalScripts {
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
-    <script src="~/Scripts/knockout.custom-bindings.js"></script>
+    
+    @Scripts.Render("~/bundles/knockout")
     <script src="~/Scripts/spc.utilities.js"></script>
     <!-- Ajax data layer -->
     <script src="~/Scripts/App/errorlogger.js"></script>

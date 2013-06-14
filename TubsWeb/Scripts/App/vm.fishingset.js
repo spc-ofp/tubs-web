@@ -17,8 +17,6 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
-
 
 tubs.psSetMapping = {
     'LogbookDate': {
@@ -40,13 +38,10 @@ tubs.psSetMapping = {
 
 
 tubs.psSetCatch = function (catchData) {
-    ///<signature>
-    ///<summary> Record of catch for a single species</summary>
-    ///<param name="catchData" type="Object">entity data</param>
-    ///</signature>
+    'use strict';
     var self = this;
     self.Id = ko.observable(catchData.Id || 0);
-    self._destroy = ko.observable(catchData._destroy || false);
+    self._destroy = ko.observable(catchData._destroy || false); //ignore jslint
     self.SpeciesCode = ko.observable(catchData.SpeciesCode || '');
     self.FateCode = ko.observable(catchData.FateCode || '');
     self.ObservedWeight = ko.observable(catchData.ObservedWeight || null);
@@ -71,16 +66,13 @@ tubs.psSetCatch = function (catchData) {
     });
 
     return self;
-}
+};
 
 // This is the actual Purse Seine Sea Day view model
 // Any functions/properties/etc. that belong on the view model
 // are defined here.
 tubs.psSet = function (data) {
-    ///<signature>
-    ///<summary> Observed data for a fishing set</summary>
-    ///<param name="data" type="Object">entity data</param>
-    ///</signature>
+    'use strict';
     var self = this;
     // Map the incoming JSON in 'data' to self, using
     // the options in psSetMapping
@@ -115,7 +107,7 @@ tubs.psSet = function (data) {
         self.Comments,
         self.ByCatch, // Add/remove only
         self.TargetCatch // Add/remove only
-    ], false /* TODO: Add appropriate hash function */);
+    ], false);
 
     self.isDirty = ko.computed(function () {
         // Avoid iterating over the events if the header
@@ -124,14 +116,14 @@ tubs.psSet = function (data) {
         // Check each child, bailing on the first
         // dirty child.
         var hasDirtyChild = false;
-        $.each(self.ByCatch(), function (i, sc) {
+        $.each(self.ByCatch(), function (i, sc) { //ignore jslint
             if (sc.isDirty()) {
                 hasDirtyChild = true;
                 return false;
             }
         });
         if (hasDirtyChild) { return hasDirtyChild; }
-        $.each(self.TargetCatch(), function (i, sc) {
+        $.each(self.TargetCatch(), function (i, sc) { //ignore jslint
             if (sc.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -144,18 +136,18 @@ tubs.psSet = function (data) {
     // child entities stored in the ByCatch and TargetCatch observableArrays
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
-        $.each(self.ByCatch(), function (index, value) {
+        $.each(self.ByCatch(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
-        $.each(self.TargetCatch(), function (index, value) {
+        $.each(self.TargetCatch(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
     };
 
     // Compute total catch, not to store, but as a possible check
     self.computedCatch = ko.computed(function () {
-        var brail1 = 0;
-        var brail2 = 0;
+        var brail1 = 0,
+            brail2 = 0;
         if ($.isNumeric(self.SizeOfBrail1()) && $.isNumeric(self.SumOfBrail1())) {
             brail1 = self.SizeOfBrail1() * self.SumOfBrail1();
             if (brail1 > 0) {
@@ -173,10 +165,11 @@ tubs.psSet = function (data) {
 
     // Show a warning if the entered and computed values don't match (within a half ton)
     self.showCatchTotalNote = ko.computed(function () {
-        var retval = false;
+        var retval = false,
+            delta;
         if ($.isNumeric(self.SumOfBrail1()) || $.isNumeric(self.SumOfBrail2())) {
-            var delta = Math.abs(self.computedCatch() - self.TotalCatch());
-            retval = delta > .5;
+            delta = Math.abs(self.computedCatch() - self.TotalCatch());
+            retval = delta > 0.5;
         }
         return retval;
     });
@@ -249,4 +242,4 @@ tubs.psSet = function (data) {
     });
 
     return self;
-}
+};

@@ -18,7 +18,6 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
 
 tubs.transferMapping = {
     'Transfers': {
@@ -29,6 +28,7 @@ tubs.transferMapping = {
 };
 
 tubs.transfer = function (eventData) {
+    'use strict';
     var self = this;
     self.Id = ko.observable(eventData.Id || 0);
     self.DateOnly = ko.observable(eventData.DateOnly || null).extend({ isoDate: 'DD/MM/YY' });
@@ -47,7 +47,7 @@ tubs.transfer = function (eventData) {
     self.ActionCode = ko.observable(eventData.ActionCode || '');
     self.Comments = ko.observable(eventData.Comments || '');
     self.NeedsFocus = ko.observable(eventData.NeedsFocus || false);
-    self._destroy = ko.observable(eventData._destroy || false);
+    self._destroy = ko.observable(eventData._destroy || false); //ignore jslint
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.DateOnly,
@@ -88,7 +88,7 @@ tubs.TransferViewModel = function (data) {
         // has changed
         if (self.dirtyFlag().isDirty()) { return true; }
         var hasDirtyChild = false;
-        $.each(self.Transfers(), function (i, evt) {
+        $.each(self.Transfers(), function (i, evt) { //ignore jslint
             if (evt.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -97,7 +97,7 @@ tubs.TransferViewModel = function (data) {
     });
 
     self.clearDirtyFlag = function () {
-        $.each(self.Transfers(), function (index, value) {
+        $.each(self.Transfers(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
     };
@@ -111,7 +111,7 @@ tubs.TransferViewModel = function (data) {
     self.removeEvent = function (evt) {
         if (evt && evt.Id()) { self.Transfers.destroy(evt); }
         else { self.Transfers.remove(evt); }
-    }
+    };
 
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {

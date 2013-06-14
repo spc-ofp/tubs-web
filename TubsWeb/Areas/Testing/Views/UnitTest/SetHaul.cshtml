@@ -1,20 +1,14 @@
 ﻿<div id="qunit"></div>
 <div id="qunit-fixture"></div>
 
-@section AdditionalCss {
-    <link rel="stylesheet" href="~/Content/qunit-1.11.0.css" />
-}
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
 
-@section AdditionalScripts {
-    @* QUnit is kinda required here *@
-    <script src="~/Scripts/qunit-1.11.0.js"></script>
-    @* viewmodel plugin here until it's added to the basic bundle *@
-    <script src="~/Scripts/knockout.viewmodel.2.0.2.min.js"></script>
-    <script src="~/Scripts/knockout.custom-bindings.js"></script>
-
+@section ScriptsUnderTest {
     @* Scripts under test *@
     <script src="~/Scripts/App/vm.sethaul.js"></script>
+}
 
+@section TestData {
     @* Inline data here *@
     <script>
         // Not exactly what comes from the server
@@ -31,6 +25,7 @@
               "m/s",
               "kts"
             ],
+            "ActionName": "Add",
             "TripNumber": "DJB / 11-02",
             "HasNext": true,
             "HasPrevious": true,
@@ -54,9 +49,9 @@
             "SharkLineCount": null,
             "SharkLineLength": null,
             "WasTdrDeployed": "NO",
-            "IsTargetingTuna": "YES",
-            "IsTargetingSwordfish": "NO",
-            "IsTargetingShark": "NO",
+            "IsTargetingTuna": true,
+            "IsTargetingSwordfish": false,
+            "IsTargetingShark": false,
             "LightStickCount": null,
             "TotalObservedBaskets": 79,
             "HasGen3Event": "N/A",
@@ -137,7 +132,9 @@
             ]
         };
     </script>
+}
 
+@section TestScript {
     @* Unit tests here *@
     <script>
         /// <reference path="../qunit-1.11.0.js" />
@@ -152,6 +149,8 @@
             ok(viewModel.IntermediateHaulPositions().length > 0, "ViewModel has haul positions");
             equal(viewModel.Comments().length, 0, "ViewModel has no comments");
             equal(viewModel.ShipsDate.formattedDate(), "19/04/11", "ShipsDate formatted correctly");
+            equal(viewModel.IsTargetingTuna(), true, "IsTargetingTuna wrapped correctly");
+            equal(viewModel.IsTargetingSwordfish(), false, "IsTargetingSwordfish wrapped correctly");
             viewModel = null;
         });
         test("Modify haul positions", function () {

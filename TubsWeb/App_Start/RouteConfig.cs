@@ -62,6 +62,7 @@ namespace TubsWeb
         public static string TripDetails = "TripDetails";
         public static string TripDefault = "TripDefault";
         public static string TripList = "TripList";
+        public static string RssFeed = "RssFeed";
         public static string Default = "Default";
 
         // Fix for MVC bug (that's still not fixed in MVC4!)
@@ -313,6 +314,12 @@ namespace TubsWeb
                 url: "Trip/{tripId}/SetHaul/{setNumber}/{action}",
                 defaults: new { controller = "SetHaul", action = "List", setNumber = UrlParameter.Optional },
                 constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: RssFeed,
+                url: "Trip/Rss",
+                defaults: new { controller = "Trip", action = "Rss" }
             );
 
             // Can this route replace the fairly generic routes?

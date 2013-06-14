@@ -1,10 +1,10 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="UnitTestController.cs" company="Secretariat of the Pacific Community">
+// <copyright file="TestingAreaRegistration.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2013 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace TubsWeb.Controllers
+namespace TubsWeb.Areas.Testing
 {
     /*
      * This file is part of TUBS.
@@ -23,22 +23,35 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System.Web.Mvc;
-
+    
     /// <summary>
-    /// UnitTestController allows the use of bundles and Razor to test
-    /// JavaScript inside the application environment.
+    /// The 'Testing' area holds online unit tests (QUnit/Jasmine/whatever)
     /// </summary>
-    public class UnitTestController : Controller
+    public class TestingAreaRegistration : AreaRegistration
     {
         /// <summary>
-        /// 
+        /// Testing is as good an area name as any other
         /// </summary>
-        /// <returns></returns>
-        public ActionResult SetHaul()
+        public override string AreaName
         {
-            ViewBag.Title = "Longline SetHaul unit tests";
-            return View();
+            get
+            {
+                return "Testing";
+            }
         }
 
+        /// <summary>
+        /// Simple registration.  No fancy routes, just one controller with
+        /// a bunch of actions.
+        /// </summary>
+        /// <param name="context"></param>
+        public override void RegisterArea(AreaRegistrationContext context)
+        {
+            context.MapRoute(
+                "Testing_default",
+                "Testing/{controller}/{action}/{id}",
+                new { action = "Index", id = UrlParameter.Optional }
+            );
+        }
     }
 }

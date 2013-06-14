@@ -1,0 +1,171 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.fad.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "OriginCodes": [
+              null,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "DescriptionCodes": [
+              null,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "MaterialCodes": [
+              null,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17
+            ],
+            "BooleanValues": [
+              null,
+              "YES",
+              "NO"
+            ],
+            "TripNumber": "DJB / 96-01",
+            "VersionNumber": 2007,
+            "TripId": 58,
+            "Id": 2,
+            "ActivityId": 1976,
+            "ObjectNumber": 1,
+            "OriginCode": 1,
+            "DeploymentDate": null,
+            "Latitude": null,
+            "Longitude": null,
+            "SsiTrapped": "N/A",
+            "AsFoundCode": null,
+            "AsLeftCode": null,
+            "MainMaterials": [
+              {
+                  "Id": 6,
+                  "MaterialCode": 16,
+                  "_destroy": false,
+                  "NeedsFocus": false
+              }
+            ],
+            "Attachments": [
+            ],
+            "Depth": null,
+            "Length": null,
+            "Width": null,
+            "BuoyNumber": null,
+            "Markings": null,
+            "Comments": "Test FAD"
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("GEN-5 (FAD)", {
+            setup: function () {
+                viewmodel = new tubs.FadViewModel(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "viewmodel not null");
+            equal(viewmodel.TripNumber(), "DJB / 96-01", "TripNumber correct");
+            equal(viewmodel.Comments(), "Test FAD", "Comments correct");
+            equal(viewmodel.MainMaterials().length, 1, "Correct number of main materials");
+            equal(viewmodel.Attachments().length, 0, "Correct number of attachments");
+        });
+        test("Dirty flag", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.Comments("Sweet gorilla of Manila!");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            equal(viewmodel.isDirty(), false, "viewmodel is clean after reset");
+            // Uncomment when this moves to knockout.viewmodel plugin
+            //ko.viewmodel.updateFromModel(viewmodel, modelAsJson);
+            //equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
+        });
+        test("Async commands", function () {
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.Comments("Live long and prosper");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+        test("Change main material property", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var material = viewmodel.MainMaterials()[0];
+            equal(material.MaterialCode(), 16, "material mapped correctly");
+            material.MaterialCode(15);
+            ok(viewmodel.isDirty(), "viewmodel is dirty after deck hand change");
+        });
+        test("Add/remove new material", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.addMainMaterial();
+            ok(viewmodel.isDirty(), "viewmodel is dirty after creating main material");
+            equal(viewmodel.MainMaterials().length, 2, "Correct number of materials");
+            var material = viewmodel.MainMaterials().slice(-1)[0];
+            ok(material, "New material not null");
+            equal(material.Id(), 0, "New material has no primary key");
+            viewmodel.removeMainMaterial(material);
+            equal(viewmodel.MainMaterials().length, 1, "Correct number of materials");
+        });
+        test("Add/remove new attachment", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.addAttachment();
+            ok(viewmodel.isDirty(), "viewmodel is dirty after creating attachment");
+            equal(viewmodel.Attachments().length, 1, "Correct number of attachments");
+            var attach = viewmodel.Attachments().slice(-1)[0];
+            ok(attach, "New attachment not null");
+            equal(attach.Id(), 0, "New attachment has no primary key");
+            viewmodel.removeAttachment(attach);
+            equal(viewmodel.Attachments().length, 0, "Correct number of attachments");
+        });
+        test("Remove existing material", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var material = viewmodel.MainMaterials()[0];
+            viewmodel.removeMainMaterial(material);
+            ok(viewmodel.isDirty(), "viewmodel is dirty after removing material");
+            equal(viewmodel.MainMaterials().length, 1, "Correct number of materials");
+        });
+    </script>
+}

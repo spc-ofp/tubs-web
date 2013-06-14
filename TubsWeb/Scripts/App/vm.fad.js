@@ -15,7 +15,6 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
 
 // TODO:  Extend Lat/Lon with appropriate regex
 tubs.FadMapping = {
@@ -37,6 +36,7 @@ tubs.FadMapping = {
 };
 
 tubs.FadMaterial = function (data) {
+    'use strict';
     var self = this;
     self.Id = ko.observable(data.Id || 0);
     self.MaterialCode = ko.observable(data.MaterialCode || null);
@@ -44,7 +44,7 @@ tubs.FadMaterial = function (data) {
     self.NeedsFocus = ko.observable(data.NeedsFocus || false);
 
     self.dirtyFlag = new ko.DirtyFlag([
-        self.MaterialCode,
+        self.MaterialCode
     ], false);
 
     self.isDirty = ko.computed(function () {
@@ -55,6 +55,7 @@ tubs.FadMaterial = function (data) {
 };
 
 tubs.FadViewModel = function (data) {
+    'use strict';
     var self = this;
     ko.mapping.fromJS(data, tubs.FadMapping, self);
 
@@ -84,14 +85,14 @@ tubs.FadViewModel = function (data) {
         // Check each child, bailing on the first
         // dirty child.
         var hasDirtyChild = false;
-        $.each(self.MainMaterials(), function (i, sc) {
+        $.each(self.MainMaterials(), function (i, sc) { //ignore jslint
             if (sc.isDirty()) {
                 hasDirtyChild = true;
                 return false;
             }
         });
         if (hasDirtyChild) { return hasDirtyChild; }
-        $.each(self.Attachments(), function (i, sc) {
+        $.each(self.Attachments(), function (i, sc) { //ignore jslint
             if (sc.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -104,10 +105,10 @@ tubs.FadViewModel = function (data) {
     // child entities stored in the MainMaterials and Attachments observableArrays
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
-        $.each(self.MainMaterials(), function (index, value) {
+        $.each(self.MainMaterials(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
-        $.each(self.Attachments(), function (index, value) {
+        $.each(self.Attachments(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
     };

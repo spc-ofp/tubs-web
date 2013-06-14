@@ -11,19 +11,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate" />
-    @* 
-     * If Chrome is asked for and Chrome frame is installed, it will be used.
-     * Otherwise, use the best version of IE that's installed.
-     *@
-    <!-- Make use of Chrome Frame optional on a per View basis -->
-    @if (ViewBag.UseChromeFrame != null && ViewBag.UseChromeFrame)
-    {
-    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=Edge">
-    }
-    else
-    {
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    }
     <title>@ViewBag.Title</title>
     @* 
      * This link relation allows us to publish the starting URL for our application.
@@ -31,8 +19,8 @@
      * the appropriate virtual directory.
      * Much cleaner than messing with window.location
      *@
-    <link rel="start" href="~/" id="applicationHome" />
-    <link rel="alternate" type="application/rss+xml" title="Latest Trips" href="@Url.Action("Rss", "Trip")" />
+    <link rel="start" href="~/" id="applicationHome" />    
+    <link rel="alternate" type="application/rss+xml" title="Latest Trips" href="@Url.RouteUrl(TubsWeb.RouteConfig.RssFeed)" />
     @Styles.Render("~/Content/css")
     <style>
       .lookatme {

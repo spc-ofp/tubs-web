@@ -3,7 +3,6 @@
 * Knockout.js ViewModel for editing GEN-2 data
 * Depends on:
 * jquery
-* json2 (for down-level browser support)
 * knockout
 * knockout.asyncCommand (makes it easier to show user activity)
 * knockout.dirtyFlag (avoid unneccesary saves)
@@ -16,7 +15,6 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
 
 tubs.Gen2Event = function (data) {
     var self = this;
@@ -43,11 +41,11 @@ tubs.Gen2Event = function (data) {
     // Only show the "Next Event" button for any Edit
     // or an Add that has been stored in the database
     self.showNextEventButton = ko.computed(function () {
-        return !self.isAdd() || (self.Id() != 0);
+        return !self.isAdd() || (self.Id() !== 0);
     });
 
     return self;
-}
+};
 
 tubs.Gen2LandedEvent = function (data) {
     var self = this;
@@ -158,7 +156,7 @@ tubs.Gen2SpeciesGroup = function (data) {
     self.ConditionCode = ko.observable(data.ConditionCode || '');
     self.Description = ko.observable(data.Description || '');
     self.NeedsFocus = ko.observable(data.NeedsFocus || false);
-    self._destroy = ko.observable(data._destroy || false);
+    self._destroy = ko.observable(data._destroy || false); //ignore jslint
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.Count,
@@ -205,14 +203,14 @@ tubs.Gen2GearEvent = function (data) {
         // Check each child event, bailing on the first
         // dirty child.
         var hasDirtyChild = false;
-        $.each(self.StartOfInteraction(), function (i, evt) {
+        $.each(self.StartOfInteraction(), function (i, evt) { //ignore jslint
             if (evt.isDirty()) {
                 hasDirtyChild = true;
                 return false;
             }
         });
         if (hasDirtyChild) { return true; }
-        $.each(self.EndOfInteraction(), function (i, evt) {
+        $.each(self.EndOfInteraction(), function (i, evt) { //ignore jslint
             if (evt.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -222,10 +220,10 @@ tubs.Gen2GearEvent = function (data) {
     });
 
     self.clearDirtyFlag = function () {
-        $.each(self.StartOfInteraction(), function (index, value) {
+        $.each(self.StartOfInteraction(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
-        $.each(self.EndOfInteraction(), function (index, value) {
+        $.each(self.EndOfInteraction(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
         self.dirtyFlag().reset();

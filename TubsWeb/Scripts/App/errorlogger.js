@@ -9,18 +9,20 @@ tubs.notify = function (header, xhr, status) {
 
     // If we got a bad request status, then that's the
     // application talking.
-    var errorMessage = 'Application error'; // Generic error message
-    if ("timeout" == status) {
+    var errorMessage = 'Application error', // Generic error message
+        errors;
+    if ("timeout" === status) {
+
         // Not great from a UX perspective, but good enough for them to tell us
         // what the error message says...
         errorMessage = 'Server timed out';
     }
-    if (xhr.status == 400 && xhr.responseText) {
+    if (xhr.status === 400 && xhr.responseText) {
         try {
-            var errors = $.parseJSON(xhr.responseText);
+            errors = $.parseJSON(xhr.responseText);
             if (errors && errors.length > 0) {
                 // If there's only one message, then don't put it into a list
-                if (errors.length == 1) {
+                if (errors.length === 1) {
                     errorMessage = errors[0];
                 } else {
                     errorMessage = "<ul><li>" + errors.join("</li><li>") + "</li></ul>";

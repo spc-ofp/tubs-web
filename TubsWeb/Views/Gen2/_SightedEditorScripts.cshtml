@@ -1,8 +1,8 @@
 ﻿@model TubsWeb.ViewModels.Gen2SightingViewModel
 @using Newtonsoft.Json
+@using System.Web.Optimization
 
-<script src="~/Scripts/knockout.custom-bindings.js"></script>
-<script src="~/Scripts/spc.utilities.js"></script>
+@Scripts.Render("~/bundles/knockout")
 <!-- Ajax data layer -->
 <script src="~/Scripts/App/errorlogger.js"></script>
 <script src="~/Scripts/App/datacontext.js"></script>
@@ -17,9 +17,9 @@
 <script>    
     $(document).ready(function () {
         // If this was done in Razor, all the scripts could be bundled up into a single partial View
-        var viewModel = new tubs.GenSightedEvent(@modelAsJson);
-        viewModel.clearDirtyFlag();
+        var viewModel = new tubs.GenSightedEvent(@modelAsJson);        
         ko.applyBindings(viewModel);
+        viewModel.clearDirtyFlag();
 
         // PageGuide initialization
         tl.pg.init();

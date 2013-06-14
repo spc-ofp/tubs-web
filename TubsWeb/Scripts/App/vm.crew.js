@@ -20,7 +20,6 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
 
 tubs.psCrewMapping = {
     'Hands': {
@@ -77,10 +76,11 @@ tubs.psCrewMapping = {
         create: function (options) {
             return new tubs.CrewMember(options.data);
         }
-    },
+    }
 };
 
 tubs.CrewMember = function (data) {
+    'use strict';
     var self = this;
     self.Id = ko.observable(data.Id || 0);
     self.Job = ko.observable(data.Job); // Numeric enum value, not string description
@@ -95,7 +95,7 @@ tubs.CrewMember = function (data) {
         self.Name,
         self.Nationality,
         self.Years,
-        self.Comments,
+        self.Comments
     ], false);
 
     self.isDirty = ko.computed(function () {
@@ -103,33 +103,11 @@ tubs.CrewMember = function (data) {
     });
 
     return self;
-}
+};
 
 tubs.psCrewViewModel = function (data) {
     var self = this;
     ko.mapping.fromJS(data, tubs.psCrewMapping, self);
-    /*
-    self.TripId = ko.observable(data.TripId || 0);
-
-    // Senior Crew
-    self.Captain = ko.observable(new tubs.CrewMember(data.Captain));
-    self.Navigator = ko.observable(new tubs.CrewMember(data.Navigator));
-    self.Mate = ko.observable(new tubs.CrewMember(data.Mate));
-    self.ChiefEngineer = ko.observable(new tubs.CrewMember(data.ChiefEngineer));
-    self.AssistantEngineer = ko.observable(new tubs.CrewMember(data.AssistantEngineer));
-    self.DeckBoss = ko.observable(new tubs.CrewMember(data.DeckBoss));
-    self.Cook = ko.observable(new tubs.CrewMember(data.Cook));
-    self.HelicopterPilot = ko.observable(new tubs.CrewMember(data.HelicopterPilot));
-    self.SkiffMan = ko.observable(new tubs.CrewMember(data.SkiffMan));
-    self.WinchMan = ko.observable(new tubs.CrewMember(data.WinchMan));
-
-    // Other Crew
-    var tmpHands = [];
-    $.map(data.Hands, function (n, i) {
-        tmpHands.push(new tubs.CrewMember(n));
-    });
-    self.Hands = ko.observableArray(tmpHands);
-    */
     self.dirtyFlag = new ko.DirtyFlag([
         self.Captain,
         self.Navigator,
@@ -149,7 +127,7 @@ tubs.psCrewViewModel = function (data) {
         // has changed
         if (self.dirtyFlag().isDirty()) { return true; }
         var hasDirtyChild = false;
-        $.each(self.Hands(), function (i, evt) {
+        $.each(self.Hands(), function (i, evt) { //ignore jslint
             if (evt.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -162,7 +140,7 @@ tubs.psCrewViewModel = function (data) {
     // child entities stored in the Events observableArray
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
-        $.each(self.Hands(), function (index, value) {
+        $.each(self.Hands(), function (index, value) { //ignore jslint
             value.dirtyFlag().reset();
         });
     };
@@ -176,7 +154,7 @@ tubs.psCrewViewModel = function (data) {
         // focus on a newly created item, but we can set focus elsewhere
         // when the page loads.
         self.Hands.push(new tubs.CrewMember({ "NeedsFocus": true }));
-    }
+    };
 
     // This function takes advantage of the RoR integration
     // in Knockout.  A call to .destroy(...) sets the "_destroy" property
@@ -217,19 +195,19 @@ tubs.psCrewViewModel = function (data) {
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.saveCrew(
-                    self.TripId(),
-                    self,
-                    function (result) {
-                        ko.mapping.fromJS(result, {}, self);
-                        self.clearDirtyFlag();
-                        toastr.info('Saved crew details');
-                        complete();
-                    },
-                    function (xhr, status, error) {
-                        tubs.notify('Failed to save crew details', xhr, status);
-                        complete();
-                    }
-                );
+                self.TripId(),
+                self,
+                function (result) {
+                    ko.mapping.fromJS(result, {}, self);
+                    self.clearDirtyFlag();
+                    toastr.info('Saved crew details');
+                    complete();
+                },
+                function (xhr, status, error) {
+                    tubs.notify('Failed to save crew details', xhr, status);
+                    complete();
+                }
+            );
         },
 
         canExecute: function (isExecuting) {
@@ -237,4 +215,4 @@ tubs.psCrewViewModel = function (data) {
         }
     });
     return self;
-}
+};

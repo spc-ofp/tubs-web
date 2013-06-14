@@ -10,59 +10,33 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
 
 /*
  * Use the knockout.viewmodel plugin to map the SetHaul
  * view model.
+ * http://coderenaissance.github.io/knockout.viewmodel/
+ * TODO:  Adding a Comment or IntermediateHaulPosition
+ * Work out if it is done on the VM or is a shared function...
  */
 tubs.setHaulOptions = {
     extend: {
-        "{root}.Comments": function (comments) {
-            /* Remove looks like it's working, but there's still the issue of creating a comment... */
-            comments.Remove = function (comment) {
-                if (comment && comment.Id && comment.Id()) {
-                    comments.destroy(comment);
-                } else {
-                    comments.remove(comment)
-                };
-            };
-            /* Add might belong on the ViewModel itself... */
-            comments.Add = function (comment) {
-                /* TODO: Set NeedsFocus to true */
-                comments.push(comment);
-            };
-            
-            return comments;
-        },
+        "{root}.Comments": "ExtendWithDestroy",
         "{root}.Comments[i]": function (comment) {
             comment.dirtyFlag = new ko.DirtyFlag([
                 comment.LocalTime,
-                comment.Details,
+                comment.Details
             ], false);
 
             comment.isDirty = ko.computed(function () {
                 return comment.dirtyFlag().isDirty();
             });
         },
-        "{root}.IntermediateHaulPositions": function (positions) {
-            positions.Remove = function (position) {
-                if (position && position.Id && position.Id()) {
-                    positions.destroy(position);
-                } else {
-                    positions.remove(position)
-                };
-            };
-            positions.Add = function (position) {
-                positions.push(position);
-            };
-            return positions;
-        },
+        "{root}.IntermediateHaulPositions": "ExtendWithDestroy",
         "{root}.IntermediateHaulPositions[i]": function (position) {
             position.dirtyFlag = new ko.DirtyFlag([
                 position.LocalTime,
                 position.Latitude,
-                position.Longitude,
+                position.Longitude
             ], false);
 
             position.isDirty = ko.computed(function () {
@@ -77,7 +51,6 @@ tubs.setHaulOptions = {
     custom: {
         "{root}.ShipsDate": {
             map: function (shipsDate) {
-                /* There is still the issue of whether this needs an unmap... */
                 return ko.observable(shipsDate).extend({ isoDate: 'DD/MM/YY' });
             }
         },
@@ -86,10 +59,30 @@ tubs.setHaulOptions = {
                 return ko.observable(utcDate).extend({ isoDate: 'DD/MM/YY' });
             }
         }
+    },
+    shared: {
+        /* Assumes item has an Id() observable to hold database PK value */
+        ExtendWithDestroy: function (items) {
+            items.Remove = function (item) {
+                // If the item has an Id, mark for deletion
+                if (item && item.Id && item.Id()) {
+                    items.destroy(item);
+                } else {
+                    // If there is no Id, or it equals zero, remove it from the
+                    // array so that it won't be sent to the server
+                    items.remove(item);
+                }
+            };
+        }
     }
 };
 
+// Probably best to create observable entities for SetHaulComment and
+// SetHaulPosition.  Maybe even do so above setHaulOptions and use them in
+// the mapping where possible?
+
 tubs.SetHaul = function (data) {
+    'use strict';
     // Use knockout.viewmodel to manage most of the mapping
     var vm = ko.viewmodel.fromModel(data, tubs.setHaulOptions);
 
@@ -127,9 +120,18 @@ tubs.SetHaul = function (data) {
         vm.EndOfSet,
         vm.StartOfHaul,
         vm.EndOfHaul, // Not sure this will stick around...
-        vm.Comments, // Array membership, not changes to children
-        vm.IntermediateHaulPositions // Array membership, not changes to children
+        vm.Comments,
+        vm.IntermediateHaulPositions
     ], false);
+
+    vm.isAdd = ko.computed(function () {
+        return /add/i.test(vm.ActionName());
+    });
+
+    vm.showNextItem = ko.computed(function () {
+        // TODO: Take HasNext into account?
+        return !vm.isAdd() || vm.SetId() !== 0;
+    });
 
     vm.isDirty = ko.computed(function () {
         if (vm.dirtyFlag().isDirty()) {
@@ -137,7 +139,7 @@ tubs.SetHaul = function (data) {
         }
         var hasDirtyChild = false;
         // Look for dirty comments
-        $.each(vm.Comments(), function (i, c) {
+        $.each(vm.Comments(), function (i, c) { //ignore jslint
             if (c.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -145,7 +147,7 @@ tubs.SetHaul = function (data) {
         });
         if (hasDirtyChild) { return hasDirtyChild; }
         // Look for dirty intermediate positions
-        $.each(vm.IntermediateHaulPositions(), function (i, p) {
+        $.each(vm.IntermediateHaulPositions(), function (i, p) { //ignore jslint
             if (p.isDirty()) {
                 hasDirtyChild = true;
                 return false;
@@ -155,6 +157,11 @@ tubs.SetHaul = function (data) {
         return hasDirtyChild;
     });
 
+    vm.clearDirtyFlag = function () {
+        vm.dirtyFlag().reset();
+    };
+
+    // TODO: Implement using correct jQuery promise functions
     vm.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
             complete();
@@ -165,6 +172,7 @@ tubs.SetHaul = function (data) {
         }
     });
 
+    // TODO: Implement
     vm.saveCommand = ko.asyncCommand({
         execute: function (complete) {
             complete();

@@ -14,7 +14,6 @@
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
-"use strict";
 
 tubs.PageCountMapping = {
     'PageCounts': {
@@ -25,6 +24,7 @@ tubs.PageCountMapping = {
 };
 
 tubs.PageCount = function (data) {
+    'use strict';
     var self = this;
     self.Id = ko.observable(data.Id || 0);
     self.Key = ko.observable(data.Key || null);
@@ -48,6 +48,7 @@ tubs.PageCount = function (data) {
 };
 
 tubs.PageCountViewModel = function (data) {
+    'use strict';
     var self = this;
     ko.mapping.fromJS(data, tubs.PageCountMapping, self);
 
