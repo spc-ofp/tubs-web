@@ -139,8 +139,11 @@ tubs.gen3 = function (data) {
     // we wouldn't want to ship garbage data back to the server and complicate
     // the validation.
     self.removeNote = function (evt) {
-        if (evt && evt.Id()) { self.Notes.destroy(evt); }
-        else { self.Notes.remove(evt); }
+        if (evt && evt.Id()) {
+            self.Notes.destroy(evt);
+        } else {
+            self.Notes.remove(evt);
+        }
     };
 
     self.reloadCommand = ko.asyncCommand({
@@ -156,9 +159,9 @@ tubs.gen3 = function (data) {
                 function (xhr, status, error) {
                     tubs.notify('Failed to reload GEN-3', xhr, status);
                     complete();
-                });
+                }
+            );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }
@@ -178,9 +181,9 @@ tubs.gen3 = function (data) {
                 function (xhr, status, error) {
                     tubs.notify('Failed to save GEN-3', xhr, status);
                     complete();
-                });
+                }
+            );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }

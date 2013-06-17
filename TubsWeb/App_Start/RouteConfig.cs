@@ -26,6 +26,9 @@ namespace TubsWeb
     using System.Web.Routing;
     using DoddleReport.Web;
     
+    /// <summary>
+    /// Configure MVC routes.
+    /// </summary>
     public class RouteConfig
     {
         // TODO Add documentation to all these strings

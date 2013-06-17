@@ -10,7 +10,98 @@
 
 @section TestData {
     <script>
-        var modelAsJson = {};
+        var modelAsJson = {
+            "TypeCodes": [
+              null,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              31
+            ],
+            "ActionCodes": [
+              "",
+              "TR",
+              "SR",
+              "BR",
+              "OR",
+              "TG",
+              "SG",
+              "BG",
+              "OG"
+            ],
+            "TripNumber": "DJB / 10-04",
+            "VersionNumber": 2007,
+            "TripId": 70,
+            "Transfers": [
+              {
+                  "Id": 1,
+                  "DateOnly": "2010-08-28T00:00:00",
+                  "TimeOnly": "1520",
+                  "Latitude": "0322.793S",
+                  "Longitude": "15636.763E",
+                  "VesselId": null,
+                  "Name": "USS RELIANT",
+                  "Ircs": null,
+                  "CountryCode": "TV",
+                  "TypeCode": 1,
+                  "Skipjack": 63.130,
+                  "Yellowfin": null,
+                  "Bigeye": null,
+                  "Mixed": null,
+                  "ActionCode": "TR",
+                  "Comments": "RECEIVING FISH",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              },
+              {
+                  "Id": 2,
+                  "DateOnly": "2010-08-24T00:00:00",
+                  "TimeOnly": "2017",
+                  "Latitude": "0354.959S",
+                  "Longitude": "15914.731E",
+                  "VesselId": null,
+                  "Name": "USS ENTERPRISE",
+                  "Ircs": "NCC1701",
+                  "CountryCode": "KR",
+                  "TypeCode": 1,
+                  "Skipjack": null,
+                  "Yellowfin": null,
+                  "Bigeye": null,
+                  "Mixed": null,
+                  "ActionCode": "BG",
+                  "Comments": "BUNKERING",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              },
+              {
+                  "Id": 4268,
+                  "DateOnly": "2010-08-24T00:00:00",
+                  "TimeOnly": "2018",
+                  "Latitude": "0354.959S",
+                  "Longitude": "15914.731E",
+                  "VesselId": null,
+                  "Name": "USS EXCELSIOR",
+                  "Ircs": null,
+                  "CountryCode": null,
+                  "TypeCode": 1,
+                  "Skipjack": null,
+                  "Yellowfin": null,
+                  "Bigeye": null,
+                  "Mixed": null,
+                  "ActionCode": "OR",
+                  "Comments": "JACK DANIELS",
+                  "_destroy": false,
+                  "NeedsFocus": false
+              }
+            ]
+        };
     </script>
 }
 
@@ -20,7 +111,7 @@
         var viewmodel;
         module("GEN-1 (Transfer)", {
             setup: function () {
-                viewmodel = new tubs.transfer(modelAsJson);
+                viewmodel = new tubs.TransferViewModel(modelAsJson);
             },
             teardown: function () {
                 viewmodel = null;
@@ -28,7 +119,33 @@
         });
         test("Create viewmodel", function () {
             ok(viewmodel, "ViewModel not null");
-            equal(viewmodel.TripNumber(), "DJB / 10-01", "TripNumber correct");
+            equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber correct");
+        });
+        test("Async commands", function () {
+            ok(!viewmodel.saveCommand.canExecute(), "No save possible on clean model");
+            ok(!viewmodel.reloadCommand.canExecute(), "No reload possible on clean model");
+            viewmodel.Transfers()[0].Comments("_xyzzy_");
+            ok(viewmodel.saveCommand.canExecute(), "Save possible on dirty model");
+            ok(viewmodel.reloadCommand.canExecute(), "Reload possible on dirty model");
+        });
+        test("Add/remove new transfer", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.Transfers().length, 3, "3 transfers attached to trip");
+            viewmodel.addEvent();
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            equal(viewmodel.Transfers().length, 4, "4 transfers attached to trip");
+            var evt = viewmodel.Transfers().slice(-1)[0];
+            ok(evt.NeedsFocus(), "New transfer has focus set");
+            viewmodel.removeEvent(evt);
+            equal(viewmodel.Transfers().length, 3, "3 transfers attached to trip");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+        });
+        test("Remove existing transfer", function () {
+            equal(viewmodel.Transfers().length, 3, "3 transfers attached to trip");
+            var xfer = viewmodel.Transfers()[0];
+            viewmodel.removeEvent(xfer);
+            ok(viewmodel.isDirty(), "viewmodel now dirty");
+            equal(viewmodel.Transfers().length, 3, "3 transfers attached to trip");
         });
     </script>
 }

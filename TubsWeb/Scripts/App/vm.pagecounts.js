@@ -74,9 +74,12 @@ tubs.PageCountViewModel = function (data) {
     // Clear the dirty flag for the this entity
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
-        ko.utils.arrayForEach(self.PageCounts(), function (item) {
+        _.each(self.PageCounts(), function (item) {
             item.clearDirtyFlag();
         });
+        //ko.utils.arrayForEach(self.PageCounts(), function (item) {
+        //    item.clearDirtyFlag();
+        //});
     };
 
     self.addPageCount = function () {
@@ -84,8 +87,11 @@ tubs.PageCountViewModel = function (data) {
     };
 
     self.removePageCount = function (pageCount) {
-        if (pageCount && pageCount.Id()) { self.PageCounts.destroy(pageCount); }
-        else { self.PageCounts.remove(pageCount); }
+        if (pageCount && pageCount.Id()) {
+            self.PageCounts.destroy(pageCount);
+        } else {
+            self.PageCounts.remove(pageCount);
+        }
     };
 
     // Commands

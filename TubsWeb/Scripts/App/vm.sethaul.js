@@ -125,7 +125,7 @@ tubs.SetHaul = function (data) {
     ], false);
 
     vm.isAdd = ko.computed(function () {
-        return /add/i.test(vm.ActionName());
+        return (/add/i).test(vm.ActionName());
     });
 
     vm.showNextItem = ko.computed(function () {

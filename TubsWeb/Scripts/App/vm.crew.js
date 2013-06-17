@@ -7,7 +7,7 @@
 * Knockout.js ViewModel for editing a PS-2 Daily Log
 * Depends on:
 * jquery
-* json2 (for down-level browser support)
+* underscore.js (cleaner array ops)
 * knockout
 * knockout.mapping (automatically maps JSON)
 * knockout.asyncCommand (makes it easier to show user activity)
@@ -126,22 +126,18 @@ tubs.psCrewViewModel = function (data) {
         // Avoid iterating over the events if the header
         // has changed
         if (self.dirtyFlag().isDirty()) { return true; }
-        var hasDirtyChild = false;
-        $.each(self.Hands(), function (i, evt) { //ignore jslint
-            if (evt.isDirty()) {
-                hasDirtyChild = true;
-                return false;
-            }
+
+        return _.any(self.Hands(), function (hand) { //ignore jslint
+            return hand.isDirty();
         });
-        return hasDirtyChild;
     });
 
     // Clear the dirty flag for the this entity, plus all the
     // child entities stored in the Events observableArray
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
-        $.each(self.Hands(), function (index, value) { //ignore jslint
-            value.dirtyFlag().reset();
+        _.each(self.Hands(), function (hand) { //ignore jslint
+            hand.dirtyFlag().reset();
         });
     };
 
@@ -156,18 +152,22 @@ tubs.psCrewViewModel = function (data) {
         self.Hands.push(new tubs.CrewMember({ "NeedsFocus": true }));
     };
 
-    // This function takes advantage of the RoR integration
-    // in Knockout.  A call to .destroy(...) sets the "_destroy" property
-    // to true.  Knockout then ignores the entity in the 'foreach' binding.
-    // This removes the requirement to manage deleted Ids on the client and
-    // the server.
-    // NOTE:  We're not using destroy on events that have an Id of zero.
-    // If the user had added a row and then realized they didn't need it,
-    // we wouldn't want to ship garbage data back to the server and complicate
-    // the validation.
+    /* This function takes advantage of the RoR integration
+     * in Knockout.  A call to .destroy(...) sets the "_destroy" property
+     * to true.  Knockout then ignores the entity in the 'foreach' binding.
+     * This removes the requirement to manage deleted Ids on the client and
+     * the server.
+     * NOTE:  We're not using destroy on events that have an Id of zero.
+     * If the user had added a row and then realized they didn't need it,
+     * we wouldn't want to ship garbage data back to the server and complicate
+     * the validation.
+     */
     self.removeHand = function (hand) {
-        if (hand && hand.Id()) { self.Hands.destroy(hand); }
-        else { self.Hands.remove(hand); }
+        if (hand && hand.Id()) {
+            self.Hands.destroy(hand);
+        } else {
+            self.Hands.remove(hand);
+        }
     };
 
     // Getting a working reload is going to require a working JSON mapping
@@ -186,7 +186,6 @@ tubs.psCrewViewModel = function (data) {
                 }
             );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }

@@ -79,25 +79,23 @@ tubs.FadViewModel = function (data) {
     ], false);
 
     self.isDirty = ko.computed(function () {
+        var hasDirtyChild = false;
         // Avoid iterating over the events if the header
         // has changed
         if (self.dirtyFlag().isDirty()) { return true; }
-        // Check each child, bailing on the first
-        // dirty child.
-        var hasDirtyChild = false;
-        $.each(self.MainMaterials(), function (i, sc) { //ignore jslint
-            if (sc.isDirty()) {
-                hasDirtyChild = true;
-                return false;
-            }
+
+        hasDirtyChild = _.any(self.MainMaterials(), function (material) {
+            return material.isDirty();
         });
-        if (hasDirtyChild) { return hasDirtyChild; }
-        $.each(self.Attachments(), function (i, sc) { //ignore jslint
-            if (sc.isDirty()) {
-                hasDirtyChild = true;
-                return false;
-            }
+
+        if (hasDirtyChild) {
+            return hasDirtyChild;
+        }
+
+        hasDirtyChild = _.any(self.Attachments(), function (attach) {
+            return attach.isDirty();
         });
+
         return hasDirtyChild;
     });
 
@@ -105,11 +103,13 @@ tubs.FadViewModel = function (data) {
     // child entities stored in the MainMaterials and Attachments observableArrays
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
-        $.each(self.MainMaterials(), function (index, value) { //ignore jslint
-            value.dirtyFlag().reset();
+
+        _.each(self.MainMaterials(), function (material) {
+            material.dirtyFlag().reset();
         });
-        $.each(self.Attachments(), function (index, value) { //ignore jslint
-            value.dirtyFlag().reset();
+
+        _.each(self.Attachments(), function (attach) {
+            attach.dirtyFlag().reset();
         });
     };
 
@@ -123,16 +123,20 @@ tubs.FadViewModel = function (data) {
     };
 
     self.removeMainMaterial = function (fm) {
-        if (fm && fm.Id()) { self.MainMaterials.destroy(fm); }
-        else { self.MainMaterials.remove(fm); }
+        if (fm && fm.Id()) {
+            self.MainMaterials.destroy(fm);
+        } else {
+            self.MainMaterials.remove(fm);
+        }
     };
 
     self.removeAttachment = function (fm) {
-        if (fm && fm.Id()) { self.Attachments.destroy(fm); }
-        else { self.Attachments.remove(fm); }
+        if (fm && fm.Id()) {
+            self.Attachments.destroy(fm);
+        } else {
+            self.Attachments.remove(fm);
+        }
     };
-
-    // tubs.getFad = function (tripId, fadId, success_cb, error_cb)
 
     // Commands
     self.reloadCommand = ko.asyncCommand({
@@ -152,7 +156,6 @@ tubs.FadViewModel = function (data) {
                 }
             );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }
@@ -176,7 +179,6 @@ tubs.FadViewModel = function (data) {
                 }
             );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }

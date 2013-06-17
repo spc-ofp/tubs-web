@@ -107,8 +107,11 @@ tubs.SightingViewModel = function (data) {
     };
 
     self.removeEvent = function (evt) {
-        if (evt && evt.Id()) { self.Sightings.destroy(evt); }
-        else { self.Sightings.remove(evt); }
+        if (evt && evt.Id()) {
+            self.Sightings.destroy(evt);
+        } else {
+            self.Sightings.remove(evt);
+        }
     };
 
     self.reloadCommand = ko.asyncCommand({
@@ -124,9 +127,9 @@ tubs.SightingViewModel = function (data) {
                 function (xhr, status, error) {
                     tubs.notify('Failed to reload sightings', xhr, status);
                     complete();
-                });
+                }
+            );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }
@@ -146,7 +149,8 @@ tubs.SightingViewModel = function (data) {
                 function (xhr, status, error) {
                     tubs.notify('Failed to save sightings', xhr, status);
                     complete();
-                });
+                }
+            );
         },
 
         canExecute: function (isExecuting) {

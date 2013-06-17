@@ -6,27 +6,47 @@
     @Styles.Render("~/Content/css")
 }
 
+@{
+    var controller = ViewContext.Controller.GetType();
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    var methods = controller.GetMethods()
+        .Where(m => m.ReturnType.ToString() == "System.Web.Mvc.ActionResult" && !"Index".Equals(m.Name, StringComparison.InvariantCultureIgnoreCase));
+
+    var links =
+        from method in methods
+        select String.Format("\"{0}\"", Url.Action(method.Name, controllerName));
+            
+    var suite = String.Join(",", links);            
+}
+
 <div class="wrapper">
     <div class="container">
-
         <p>
-            This page contains links to all available JavaScript unit tests for TUBS.
-            Click on a link to run the unit test and see the results.
+            This page runs all available JavaScript unit tests for TUBS and displays the results in a single place.
+            Each test can also be accessed via the list below.
         </p>
+        @* TODO: Hide this list *@
         <ul class="unstyled">
-        @{
-            var controller = ViewContext.Controller.GetType();
-            var methods = controller.GetMethods()
-                .Where(m => m.ReturnType.ToString() == "System.Web.Mvc.ActionResult");
-
-            foreach(var method in methods)
-            {
-                <li>@Html.ActionLink(@method.Name, @method.Name, "UnitTest")</li>
-            }
+        @foreach(var method in methods)
+        {
+            <li>@Html.ActionLink(@method.Name, @method.Name, controllerName)</li>
         }
         </ul>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
 
     </div>
     <div class="push"><!--//--></div>
 </div>
+
+@section AdditionalScripts {
+    <script>
+        QUnit.testSuites(
+            "TUBS viewmodel tests",
+            [
+                @Html.Raw(suite)
+            ]
+        );
+    </script>
+}
 

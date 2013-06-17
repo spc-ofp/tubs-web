@@ -4,6 +4,7 @@
 <head>
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/Content/qunit-1.11.0.css" />
+    <link rel="stylesheet" href="~/Content/qunit-composite.css" />
     @RenderSection("AdditionalCss", false)
 </head>
 <body>
@@ -16,6 +17,7 @@
     )
 
     <script src="~/Scripts/qunit-1.11.0.js"></script>
+    <script src="~/Scripts/qunit-composite.js"></script>
     @* 
      * This could be managed with a single script section,
      * but I think this makes it more clear _how_ to lay this out

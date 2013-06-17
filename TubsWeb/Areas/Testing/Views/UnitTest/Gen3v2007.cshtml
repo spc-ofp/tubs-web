@@ -202,15 +202,40 @@
             ok(viewmodel, "ViewModel not null");
             equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber correct");
         });
-        test("Dirty flag", function () {
-        });
         test("Async commands", function () {
+            ok(!viewmodel.saveCommand.canExecute(), "No save possible on clean model");
+            ok(!viewmodel.reloadCommand.canExecute(), "No reload possible on clean model");
+            viewmodel.Notes()[0].Comments("_xyzzy_");
+            ok(viewmodel.saveCommand.canExecute(), "Save possible on dirty model");
+            ok(viewmodel.reloadCommand.canExecute(), "Reload possible on dirty model");
+        });
+        test("Change incident property", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.Incidents()[0].JournalPage(1);
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Change note property", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.Notes()[0].Comments("_xyzzy_");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Add/remove new note", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.Notes().length, 3, "3 notes attached to trip");
+            viewmodel.addNote();
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            equal(viewmodel.Notes().length, 4, "4 notes attached to trip");
+            var note = viewmodel.Notes().slice(-1)[0];
+            viewmodel.removeNote(note);
+            equal(viewmodel.Notes().length, 3, "3 notes attached to trip");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
         });
         test("Remove existing note", function () {
+            equal(viewmodel.Notes().length, 3, "3 notes attached to trip");
+            var note = viewmodel.Notes()[0];
+            viewmodel.removeNote(note);
+            ok(viewmodel.isDirty(), "viewmodel now dirty");
+            equal(viewmodel.Notes().length, 3, "3 notes attached to trip");
         });
     </script>
 }

@@ -191,8 +191,11 @@ tubs.psSeaDay = function (data) {
     // we wouldn't want to ship garbage data back to the server and complicate
     // the validation.
     self.removeEvent = function (evt) {
-        if (evt && evt.EventId()) { self.Events.destroy(evt); }
-        else { self.Events.remove(evt); }
+        if (evt && evt.EventId()) {
+            self.Events.destroy(evt);
+        } else {
+            self.Events.remove(evt);
+        }
     };
 
     self.reloadCommand = ko.asyncCommand({
@@ -209,9 +212,9 @@ tubs.psSeaDay = function (data) {
                 function (xhr, status, error) {
                     tubs.notify('Failed to reload daily log', xhr, status);
                     complete();
-                });
+                }
+            );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }
@@ -232,9 +235,9 @@ tubs.psSeaDay = function (data) {
                 function (xhr, status, error) {
                     tubs.notify('Failed to save daily log', xhr, status);
                     complete();
-                });
+                }
+            );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }

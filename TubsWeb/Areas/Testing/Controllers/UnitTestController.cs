@@ -38,6 +38,12 @@ namespace TubsWeb.Areas.Testing.Controllers
         {
             return View();
         }
+
+        public ActionResult Experimental()
+        {
+            ViewBag.Title = "Experimental features";
+            return View();
+        }
         
         /// <summary>
         /// Longline SetHaul QUnit unit tests

@@ -184,13 +184,19 @@ tubs.psSet = function (data) {
     };
 
     self.removeByCatch = function (sc) {
-        if (sc && sc.Id()) { self.ByCatch.destroy(sc); }
-        else { self.ByCatch.remove(sc); }
+        if (sc && sc.Id()) {
+            self.ByCatch.destroy(sc);
+        } else {
+            self.ByCatch.remove(sc);
+        }
     };
 
     self.removeTargetCatch = function (sc) {
-        if (sc && sc.Id()) { self.TargetCatch.destroy(sc); }
-        else { self.TargetCatch.remove(sc); }
+        if (sc && sc.Id()) {
+            self.TargetCatch.destroy(sc);
+        } else {
+            self.TargetCatch.remove(sc);
+        }
     };
 
     // Commands

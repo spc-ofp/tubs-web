@@ -109,8 +109,11 @@ tubs.TransferViewModel = function (data) {
     };
 
     self.removeEvent = function (evt) {
-        if (evt && evt.Id()) { self.Transfers.destroy(evt); }
-        else { self.Transfers.remove(evt); }
+        if (evt && evt.Id()) {
+            self.Transfers.destroy(evt);
+        } else {
+            self.Transfers.remove(evt);
+        }
     };
 
     self.reloadCommand = ko.asyncCommand({
@@ -126,9 +129,9 @@ tubs.TransferViewModel = function (data) {
                 function (xhr, status, error) {
                     tubs.notify('Failed to reload transfers', xhr, status);
                     complete();
-                });
+                }
+            );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }
@@ -148,9 +151,9 @@ tubs.TransferViewModel = function (data) {
                 function (xhr, status, error) {
                     tubs.notify('Failed to save transfers', xhr, status);
                     complete();
-                });
+                }
+            );
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }

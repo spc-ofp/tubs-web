@@ -52,7 +52,7 @@ tubs.Gen2LandedEvent = function (data) {
 
     ko.utils.extend(self, new tubs.Gen2Event(data));
     // If necessary, we can add a custom mapping function
-    ko.mapping.fromJS(data, {}, self); 
+    ko.mapping.fromJS(data, {}, self);
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.ShipsDate,
@@ -234,8 +234,11 @@ tubs.Gen2GearEvent = function (data) {
     };
 
     self.removeStartItem = function (evt) {
-        if (evt && evt.Id()) { self.StartOfInteraction.destroy(evt); }
-        else { self.StartOfInteraction.remove(evt); }
+        if (evt && evt.Id()) {
+            self.StartOfInteraction.destroy(evt);
+        } else {
+            self.StartOfInteraction.remove(evt);
+        }
     };
 
     self.addEndItem = function () {
@@ -243,8 +246,11 @@ tubs.Gen2GearEvent = function (data) {
     };
 
     self.removeEndItem = function (evt) {
-        if (evt && evt.Id()) { self.EndOfInteraction.destroy(evt); }
-        else { self.EndOfInteraction.remove(evt); }
+        if (evt && evt.Id()) {
+            self.EndOfInteraction.destroy(evt);
+        } else {
+            self.EndOfInteraction.remove(evt);
+        }
     };
 
     // Commands
