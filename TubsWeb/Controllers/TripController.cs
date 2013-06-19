@@ -48,6 +48,7 @@ namespace TubsWeb.Controllers
         /// Check that the required dependent objects are present.
         /// </summary>
         /// <param name="trip"></param>
+        /// <param name="thvm"></param>
         private void ValidateTripDependencies(Trip trip, TripHeaderViewModel thvm)
         {
             // These shouldn't happen, so in addition to notifying user, drop a warning message into the application log

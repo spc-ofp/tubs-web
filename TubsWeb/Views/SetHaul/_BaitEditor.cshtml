@@ -26,43 +26,43 @@
         <div class="span2 compact-header"><strong>Hook Numbers</strong></div>
     </div>
     <div class="row editor-row">
-        <div class="form-horizontal compact-row">
+        <div class="form-horizontal compact-row" data-bind="with: $root.Baits()[0]">
             <div class="span1 compact-header"><strong>Bait 1</strong></div>
-            <input type="text" class="span2" />
-            <input type="number" class="span2" />
-            <input type="text" class="span2" />
+            <input type="text" class="span2" data-bind="value: Species"/>
+            <input type="number" class="span2" data-bind="value: Weight"/>
+            <input type="text" class="span2" data-bind="value: Hooks"/>
         </div>
     </div>
     <div class="row editor-row">
-        <div class="form-horizontal compact-row">
+        <div class="form-horizontal compact-row" data-bind="with: $root.Baits()[1]">
             <div class="span1 compact-header"><strong>Bait 2</strong></div>
-            <input type="text" class="span2" />
-            <input type="number" class="span2" />
-            <input type="text" class="span2" />
+            <input type="text" class="span2" data-bind="value: Species"/>
+            <input type="number" class="span2" data-bind="value: Weight"/>
+            <input type="text" class="span2" data-bind="value: Hooks"/>
         </div>
     </div>
     <div class="row editor-row">
-        <div class="form-horizontal compact-row">
+        <div class="form-horizontal compact-row" data-bind="with: $root.Baits()[2]">
             <div class="span1 compact-header"><strong>Bait 3</strong></div>
-            <input type="text" class="span2" />
-            <input type="number" class="span2" />
-            <input type="text" class="span2" />
+            <input type="text" class="span2" data-bind="value: Species"/>
+            <input type="number" class="span2" data-bind="value: Weight"/>
+            <input type="text" class="span2" data-bind="value: Hooks"/>
         </div>
     </div>
     <div class="row editor-row">
-        <div class="form-horizontal compact-row">
+        <div class="form-horizontal compact-row" data-bind="with: $root.Baits()[3]">
             <div class="span1 compact-header"><strong>Bait 4</strong></div>
-            <input type="text" class="span2" />
-            <input type="number" class="span2" />
-            <input type="text" class="span2" />
+            <input type="text" class="span2" data-bind="value: Species"/>
+            <input type="number" class="span2" data-bind="value: Weight"/>
+            <input type="text" class="span2" data-bind="value: Hooks"/>
         </div>
     </div>
     <div class="row editor-row">
-        <div class="form-horizontal compact-row">
+        <div class="form-horizontal compact-row" data-bind="with: $root.Baits()[4]">
             <div class="span1 compact-header"><strong>Bait 5</strong></div>
-            <input type="text" class="span2" />
-            <input type="number" class="span2" />
-            <input type="text" class="span2" />
+            <input type="text" class="span2" data-bind="value: Species"/>
+            <input type="number" class="span2" data-bind="value: Weight"/>
+            <input type="text" class="span2" data-bind="value: Hooks"/>
         </div>
     </div>
     
@@ -71,7 +71,7 @@
 <div class="row editor-row">
     <div class="span4">
         <label>Number of Light Sticks</label>
-        <input type="number" class="span1" />
+        <input type="number" class="span1" data-bind="value: LightStickCount"/>
     </div> 
     <div class="span3">
         <label>&nbsp;</label>

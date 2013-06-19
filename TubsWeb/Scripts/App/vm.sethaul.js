@@ -1,8 +1,13 @@
-﻿/*
- * vm.sethaul.js
- * Knockout.js ViewModel for editing an LL-2/3 form
+﻿/** 
+ * @file Knockout ViewModel for editing an LL-2/3 form
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
  * Depends on:
- * TODO
+ * knockout.js
+ * underscore.js
+ * knockout.viewmodel plugin
+ * knockout-custom-bindings (for ISO date)
  */
 
 /// <reference name="../knockout-2.1.0.debug.js" />
@@ -11,15 +16,27 @@
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
 
-/*
- * Use the knockout.viewmodel plugin to map the SetHaul
- * view model.
- * http://coderenaissance.github.io/knockout.viewmodel/
- * TODO:  Adding a Comment or IntermediateHaulPosition
- * Work out if it is done on the VM or is a shared function...
+/**
+ * Knockout ViewModel options for mapping JavaScript object
+ * to full view model.
+ * The mapping is intended to:
+ * Set a validation regular expression on all properties named 'LocalTime'.
+ * Set a validation regular expression on all properties named 'Latitude'.
+ * Set a validation regular expression on all properties named 'Longitude'.
+ * Add a 'Remove' method to the Comments observable array.
+ * Add a 'Remove' method to the IntermediateHaulPositions array.
+ * Add a KoLite dirty flag to all members of the Comments observable array.
+ * Add a KoLite dirty flag to all members of the IntermediateHaulPositions array.
+ * Track members of the Comments observable array using their intrinsic 'Id' property.
+ * Track members of the IntermediateHaulPositions array using their intrinsic 'Id' property.
+ * Extend the 'ShipsDate' property with a function that displays the date in DD/MM/YY format.
+ * Extend the 'UtcDate' property with a function that displays the date in DD/MM/YY format.
  */
 tubs.setHaulOptions = {
     extend: {
+        "LocalTime": "TimePattern",
+        "Latitude": "LatitudePattern",
+        "Longitude": "LongitudePattern",
         "{root}.Comments": "ExtendWithDestroy",
         "{root}.Comments[i]": function (comment) {
             comment.dirtyFlag = new ko.DirtyFlag([
@@ -73,18 +90,159 @@ tubs.setHaulOptions = {
                     items.remove(item);
                 }
             };
+        },
+        /* Validate time of day with a simple regex. */
+        TimePattern: function (time) {
+            time.extend({ pattern: '^(20|21|22|23|[01]\d)[0-5]\d$' });
+        },
+        /* Validate latitude with a simple regex.  It allows invalid values but it's a decent first pass. */
+        LatitudePattern: function (latitude) {
+            latitude.extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
+        },
+        /* Validate longitude with a simple regex.  It allows invalid values but it's a decent first pass. */
+        LongitudePattern: function (longitude) {
+            longitude.extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
         }
     }
 };
 
-// Probably best to create observable entities for SetHaulComment and
-// SetHaulPosition.  Maybe even do so above setHaulOptions and use them in
-// the mapping where possible?
+/**
+ * Serves as a default values for all comments entities.
+ * Also used in the construction of new observable comment entities.
+ */
+tubs.setHaulCommentDefaults = {
+    Id: 0,
+    LocalTime: null,
+    Details: null,
+    _destroy: false,
+    NeedsFocus: false
+};
 
+/**
+ * Serves as a default values for all position entities.
+ * Also used in the construction of new observable position entities.
+ */
+tubs.setHaulPositionDefaults = {
+    Id: 0,
+    LocalTime: null,
+    Latitude: null,
+    Longitude: null,
+    EezCode: null,
+    _destroy: false,
+    NeedsFocus: false
+};
+
+/**
+ * Serves as a default values for all bait values.
+ * Also used in the construction of new observable bait values.
+ */
+tubs.setHaulBaitDefaults = {
+    Species: null,
+    Weight: null,
+    Hooks: null
+};
+
+/**
+ * @param {data} data SetHaul object model that may need gain missing properties.
+ * 
+ */
+tubs.setHaulDefaults = function (data) {
+    // defaults can't deal with null objects
+    data.StartOfSet = data.StartOfSet || {};
+    _.defaults(data.StartOfSet, tubs.setHaulPositionDefaults);
+
+    data.EndOfSet = data.EndOfSet || {};
+    _.defaults(data.EndOfSet, tubs.setHaulPositionDefaults);
+
+    data.StartOfHaul = data.StartOfHaul || {};
+    _.defaults(data.StartOfHaul, tubs.setHaulPositionDefaults);
+
+    data.EndOfHaul = data.EndOfHaul || {};
+    _.defaults(data.EndOfHaul, tubs.setHaulPositionDefaults);
+
+    // Create an array containing 5 objects
+    // Backend will ignore anything not filled in
+    data.Baits = data.Baits || [];
+    while (data.Baits.length < 5) {
+        data.Baits.push(_.clone(tubs.setHaulBaitDefaults));
+    }
+
+    data.Comments = data.Comments || [];
+    data.IntermediateHaulPositions = data.IntermediateHaulPositions || [];
+
+    return data;
+};
+
+/**
+ * Comment line item on the LL-2/3 form.
+ * @constructor
+ * @param {object} data - Line item data
+ */
+tubs.SetHaulComment = function (data) {
+    'use strict';
+    var self = this;
+    data = data || {};
+    _.defaults(data, tubs.setHaulCommentDefaults);
+
+    self.Id = ko.observable(data.Id);
+    self.LocalTime = ko.observable(data.LocalTime).extend({ pattern: '^(20|21|22|23|[01]\d)[0-5]\d$' });
+    self.Details = ko.observable(data.Details);
+    self._destroy = ko.observable(data._destroy);
+    self.NeedsFocus = ko.observable(data.NeedsFocus);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.LocalTime,
+        self.Details
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        return self.dirtyFlag().isDirty();
+    });
+
+    return self;
+};
+
+/**
+ * Set or Haul position line item on the LL-2/3 form
+ * @constructor
+ * @param {object} data - Position data
+ */
+tubs.SetHaulPosition = function (data) {
+    'use strict';
+    var self = this;
+    data = data || {};
+    _.defaults(data, tubs.setHaulPositionDefaults);
+
+    self.Id = ko.observable(data.Id);
+    self.LocalTime = ko.observable(data.LocalTime).extend({ pattern: '^(20|21|22|23|[01]\d)[0-5]\d$' });
+    self.Latitude = ko.observable(data.Latitude).extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
+    self.Longitude = ko.observable(data.Longitude).extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
+    self.EezCode = ko.observable(data.EezCode);
+    self._destroy = ko.observable(data._destroy);
+    self.NeedsFocus = ko.observable(data.NeedsFocus);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.LocalTime,
+        self.Latitude,
+        self.Longitude
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        return self.dirtyFlag().isDirty();
+    });
+
+    return self;
+};
+
+/**
+ *
+ */
 tubs.SetHaul = function (data) {
     'use strict';
+
     // Use knockout.viewmodel to manage most of the mapping
-    var vm = ko.viewmodel.fromModel(data, tubs.setHaulOptions);
+    // 
+    var vm = ko.viewmodel.fromModel(tubs.setHaulDefaults(data), tubs.setHaulOptions);
 
     // Setting the dirty flag in the viewmodel options is a bridge too far...
     // I'm fine with extending the instance versus adding this via prototype since there should
@@ -119,7 +277,8 @@ tubs.SetHaul = function (data) {
         vm.StartOfSet,
         vm.EndOfSet,
         vm.StartOfHaul,
-        vm.EndOfHaul, // Not sure this will stick around...
+        vm.EndOfHaul,
+        vm.Baits,
         vm.Comments,
         vm.IntermediateHaulPositions
     ], false);
@@ -134,25 +293,25 @@ tubs.SetHaul = function (data) {
     });
 
     vm.isDirty = ko.computed(function () {
+        var hasDirtyChild = false;
+        //console.log("isDirty [header]" + vm.dirtyFlag().isDirty());
         if (vm.dirtyFlag().isDirty()) {
             return true;
         }
-        var hasDirtyChild = false;
-        // Look for dirty comments
-        $.each(vm.Comments(), function (i, c) { //ignore jslint
-            if (c.isDirty()) {
-                hasDirtyChild = true;
-                return false;
-            }
+        
+        hasDirtyChild = _.any(vm.Comments(), function (comment) {
+            return comment.isDirty();
         });
-        if (hasDirtyChild) { return hasDirtyChild; }
-        // Look for dirty intermediate positions
-        $.each(vm.IntermediateHaulPositions(), function (i, p) { //ignore jslint
-            if (p.isDirty()) {
-                hasDirtyChild = true;
-                return false;
-            }
+        //console.log("isDirty [Comments]" + hasDirtyChild);
+
+        if (hasDirtyChild) {
+            return true;
+        }
+
+        hasDirtyChild = _.any(vm.IntermediateHaulPositions(), function (position) {
+            return position.isDirty();
         });
+        //console.log("isDirty [Positions]" + hasDirtyChild);
 
         return hasDirtyChild;
     });
@@ -161,23 +320,60 @@ tubs.SetHaul = function (data) {
         vm.dirtyFlag().reset();
     };
 
-    // TODO: Implement using correct jQuery promise functions
+    vm.addComment = function () {
+        vm.Comments.push(new tubs.SetHaulComment({ NeedsFocus: true }));
+    };
+
+    vm.removeComment = function (comment) {
+        vm.Comments.Remove(comment);
+    };
+
+    vm.addPosition = function () {
+        vm.IntermediateHaulPositions.push(new tubs.SetHaulPosition({ NeedsFocus: true }));
+    };
+
+    vm.removePosition = function (position) {
+        vm.IntermediateHaulPositions.Remove(position);
+    }
+
     vm.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
+            tubs.getSetHaul(
+                vm.TripId(),
+                vm.SetNumber(),
+                function (result) {
+                    ko.viewmodel.updateFromModel(vm, tubs.setHaulDefaults(result));
+                    vm.clearDirtyFlag();
+                    toastr.success('Reloaded Set/Haul data');
+                },
+                function (xhr, status) {
+                    tubs.notify('Failed to reload Set/Haul data', xhr, status);
+                }
+            );
             complete();
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && vm.isDirty();
         }
     });
 
-    // TODO: Implement
     vm.saveCommand = ko.asyncCommand({
         execute: function (complete) {
+            tubs.saveSetHaul(
+                vm.TripId(),
+                vm.SetNumber(),
+                vm,
+                function (result) {
+                    ko.viewmodel.updateFromModel(vm, tubs.setHaulDefaults(result));
+                    vm.clearDirtyFlag();
+                    toastr.success('Set/Haul data saved');
+                },
+                function (xhr, status) {
+                    tubs.notify('Failed to save Set/Haul data', xhr, status);
+                }
+            );
             complete();
         },
-
         canExecute: function (isExecuting) {
             return !isExecuting && vm.isDirty();
         }

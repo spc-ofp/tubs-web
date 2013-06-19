@@ -294,7 +294,6 @@
     <Compile Include="Core\CrossOriginRequestsAttribute.cs" />
     <Compile Include="Core\CxmlResult.cs" />
     <Compile Include="Core\DateTimeModelBinder.cs" />
-    <Compile Include="Core\DateUtilities.cs" />
     <Compile Include="Core\EditorAuthorizeAttribute.cs" />
     <Compile Include="Core\ElmahHandledErrorLoggerFilter.cs" />
     <Compile Include="Core\HandleTransactionManuallyAttribute.cs" />

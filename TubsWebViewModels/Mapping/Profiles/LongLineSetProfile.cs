@@ -42,13 +42,247 @@ namespace TubsWeb.Mapping.Profiles
                 Hooks = hooks
             };
         }
+
+        internal bool IncludeInMap(LongLineSetViewModel.Position position)
+        {
+            if (null == position || position._destroy)
+                return false;
+
+            return !position.IsEmpty;
+        }
         
         protected override void Configure()
         {
             base.Configure();
-
+            
             // ViewModel to Entity
-            // TODO
+            CreateMap<LongLineSetViewModel.Position, DAL.Entities.LongLineSetHaulEvent>()
+                // Ignore entity relationships
+                .ForMember(d => d.FishingSet, o => o.Ignore())
+                // Standard ignores
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore())
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
+                .ForMember(d => d.DctNotes, o => o.Ignore())
+                .ForMember(d => d.DctScore, o => o.Ignore())
+                // Legacy data
+                .ForMember(d => d.WindDirection, o => o.Ignore())
+                .ForMember(d => d.WindSpeed, o => o.Ignore())
+                .ForMember(d => d.SeaCode, o => o.Ignore())
+                .ForMember(d => d.CloudCover, o => o.Ignore())
+                .ForMember(d => d.Comments, o => o.Ignore())
+                // Custom properties
+                .ForMember(d => d.LogTimeOnly, o => o.MapFrom(s => s.LocalTime))
+                // Parent AfterMap
+                .ForMember(d => d.LogDateOnly, o => o.Ignore())                
+                .ForMember(d => d.LogDate, o => o.Ignore())
+                .ForMember(d => d.Sethaul, o => o.Ignore())
+                .ForMember(d => d.ActivityType, o => o.Ignore())
+                ;
+
+            CreateMap<LongLineSetViewModel.Comment, DAL.Entities.LongLineSetHaulNote>()
+                // Ignore entity relationships
+                .ForMember(d => d.FishingSet, o => o.Ignore())
+                // Standard ignores
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore())
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
+                .ForMember(d => d.DctNotes, o => o.Ignore())
+                .ForMember(d => d.DctScore, o => o.Ignore())
+                // Legacy data
+                .ForMember(d => d.Comments, o => o.Ignore())
+                // Custom properties
+                .ForMember(d => d.LogTimeOnly, o => o.MapFrom(s => s.LocalTime))
+                // Parent AfterMap
+                .ForMember(d => d.LogDateOnly, o => o.Ignore())                
+                .ForMember(d => d.LogDate, o => o.Ignore())
+                ;
+
+            CreateMap<LongLineSetViewModel, DAL.Entities.LongLineSet>()
+                // Ignore entity relationships
+                .ForMember(d => d.Trip, o => o.Ignore())
+                .ForMember(d => d.CatchList, o => o.Ignore())
+                .ForMember(d => d.ConversionFactors, o => o.Ignore())
+                .ForMember(d => d.Baskets, o => o.Ignore())
+                // Standard ignores
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore())
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
+                .ForMember(d => d.DctNotes, o => o.Ignore())
+                .ForMember(d => d.DctScore, o => o.Ignore())
+                // Ignore legacy data
+                .ForMember(d => d.TargetSpeciesCode, o => o.Ignore())
+                .ForMember(d => d.HookDepthLow, o => o.Ignore())
+                .ForMember(d => d.HookDepthHigh, o => o.Ignore())
+                .ForMember(d => d.HookCalc, o => o.Ignore())
+                .ForMember(d => d.TotalHooksObserved, o => o.Ignore())
+                .ForMember(d => d.LocalTime, o => o.Ignore())
+                .ForMember(d => d.TdrLength, o => o.Ignore())
+                .ForMember(d => d.MeasuringInstrument, o => o.Ignore()) // Is this v2009?
+                .ForMember(d => d.BranchlineCount_00to20m, o => o.Ignore())
+                .ForMember(d => d.BranchlineCount_20to34m, o => o.Ignore())
+                .ForMember(d => d.BranchlineCount_35to50m, o => o.Ignore())
+                .ForMember(d => d.BranchlineCount_50to99m, o => o.Ignore())
+                .ForMember(d => d.HasRecordedData, o => o.Ignore())
+                .ForMember(d => d.WasObserved, o => o.Ignore())
+                .ForMember(d => d.EstimatedHookCount, o => o.Ignore())
+                .ForMember(d => d.FloatlineHookCount, o => o.Ignore())
+                .ForMember(d => d.Strategy, o => o.Ignore())
+                // Not sure
+                .ForMember(d => d.LineSettingSpeedMetersPerSecond, o => o.Ignore()) 
+                // Custom properties
+                // Bait 1
+                .ForMember(d => d.BaitSpecies1Code, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies1Weight, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies1Hooks, o => o.Ignore())
+                // Bait 2
+                .ForMember(d => d.BaitSpecies2Code, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies2Weight, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies2Hooks, o => o.Ignore())
+                // Bait 3
+                .ForMember(d => d.BaitSpecies3Code, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies3Weight, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies3Hooks, o => o.Ignore())
+                // Bait 4
+                .ForMember(d => d.BaitSpecies4Code, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies4Weight, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies4Hooks, o => o.Ignore())
+                // Bait 5
+                .ForMember(d => d.BaitSpecies5Code, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies5Weight, o => o.Ignore())
+                .ForMember(d => d.BaitSpecies5Hooks, o => o.Ignore())
+                .ForMember(d => d.Id, o => o.MapFrom(s => s.SetId))
+                .ForMember(d => d.TotalBasketCount, o => o.MapFrom(s => s.TotalBaskets))
+                .ForMember(d => d.TotalHookCount, o => o.MapFrom(s => s.TotalHooks))
+                .ForMember(d => d.TdrDeployed, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.WasTdrDeployed))
+                .ForMember(d => d.IsTargetingSharks, o => o.MapFrom(s => s.IsTargetingShark))
+                .ForMember(d => d.TotalBasketsObserved, o => o.MapFrom(s => s.TotalObservedBaskets))
+                .ForMember(d => d.Gen3Events, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasGen3Event))
+                .ForMember(d => d.AllPositionsDirectlyObserved, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.StartEndPositionsObserved))
+                .ForMember(d => d.Details, o => o.MapFrom(s => s.UnusualDetails))
+                .ForMember(d => d.SetDateOnly, o => o.MapFrom(s => s.ShipsDate))
+                .ForMember(d => d.SetTimeOnly, o => o.MapFrom(s => s.ShipsTime))
+                .ForMember(d => d.SetDate, o => o.MapFrom(s => s.ShipsDate.Merge(s.ShipsTime)))
+                .ForMember(d => d.UtcSetDateOnly, o => o.MapFrom(s => s.UtcDate))
+                .ForMember(d => d.UtcSetTimeOnly, o => o.MapFrom(s => s.UtcTime))
+                .ForMember(d => d.UtcSetDate, o => o.MapFrom(s => s.UtcDate.Merge(s.UtcTime)))
+                .ForMember(d => d.NotesList, o => o.MapFrom(s => s.Comments))
+                // AfterMap
+                .ForMember(d => d.EventList, o => o.Ignore())
+                .AfterMap((s, d) =>
+                {
+                    // Attach Set to notes and backfill date properties
+                    if (null != d.NotesList)
+                    {
+                        foreach (var note in d.NotesList)
+                        {
+                            if (null == note) { continue; }
+                            note.FishingSet = d;
+                            note.LogDateOnly = d.SetDateOnly;
+                            note.LogDate = d.SetDateOnly.Merge(note.LogTimeOnly);
+                        }
+                    }
+                    
+                    
+                    // Still unsure whether the ViewModel should call out the special positions
+                    // or this complexity should be driven into the UI.
+                    // Until that is worked out, this should serve
+                    // NOTE: Positions are only mapped from viewmodel to model if they're not marked
+                    // for destruction.
+                    if (IncludeInMap(s.StartOfSet))
+                    {
+                        var evt = Mapper.Map<DAL.Entities.LongLineSetHaulEvent>(s.StartOfSet);
+                        evt.ActivityType = HaulActivityType.StartOfSet;
+                        evt.Sethaul = "S";
+                        evt.LogDateOnly = d.SetDateOnly;
+                        evt.LogDate = d.SetDateOnly.Merge(evt.LogTimeOnly);
+                        d.AddEvent(evt);
+                    }
+
+                    if (IncludeInMap(s.EndOfSet))
+                    {
+                        var evt = Mapper.Map<DAL.Entities.LongLineSetHaulEvent>(s.EndOfSet);
+                        evt.ActivityType = HaulActivityType.EndOfSet;
+                        evt.Sethaul = "S";
+                        evt.LogDateOnly = d.SetDateOnly;
+                        evt.LogDate = d.SetDateOnly.Merge(evt.LogTimeOnly);
+                        d.AddEvent(evt);
+                    }
+
+                    if (IncludeInMap(s.StartOfHaul))
+                    {
+                        var evt = Mapper.Map<DAL.Entities.LongLineSetHaulEvent>(s.StartOfHaul);
+                        evt.ActivityType = HaulActivityType.StartOfHaul;
+                        evt.Sethaul = "H";
+                        evt.LogDateOnly = d.SetDateOnly;
+                        evt.LogDate = d.SetDateOnly.Merge(evt.LogTimeOnly);
+                        d.AddEvent(evt);
+                    }
+
+                    foreach (var ihp in s.IntermediateHaulPositions)
+                    {
+                        if (!IncludeInMap(ihp)) { continue; }
+                        var evt = Mapper.Map<DAL.Entities.LongLineSetHaulEvent>(ihp);
+                        evt.Sethaul = "H";
+                        evt.LogDateOnly = d.SetDateOnly;
+                        evt.LogDate = d.SetDateOnly.Merge(evt.LogTimeOnly);
+                        d.AddEvent(evt);
+                    }
+
+                    if (IncludeInMap(s.EndOfHaul))
+                    {
+                        var evt = Mapper.Map<DAL.Entities.LongLineSetHaulEvent>(s.EndOfHaul);
+                        evt.ActivityType = HaulActivityType.EndOfHaul;
+                        evt.Sethaul = "H";
+                        evt.LogDateOnly = d.SetDateOnly;
+                        evt.LogDate = d.SetDateOnly.Merge(evt.LogTimeOnly);
+                        d.AddEvent(evt);
+                    }
+                    
+                    if (null != s)
+                    {
+                        if (null != s.Baits[0])
+                        {
+                            d.BaitSpecies1Code = s.Baits[0].Species;
+                            d.BaitSpecies1Weight = s.Baits[0].Weight;
+                            d.BaitSpecies1Hooks = s.Baits[0].Hooks;
+                        }
+
+                        if (null != s.Baits[1])
+                        {
+                            d.BaitSpecies2Code = s.Baits[1].Species;
+                            d.BaitSpecies2Weight = s.Baits[1].Weight;
+                            d.BaitSpecies2Hooks = s.Baits[1].Hooks;
+                        }
+
+                        if (null != s.Baits[2])
+                        {
+                            d.BaitSpecies3Code = s.Baits[2].Species;
+                            d.BaitSpecies3Weight = s.Baits[2].Weight;
+                            d.BaitSpecies3Hooks = s.Baits[2].Hooks;
+                        }
+
+                        if (null != s.Baits[3])
+                        {
+                            d.BaitSpecies4Code = s.Baits[3].Species;
+                            d.BaitSpecies4Weight = s.Baits[3].Weight;
+                            d.BaitSpecies4Hooks = s.Baits[3].Hooks;
+                        }
+
+                        if (null != s.Baits[4])
+                        {
+                            d.BaitSpecies5Code = s.Baits[4].Species;
+                            d.BaitSpecies5Weight = s.Baits[4].Weight;
+                            d.BaitSpecies5Hooks = s.Baits[4].Hooks;
+                        }
+
+                    }
+                })
+                ;
+
 
             // Entity to ViewModel
             CreateMap<DAL.Entities.LongLineSetHaulEvent, LongLineSetViewModel.Position>()

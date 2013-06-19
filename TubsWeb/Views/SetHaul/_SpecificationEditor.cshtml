@@ -106,9 +106,10 @@
                                 type="number"
                                 data-bind="value: LineSettingSpeed"
                                 class="input-mini" />
+                        @* FIXME LineSettingSpeedUnit doesn't match VelocityUnits *@
                         <select id="LineSettingSpeedUnit" 
                                 name="LineSettingSpeedUnit" 
-                                data-bind="options: $root.VelocityUnits, value: LineSettingSpeed"
+                                data-bind="options: $root.VelocityUnits, value: LineSettingSpeedUnit"
                                 class="input-mini"></select>
                     </div>
                 </li>

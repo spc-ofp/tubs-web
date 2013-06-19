@@ -23,15 +23,8 @@
     <div class="container">
         <p>
             This page runs all available JavaScript unit tests for TUBS and displays the results in a single place.
-            Each test can also be accessed via the list below.
+            Each individual test can also be accessed via the 'Rerun' link below.
         </p>
-        @* TODO: Hide this list *@
-        <ul class="unstyled">
-        @foreach(var method in methods)
-        {
-            <li>@Html.ActionLink(@method.Name, @method.Name, controllerName)</li>
-        }
-        </ul>
         <div id="qunit"></div>
         <div id="qunit-fixture"></div>
 

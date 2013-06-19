@@ -25,6 +25,9 @@ namespace TubsWeb.Core
     using System;
     using System.Web.Mvc;
 
+    /// <summary>
+    /// Marker attribute identifying a preference for stateless NHibernate sessions.
+    /// </summary>
     public class UseStatelessSessionsAttribute : ActionFilterAttribute
     {
     }

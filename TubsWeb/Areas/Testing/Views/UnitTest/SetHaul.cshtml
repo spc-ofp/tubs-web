@@ -129,6 +129,13 @@
               }
             ],
             "Comments": [
+                {
+                    "Id": 12345,
+                    "LocalTime": "1400",
+                    "Details": "Lorem ipsum blah blah blah",
+                    "_destroy": false,
+                    "NeedsFocus": false
+                },
             ]
         };
     </script>
@@ -140,60 +147,101 @@
         /// <reference path="../qunit-1.11.0.js" />
         /// 
         'use strict';
+        var viewmodel;
 
-        module("Longline SetHaul");
-        test("Create viewmodel", function () {
-            var viewModel = new tubs.SetHaul(setHaulModelAsJson);
-            ok(viewModel, "ViewModel not null");
-            equal(viewModel.TripNumber(), "DJB / 11-02", "TripNumber correct");
-            ok(viewModel.IntermediateHaulPositions().length > 0, "ViewModel has haul positions");
-            equal(viewModel.Comments().length, 0, "ViewModel has no comments");
-            equal(viewModel.ShipsDate.formattedDate(), "19/04/11", "ShipsDate formatted correctly");
-            equal(viewModel.IsTargetingTuna(), true, "IsTargetingTuna wrapped correctly");
-            equal(viewModel.IsTargetingSwordfish(), false, "IsTargetingSwordfish wrapped correctly");
-            viewModel = null;
+        module("Longline SetHaul", {
+            setup: function () {
+                viewmodel = new tubs.SetHaul(setHaulModelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
         });
-        test("Modify haul positions", function () {
-            var viewModel = new tubs.SetHaul(setHaulModelAsJson);
-            ok(!viewModel.isDirty(), "ViewModel not dirty");
-            var first_position = viewModel.IntermediateHaulPositions()[0];
-            ok(first_position, "First position not null");
-            equal(first_position._destroy(), false, "First position not marked for deletion");
-            equal(viewModel.IntermediateHaulPositions().length, 4, "Correct number of positions");
-            viewModel.IntermediateHaulPositions.Remove(first_position);
-            equal(viewModel.IntermediateHaulPositions().length, 4, "Still correct number of positions");
-            // It looks like Knockout itself removes the observability of this property...
-            equal(first_position._destroy, true, "First position marked for deletion");
-            ok(viewModel.isDirty(), "ViewModel is dirty");
-            viewModel = null;
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 11-02", "TripNumber correct");
+            equal(viewmodel.IntermediateHaulPositions().length, 4, "ViewModel has 4 intermediate haul positions");
+            equal(viewmodel.Comments().length, 1, "ViewModel has 1 comments");
+            equal(viewmodel.ShipsDate.formattedDate(), "19/04/11", "ShipsDate formatted correctly");
         });
         test("Dirty flag", function () {
-            var viewmodel = new tubs.SetHaul(setHaulModelAsJson);
             equal(viewmodel.isDirty(), false, "viewmodel is clean");
-            viewmodel.IsTargetingShark("YES");
+            // Change property on the root
+            viewmodel.HooksPerBasket(123);
             ok(viewmodel.isDirty(), "viewmodel is dirty");
-            ko.viewmodel.updateFromModel(viewmodel, setHaulModelAsJson);
-            equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
-            viewmodel = null;
-        });
-        test("Dirty flag - children", function () {
-            var viewmodel = new tubs.SetHaul(setHaulModelAsJson);
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
-            var first_position = viewmodel.IntermediateHaulPositions()[0];
-            // LocalTime = 1400
-            first_position.LocalTime("1401");
-            ok(viewmodel.isDirty(), "viewmodel is dirty after change to position member");
-            viewmodel = null;
         });
         test("Async commands", function () {
-            var viewmodel = new tubs.SetHaul(setHaulModelAsJson);
             equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
             equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
-            viewmodel.VesselSpeed(6.1);
+            viewmodel.TotalObservedBaskets(99);
             ok(viewmodel.isDirty(), "viewmodel is dirty");
             ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
-            ok(viewmodel.saveCommand.canExecute(),  "save enabled on dirty viewmodel");
-            viewmodel = null;
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+        test("Modify StartOfSet", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.StartOfSet.LocalTime("0459");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("Modify EndOfSet", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.EndOfSet.LocalTime("0459");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("Modify StartOfHaul", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.StartOfHaul.LocalTime("0459");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("Modify EndOfHaul", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.EndOfHaul.LocalTime("0459");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("Modify intermediate position property", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.IntermediateHaulPositions()[0].LocalTime("0001");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("Add/remove new intermediate position", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.IntermediateHaulPositions().length, 4, "ViewModel has 4 intermediate haul positions");
+            viewmodel.addPosition();
+            equal(viewmodel.IntermediateHaulPositions().length, 5, "ViewModel has 5 intermediate haul positions");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            var pos = viewmodel.IntermediateHaulPositions().slice(-1)[0];
+            ok(pos, "New item not null");
+            ok(pos.NeedsFocus(), "New item has focus");
+            equal(pos.Id(), 0, "New item Id is 0");
+        });
+        test("Remove existing intermediate position", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.IntermediateHaulPositions().length, 4, "ViewModel has 4 intermediate haul positions");
+            var pos = viewmodel.IntermediateHaulPositions()[0];
+            viewmodel.removePosition(pos);
+            equal(viewmodel.IntermediateHaulPositions().length, 4, "ViewModel has 4 intermediate haul positions");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(pos._destroy, "Removed item marked for destruction");
+        });
+        test("Add/remove new comment", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.Comments().length, 1, "ViewModel has 1 comment");
+            viewmodel.addComment();
+            equal(viewmodel.Comments().length, 2, "ViewModel has 2 comments");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            var comment = viewmodel.Comments().slice(-1)[0];
+            ok(comment, "New item not null");
+            ok(comment.NeedsFocus(), "New item has focus");
+            equal(comment.Id(), 0, "New item Id is 0");
+        });
+        test("Remove existing comment", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.Comments().length, 1, "ViewModel has 1 comment");
+            var comment = viewmodel.Comments()[0];
+            viewmodel.removeComment(comment);
+            equal(viewmodel.Comments().length, 1, "ViewModel has 1 comment");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(comment._destroy, "Removed item marked for destruction");
         });
     </script>
 }

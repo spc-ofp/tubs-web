@@ -34,11 +34,19 @@ namespace TubsWeb.Areas.Testing.Controllers
     {
         // TODO Add security to the entire controller
         // web.config transform will lock the entire area on production deployment
+        /// <summary>
+        /// Runs QUnit tests via QUnit composite plugin
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult Index()
         {
             return View();
         }
 
+        /// <summary>
+        /// Used for experimental viewmodels.
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult Experimental()
         {
             ViewBag.Title = "Experimental features";
@@ -48,7 +56,7 @@ namespace TubsWeb.Areas.Testing.Controllers
         /// <summary>
         /// Longline SetHaul QUnit unit tests
         /// </summary>
-        /// <returns></returns>
+        /// <returns>QUnit view</returns>
         public ActionResult SetHaul()
         {
             ViewBag.Title = "Longline SetHaul unit tests";
@@ -58,7 +66,7 @@ namespace TubsWeb.Areas.Testing.Controllers
         /// <summary>
         /// Purse Seine PS-1 form unit tests
         /// </summary>
-        /// <returns></returns>
+        /// <returns>QUnit view</returns>
         public ActionResult Ps1()
         {
             ViewBag.Title = "PS-1 unit tests";
@@ -68,7 +76,7 @@ namespace TubsWeb.Areas.Testing.Controllers
         /// <summary>
         /// Purse Seine crew unit tests
         /// </summary>
-        /// <returns></returns>
+        /// <returns>QUnit view</returns>
         public ActionResult Crew()
         {
             ViewBag.Title = "Purse Seine crew unit tests";
@@ -78,7 +86,7 @@ namespace TubsWeb.Areas.Testing.Controllers
         /// <summary>
         /// GEN-5 (FAD) form unit tests
         /// </summary>
-        /// <returns></returns>
+        /// <returns>QUnit view</returns>
         public ActionResult Fad()
         {
             ViewBag.Title = "Purse Seine GEN-5 (FAD) unit tests";
@@ -88,7 +96,7 @@ namespace TubsWeb.Areas.Testing.Controllers
         /// <summary>
         /// Purse Seine PS-3 form unit tests
         /// </summary>
-        /// <returns></returns>
+        /// <returns>QUnit view</returns>
         public ActionResult FishingSet()
         {
             ViewBag.Title = "Purse Seine fishing set unit tests";
@@ -98,55 +106,87 @@ namespace TubsWeb.Areas.Testing.Controllers
         /// <summary>
         /// GEN-2 Sighting form unit tests
         /// </summary>
-        /// <returns></returns>
+        /// <returns>QUnit view</returns>
         public ActionResult Gen2Sighting()
         {
             ViewBag.Title = "GEN-2 (Sighting) unit tests";
             return View();
         }
 
+        /// <summary>
+        /// GEN-2 Landed on Deck form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult Gen2Landed()
         {
             ViewBag.Title = "GEN-2 (Landed) unit tests";
             return View();
         }
 
+        /// <summary>
+        /// GEN-2 Interacted with gear form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult Gen2GearInteraction()
         {
             ViewBag.Title = "GEN-2 (Interacted With Gear) unit tests";
             return View();
         }
 
+        /// <summary>
+        /// GEN-3 (v2009) form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult Gen3()
         {
             ViewBag.Title = "GEN-3 (v2009) unit tests";
             return View();
         }
 
+        /// <summary>
+        /// GEN-3 (v2007 and earlier) form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult Gen3v2007()
         {
             ViewBag.Title = "GEN-3 (v2007) unit tests";
             return View();
         }
 
+        /// <summary>
+        /// Page count unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult PageCounts()
         {
             ViewBag.Title = "Page count unit tests";
             return View();
         }
 
+        /// <summary>
+        /// PS-2 form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult SeaDay()
         {
             ViewBag.Title = "Purse Seine sea day (PS-2) unit tests";
             return View();
         }
 
+        /// <summary>
+        /// GEN-1 Sighting form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult Sighting()
         {
             ViewBag.Title = "GEN-1 Sighting unit tests";
             return View();
         }
 
+        /// <summary>
+        /// GEN-1 Transfer form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
         public ActionResult Transfer()
         {
             ViewBag.Title = "GEN-1 Transfer unit tests";

@@ -24,18 +24,39 @@ namespace TubsWeb.Models
      */
     using System;
 
+    /// <summary>
+    /// Value object for returning search results.
+    /// </summary>
     public class SearchResult
     {
+        /// <summary>
+        /// Trip detail link
+        /// </summary>
         public string DetailUrl { get; set; }
 
+        /// <summary>
+        /// Vessel name
+        /// </summary>
         public string VesselName { get; set; }
 
+        /// <summary>
+        /// Port of departure
+        /// </summary>
         public string DeparturePort { get; set; }
 
+        /// <summary>
+        /// Trip start date
+        /// </summary>
         public DateTime StartDate { get; set; }
 
+        /// <summary>
+        /// Return port
+        /// </summary>
         public string ReturnPort { get; set; }
 
+        /// <summary>
+        /// Trip end date
+        /// </summary>
         public DateTime ReturnDate { get; set; }
     }
 }

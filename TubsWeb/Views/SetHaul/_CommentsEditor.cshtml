@@ -6,10 +6,10 @@
  * Knockout allows containerless binding.  That's why there's a knockout call inside HTML comments
  * http://knockoutjs.com/documentation/foreach-binding.html
  *@
-<!-- ko foreach: $data.Comments -->
+<!-- ko foreach: Comments -->
 <div class="row editor-row">
     <div class="form-horizontal compact-row comment-row">
-        <input type="text" class="span1" placeholder="HHmm"/>
+        <input type="text" class="span1" placeholder="HHmm" data-bind="hasfocus: NeedsFocus, value: LocalTime, uniqueName: true"/>
         <input type="text" class="span6" />
         <button type="button" class="btn btn-danger removeItem" tabindex="5000"><i class="icon-minus-sign icon-white"></i> Delete</button>
     </div>
@@ -25,7 +25,7 @@
 <div class="row">
     <div class="span2">
         <label>Total Baskets Observed</label>
-        <input type="number" class="input-mini" />
+        <input type="number" class="input-mini" data-bind="value: TotalObservedBaskets"/>
     </div>
     <div class="span2">
         <label>GEN-3<br />Events?</label>
@@ -33,6 +33,6 @@
     </div>
     <div class="span2">
         <label>Journal<br />Page</label>
-        <input type="number" class="input-mini" />
+        <input type="number" class="input-mini" data-bind="value: DiaryPage"/>
     </div>
 </div>     

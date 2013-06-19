@@ -1,4 +1,4 @@
-﻿
+﻿#pragma warning disable 1591
 
 namespace TubsWeb.Areas
 {
@@ -248,3 +248,5 @@ namespace TubsWeb.Areas
         }
     }
 }
+
+#pragma warning restore 1591

@@ -25,8 +25,14 @@ namespace TubsWeb.Areas.HelpPage
     using System.Web.Http;
     using System.Web.Mvc;
     
+    /// <summary>
+    /// Registration of Web API help document area.
+    /// </summary>
     public class HelpPageAreaRegistration : AreaRegistration
     {
+        /// <summary>
+        /// Area name
+        /// </summary>
         public override string AreaName
         {
             get
@@ -35,6 +41,10 @@ namespace TubsWeb.Areas.HelpPage
             }
         }
 
+        /// <summary>
+        /// Register route for help documentation.
+        /// </summary>
+        /// <param name="context"></param>
         public override void RegisterArea(AreaRegistrationContext context)
         {
             context.MapRoute(

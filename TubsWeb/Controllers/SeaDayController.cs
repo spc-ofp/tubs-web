@@ -238,9 +238,8 @@ namespace TubsWeb.Controllers
                 ModelState.AddModelError(String.Empty, String.Format("Invalid Association Code(s): [{0}]", string.Join(",", invalidAssociationCodes)));
             }
 
-            // IMPORTANT!!!! Although LINQ is cool, it can lead to some subtle bugs:  In this case,
-            // Check for null as the first part of a .Where statement despite what is already done when
-            // the base IEnumerable is constructed in the ViewModel
+            // IMPORTANT!!!! Although LINQ is cool, it can lead to some subtle bugs:  
+            // Even though the IEnumerable may have checked for null, check again in the .Where statement
             var invalidDeletes = sdvm.Deleted.Where(e => e != null && e.HasSet && e.IsLocked);
             if (invalidDeletes.Any())
             {

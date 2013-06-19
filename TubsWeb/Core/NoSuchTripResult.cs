@@ -25,10 +25,20 @@ namespace TubsWeb.Core
     using System.Text;
     using System.Web.Mvc;
 
+    /// <summary>
+    /// ActionResult used when the user has asked for a trip that doesn't exist.
+    /// </summary>
     public class NoSuchTripResult : ActionResult
     {
+        /// <summary>
+        /// log4net logger.
+        /// </summary>
         protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(NoSuchTripResult));
         
+        /// <summary>
+        /// Return a response
+        /// </summary>
+        /// <param name="context">Context in which the action executes.</param>
         public override void ExecuteResult(ControllerContext context)
         {
             context.HttpContext.Response.StatusCode = 404;

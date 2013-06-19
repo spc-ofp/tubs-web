@@ -25,25 +25,40 @@ namespace TubsWeb.Models
     using System.ComponentModel.DataAnnotations;
     using System.Web.Mvc;
 
+    /// <summary>
+    /// Model for changing a user password
+    /// </summary>
     public class ChangePasswordModel
     {
+        /// <summary>
+        /// User's current password
+        /// </summary>
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Current password")]
         public string OldPassword { get; set; }
 
+        /// <summary>
+        /// New password for user
+        /// </summary>
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "New password")]
         public string NewPassword { get; set; }
 
+        /// <summary>
+        /// Second copy of new password, used to confirm user has entered the desired password.
+        /// </summary>
         [DataType(DataType.Password)]
         [Display(Name = "Confirm new password")]
         //[Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
 
+    /// <summary>
+    /// Model for non-AD authentication.
+    /// </summary>
     public class LogOnModel
     {
         [Required]

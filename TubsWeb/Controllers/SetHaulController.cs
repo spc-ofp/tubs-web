@@ -28,9 +28,10 @@ namespace TubsWeb.Controllers
     using System.Web.Routing;
     using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
+    using Spc.Ofp.Tubs.DAL.Common; // For DateTime 'Merge'
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
-    using TubsWeb.ViewModels;
+    using TubsWeb.ViewModels; 
 
     /// <summary>
     /// SetHaulController manages LL-2/3 data.
@@ -38,7 +39,29 @@ namespace TubsWeb.Controllers
     /// </summary>
     public class SetHaulController : SuperController
     {
+        internal void Validate(LongLineTrip trip, LongLineSetViewModel svm)
+        {
+            // The delta between Ship's date and UTC date shouldn't be more than +/- 1 day 
+            DateTime? shipStartOfSet = svm.ShipsDate.Merge(svm.ShipsTime);
+            DateTime? utcStartOfSet = svm.UtcDate.Merge(svm.UtcTime);
+            if (shipStartOfSet.HasValue && utcStartOfSet.HasValue)
+            {
+                var deltaT = shipStartOfSet.Value.Subtract(utcStartOfSet.Value);
+                if (Math.Abs(deltaT.TotalDays) > 1.0d)
+                {
+                    var msg = string.Format("Difference of {0} days between ship's and local time too large", Math.Abs(deltaT.TotalDays));
+                    ModelState["UtcDate"].Errors.Add(msg);
+                }
+            }
 
+            if (shipStartOfSet.HasValue && shipStartOfSet.Value.CompareTo(trip.DepartureDate) < 0)
+            {
+                ModelState["ShipsDate"].Errors.Add("Start of set can't be before the trip departure date");
+            }
+
+
+        }        
+        
         /// <summary>
         /// NeedsRedirect validates the setNumber param for a trip based on the
         /// action and the number of sets already existing for this trip.
@@ -110,7 +133,7 @@ namespace TubsWeb.Controllers
 
             // It was getting crazy to duplicate views for what is essentially the
             // same thing
-            string viewName = (IsAdd() || IsEdit()) ? "_Editor" : CurrentAction();
+            string viewName = (IsAdd() || IsEdit()) ? "_Editor" : CurrentAction();          
 
             // Unlike PS data, set number looks pretty sane in the database
             // so we can navigate directly by tripId and setNumber
@@ -121,6 +144,10 @@ namespace TubsWeb.Controllers
             // a 'bad' setNumber param, we'll be running this query twice
             // I expect SQL Server to be able to handle that...
             int maxSets = trip.FishingSets.Count();
+
+            // TODO: This needs more work.  Add shows "Set 9 of 8".  Blech!
+            ViewBag.TitleSuffix = String.Format("Set {0} of {1}", setNumber, maxSets);
+            ViewBag.Title = String.Format("{0}: {1}", tripId.SpcTripNumber ?? "This Trip", ViewBag.TitleSuffix);
 
             var checkpoint = NeedsRedirect(tripId.Id, setNumber, maxSets);
             if (checkpoint.Item1)
@@ -159,6 +186,94 @@ namespace TubsWeb.Controllers
                 return GettableJsonNetData(vm);
 
             return View(viewName, vm);
+        }
+
+        internal ActionResult SaveActionImpl(Trip tripId, int setNumber, LongLineSetViewModel svm)
+        {
+            var trip = tripId as LongLineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            Validate(trip, svm);
+
+            if (!ModelState.IsValid)
+            {
+                LogModelErrors();
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+                return View(svm);
+            }
+
+            var fset = Mapper.Map<LongLineSetViewModel, LongLineSet>(svm);
+
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+                IRepository<LongLineSet> srepo = TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession);
+                IRepository<LongLineSetHaulEvent> erepo = TubsDataService.GetRepository<LongLineSetHaulEvent>(MvcApplication.CurrentSession);
+                IRepository<LongLineSetHaulNote> nrepo = TubsDataService.GetRepository<LongLineSetHaulNote>(MvcApplication.CurrentSession);
+
+                fset.Trip = trip;
+                srepo.Save(fset);
+
+                // SetHaul positions
+                // Deletes first
+                svm.DeletedPositions.ToList().ForEach(e => erepo.DeleteById(e.Id));
+
+                foreach (var position in fset.EventList)
+                {
+                    position.Latitude = position.Latitude.AsSpcLatitude();
+                    position.Longitude = position.Longitude.AsSpcLongitude();
+                    position.SetAuditTrail(User.Identity.Name, DateTime.Now);
+
+                    erepo.Save(position);
+                }               
+
+                // SetHaul comments
+                svm.DeletedComments.ToList().ForEach(n => nrepo.DeleteById(n.Id));
+
+                foreach (var note in fset.NotesList)
+                {
+                    note.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    nrepo.Save(note);
+                }
+
+                xa.Commit();
+
+            }
+
+            if (IsApiRequest())
+            {
+                // For some reason (could be a bug, could be something I'm forgetting to do)
+                // the ISession that was used for the updates doesn't reflect said updates
+                // after the commit.
+                // This didn't appear in CrewController because the reload used the
+                // stateless session (no dependent objects on crew).
+                // To be clear, if I use MvcApplication.CurrentSession here, the parent object
+                // (PurseSeineSeaDay) is loaded, but the child objects (Activities) are not.
+                // This isn't a great workaround, but it's a workaround nonetheless.
+                using (var repo = TubsDataService.GetRepository<LongLineSet>(false))
+                {
+                    // Force a reload after a save to ensure that PKs are set for all
+                    // appropriate entities.
+                    int maxDays = repo.FilterBy(d => d.Trip.Id == tripId.Id).Count();
+
+                    fset = repo.FindById(fset.Id);
+
+                    svm = Mapper.Map<LongLineSet, LongLineSetViewModel>(fset);
+                    svm.SetNavDetails(setNumber, maxDays);
+                    svm.ActionName = CurrentAction();
+                }
+
+                return GettableJsonNetData(svm);
+            }
+
+
+            // If this isn't an API request (which shouldn't really happen)
+            // always push to the Edit page.  It's been saved, so an Add is counter-productive
+            // (besides, redirecting to Add with the current dayNumber will redirect to Edit anyways...)
+            return RedirectToAction("Edit", "SetHaul", new { tripId = tripId.Id, setNumber = setNumber });
         }
 
         /// <summary>
@@ -208,6 +323,14 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId, setNumber);
         }
 
+        [HttpPost]
+        [HandleTransactionManually]
+        [EditorAuthorize]
+        public ActionResult Add(Trip tripId, int setNumber, LongLineSetViewModel svm)
+        {
+            return SaveActionImpl(tripId, setNumber, svm);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -218,6 +341,14 @@ namespace TubsWeb.Controllers
         public ActionResult Edit(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
+        }
+
+        [HttpPost]
+        [HandleTransactionManually]
+        [EditorAuthorize]
+        public ActionResult Edit(Trip tripId, int setNumber, LongLineSetViewModel svm)
+        {
+            return SaveActionImpl(tripId, setNumber, svm);
         }
 
     }

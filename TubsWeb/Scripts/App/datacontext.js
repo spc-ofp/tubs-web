@@ -111,6 +111,13 @@ amplify.request.define(
     $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/PageCount' })
 );
 
+// Request for loading LL-2/3 data
+amplify.request.define(
+    "getSetHaul",
+    "ajax",
+    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/SetHaul/{SetNumber}/Edit' })
+);
+
 /**
  * Load PS-2 data for a given sea day.
  * @param {Number} tripId Trip primary key
@@ -150,6 +157,45 @@ tubs.saveSeaDay = function (tripId, dayNumber, seaDay, success_cb, error_cb) {
 };
 
 /**
+ * Load LL-2/3 data for a given set.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} setNumber Location of the set within the trip
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.getSetHaul = function (tripId, setNumber, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getSetHaul",
+        data: { "TripId": tripId, "SetNumber": setNumber },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+/**
+ * Save LL-2/3 data for a given set.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} setNumber Location of the set within the trip
+ * @param seaDay Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.saveSetHaul = function (tripId, setNumber, setHaul, success_cb, error_cb) {
+    var url = appBase + 'Trip/' + tripId + '/SetHaul/' + setNumber + '/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(setHaul),
+        timeout: saveTimeout
+    })
+    .done(success_cb)
+    .fail(error_cb);
+};
+
+
+/**
  * Load crew for a given trip
  * @param {Number} tripId Trip primary key
  * @param success_cb Callback that handles returned data
@@ -183,6 +229,9 @@ tubs.saveCrew = function (tripId, crew, success_cb, error_cb) {
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };
 
 /**
@@ -221,6 +270,9 @@ tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };
 
 /**
@@ -257,6 +309,9 @@ tubs.saveSightings = function (tripId, sightings, success_cb, error_cb) {
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };
 
 /**
@@ -293,6 +348,9 @@ tubs.saveTransfers = function (tripId, transfers, success_cb, error_cb) {
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };
 
 /**
@@ -330,6 +388,9 @@ tubs.saveInteraction = function (tripId, interaction, success_cb, error_cb) {
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };
 
 /**
@@ -367,6 +428,9 @@ tubs.saveFad = function (tripId, fad, success_cb, error_cb) {
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };
 
 /**
@@ -403,6 +467,9 @@ tubs.savePs1 = function (tripId, ps1, success_cb, error_cb) {
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };
 
 /**
@@ -439,6 +506,9 @@ tubs.savePageCounts = function (tripId, pageCounts, success_cb, error_cb) {
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };
 
 /**
@@ -475,4 +545,7 @@ tubs.saveGen3 = function (tripId, gen3, success_cb, error_cb) {
         error: error_cb,
         timeout: saveTimeout
     });
+    // TODO Use promise API
+    //.done(success_cb)
+    //.fail(error_cb);
 };

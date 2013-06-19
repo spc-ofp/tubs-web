@@ -11,44 +11,69 @@
     <div class="span2 compact-header"><strong>Latitude</strong></div>
     <div class="span2 compact-header"><strong>Longitude</strong></div>
 </div>
-<div class="row editor-row">
-    <div class="form-horizontal compact-row">
+@*
+ * TODO:  LocalTime, Latitude, and Longitude properties have all been extended with
+ * unobtrusive regular expression validation.  Without any additional effort, validation message
+ * shows up to the right of the field with a problem.  Better to improve the UI in a fashion keeping
+ * with the Bootstrap user experience.
+ *@
+<div class="row editor-row" >
+    <div class="form-horizontal compact-row" data-bind="with: StartOfSet">
         <label class="span1q"><strong>Start Set</strong></label>
-        <input type="text" class="span1" placeholder="HHmm"/>
-        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'"/>
-        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'"/>
+        <input type="text" class="span1" placeholder="HHmm" data-bind="value: LocalTime" />
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude" />
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude" />
     </div>
 </div>
 <div class="row editor-row">
-    <div class="form-horizontal compact-row">
+    <div class="form-horizontal compact-row" data-bind="with: EndOfSet">
         <label class="span1q"><strong>End Set</strong></label>
-        <input type="text" class="span1" placeholder="HHmm"/>
-        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'"/>
-        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'"/>
+        <input type="text" class="span1" placeholder="HHmm" data-bind="value: LocalTime" />
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude" />
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude" />
     </div>
 </div>
 <div class="row editor-row">
-    <div class="form-horizontal compact-row">
+    <div class="form-horizontal compact-row" data-bind="with: StartOfHaul">
         <label class="span1q"><strong>Start Haul</strong></label>
-        <input type="text" class="span1" placeholder="HHmm"/>
-        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'"/>
-        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'"/>
+        <input type="text" class="span1" placeholder="HHmm" data-bind="value: LocalTime" />
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude" />
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude" />
     </div>
 </div>
-@* Knockout for-each goes here *@
+@*
+ * Knockout allows containerless binding.  That's why there's a knockout call inside HTML comments
+ * http://knockoutjs.com/documentation/foreach-binding.html
+ *@
+<!-- ko foreach: IntermediateHaulPositions -->
 <div class="row editor-row">
     <div class="form-horizontal compact-row">
         <label class="span1q">&nbsp;</label>
-        <input type="text" class="span1" placeholder="HHmm"/>
-        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'"/>
-        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'"/>
-        <button type="button" class="btn btn-danger" tabindex="5000"><i class="icon-minus-sign icon-white"></i> Delete</button>
+        <input type="text" class="span1" placeholder="HHmm" data-bind="hasfocus: NeedsFocus, value: LocalTime, uniqueName: true"/>
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude, uniqueName: true"/>
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude, uniqueName: true"/>
+        <button type="button" class="btn btn-danger removeItem" tabindex="5000"><i class="icon-minus-sign icon-white"></i> Delete</button>
     </div>
 </div>
+<!-- /ko -->
 <div class="row editor-row">
     <div class="form-horizontal compact-row">
         <label class="span1q">&nbsp;</label>
-        <button type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i> Add</button>
+        <button id="addPositionButton" type="button" class="btn btn-info addItem"><i class="icon-plus-sign icon-white"></i> Add Position</button>
+    </div>
+</div>
+<div class="row editor-row">
+    <div class="form-horizontal compact-row" data-bind="with: EndOfHaul">
+        <label class="span1q"><strong>End Haul</strong></label>
+        <input type="text" class="span1" placeholder="HHmm" data-bind="value: LocalTime" />
+        <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude" />
+        <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude" />
+    </div>
+</div>
+<div class="row editor-row">
+    <div class="span5">
+        <label>&nbsp;</label>
+        <a href="#" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></a>
     </div>
 </div>
 

@@ -154,7 +154,33 @@ namespace TubsWeb.ViewModels
             }
         }
 
-        // TODO DeletedPositions
+        // Entries to be deleted will have a '_destroy' property of true
+        [JsonIgnore]
+        public IEnumerable<Position> DeletedPositions
+        {
+            get
+            {
+                if (null != this.StartOfSet && this.StartOfSet._destroy)
+                    yield return this.StartOfSet;
+
+                if (null != this.EndOfSet && this.EndOfSet._destroy)
+                    yield return this.EndOfSet;
+
+                if (null != this.StartOfHaul && this.StartOfHaul._destroy)
+                    yield return this.StartOfHaul;
+
+                if (null != this.EndOfHaul && this.EndOfHaul._destroy)
+                    yield return this.EndOfHaul;
+
+                foreach (var position in this.IntermediateHaulPositions)
+                {
+                    if (null != position && position._destroy)
+                    {
+                        yield return position;
+                    }
+                }
+            }
+        }
 
         [JsonIgnore]
         public IEnumerable<Comment> KeeperComments
@@ -202,25 +228,83 @@ namespace TubsWeb.ViewModels
             }
         }
 
+        /// <summary>
+        /// Class representing a single Set/Haul position line item.
+        /// </summary>
         public class Position
         {
             public int Id { get; set; }
 
+            [RegularExpression(
+                @"^(20|21|22|23|[01]\d)[0-5]\d$",
+                ErrorMessage = "Local time must be a valid 24 hour time")]
             public string LocalTime { get; set; }
+
+            [RegularExpression(
+                @"^[0-8]\d{3}\.?\d{3}[NnSs]$",
+                ErrorMessage = "Latitude must be of the form ddmm.mmmN or ddmm.mmmS")]
             public string Latitude { get; set; }
+
+            [RegularExpression(
+                @"^[0-1]\d{4}\.?\d{3}[EeWw]$",
+                ErrorMessage = "Longitude must be of the form dddmm.mmmE or dddmm.mmmW")]
             public string Longitude { get; set; }
+
+            [StringLength(2, ErrorMessage = "EEZ Code must be 2 characters")]
+            public string EezCode { get; set; }
             public bool _destroy { get; set; } // Knockout UX
             public bool NeedsFocus { get; set; } // Knockout UX
+
+            /// <summary>
+            /// It would be better if the client managed this for us, removing the
+            /// placeholder entities that, if missing, cause the Knockout DOM binding
+            /// to puke all over itself.
+            /// </summary>
+            [JsonIgnore]
+            public bool IsEmpty
+            {
+                get
+                {
+                    return
+                        0 == this.Id &&
+                        String.IsNullOrEmpty(this.LocalTime) &&
+                        String.IsNullOrEmpty(this.Latitude) &&
+                        String.IsNullOrEmpty(this.Longitude) &&
+                        String.IsNullOrEmpty(this.EezCode);
+                }
+            }
         }
 
+        /// <summary>
+        /// Class representing a single Set/Haul comment line item.
+        /// </summary>
         public class Comment
         {
             public int Id { get; set; }
-
+            [RegularExpression(
+                @"^(20|21|22|23|[01]\d)[0-5]\d$",
+                ErrorMessage = "Local time must be a valid 24 hour time")]
             public string LocalTime { get; set; }
             public string Details { get; set; }
             public bool _destroy { get; set; } // Knockout UX
             public bool NeedsFocus { get; set; } // Knockout UX
+
+            /// <summary>
+            /// It would be better if the client managed this for us, removing the
+            /// placeholder entities that, if missing, cause the Knockout DOM binding
+            /// to puke all over itself.
+            /// </summary>
+            [JsonIgnore]
+            public bool IsEmpty
+            {
+                get
+                {
+                    return
+                        0 == this.Id &&
+                        String.IsNullOrEmpty(this.LocalTime) &&
+                        String.IsNullOrEmpty(this.Details);
+                }
+            }
         }
 
     }

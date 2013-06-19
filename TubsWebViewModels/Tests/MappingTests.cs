@@ -111,6 +111,31 @@ namespace TubsWeb.Tests
                 Assert.GreaterOrEqual(10, vm.IntermediateHaulPositions.Count);
             }
         }
+
+        [Test]
+        public void LongLineSetRoundTrip([Values(26)] int setId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<LongLineSet>(false))
+            {
+                var fset = repo.FindById(setId);
+                Assert.NotNull(fset);
+                var vm = Mapper.Map<LongLineSet, LongLineSetViewModel>(fset);
+                Assert.NotNull(vm);
+                var entity = Mapper.Map<LongLineSetViewModel, LongLineSet>(vm);
+                Assert.NotNull(entity);
+                Assert.AreEqual(fset.EventList.Count, entity.EventList.Count);
+                Assert.AreEqual(fset.NotesList.Count, entity.NotesList.Count);
+                // Event portion
+                var startEvent = entity.EventList[0];
+                Assert.NotNull(startEvent);
+                Assert.NotNull(startEvent.FishingSet);
+                Assert.AreEqual(fset.Id, startEvent.FishingSet.Id);
+                Assert.AreEqual(fset.EventList[0].ActivityType, startEvent.ActivityType);
+                Assert.AreEqual(fset.EventList[0].Id, startEvent.Id);
+                Assert.AreEqual(fset.EventList[0].LogDate, startEvent.LogDate);
+            }
+        }
         
         [Test]
         public void SetEntityToViewModel([Values(284)] int setId)

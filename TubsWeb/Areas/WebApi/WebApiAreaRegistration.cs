@@ -23,8 +23,14 @@ namespace TubsWeb.Areas.WebApi
      */
     using System.Web.Mvc;
     
+    /// <summary>
+    /// Area registration for Web API controllers.
+    /// </summary>
     public class WebApiAreaRegistration : AreaRegistration
     {
+        /// <summary>
+        /// Area name.
+        /// </summary>
         public override string AreaName
         {
             get
@@ -33,6 +39,10 @@ namespace TubsWeb.Areas.WebApi
             }
         }
 
+        /// <summary>
+        /// RegisterArea implementation is required but does nothing in this instance.
+        /// </summary>
+        /// <param name="context"></param>
         public override void RegisterArea(AreaRegistrationContext context)
         {           
             // No normal controllers in this area, just WebApi controllers

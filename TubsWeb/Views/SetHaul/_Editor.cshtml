@@ -2,7 +2,6 @@
 @using Newtonsoft.Json
 @using System.Web.Optimization
 
-@* TODO Put current breadcrumb title into ViewBag in the controller *@
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
@@ -10,7 +9,7 @@
         Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber as string),
         Tuple.Create(Url.Action("List", "SetHaul", new { tripId = Model.TripId }), "Sets"),
-        Tuple.Create("#", String.Format("Adding Set {0}", Model.SetNumber))
+        Tuple.Create("#", String.Format(ViewBag.TitleSuffix ?? String.Format("Set {0}", Model.SetNumber)))
     };
 }
 
@@ -35,7 +34,6 @@
     <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
         <i class="icon-refresh icon-white"></i>&nbsp;Reload
     </button>
-    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
     @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
     @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
     @if (Model.HasNext)
@@ -44,6 +42,8 @@
         Next Set&nbsp;<i class="icon-forward icon-white"></i>
     </a>
     }
+    @* Moving this after all the buttons makes for a less jarring visual experience *@
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
 </p>
 
 <br />
@@ -74,6 +74,10 @@
         </div>
     </div>
 </div>
+
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
 
 <ul id="tlyPageGuide" data-tourtitle="Detailed LL-2/3 entry instructions">
     <li class="tlypageguide_top" data-tourtarget="#saveButton">
@@ -121,6 +125,11 @@
             Click here to add another row.
         </div>
     </li>
+    <li class="tlypageguide_top" data-tourtarget="#addCommentButton">
+        <div>
+            Click here to add another comment row.
+        </div>
+    </li>
     <li class="tlypageguide_top" data-tourtarget=".removeItem:first">
         <div>
             Click here to remove this row.  The row won't be deleted until
@@ -128,13 +137,15 @@
             by using the 'Reload' button.
         </div>
     </li>
+    <li class="tlypageguide_top" data-tourtarget=".nextTabButton">
+        <div>
+            Click here to advance to the next section.  This is useful when you want to
+            navigate to the next section without using the mouse.
+        </div>
+    </li>
     <!-- TODO:  Figure out how to add pageguide to Knockout bound items -->
     @* We can probably put some entities in here and add the appropriate class after the list has one item...*@
 </ul>
-
-@*
-<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
-*@
 
 
 @section AdditionalScripts {
@@ -158,16 +169,6 @@
                 nextTab();
             });
 
-            $("#addCommentButton").on("click", function () {
-                viewModel.Comments.push({});
-            });
-
-            $(".comment-row").on("click", ".removeItem", function () {
-                viewModel.Comments.Remove(ko.dataFor(this));
-            });
-
-            $(".comment-row")
-
             var viewModel = new tubs.SetHaul(@modelAsJson);
             ko.applyBindings(viewModel);
             // This is the trick:  
@@ -176,8 +177,41 @@
             // "normal" state for the viewmodel
             viewModel.clearDirtyFlag();
 
+            $('#addCommentButton').on("click", function () {
+                viewModel.addComment();
+            });
+
+            $('#comments').on("click", ".removeItem", function () {
+                viewModel.removeComment(ko.dataFor(this));
+            });
+
+            $('#addPositionButton').on("click", function () {
+                viewModel.addPosition();
+            });
+
+            $('#log').on("click", ".removeItem", function () {
+                viewModel.removePosition(ko.dataFor(this));
+            });
+
             // PageGuide initialization
             tl.pg.init();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function (e) {
+                if (viewModel.isDirty()) {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };
         });
     </script> 
 }

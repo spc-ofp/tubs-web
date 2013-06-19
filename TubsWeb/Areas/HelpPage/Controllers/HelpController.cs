@@ -3,7 +3,7 @@
 // Copyright (C) 2013 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
-
+#pragma warning disable 1591
 namespace TubsWeb.Areas.HelpPage.Controllers
 {
     /*
@@ -66,3 +66,4 @@ namespace TubsWeb.Areas.HelpPage.Controllers
         }
     }
 }
+#pragma warning restore 1591

@@ -37,14 +37,32 @@ namespace TubsWeb
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
+    /// <summary>
+    /// Application object.
+    /// </summary>
     public class MvcApplication : System.Web.HttpApplication
     {
-        // Use the following string keys for stashing objects in the current request
+
+        /// <summary>
+        /// ISessionKey is the string key for finding the current stateful NHibernate session within the HTTP request context.
+        /// </summary>
         public const string ISessionKey = "current.session";
+        /// <summary>
+        /// IStatelessSessionKey is the string key for finding the current stateless NHibernate session within the HTTP request context.
+        /// </summary>
         public const string IStatelessSessionKey = "current.stateless-session";
+        /// <summary>
+        /// ITransactionKey is the string key for finding the current NHibernate transaction within the HTTP request context.
+        /// </summary>
         public const string ITransactionKey = "current.transaction";
+        /// <summary>
+        /// IsEnrolledInTransactionKey is the string key for determining if the current HTTP request is participating in a transaction.
+        /// </summary>
         public const string IsEnrolledInTransactionKey = "current.transaction-enrolled";
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MvcApplication()
         {
             /*
@@ -94,30 +112,46 @@ namespace TubsWeb
             };
         }
 
+        /// <summary>
+        /// Current NHibernate session property
+        /// </summary>
         public static ISession CurrentSession
         {
             get { return (ISession)HttpContext.Current.Items[ISessionKey]; }
             set { HttpContext.Current.Items[ISessionKey] = value; }
         }
 
+        /// <summary>
+        /// Current NHibernate stateless session property
+        /// </summary>
         public static IStatelessSession CurrentStatelessSession
         {
             get { return (IStatelessSession)HttpContext.Current.Items[IStatelessSessionKey]; }
             set { HttpContext.Current.Items[IStatelessSessionKey] = value; }
         }
 
+        /// <summary>
+        /// Current NHibernate transaction property
+        /// </summary>
         public static ITransaction CurrentTransaction
         {
             get { return (ITransaction)HttpContext.Current.Items[ITransactionKey]; }
             set { HttpContext.Current.Items[ITransactionKey] = value; }
         }
 
+        /// <summary>
+        /// Property indicating the current HttpContext is participating in a transaction
+        /// </summary>
         public static bool IsEnrolledInTransaction
         {
             get { return (bool)HttpContext.Current.Items[IsEnrolledInTransactionKey];  }
             set { HttpContext.Current.Items[IsEnrolledInTransactionKey] = value; }
         }
         
+        /// <summary>
+        /// Register global filters
+        /// </summary>
+        /// <param name="filters"></param>
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             //An authorize attribute filter takes the place of allow roles in web.config
@@ -128,6 +162,9 @@ namespace TubsWeb
             filters.Add(new HandleErrorAttribute());
         }
 
+        /// <summary>
+        /// Startup tasks
+        /// </summary>
         protected void Application_Start()
         {
             // Turn off classic ASPX
