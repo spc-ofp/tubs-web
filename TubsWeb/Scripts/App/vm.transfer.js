@@ -126,7 +126,7 @@ tubs.TransferViewModel = function (data) {
                     toastr.info('Reloaded transfers');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload transfers', xhr, status);
                     complete();
                 }
@@ -148,7 +148,7 @@ tubs.TransferViewModel = function (data) {
                     toastr.info('Saved transfers');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save transfers', xhr, status);
                     complete();
                 }

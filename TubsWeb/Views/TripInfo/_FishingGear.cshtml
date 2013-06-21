@@ -53,9 +53,108 @@
                         <td>@Html.DisplayFor(m => Model.HasWeighingScales)</td>
                         <td>@Model.WeighingScalesUsage</td>
                     </tr>
+                    @if (Model.ShowNewGear)
+                    { 
+                    <tr>
+                        <td>@Model.Description</td>
+                        <td>@Html.DisplayFor(m => Model.HasOther)</td>
+                        <td>@Model.OtherUsage</td>
+                    </tr>
+                    }
                 </tbody>
             </table>
-            @* TODO terminal gear *@
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Line</th>
+                        <th>Material</th>
+                        <th>Diameter (mm)</th>
+                        <th>Length (nM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mainline</td>
+                        <td>@Model.MainlineMaterial</td>
+                        <td>@Html.DisplayFor(m => m.MainlineDiameter, new { format = "F1" })</td>
+                        <td>@Html.DisplayFor(m => m.MainlineLength, new { format = "F1" })</td>
+                    </tr>
+                    <tr>
+                        <td>Branchline 1</td>
+                        <td>@Model.BranchlineMaterial1</td>
+                        <td>@Html.DisplayFor(m => m.BranchlineDiameter1, new { format = "F1" })</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>Branchline 2</td>
+                        <td>@Model.BranchlineMaterial1</td>
+                        <td>@Html.DisplayFor(m => m.BranchlineDiameter2, new { format = "F1" })</td>
+                        <td>N/A</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+            <div class="row">
+                <div class="span3">
+                    <label><strong>Has Wire Trace</strong></label>
+                    <span>@Model.HasWireTrace</span>
+                </div>
+            </div>
+            <hr />
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Hook Type</th>
+                        <th class="span1">Size</th>
+                        <th class="span1">Percentage</th>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <th>Offset, Rings, Swivels</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Japan</td>
+                        <td>@Model.JapanHookSize</td>
+                        <td>@Html.DisplayFor(m => m.JapanHookPercentage)</td>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <td>@Model.JapanOffsetRingSwivel</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Circle</td>
+                        <td>@Model.CircleHookSize</td>
+                        <td>@Html.DisplayFor(m => m.CircleHookPercentage)</td>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <td>@Model.CircleOffsetRingSwivel</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>"J"</td>
+                        <td>@Model.JapanHookSize</td>
+                        <td>@Html.DisplayFor(m => m.JapanHookPercentage)</td>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <td>@Model.JapanOffsetRingSwivel</td>
+                        }
+                    </tr>
+                    @if (Model.ShowOtherHook)
+                    {
+                    <tr>
+                        <td>@Model.OtherHookType</td>
+                        <td>@Model.OtherHookSize</td>
+                        <td>@Html.DisplayFor(m => m.OtherHookPercentage)</td>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <td>@Model.OtherOffsetRingSwivel</td>
+                        }
+                    </tr>
+                    }
+                </tbody>
+            </table>
             }
         </div>
     </div>

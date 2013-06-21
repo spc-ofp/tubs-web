@@ -1,4 +1,6 @@
-﻿<fieldset>
+﻿@model TubsWeb.ViewModels.LongLineSetViewModel
+
+<fieldset>
     <legend>Target Species</legend>
     <div class="row">
         <div class="span4">
@@ -17,6 +19,9 @@
     </div>
 </fieldset>
 <hr />
+@{
+    bool showDyedBait = Model.VersionNumber == 2009;
+}
 <fieldset>
     <legend>Bait Used</legend>
     <div class="row editor-row">
@@ -24,6 +29,10 @@
         <div class="span2 compact-header"><strong>Species</strong></div>
         <div class="span2 compact-header"><strong>Weight (kg)</strong></div>
         <div class="span2 compact-header"><strong>Hook Numbers</strong></div>
+        @if (showDyedBait)
+        { 
+        <div class="span2 compact-header"><strong>Dyed Bait?</strong></div>
+        }
     </div>
     <div class="row editor-row">
         <div class="form-horizontal compact-row" data-bind="with: $root.Baits()[0]">
@@ -31,6 +40,10 @@
             <input type="text" class="span2" data-bind="value: Species"/>
             <input type="number" class="span2" data-bind="value: Weight"/>
             <input type="text" class="span2" data-bind="value: Hooks"/>
+            @if (showDyedBait)
+            { 
+            <select class="input-mini" data-bind="options: $root.BooleanValues, value: DyedBlue"></select>
+            }
         </div>
     </div>
     <div class="row editor-row">
@@ -39,6 +52,10 @@
             <input type="text" class="span2" data-bind="value: Species"/>
             <input type="number" class="span2" data-bind="value: Weight"/>
             <input type="text" class="span2" data-bind="value: Hooks"/>
+            @if (showDyedBait)
+            { 
+            <select class="input-mini" data-bind="options: $root.BooleanValues, value: DyedBlue"></select>
+            }
         </div>
     </div>
     <div class="row editor-row">
@@ -47,6 +64,10 @@
             <input type="text" class="span2" data-bind="value: Species"/>
             <input type="number" class="span2" data-bind="value: Weight"/>
             <input type="text" class="span2" data-bind="value: Hooks"/>
+            @if (showDyedBait)
+            { 
+            <select class="input-mini" data-bind="options: $root.BooleanValues, value: DyedBlue"></select>
+            }
         </div>
     </div>
     <div class="row editor-row">
@@ -55,6 +76,10 @@
             <input type="text" class="span2" data-bind="value: Species"/>
             <input type="number" class="span2" data-bind="value: Weight"/>
             <input type="text" class="span2" data-bind="value: Hooks"/>
+            @if (showDyedBait)
+            { 
+            <select class="input-mini" data-bind="options: $root.BooleanValues, value: DyedBlue"></select>
+            }
         </div>
     </div>
     <div class="row editor-row">
@@ -63,6 +88,10 @@
             <input type="text" class="span2" data-bind="value: Species"/>
             <input type="number" class="span2" data-bind="value: Weight"/>
             <input type="text" class="span2" data-bind="value: Hooks"/>
+            @if (showDyedBait)
+            { 
+            <select class="input-mini" data-bind="options: $root.BooleanValues, value: DyedBlue"></select>
+            }
         </div>
     </div>
     

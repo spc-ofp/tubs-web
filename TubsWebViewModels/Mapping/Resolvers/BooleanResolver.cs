@@ -29,7 +29,7 @@ namespace TubsWeb.ViewModels.Resolvers
     /// Boolean resolver converts a nullable boolean to a human readable
     /// yes or no, with 'N/A' provided on null.
     /// </summary>
-    public class BooleanResolver : ValueResolver<bool?, string>
+    public sealed class BooleanResolver : ValueResolver<bool?, string>
     {
         protected override string ResolveCore(bool? source)
         {
@@ -44,7 +44,7 @@ namespace TubsWeb.ViewModels.Resolvers
     /// Resolver converts a string yes/no answer to a boolean, with anything
     /// that's not yes or no being converted to null.
     /// </summary>
-    public class YesNoResolver : ValueResolver<string, bool?>
+    public sealed class YesNoResolver : ValueResolver<string, bool?>
     {
         protected override bool? ResolveCore(string source)
         {

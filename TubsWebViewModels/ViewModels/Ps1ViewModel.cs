@@ -63,7 +63,7 @@ namespace TubsWeb.ViewModels
         public string HasWasteDisposal { get; set; }
         public string WasteDisposalDescription { get; set; }
 
-        public SafetyInspection Inspection { get; set; }
+        public SafetyInspectionViewModel Inspection { get; set; }
 
         public string Page2Comments { get; set; }
 
@@ -115,41 +115,6 @@ namespace TubsWeb.ViewModels
             public decimal? Brail2Capacity { get; set; }
             public string BrailType { get; set; }
         }
-
-        public class SafetyInspection
-        {
-            public int Id { get; set; }
-
-            public string LifejacketProvided { get; set; }
-            public string LifejacketSizeOk { get; set; }
-            public string LifejacketAvailability { get; set; }
-
-            public int? BuoyCount { get; set; }
-
-            public int? Epirb406Count { get; set; }
-            public string Epirb406Expiration { get; set; }
-
-            public string OtherEpirbType { get; set; }
-            public int? OtherEpirbCount { get; set; }
-            public string OtherEpirbExpiration { get; set; }           
-
-            public int? LifeRaft1Capacity { get; set; }
-            public string LifeRaft1Inspection { get; set; }
-            public string LifeRaft1LastOrDue { get; set; }
-
-            public int? LifeRaft2Capacity { get; set; }
-            public string LifeRaft2Inspection { get; set; }
-            public string LifeRaft2LastOrDue { get; set; }
-
-            public int? LifeRaft3Capacity { get; set; }
-            public string LifeRaft3Inspection { get; set; }
-            public string LifeRaft3LastOrDue { get; set; }
-
-            public int? LifeRaft4Capacity { get; set; }
-            public string LifeRaft4Inspection { get; set; }
-            public string LifeRaft4LastOrDue { get; set; }
-        }
-
         
     }
 }

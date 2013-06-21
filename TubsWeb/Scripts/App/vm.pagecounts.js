@@ -105,7 +105,7 @@ tubs.PageCountViewModel = function (data) {
                     toastr.info('Reloaded page counts');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload page counts', xhr, status);
                     complete();
                 }
@@ -129,7 +129,7 @@ tubs.PageCountViewModel = function (data) {
                     toastr.info('Saved page counts');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save page counts', xhr, status);
                     complete();
                 }

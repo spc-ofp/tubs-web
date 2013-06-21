@@ -34,6 +34,7 @@ var tubs = tubs || {};
  */
 tubs.setHaulOptions = {
     extend: {
+        "DateOnly": "IsoDate",
         "LocalTime": "TimePattern",
         "Latitude": "LatitudePattern",
         "Longitude": "LongitudePattern",
@@ -93,7 +94,7 @@ tubs.setHaulOptions = {
         },
         /* Validate time of day with a simple regex. */
         TimePattern: function (time) {
-            time.extend({ pattern: '^(20|21|22|23|[01]\d)[0-5]\d$' });
+            time.extend({ pattern: '^(20|21|22|23|[01][0-9])[0-5][0-9]$' });
         },
         /* Validate latitude with a simple regex.  It allows invalid values but it's a decent first pass. */
         LatitudePattern: function (latitude) {
@@ -102,6 +103,10 @@ tubs.setHaulOptions = {
         /* Validate longitude with a simple regex.  It allows invalid values but it's a decent first pass. */
         LongitudePattern: function (longitude) {
             longitude.extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
+        },
+        /* Add formattedDate property to full date object */
+        IsoDate: function (date) {
+            date.extend({ isoDate: 'DD/MM/YY' });
         }
     }
 };
@@ -112,6 +117,7 @@ tubs.setHaulOptions = {
  */
 tubs.setHaulCommentDefaults = {
     Id: 0,
+    DateOnly: null,
     LocalTime: null,
     Details: null,
     _destroy: false,
@@ -124,6 +130,7 @@ tubs.setHaulCommentDefaults = {
  */
 tubs.setHaulPositionDefaults = {
     Id: 0,
+    DateOnly: null,
     LocalTime: null,
     Latitude: null,
     Longitude: null,
@@ -139,7 +146,8 @@ tubs.setHaulPositionDefaults = {
 tubs.setHaulBaitDefaults = {
     Species: null,
     Weight: null,
-    Hooks: null
+    Hooks: null,
+    DyedBlue: null
 };
 
 /**
@@ -185,12 +193,14 @@ tubs.SetHaulComment = function (data) {
     _.defaults(data, tubs.setHaulCommentDefaults);
 
     self.Id = ko.observable(data.Id);
-    self.LocalTime = ko.observable(data.LocalTime).extend({ pattern: '^(20|21|22|23|[01]\d)[0-5]\d$' });
+    self.DateOnly = ko.observable(data.DateOnly).extend({ isoDate: 'DD/MM/YY' });
+    self.LocalTime = ko.observable(data.LocalTime).extend({ pattern: '^(20|21|22|23|[01][0-9])[0-5][0-9]$' });
     self.Details = ko.observable(data.Details);
     self._destroy = ko.observable(data._destroy);
     self.NeedsFocus = ko.observable(data.NeedsFocus);
 
     self.dirtyFlag = new ko.DirtyFlag([
+        self.DateOnly,
         self.LocalTime,
         self.Details
     ], false);
@@ -214,7 +224,8 @@ tubs.SetHaulPosition = function (data) {
     _.defaults(data, tubs.setHaulPositionDefaults);
 
     self.Id = ko.observable(data.Id);
-    self.LocalTime = ko.observable(data.LocalTime).extend({ pattern: '^(20|21|22|23|[01]\d)[0-5]\d$' });
+    self.DateOnly = ko.observable(data.DateOnly).extend({ isoDate: 'DD/MM/YY' });
+    self.LocalTime = ko.observable(data.LocalTime).extend({ pattern: '^(20|21|22|23|[01][0-9])[0-5][0-9]$' });
     self.Latitude = ko.observable(data.Latitude).extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
     self.Longitude = ko.observable(data.Longitude).extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
     self.EezCode = ko.observable(data.EezCode);
@@ -222,6 +233,7 @@ tubs.SetHaulPosition = function (data) {
     self.NeedsFocus = ko.observable(data.NeedsFocus);
 
     self.dirtyFlag = new ko.DirtyFlag([
+        self.DateOnly,
         self.LocalTime,
         self.Latitude,
         self.Longitude
@@ -321,7 +333,17 @@ tubs.SetHaul = function (data) {
     };
 
     vm.addComment = function () {
-        vm.Comments.push(new tubs.SetHaulComment({ NeedsFocus: true }));
+        var previous,
+            dateOnly;
+        // Comment gets DateOnly from previous comment
+        // If no previous comment, DateOnly comes from Set value of DateOnly
+        previous = _.last(vm.Comments());
+        if (previous && previous.DateOnly) {
+            dateOnly = previous.DateOnly();
+        } else {
+            dateOnly = vm.ShipsDate();
+        }
+        vm.Comments.push(new tubs.SetHaulComment({ DateOnly: dateOnly, NeedsFocus: true }));
     };
 
     vm.removeComment = function (comment) {
@@ -329,12 +351,40 @@ tubs.SetHaul = function (data) {
     };
 
     vm.addPosition = function () {
-        vm.IntermediateHaulPositions.push(new tubs.SetHaulPosition({ NeedsFocus: true }));
+        var dateOnly = null,
+            previous;
+
+        // There's probably a smart way to do this with a while loop, but
+        // this should work for now, although it will need a specific unit test.
+
+        // Position gets DateOnly from previous position
+        // If no previous position, DateOnly comes from Set value of DateOnly
+        previous = _.last(vm.IntermediateHaulPositions());
+        if (previous && previous.DateOnly) {
+            dateOnly = previous.DateOnly();
+        }
+        // Try StartOfHaul
+        if (null === dateOnly && vm.StartOfHaul) {
+            dateOnly = vm.StartOfHaul.DateOnly();
+        }
+        // Try EndOfSet
+        if (null === dateOnly && vm.EndOfSet) {
+            dateOnly = vm.EndOfSet.DateOnly();
+        }
+        // Try StartOfSet
+        if (null === dateOnly && vm.StartOfSet) {
+            dateOnly = vm.StartOfSet.DateOnly();
+        }
+        if (null === dateOnly) {
+            dateOnly = vm.ShipsDate();
+        }
+
+        vm.IntermediateHaulPositions.push(new tubs.SetHaulPosition({ DateOnly: dateOnly, NeedsFocus: true }));
     };
 
     vm.removePosition = function (position) {
         vm.IntermediateHaulPositions.Remove(position);
-    }
+    };
 
     vm.reloadCommand = ko.asyncCommand({
         execute: function (complete) {

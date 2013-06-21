@@ -104,6 +104,65 @@ namespace TubsWeb.Tests
         }
 
         [Test]
+        public void MergeGearAndRefrigeration([Values(4177)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId) as LongLineTrip;
+                Assert.NotNull(trip);
+                Assert.NotNull(trip.Gear, "Gear entity is null");
+                Assert.NotNull(trip.Inspection, "Safety Inspection entity is null");
+                var tivm = Mapper.Map<LongLineTrip, LongLineTripInfoViewModel>(trip);
+                Assert.NotNull(tivm, "AutoMapper yielded a null ViewModel");
+
+                // Refrigeration first
+                var gear = Mapper.Map<LongLineTripInfoViewModel.RefrigerationMethod, LongLineGear>(tivm.Refrigeration);
+                Assert.NotNull(gear);
+                // With refrigeration bits filled in, add in the rest of the gear
+                Mapper.Map<LongLineTripInfoViewModel.FishingGear, LongLineGear>(tivm.Gear, gear);
+                Assert.NotNull(gear);
+                // Something from refrigeration
+                Assert.True(gear.HasIce.HasValue && gear.HasIce.Value);
+                // Something from terminal gear
+                Assert.AreEqual(4.0M, gear.MainlineDiameter);
+                Assert.AreEqual(Spc.Ofp.Tubs.DAL.Common.UsageCode.ALL, gear.LineShooterUsage);
+
+            }           
+            
+        }
+
+        // Trips picked at random from those with gear and safety inspection records
+        [Test]
+        public void TripInfoRoundTrip([Values(4177, 4231, 4242)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId) as LongLineTrip;
+                Assert.NotNull(trip);
+                Assert.NotNull(trip.Inspection);
+                var tivm = Mapper.Map<LongLineTrip, LongLineTripInfoViewModel>(trip);
+                Assert.NotNull(tivm);
+                // Convert ViewModel back into entities
+                // Refrigeration first
+                var gear = Mapper.Map<LongLineTripInfoViewModel.RefrigerationMethod, LongLineGear>(tivm.Refrigeration);
+                Assert.NotNull(gear);
+                // With refrigeration bits filled in, add in the rest of the gear
+                Mapper.Map<LongLineTripInfoViewModel.FishingGear, LongLineGear>(tivm.Gear, gear);
+                Assert.NotNull(gear);
+                Assert.AreEqual(trip.Gear.Id, gear.Id);
+
+                var inspection = Mapper.Map<SafetyInspectionViewModel, SafetyInspection>(tivm.Inspection);
+                Assert.NotNull(inspection);
+                Assert.AreEqual(trip.Inspection.BuoyCount, inspection.BuoyCount);
+                Assert.AreEqual(trip.Inspection.Id, inspection.Id);
+                Assert.AreEqual(trip.Inspection.LifejacketAvailability, inspection.LifejacketAvailability);
+
+            }
+        }
+
+        [Test]
         public void TripEntityToSightingViewModel([Values(70)] int tripId)
         {
             Mapper.AssertConfigurationIsValid();

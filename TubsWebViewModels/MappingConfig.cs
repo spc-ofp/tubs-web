@@ -22,6 +22,7 @@ namespace TubsWeb
                 cfg.AddProfile<SeaDayProfile>();
                 cfg.AddProfile<SetProfile>();
                 cfg.AddProfile<LongLineSetProfile>();
+                cfg.AddProfile<SafetyInspectionProfile>();
                 cfg.AddProfile<TripInfoProfile>();
                 cfg.AddProfile<Ps1Profile>();
                 cfg.AddProfile<Ps1ViewModelProfile>();

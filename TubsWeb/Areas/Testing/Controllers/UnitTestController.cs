@@ -64,6 +64,16 @@ namespace TubsWeb.Areas.Testing.Controllers
         }
 
         /// <summary>
+        /// Longline LL-1 form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
+        public ActionResult TripInfo()
+        {
+            ViewBag.Title = "LL-1 unit tests";
+            return View();
+        }
+
+        /// <summary>
         /// Purse Seine PS-1 form unit tests
         /// </summary>
         /// <returns>QUnit view</returns>

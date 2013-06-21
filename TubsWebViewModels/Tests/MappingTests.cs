@@ -72,7 +72,7 @@ namespace TubsWeb.Tests
         public void ChildEntityToViewModel([Values(4177)] int tripId)
         {
             Mapper.AssertConfigurationIsValid();
-            using (var repo = TubsDataService.GetRepository<LongLineGear>(true))
+            using (var repo = TubsDataService.GetRepository<LongLineGear>(false))
             {
                 var gear = repo.FindBy(g => g.Trip.Id == tripId);
                 Assert.NotNull(gear);
@@ -80,11 +80,11 @@ namespace TubsWeb.Tests
                 Assert.NotNull(vm, "AutoMapper yielded a null ViewModel (LongLineGear)");
             }
 
-            using (var repo = TubsDataService.GetRepository<SafetyInspection>(true))
+            using (var repo = TubsDataService.GetRepository<SafetyInspection>(false))
             {
                 var inspection = repo.FindBy(i => i.Trip.Id == tripId);
                 Assert.NotNull(inspection);
-                var vm = Mapper.Map<SafetyInspection, LongLineTripInfoViewModel.SafetyInspection>(inspection);
+                var vm = Mapper.Map<SafetyInspection, SafetyInspectionViewModel>(inspection);
                 Assert.NotNull(vm, "AutoMapper yielded a null ViewModel (SafetyInspection)");
             }
         }
@@ -124,6 +124,7 @@ namespace TubsWeb.Tests
                 Assert.NotNull(vm);
                 var entity = Mapper.Map<LongLineSetViewModel, LongLineSet>(vm);
                 Assert.NotNull(entity);
+                Assert.AreEqual(fset.LineSettingSpeedUnit, entity.LineSettingSpeedUnit);
                 Assert.AreEqual(fset.EventList.Count, entity.EventList.Count);
                 Assert.AreEqual(fset.NotesList.Count, entity.NotesList.Count);
                 // Event portion

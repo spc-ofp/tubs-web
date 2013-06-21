@@ -215,8 +215,7 @@ namespace TubsWeb.Controllers
                 IRepository<LongLineSetHaulNote> nrepo = TubsDataService.GetRepository<LongLineSetHaulNote>(MvcApplication.CurrentSession);
 
                 fset.Trip = trip;
-                srepo.Save(fset);
-
+                
                 // SetHaul positions
                 // Deletes first
                 svm.DeletedPositions.ToList().ForEach(e => erepo.DeleteById(e.Id));
@@ -238,6 +237,8 @@ namespace TubsWeb.Controllers
                     note.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     nrepo.Save(note);
                 }
+
+                srepo.Save(fset);
 
                 xa.Commit();
 

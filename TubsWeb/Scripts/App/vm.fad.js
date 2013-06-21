@@ -150,7 +150,7 @@ tubs.FadViewModel = function (data) {
                     toastr.info('Reloaded FAD details');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload FAD details', xhr, status);
                     complete();
                 }
@@ -173,7 +173,7 @@ tubs.FadViewModel = function (data) {
                     toastr.info('Saved FAD details');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save FAD details', xhr, status);
                     complete();
                 }

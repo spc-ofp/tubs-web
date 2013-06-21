@@ -138,7 +138,7 @@ tubs.crewOptions = {
             return crew;
         }
     }
-}
+};
 
 // knockout.viewmodel version of crew mapping
 tubs.PurseSeineCrewViewModel = function (data) {
@@ -200,7 +200,7 @@ tubs.PurseSeineCrewViewModel = function (data) {
                     vm.clearDirtyFlag();
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload crew', xhr, status);
                     complete();
                 }
@@ -222,7 +222,7 @@ tubs.PurseSeineCrewViewModel = function (data) {
                     toastr.info('Saved crew details');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save crew details', xhr, status);
                     complete();
                 }
@@ -340,7 +340,7 @@ tubs.psCrewViewModel = function (data) {
                     self.clearDirtyFlag();
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload crew', xhr, status);
                     complete();
                 }
@@ -362,7 +362,7 @@ tubs.psCrewViewModel = function (data) {
                     toastr.info('Saved crew details');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save crew details', xhr, status);
                     complete();
                 }

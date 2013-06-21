@@ -7,6 +7,7 @@
 <hr />
 <div class="row editor-row">
     <div class="span1q compact-header">&nbsp;</div>
+    <div class="span1q compact-header"><strong>Date</strong></div>
     <div class="span1 compact-header"><strong>Time</strong></div>
     <div class="span2 compact-header"><strong>Latitude</strong></div>
     <div class="span2 compact-header"><strong>Longitude</strong></div>
@@ -20,6 +21,7 @@
 <div class="row editor-row" >
     <div class="form-horizontal compact-row" data-bind="with: StartOfSet">
         <label class="span1q"><strong>Start Set</strong></label>
+        <input type="text" class="span1q" placeholder="DD/MM/YY" data-bind="value: DateOnly.formattedDate"/>
         <input type="text" class="span1" placeholder="HHmm" data-bind="value: LocalTime" />
         <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude" />
         <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude" />
@@ -28,6 +30,7 @@
 <div class="row editor-row">
     <div class="form-horizontal compact-row" data-bind="with: EndOfSet">
         <label class="span1q"><strong>End Set</strong></label>
+        <input type="text" class="span1q" placeholder="DD/MM/YY" data-bind="value: DateOnly.formattedDate"/>
         <input type="text" class="span1" placeholder="HHmm" data-bind="value: LocalTime" />
         <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude" />
         <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude" />
@@ -36,6 +39,7 @@
 <div class="row editor-row">
     <div class="form-horizontal compact-row" data-bind="with: StartOfHaul">
         <label class="span1q"><strong>Start Haul</strong></label>
+        <input type="text" class="span1q" placeholder="DD/MM/YY" data-bind="value: DateOnly.formattedDate"/>
         <input type="text" class="span1" placeholder="HHmm" data-bind="value: LocalTime" />
         <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude" />
         <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude" />
@@ -49,6 +53,7 @@
 <div class="row editor-row">
     <div class="form-horizontal compact-row">
         <label class="span1q">&nbsp;</label>
+        <input type="text" class="span1q" placeholder="DD/MM/YY" data-bind="value: DateOnly.formattedDate, uniqueName: true"/>
         <input type="text" class="span1" placeholder="HHmm" data-bind="hasfocus: NeedsFocus, value: LocalTime, uniqueName: true"/>
         <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude, uniqueName: true"/>
         <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude, uniqueName: true"/>
@@ -65,6 +70,7 @@
 <div class="row editor-row">
     <div class="form-horizontal compact-row" data-bind="with: EndOfHaul">
         <label class="span1q"><strong>End Haul</strong></label>
+        <input type="text" class="span1q" placeholder="DD/MM/YY" data-bind="value: DateOnly.formattedDate"/>
         <input type="text" class="span1" placeholder="HHmm" data-bind="value: LocalTime" />
         <input type="text" class="span2" placeholder="dd&deg;mm.mmm'" data-bind="value: Latitude" />
         <input type="text" class="span2" placeholder="ddd&deg;mm.mmm'" data-bind="value: Longitude" />

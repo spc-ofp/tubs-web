@@ -1,4 +1,5 @@
 ﻿<div class="row editor-row">
+    <div class="span1q compact-header"><strong>Date</strong></div>
     <div class="span1 compact-header"><strong>Time</strong></div>
     <div class="span6 compact-header"><strong>Comments</strong></div>
 </div>
@@ -9,8 +10,9 @@
 <!-- ko foreach: Comments -->
 <div class="row editor-row">
     <div class="form-horizontal compact-row comment-row">
+        <input type="text" class="span1q" placeholder="DD/MM/YY" data-bind="value: DateOnly.formattedDate, uniqueName: true"/>
         <input type="text" class="span1" placeholder="HHmm" data-bind="hasfocus: NeedsFocus, value: LocalTime, uniqueName: true"/>
-        <input type="text" class="span6" />
+        <input type="text" class="span6" data-bind="value: Details, uniqueName: true"/>
         <button type="button" class="btn btn-danger removeItem" tabindex="5000"><i class="icon-minus-sign icon-white"></i> Delete</button>
     </div>
 </div>

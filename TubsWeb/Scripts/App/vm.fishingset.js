@@ -211,7 +211,7 @@ tubs.psSet = function (data) {
                     toastr.info('Reloaded set details');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload set details', xhr, status);
                     complete();
                 }
@@ -235,7 +235,7 @@ tubs.psSet = function (data) {
                     toastr.info('Saved set details');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save set details', xhr, status);
                     complete();
                 }

@@ -209,7 +209,7 @@ tubs.psSeaDay = function (data) {
                     toastr.info('Reloaded daily log');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload daily log', xhr, status);
                     complete();
                 }
@@ -232,7 +232,7 @@ tubs.psSeaDay = function (data) {
                     toastr.success('Daily log saved');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save daily log', xhr, status);
                     complete();
                 }

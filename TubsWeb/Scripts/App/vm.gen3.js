@@ -156,7 +156,7 @@ tubs.gen3 = function (data) {
                     toastr.info('Reloaded GEN-3');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload GEN-3', xhr, status);
                     complete();
                 }
@@ -178,7 +178,7 @@ tubs.gen3 = function (data) {
                     toastr.success('GEN-3 saved');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save GEN-3', xhr, status);
                     complete();
                 }

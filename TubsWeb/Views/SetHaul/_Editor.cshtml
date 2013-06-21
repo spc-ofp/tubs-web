@@ -52,6 +52,10 @@
     <ul id="formSections" class="nav nav-tabs">
         <li class="active"><a href="#specs" data-toggle="tab">Set Specifications</a></li>
         <li><a href="#bait" data-toggle="tab">Target Species / Bait Used</a></li>
+        @if (Model.VersionNumber == 2009)
+        { 
+        <li><a href="#mitigation" data-toggle="tab">Mitigation</a></li>
+        }
         <li><a href="#unusual" data-toggle="tab">Unusual Details</a></li>
         <li><a href="#log" data-toggle="tab">Set Log / Haul Log</a></li>
         <li><a href="#comments" data-toggle="tab">Comments</a></li>
@@ -61,8 +65,14 @@
             @{ Html.RenderPartial("_SpecificationEditor"); }        
         </div>
         <div class="tab-pane" id="bait">
-            @{ Html.RenderPartial("_BaitEditor"); }
+            @{ Html.RenderPartial("_BaitEditor", Model); }
         </div>
+        @if (Model.VersionNumber == 2009)
+        { 
+        <div class="tab-pan" id="mitigation">
+            @* TODO Create partial for mitigation editor *@
+        </div>
+        }
         <div class="tab-pane" id="unusual">
             @{ Html.RenderPartial("_DetailsEditor"); }
         </div>

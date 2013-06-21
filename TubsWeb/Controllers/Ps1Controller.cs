@@ -30,6 +30,9 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.ViewModels;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class Ps1Controller : SuperController
     {
         internal ActionResult ViewActionImpl(Trip tripId)
@@ -85,7 +88,7 @@ namespace TubsWeb.Controllers
             }
 
             var gear = Mapper.Map<Ps1ViewModel.FishingGear, PurseSeineGear>(ps1vm.Gear);
-            var inspection = Mapper.Map<Ps1ViewModel.SafetyInspection, SafetyInspection>(ps1vm.Inspection);
+            var inspection = Mapper.Map<SafetyInspectionViewModel, SafetyInspection>(ps1vm.Inspection);
             var characteristics = Mapper.Map<Ps1ViewModel.VesselCharacteristics, PurseSeineVesselAttributes>(ps1vm.Characteristics);
 
             if (ps1vm.VersionNumber == 2009)

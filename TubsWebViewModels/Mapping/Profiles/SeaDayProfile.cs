@@ -57,17 +57,22 @@ namespace TubsWeb.Mapping.Profiles
 
             // ViewModel to Entity
             CreateMap<SeaDayViewModel.SeaDayEvent, DAL.Entities.PurseSeineActivity>()
-                .ForMember(d => d.Day, o => o.Ignore()) // Ignore entity relationships
-                .ForMember(d => d.Fad, o => o.Ignore()) // Ignore entity relationships
-                .ForMember(d => d.FishingSet, o => o.Ignore()) // Ignore entity relationships
-                .ForMember(d => d.FishDays, o => o.Ignore())
-                .ForMember(d => d.RowVersion, o => o.Ignore())
+                // Ignore entity relationships
+                .ForMember(d => d.Day, o => o.Ignore()) 
+                .ForMember(d => d.Fad, o => o.Ignore())
+                .ForMember(d => d.FishingSet, o => o.Ignore())
+                .ForMember(d => d.AccessControl, o => o.Ignore())
+                // Standard ignores                
                 .ForMember(d => d.EnteredBy, o => o.Ignore())
                 .ForMember(d => d.EnteredDate, o => o.Ignore())
                 .ForMember(d => d.UpdatedBy, o => o.Ignore())
                 .ForMember(d => d.UpdatedDate, o => o.Ignore())
                 .ForMember(d => d.DctNotes, o => o.Ignore())
                 .ForMember(d => d.DctScore, o => o.Ignore())
+                // Legacy data
+                .ForMember(d => d.FishDays, o => o.Ignore())
+                .ForMember(d => d.RowVersion, o => o.Ignore())
+                // Custom properties
                 .ForMember(d => d.Id, o => o.MapFrom(s => s.EventId))
                 .ForMember(d => d.Payao, o => o.MapFrom(s => s.FadNumber))
                 .ForMember(d => d.Beacon, o => o.MapFrom(s => s.BuoyNumber))
@@ -83,7 +88,9 @@ namespace TubsWeb.Mapping.Profiles
                 ;
 
             CreateMap<SeaDayViewModel, DAL.Entities.PurseSeineSeaDay>()
-                .ForMember(d => d.Trip, o => o.Ignore()) // Ignore entity relationships
+                // Ignore entity relationships
+                .ForMember(d => d.Trip, o => o.Ignore())
+                // Standard ignores
                 .ForMember(d => d.FormId, o => o.Ignore())
                 .ForMember(d => d.RowVersion, o => o.Ignore())
                 .ForMember(d => d.EnteredBy, o => o.Ignore())

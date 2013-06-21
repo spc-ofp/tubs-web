@@ -189,9 +189,8 @@ tubs.saveSetHaul = function (tripId, setNumber, setHaul, success_cb, error_cb) {
         dataType: 'json',
         data: ko.toJSON(setHaul),
         timeout: saveTimeout
-    })
-    .done(success_cb)
-    .fail(error_cb);
+    }).done(success_cb)
+      .fail(error_cb);
 };
 
 

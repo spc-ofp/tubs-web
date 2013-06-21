@@ -6,6 +6,7 @@
         <thead>
             <tr>
                 <th>&nbsp;</th>
+                <th>Date</th>
                 <th>Time</th>
                 <th>Latitude</th>
                 <th>Longitude</th>
@@ -17,6 +18,7 @@
         {
             <tr>
                 <td><i class="icon-circle-arrow-down"></i> Start Set</td>
+                <td>@Html.DisplayFor(m => Model.StartOfSet.DateOnly, new { format = "d" })</td>
                 <td>@Model.StartOfSet.LocalTime</td>
                 <td>@Model.StartOfSet.Latitude</td>
                 <td>@Model.StartOfSet.Longitude</td>
@@ -26,6 +28,7 @@
         { 
             <tr>
                 <td><i class="icon-circle-arrow-down"></i> End Set</td>
+                <td>@Html.DisplayFor(m => Model.EndOfSet.DateOnly, new { format = "d" })</td>
                 <td>@Model.EndOfSet.LocalTime</td>
                 <td>@Model.EndOfSet.Latitude</td>
                 <td>@Model.EndOfSet.Longitude</td>
@@ -35,6 +38,7 @@
         { 
             <tr>
                 <td><i class="icon-circle-arrow-up"></i> Start Haul</td>
+                <td>@Html.DisplayFor(m => Model.StartOfHaul.DateOnly, new { format = "d" })</td>
                 <td>@Model.StartOfHaul.LocalTime</td>
                 <td>@Model.StartOfHaul.Latitude</td>
                 <td>@Model.StartOfHaul.Longitude</td>
@@ -45,6 +49,7 @@
             if (null == item) { continue; }
             <tr>
                 <td><i class="icon-circle-arrow-up"></i> Hauling</td>
+                <td>@Html.DisplayFor(m => item.DateOnly, new { format = "d" })</td>
                 <td>@item.LocalTime</td>
                 <td>@item.Latitude</td>
                 <td>@item.Longitude</td>
@@ -54,6 +59,7 @@
         { 
             <tr>
                 <td><i class="icon-circle-arrow-up"></i> End Haul</td>
+                <td>@Html.DisplayFor(m => Model.EndOfHaul.DateOnly, new { format = "d" })</td>
                 <td>@Model.EndOfHaul.LocalTime</td>
                 <td>@Model.EndOfHaul.Latitude</td>
                 <td>@Model.EndOfHaul.Longitude</td>

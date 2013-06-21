@@ -64,6 +64,7 @@
             "StartEndPositionsObserved": "YES",
             "StartOfSet": {
                 "Id": 11524,
+                "DateOnly": "2011-04-19T00:00:00",
                 "LocalTime": "0507",
                 "Latitude": "1840.273S",
                 "Longitude": "15925.237E",
@@ -72,6 +73,7 @@
             },
             "EndOfSet": {
                 "Id": 11525,
+                "DateOnly": "2011-04-19T00:00:00",
                 "LocalTime": "0918",
                 "Latitude": "1844.051S",
                 "Longitude": "15954.224E",
@@ -80,6 +82,7 @@
             },
             "StartOfHaul": {
                 "Id": 11526,
+                "DateOnly": "2011-04-19T00:00:00",
                 "LocalTime": "1256",
                 "Latitude": "1844.925S",
                 "Longitude": "15935.132E",
@@ -88,6 +91,7 @@
             },
             "EndOfHaul": {
                 "Id": 11536,
+                "DateOnly": "2011-04-19T00:00:00",
                 "LocalTime": "2306",
                 "Latitude": "1853.417S",
                 "Longitude": "15951.911E",
@@ -97,6 +101,7 @@
             "IntermediateHaulPositions": [
               {
                   "Id": 11527,
+                  "DateOnly": "2011-04-19T00:00:00",
                   "LocalTime": "1400",
                   "Latitude": "1847.841S",
                   "Longitude": "15939.489E",
@@ -105,6 +110,7 @@
               },
               {
                   "Id": 11528,
+                  "DateOnly": "2011-04-19T00:00:00",
                   "LocalTime": "1500",
                   "Latitude": "1848.158S",
                   "Longitude": "15940.277E",
@@ -113,6 +119,7 @@
               },
               {
                   "Id": 11529,
+                  "DateOnly": "2011-04-19T00:00:00",
                   "LocalTime": "1600",
                   "Latitude": "1849.296S",
                   "Longitude": "15943.145E",
@@ -121,6 +128,7 @@
               },
               {
                   "Id": 11535,
+                  "DateOnly": "2011-04-19T00:00:00",
                   "LocalTime": "2200",
                   "Latitude": "1852.982S",
                   "Longitude": "15951.751E",
@@ -131,6 +139,7 @@
             "Comments": [
                 {
                     "Id": 12345,
+                    "DateOnly": "2011-04-19T00:00:00",
                     "LocalTime": "1400",
                     "Details": "Lorem ipsum blah blah blah",
                     "_destroy": false,
@@ -183,9 +192,23 @@
             viewmodel.StartOfSet.LocalTime("0459");
             ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
+        test("StartOfSet DateOnly", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.StartOfSet.DateOnly.formattedDate(), "19/04/11", "Extended with ISODate");
+            viewmodel.StartOfSet.DateOnly("2012-04-19T00:00:00");
+            equal(viewmodel.StartOfSet.DateOnly.formattedDate(), "19/04/12", "ISODate reacts");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
         test("Modify EndOfSet", function () {
             ok(!viewmodel.isDirty(), "viewmodel is clean");
             viewmodel.EndOfSet.LocalTime("0459");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("EndOfSet DateOnly", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.EndOfSet.DateOnly.formattedDate(), "19/04/11", "Extended with ISODate");
+            viewmodel.EndOfSet.DateOnly("2012-04-19T00:00:00");
+            equal(viewmodel.EndOfSet.DateOnly.formattedDate(), "19/04/12", "ISODate reacts");
             ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Modify StartOfHaul", function () {
@@ -193,9 +216,23 @@
             viewmodel.StartOfHaul.LocalTime("0459");
             ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
+        test("StartOfHaul DateOnly", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.StartOfHaul.DateOnly.formattedDate(), "19/04/11", "Extended with ISODate");
+            viewmodel.StartOfHaul.DateOnly("2012-04-19T00:00:00");
+            equal(viewmodel.StartOfHaul.DateOnly.formattedDate(), "19/04/12", "ISODate reacts");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
         test("Modify EndOfHaul", function () {
             ok(!viewmodel.isDirty(), "viewmodel is clean");
             viewmodel.EndOfHaul.LocalTime("0459");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("EndOfHaul DateOnly", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.EndOfHaul.DateOnly.formattedDate(), "19/04/11", "Extended with ISODate");
+            viewmodel.EndOfHaul.DateOnly("2012-04-19T00:00:00");
+            equal(viewmodel.EndOfHaul.DateOnly.formattedDate(), "19/04/12", "ISODate reacts");
             ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Modify intermediate position property", function () {
@@ -212,6 +249,7 @@
             var pos = viewmodel.IntermediateHaulPositions().slice(-1)[0];
             ok(pos, "New item not null");
             ok(pos.NeedsFocus(), "New item has focus");
+            equal(pos.DateOnly.formattedDate(), "19/04/11", "New position has ISODate");
             equal(pos.Id(), 0, "New item Id is 0");
         });
         test("Remove existing intermediate position", function () {
@@ -231,6 +269,7 @@
             ok(viewmodel.isDirty(), "viewmodel is dirty");
             var comment = viewmodel.Comments().slice(-1)[0];
             ok(comment, "New item not null");
+            equal(comment.DateOnly.formattedDate(), "19/04/11", "New comment has ISODate");
             ok(comment.NeedsFocus(), "New item has focus");
             equal(comment.Id(), 0, "New item Id is 0");
         });

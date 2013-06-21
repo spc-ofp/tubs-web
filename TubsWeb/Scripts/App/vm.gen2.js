@@ -97,7 +97,7 @@ tubs.Gen2LandedEvent = function (data) {
                     toastr.info('Reloaded GEN-2 event');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload GEN-2 event', xhr, status);
                     complete();
                 }
@@ -120,7 +120,7 @@ tubs.Gen2LandedEvent = function (data) {
                     toastr.success('Saved GEN-2');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save GEN-2', xhr, status);
                     complete();
                 }
@@ -265,7 +265,7 @@ tubs.Gen2GearEvent = function (data) {
                     toastr.info('Reloaded GEN-2 event');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload GEN-2 event', xhr, status);
                     complete();
                 }
@@ -288,7 +288,7 @@ tubs.Gen2GearEvent = function (data) {
                     toastr.success('Saved GEN-2');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save GEN-2', xhr, status);
                     complete();
                 }
@@ -346,7 +346,7 @@ tubs.GenSightedEvent = function (data) {
                     toastr.info('Reloaded GEN-2 event');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload GEN-2 event', xhr, status);
                     complete();
                 }
@@ -369,7 +369,7 @@ tubs.GenSightedEvent = function (data) {
                     toastr.success('Saved GEN-2');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save GEN-2', xhr, status);
                     complete();
                 }

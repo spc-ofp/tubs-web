@@ -77,35 +77,6 @@ namespace TubsWeb.Mapping.Profiles
                 })
                 ;
 
-            // TODO Lifejacket provided is 'Y/N/O'
-            CreateMap<DAL.Entities.SafetyInspection, Ps1ViewModel.SafetyInspection>()
-                .ForMember(d => d.LifejacketSizeOk, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.LifejacketSizeOk))
-                .ForMember(d => d.Epirb406Count, o => o.MapFrom(s => s.Epirb1.Count))
-                .ForMember(d => d.Epirb406Expiration, o => o.MapFrom(s => s.Epirb1.Expiration))
-                .ForMember(d => d.OtherEpirbType, o => o.MapFrom(s => s.Epirb2.BeaconType))
-                .ForMember(d => d.OtherEpirbCount, o => o.MapFrom(s => s.Epirb2.Count))
-                .ForMember(d => d.OtherEpirbExpiration, o => o.MapFrom(s => s.Epirb2.Expiration))
-                .ForMember(d => d.LifeRaft1Capacity, o => o.MapFrom(s => s.Raft1.Capacity))
-                .ForMember(d => d.LifeRaft1Inspection, 
-                    o => o.MapFrom(s => s.Raft1.InspectionDate.HasValue ? s.Raft1.InspectionDate.Value.ToString("mm/yy") : string.Empty))                
-                .ForMember(d => d.LifeRaft1LastOrDue, o => o.MapFrom(s => s.Raft1.LastOrDue))
-                //
-                .ForMember(d => d.LifeRaft2Capacity, o => o.MapFrom(s => s.Raft2.Capacity))
-                .ForMember(d => d.LifeRaft2Inspection,
-                    o => o.MapFrom(s => s.Raft2.InspectionDate.HasValue ? s.Raft2.InspectionDate.Value.ToString("mm/yy") : string.Empty))
-                .ForMember(d => d.LifeRaft2LastOrDue, o => o.MapFrom(s => s.Raft2.LastOrDue))
-                //
-                .ForMember(d => d.LifeRaft3Capacity, o => o.MapFrom(s => s.Raft3.Capacity))
-                .ForMember(d => d.LifeRaft3Inspection,
-                    o => o.MapFrom(s => s.Raft3.InspectionDate.HasValue ? s.Raft3.InspectionDate.Value.ToString("mm/yy") : string.Empty))
-                .ForMember(d => d.LifeRaft3LastOrDue, o => o.MapFrom(s => s.Raft3.LastOrDue))
-                //
-                .ForMember(d => d.LifeRaft4Capacity, o => o.MapFrom(s => s.Raft4.Capacity))
-                .ForMember(d => d.LifeRaft4Inspection,
-                    o => o.MapFrom(s => s.Raft4.InspectionDate.HasValue ? s.Raft4.InspectionDate.Value.ToString("mm/yy") : string.Empty))
-                .ForMember(d => d.LifeRaft4LastOrDue, o => o.MapFrom(s => s.Raft4.LastOrDue))
-                ;
-
             CreateMap<DAL.Entities.PurseSeineTrip, Ps1ViewModel>()
                 .ForMember(d => d.BooleanValues, o => o.Ignore())
                 .ForMember(d => d.NetUnits, o => o.Ignore())
@@ -121,7 +92,7 @@ namespace TubsWeb.Mapping.Profiles
                 .AfterMap((s,d) => 
                 {
                     if (null == d.Inspection)
-                        d.Inspection = new Ps1ViewModel.SafetyInspection();
+                        d.Inspection = new SafetyInspectionViewModel();
                     if (null == d.Gear)
                         d.Gear = new Ps1ViewModel.FishingGear();
                     if (null == d.Characteristics)

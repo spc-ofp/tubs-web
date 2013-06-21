@@ -28,6 +28,9 @@ namespace TubsWeb.ViewModels
     using System.Linq;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// ViewModel for Long Line LL-2/3 form.
+    /// </summary>
     public class LongLineSetViewModel
     {
         public LongLineSetViewModel()
@@ -36,6 +39,11 @@ namespace TubsWeb.ViewModels
             this.Baits = new List<Bait>(5);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="setNumber"></param>
+        /// <param name="maxSets"></param>
         public void SetNavDetails(int setNumber, int maxSets)
         {
             this.HasPrevious = setNumber > 1;
@@ -85,6 +93,12 @@ namespace TubsWeb.ViewModels
         public bool? IsTargetingSwordfish { get; set; }
         public bool? IsTargetingShark { get; set; }
 
+        // Mitigation (v2009)
+        public string HasToriPoles { get; set; }
+        public string HasBirdCurtain { get; set; }
+        public string HasWeightedLines { get; set; }
+        public string HasUnderwaterChute { get; set; }
+
         public List<Bait> Baits { get; set; }
 
         public int? LightStickCount { get; set; }
@@ -100,6 +114,7 @@ namespace TubsWeb.ViewModels
 
         // Full date/time for start of set
         public DateTime? ShipsDate { get; set; }
+
         [Display(Name = "Ship's Time")]
         [RegularExpression(
             @"^[0-2]\d[0-5]\d",
@@ -214,6 +229,7 @@ namespace TubsWeb.ViewModels
             public string Species { get; set; }
             public int? Weight { get; set; }
             public string Hooks { get; set; }
+            public string DyedBlue { get; set; }
 
             [JsonIgnore]
             public bool Show
@@ -222,6 +238,7 @@ namespace TubsWeb.ViewModels
                 {
                     return !String.IsNullOrEmpty(this.Species) ||
                            this.Weight.HasValue ||
+                           !String.IsNullOrEmpty(this.DyedBlue) ||
                            !String.IsNullOrEmpty(this.Hooks);
                            
                 }
@@ -234,6 +251,8 @@ namespace TubsWeb.ViewModels
         public class Position
         {
             public int Id { get; set; }
+
+            public DateTime? DateOnly { get; set; }
 
             [RegularExpression(
                 @"^(20|21|22|23|[01]\d)[0-5]\d$",
@@ -265,6 +284,9 @@ namespace TubsWeb.ViewModels
             {
                 get
                 {
+                    // DateOnly is going to be filled automatically, so
+                    // having a value is no indicator that this record
+                    // needs saving
                     return
                         0 == this.Id &&
                         String.IsNullOrEmpty(this.LocalTime) &&
@@ -281,6 +303,9 @@ namespace TubsWeb.ViewModels
         public class Comment
         {
             public int Id { get; set; }
+
+            public DateTime? DateOnly { get; set; }
+
             [RegularExpression(
                 @"^(20|21|22|23|[01]\d)[0-5]\d$",
                 ErrorMessage = "Local time must be a valid 24 hour time")]
@@ -299,6 +324,9 @@ namespace TubsWeb.ViewModels
             {
                 get
                 {
+                    // DateOnly is going to be filled automatically, so
+                    // having a value is no indicator that this record
+                    // needs saving
                     return
                         0 == this.Id &&
                         String.IsNullOrEmpty(this.LocalTime) &&

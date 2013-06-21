@@ -33,43 +33,7 @@ namespace TubsWeb.Mapping.Profiles
     /// AutoMapper profile
     /// </summary>
     public class Ps1ViewModelProfile : Profile
-    {
-        public static DAL.Entities.RaftResult MakeRaft(int? capacity, string date, string lastOrDue)
-        {
-            bool hasDate = !string.IsNullOrEmpty(date);
-            bool hasLastOrDue = !string.IsNullOrEmpty(lastOrDue);
-
-            if (!hasDate && !hasLastOrDue && !capacity.HasValue)
-                return null;
-
-            var raft = new DAL.Entities.RaftResult
-            {
-                Capacity = capacity,                
-            };
-
-            // mm/yy
-            if (hasDate)
-            {
-                DateTime idate;
-                if (DateTime.TryParseExact(date, "mm/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out idate))
-                {
-                    raft.InspectionDate = idate;
-                }
-            }
-
-            if (hasLastOrDue)
-            {
-                lastOrDue = lastOrDue.ToUpper();
-                var first = lastOrDue.Substring(0, 1).ToCharArray()[0];
-                if (first == 'L' || first == 'D')
-                {
-                    raft.LastOrDue = first;
-                }
-            }           
-
-            return raft;
-        }
-        
+    {        
         protected override void Configure()
         {
             base.Configure();
@@ -117,45 +81,6 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.HasTenderBoats, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.TenderBoatAnswer))                
                 .ForMember(d => d.HelicopterRangeUnit, o => o.ResolveUsing<LengthUnitResolver>().FromMember(s => s.HelicopterRangeUnits))
                 .ForMember(d => d.VesselLengthUnits, o => o.ResolveUsing<LengthUnitResolver>().FromMember(s => s.LengthUnits))
-                ;
-
-            CreateMap<Ps1ViewModel.SafetyInspection, DAL.Entities.SafetyInspection>()
-                .ForMember(d => d.EnteredBy, o => o.Ignore())
-                .ForMember(d => d.EnteredDate, o => o.Ignore())
-                .ForMember(d => d.UpdatedBy, o => o.Ignore())
-                .ForMember(d => d.UpdatedDate, o => o.Ignore())
-                .ForMember(d => d.DctNotes, o => o.Ignore())
-                .ForMember(d => d.DctScore, o => o.Ignore())
-                .ForMember(d => d.LifejacketProvided, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.LifejacketProvided))
-                .ForMember(d => d.LifejacketSizeOk, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.LifejacketSizeOk))
-                .ForMember(d => d.Trip, o => o.Ignore()) // Managed by parent
-                .ForMember(d => d.Epirb1, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.Epirb2, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.Raft1, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.Raft2, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.Raft3, o => o.Ignore()) // AfterMap
-                .ForMember(d => d.Raft4, o => o.Ignore()) // AfterMap
-                .AfterMap((s,d) => 
-                {
-                    d.Epirb1 = new DAL.Entities.EpirbResult
-                    {
-                        BeaconType = "406",
-                        Count = s.Epirb406Count,
-                        Expiration = s.Epirb406Expiration
-                    };
-
-                    d.Epirb2 = new DAL.Entities.EpirbResult
-                    {
-                        BeaconType = s.OtherEpirbType ?? "Unknown",
-                        Count = s.OtherEpirbCount,
-                        Expiration = s.OtherEpirbExpiration
-                    };
-
-                    d.Raft1 = MakeRaft(s.LifeRaft1Capacity, s.LifeRaft1Inspection, s.LifeRaft1LastOrDue);
-                    d.Raft2 = MakeRaft(s.LifeRaft2Capacity, s.LifeRaft2Inspection, s.LifeRaft2LastOrDue);
-                    d.Raft3 = MakeRaft(s.LifeRaft3Capacity, s.LifeRaft3Inspection, s.LifeRaft3LastOrDue);
-                    d.Raft4 = MakeRaft(s.LifeRaft4Capacity, s.LifeRaft4Inspection, s.LifeRaft4LastOrDue);
-                })
                 ;
         }
     }

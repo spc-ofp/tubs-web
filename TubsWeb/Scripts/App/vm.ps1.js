@@ -183,7 +183,7 @@ tubs.Ps1ViewModel = function (data) {
                     toastr.info('Reloaded PS-1 details');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload PS-1 details', xhr, status);
                     complete();
                 }
@@ -206,7 +206,7 @@ tubs.Ps1ViewModel = function (data) {
                     toastr.info('Saved PS-1 details');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save PS-1 details', xhr, status);
                     complete();
                 }

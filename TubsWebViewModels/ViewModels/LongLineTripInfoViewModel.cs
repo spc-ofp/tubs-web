@@ -3,6 +3,7 @@
 // Copyright (C) 2013 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
+
 namespace TubsWeb.ViewModels
 {
     /*
@@ -39,13 +40,16 @@ namespace TubsWeb.ViewModels
         public string TripNumber { get; set; }
         public int VersionNumber { get; set; }
         public int TripId { get; set; }
+        // MAYBE Have GearId and SafetyId at the top level?
 
         // Use Knockout to help with common codes
+        public IList<string> AvailabilityValues = new List<string> { null, "Y", "N", "O" };
         public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
         public IList<string> LengthUnits = new List<string> { String.Empty, "M", "F" };
         public IList<string> UsageValues = new List<string> { String.Empty, "ALL", "TRA", "OIF", "SIF", "RAR", "BRO", "NOL" };
 
         public string VesselDeparturePort { get; set; }
+        // DateTime?
         public string VesselDepartureDate { get; set; }
 
         public VesselCharacteristics Characteristics { get; set; }
@@ -62,7 +66,7 @@ namespace TubsWeb.ViewModels
         public string HasWasteDisposal { get; set; }
         public string WasteDisposalDescription { get; set; }
 
-        public SafetyInspection Inspection { get; set; }
+        public SafetyInspectionViewModel Inspection { get; set; }
 
         public class VesselCharacteristics
         {
@@ -109,9 +113,19 @@ namespace TubsWeb.ViewModels
             public int? GroupFourCount { get; set; }
         }
 
+        /// <summary>
+        /// Long Line fishing gear DTO
+        /// </summary>
         public class FishingGear
         {
             public int Id { get; set; }
+
+            // true if v2009, false otherwise
+            public bool ShowOffsetRingSwivel { get; set; }
+            // Hide "Other" hook type if no data
+            public bool ShowOtherHook { get; set; }
+            // Hide "New" gear if no data
+            public bool ShowNewGear { get; set; }
             
             public string HasMainlineHauler { get; set; }
             public string MainlineHaulerUsage { get; set; }
@@ -137,7 +151,36 @@ namespace TubsWeb.ViewModels
             public string HasOther { get; set; }
             public string OtherUsage { get; set; }
 
-            // TODO:  Add mainline, branchline, and hook details
+            public string MainlineMaterial { get; set; }
+            public decimal? MainlineDiameter { get; set;}
+            public decimal? MainlineLength { get; set; }
+
+            public string BranchlineMaterial1 { get; set; }
+            public decimal? BranchlineDiameter1 { get; set; }
+
+            public string BranchlineMaterial2 { get; set; }
+            public decimal? BranchlineDiameter2 { get; set; }
+
+            public string HasWireTrace { get; set; }
+
+            public string JapanHookSize { get; set; }
+            public int? JapanHookPercentage { get; set; }
+            public string JapanOffsetRingSwivel { get; set; }
+
+            public string CircleHookSize { get; set; }
+            public int? CircleHookPercentage { get; set; }
+            public string CircleOffsetRingSwivel { get; set; }
+
+            public string JHookSize { get; set; }
+            public int? JHookPercentage { get; set; }
+            public string JHookOffsetRingSwivel { get; set; }
+
+            // Fixed as "TERACIMA" in 2009 workbook
+            public string OtherHookType { get; set; }
+            public string OtherHookSize { get; set; }
+            public int? OtherHookPercentage { get; set; }
+            public string OtherOffsetRingSwivel { get; set; }
+
         }
 
         public class RefrigerationMethod
@@ -148,40 +191,6 @@ namespace TubsWeb.ViewModels
             public string HasChilledSeawater { get; set; }
             public string HasOther { get; set; }
             public string Description { get; set; }
-        }
-
-        public class SafetyInspection
-        {
-            public int Id { get; set; }
-
-            public string LifejacketProvided { get; set; }
-            public string LifejacketSizeOk { get; set; }
-            public string LifejacketAvailability { get; set; }
-
-            public int? BuoyCount { get; set; }
-
-            public int? Epirb406Count { get; set; }
-            public string Epirb406Expiration { get; set; }
-
-            public string OtherEpirbType { get; set; }
-            public int? OtherEpirbCount { get; set; }
-            public string OtherEpirbExpiration { get; set; }
-
-            public int? LifeRaft1Capacity { get; set; }
-            public string LifeRaft1Inspection { get; set; }
-            public string LifeRaft1LastOrDue { get; set; }
-
-            public int? LifeRaft2Capacity { get; set; }
-            public string LifeRaft2Inspection { get; set; }
-            public string LifeRaft2LastOrDue { get; set; }
-
-            public int? LifeRaft3Capacity { get; set; }
-            public string LifeRaft3Inspection { get; set; }
-            public string LifeRaft3LastOrDue { get; set; }
-
-            public int? LifeRaft4Capacity { get; set; }
-            public string LifeRaft4Inspection { get; set; }
-            public string LifeRaft4LastOrDue { get; set; }
         }
     }
 }

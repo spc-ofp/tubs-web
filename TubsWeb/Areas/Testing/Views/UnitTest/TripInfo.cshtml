@@ -1,0 +1,169 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.tripinfo.js"></script>
+}
+
+@section TestData {
+    @* Inline data here *@
+    <script>
+        // Not exactly what comes from the server
+        // Some values have been changed to protect
+        // sensitive data
+        var modelAsJson = {
+            "BooleanValues": [
+              null,
+              "YES",
+              "NO"
+            ],
+            "LengthUnits": [
+              "",
+              "M",
+              "F"
+            ],
+            "UsageValues": [
+              "",
+              "ALL",
+              "TRA",
+              "OIF",
+              "SIF",
+              "RAR",
+              "BRO",
+              "NOL"
+            ],
+            "TripNumber": "DJB / 11-04",
+            "VersionNumber": 2007,
+            "TripId": 4314,
+            "VesselDeparturePort": "UNKNOWN PORT (XYZZY)",
+            "VesselDepartureDate": null,
+            "Characteristics": {
+                "Owner": null,
+                "RegistrationNumber": null,
+                "Ircs": null,
+                "Captain": null,
+                "CaptainDocument": null,
+                "CaptainDocumentNumber": null,
+                "CountryCode": "NC",
+                "Master": null,
+                "MasterDocument": null,
+                "MasterDocumentNumber": null,
+                "HoldCapacity": null,
+                "PermitNumbers": "NC-06/2010",
+                "Length": null,
+                "LengthUnits": null,
+                "GrossTonnage": 0.0
+            },
+            "Nationality": {
+                "CaptainCountryCode": null,
+                "MasterCountryCode": null,
+                "GroupOneCountryCode": null,
+                "GroupOneCount": null,
+                "GroupTwoCountryCode": null,
+                "GroupTwoCount": null,
+                "GroupThreeCountryCode": null,
+                "GroupThreeCount": null,
+                "GroupFourCountryCode": null,
+                "GroupFourCount": null
+            },
+            "Gear": {
+                "Id": 133,
+                "HasMainlineHauler": "YES",
+                "MainlineHaulerUsage": "OIF",
+                "HasBranchlineHauler": "NO",
+                "BranchlineHaulerUsage": null,
+                "HasLineShooter": "YES",
+                "LineShooterUsage": "OIF",
+                "HasBaitThrower": "NO",
+                "BaitThrowerUsage": null,
+                "HasBranchlineAttacher": "NO",
+                "BranchlineAttacherUsage": null,
+                "HasWeighingScales": "NO",
+                "WeighingScalesUsage": null,
+                "Description": null,
+                "HasOther": null,
+                "OtherUsage": null
+            },
+            "Refrigeration": {
+                "HasBlastFreeze": "YES",
+                "HasIce": "YES",
+                "HasRefrigeratedBrine": "NO",
+                "HasChilledSeawater": "NO",
+                "HasOther": "NO",
+                "Description": null
+            },
+            "Comments": "- Safety equipment: Few information about this point\r\n\r\n- LL-4 Form: Set n4 on the 25/05/11 at 1447 hrs Hook n1 - Observer did not recorded the species code for puffer fish so I add it (PUX)",
+            "HasWasteDisposal": null,
+            "WasteDisposalDescription": null,
+            "Inspection": {
+                "Id": 1245,
+                "LifejacketProvided": "True",
+                "LifejacketSizeOk": "YES",
+                "LifejacketAvailability": null,
+                "BuoyCount": 2,
+                "Epirb406Count": null,
+                "Epirb406Expiration": null,
+                "OtherEpirbType": null,
+                "OtherEpirbCount": null,
+                "OtherEpirbExpiration": null,
+                "LifeRaft1Capacity": null,
+                "LifeRaft1Inspection": null,
+                "LifeRaft1LastOrDue": null,
+                "LifeRaft2Capacity": null,
+                "LifeRaft2Inspection": null,
+                "LifeRaft2LastOrDue": null,
+                "LifeRaft3Capacity": null,
+                "LifeRaft3Inspection": null,
+                "LifeRaft3LastOrDue": null,
+                "LifeRaft4Capacity": null,
+                "LifeRaft4Inspection": null,
+                "LifeRaft4LastOrDue": null
+            }
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        /// <reference path="../qunit-1.11.0.js" />
+        /// 
+        'use strict';
+        var viewmodel;
+
+        module("LL-1 Form", {
+            setup: function () {
+                viewmodel = new tubs.TripInfo(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "viewmodel not null");
+            equal(viewmodel.TripNumber(), "DJB / 11-04", "TripNumber mapped correctly");
+            ok(viewmodel.Refrigeration, "Refrigeration entity exists");
+            ok(viewmodel.Gear, "Gear entity exists");
+            ok(viewmodel.Inspection, "Inspection entity exists");
+            ok(viewmodel.Nationality, "Nationality entity exists");
+            ok(viewmodel.Characteristics, "Characteristics entity exists");
+        });
+        test("Dirty flag", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            // Change property on the root
+            viewmodel.HasWasteDisposal("YES");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("Async commands", function () {
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.Comments("You are in a maze of twisty passages, all alike.");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+    </script>
+}
