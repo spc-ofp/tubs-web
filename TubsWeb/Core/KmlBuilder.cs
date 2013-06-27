@@ -29,19 +29,58 @@ namespace TubsWeb.Core
     using Google.Kml;
     using Spc.Ofp.Tubs.DAL.Entities;
     
+    /// <summary>
+    /// Utility class for building KML from a collection of trip positions.
+    /// </summary>
     public static class KmlBuilder
     {
+        /// <summary>
+        /// KML legend.
+        /// </summary>
         public const string ACTIVITY_KEY = 
             "Red=Set, Black=Haul, Blue=In Port, Yellow=Other activity, White=Gen1, Green=Gen2, Brown=Gen6";
 
+        /// <summary>
+        /// Style identifier
+        /// </summary>
         public const string ShadedRedDot = "#msn_shaded_dotred";
+
+        /// <summary>
+        /// Style identifier
+        /// </summary>
         public const string ShadedBlueDot = "#msn_shaded_dotblue";
+
+        /// <summary>
+        /// Style identifier
+        /// </summary>
         public const string ShadedYellowDot = "#msn_shaded_dotyellow";
+
+        /// <summary>
+        /// Style identifier
+        /// </summary>
         public const string ShadedWhiteDot = "#msn_shaded_dotwhite";
+
+        /// <summary>
+        /// Style identifier
+        /// </summary>
         public const string ShadedGreenDot = "#msn_shaded_dotgreen";
+
+        /// <summary>
+        /// Style identifier
+        /// </summary>
         public const string ShadedBrownDot = "#msn_shaded_dotbrown";
+
+        /// <summary>
+        /// Style identifier
+        /// </summary>
         public const string ShadedBlackDot = "#msn_shaded_dotblack";
 
+        /// <summary>
+        /// Extension method for converting a Pushpin entity to a KML Placemark
+        /// </summary>
+        /// <param name="pushpin">Pushpin to be converted</param>
+        /// <param name="style">Style identifier</param>
+        /// <returns>Placemark if latitude, longitude, and time were provided, null otherwise.</returns>
         public static Placemark ToPlacemark(this Pushpin pushpin, string style)
         {
             if (null == pushpin || !pushpin.Latitude.HasValue || !pushpin.Longitude.HasValue || !pushpin.Timestamp.HasValue)
@@ -57,6 +96,11 @@ namespace TubsWeb.Core
             };
         }
 
+        /// <summary>
+        /// Extension method for determining the appropriate placemark style.
+        /// </summary>
+        /// <param name="pushpin">Pushpin to be operated on</param>
+        /// <returns>String representation of placemark style.</returns>
         public static string GetStyle(this Pushpin pushpin)
         {
             if (null == pushpin)
@@ -229,6 +273,11 @@ namespace TubsWeb.Core
             return folder;
         }
         
+        /// <summary>
+        /// Build a KML document from a collection of Pushpin entities.
+        /// </summary>
+        /// <param name="positions">Collection of Pushpin entities</param>
+        /// <returns>KML document.</returns>
         public static Document Build(IEnumerable<Pushpin> positions)
         {
             // TODO See about moving StyleBuilder over

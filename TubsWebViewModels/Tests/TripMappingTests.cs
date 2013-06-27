@@ -159,6 +159,13 @@ namespace TubsWeb.Tests
                 Assert.AreEqual(trip.Inspection.Id, inspection.Id);
                 Assert.AreEqual(trip.Inspection.LifejacketAvailability, inspection.LifejacketAvailability);
 
+                if (null != trip.VesselNotes)
+                {
+                    var notes = Mapper.Map<LongLineTripInfoViewModel.VesselCharacteristics, VesselNotes>(tivm.Characteristics);
+                    Assert.NotNull(notes);
+                    Assert.AreEqual(trip.VesselNotes.Captain, notes.Captain);
+                }
+
             }
         }
 

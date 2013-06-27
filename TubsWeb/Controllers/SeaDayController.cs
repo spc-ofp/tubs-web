@@ -289,9 +289,14 @@ namespace TubsWeb.Controllers
                 IRepository<Activity> erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
                 IRepository<PurseSeineSet> srepo = TubsDataService.GetRepository<PurseSeineSet>(MvcApplication.CurrentSession);
 
+                bool isNewDay = seaDay.IsNew();
                 seaDay.Trip = trip;
                 seaDay.SetAuditTrail(User.Identity.Name, DateTime.Now);
-                drepo.Save(seaDay);
+                if (isNewDay)
+                {
+                    // Save so that activities will have non-null parent key
+                    drepo.Save(seaDay);
+                }               
 
                 // If we get here, the database didn't freak over the header, so now we can add the details  
                 // Deletes first
@@ -362,6 +367,12 @@ namespace TubsWeb.Controllers
                             // to figure out how to call stored proc after commit.
                         }
                     }
+                }
+
+                // Existing day and all children should no longer be transient
+                if (!isNewDay)
+                {
+                    drepo.Save(seaDay);
                 }
 
                 xa.Commit();

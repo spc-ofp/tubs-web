@@ -28,6 +28,10 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     
+    /// <summary>
+    /// Controller for working with vessel auxiliaries
+    /// TODO: Replaced by PS1 implementation?
+    /// </summary>
     public class AuxiliariesController : SuperController
     {
 

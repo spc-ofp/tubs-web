@@ -1,0 +1,50 @@
+﻿
+<div class="accordion-group" data-bind="with: Refrigeration">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#refrigeration">
+            <i class="icon-chevron-right"></i> Refrigeration Method
+        </a>
+    </div>
+    <div id="refrigeration" class="accordion-body collapse">
+        <div class="accordion-inner">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Is Installed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Blast Freeze</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasBlastFreeze"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Ice</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasIce"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Refrigerated Sea Water/Brine</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasRefrigeratedBrine"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Chilled Sea Water</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasChilledSeawater"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Other Storage</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasOther"></select></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            <label>Other Storage Description:</label>
+                            <textarea class="span4" rows="4" data-bind="value: Description"></textarea>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

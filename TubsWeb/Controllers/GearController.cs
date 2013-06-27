@@ -29,6 +29,10 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     
+    /// <summary>
+    /// Controller for collecting vessel gear information
+    /// TODO:  Is this replaced by PS1 controller?
+    /// </summary>
     public class GearController : SuperController
     {
         //

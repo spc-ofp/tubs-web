@@ -57,6 +57,15 @@
         div.compact-row {
             padding-bottom: 5px;
         }
+
+        /* Bootstrap adds a 10 pixel bottom margin to all inputs.  This is undesirable in a table, so turn it off*/
+        .table td select,
+        .table td input[type="text"],
+        .table td input[type="number"]
+        {
+            margin-bottom: 0px;
+        }
+
     </style>
     @RenderSection("AdditionalCss", false) 
 

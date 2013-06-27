@@ -38,6 +38,16 @@ namespace TubsWeb.Mapping.Profiles
             base.Configure();
 
             // ViewModel to Entity
+            CreateMap<LongLineTripInfoViewModel.VesselCharacteristics, DAL.Entities.VesselNotes>()
+                // Comes from elsewhere
+                .ForMember(d => d.Comments, o => o.Ignore())
+                .ForMember(d => d.CaptainCountryCode, o => o.Ignore())                
+                .ForMember(d => d.MasterCountryCode, o => o.Ignore())
+                // Custom properties
+                .ForMember(d => d.Licenses, o => o.MapFrom(s => s.PermitNumbers))
+                .ForMember(d => d.FishingMaster, o => o.MapFrom(s => s.Master))
+                ;
+
             CreateMap<LongLineTripInfoViewModel.FishingGear, DAL.Entities.LongLineGear>()
                 // Ignore entity relationships
                 .ForMember(d => d.Trip, o => o.Ignore())
@@ -82,6 +92,8 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.BranchlineAttacherUsage, o => o.ResolveUsing<UsageCodeTextResolver>().FromMember(s => s.BranchlineAttacherUsage))
                 .ForMember(d => d.HasWeightScales, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasWeighingScales))
                 .ForMember(d => d.WeightScalesUsage, o => o.ResolveUsing<UsageCodeTextResolver>().FromMember(s => s.WeighingScalesUsage))
+                // Same name, but needs a resolver
+                .ForMember(d => d.HasWireTrace, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasWireTrace))
                 .ForMember(d => d.BranchlineMaterial1Diameter, o => o.MapFrom(s => s.BranchlineDiameter1))
                 .ForMember(d => d.BranchlineMaterial2Diameter, o => o.MapFrom(s => s.BranchlineDiameter2))
                 .ForMember(d => d.JapanHookOffsetRingSwivel, o => o.MapFrom(s => s.JapanOffsetRingSwivel))
@@ -122,6 +134,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.BranchlineAttacherUsage, o => o.ResolveUsing<UsageCodeResolver>().FromMember(s => s.BranchlineAttacherUsage))
                 .ForMember(d => d.HasWeighingScales, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasWeightScales))
                 .ForMember(d => d.WeighingScalesUsage, o => o.ResolveUsing<UsageCodeResolver>().FromMember(s => s.WeightScalesUsage))
+                .ForMember(d => d.HasWireTrace, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasWireTrace))
                 // Not sure where this comes from in Entity
                 .ForMember(d => d.Description, o => o.Ignore())
                 .ForMember(d => d.HasOther, o => o.Ignore())
@@ -224,6 +237,10 @@ namespace TubsWeb.Mapping.Profiles
                             d.Characteristics.PermitNumbers = s.VesselNotes.Licenses;
                             d.Characteristics.Owner = s.VesselNotes.Owner;
                             d.Characteristics.Captain = s.VesselNotes.Captain;
+                            d.Characteristics.Master = s.VesselNotes.FishingMaster;
+                            // Nationality for captain/master comes from VesselNotes
+                            d.Nationality.CaptainCountryCode = s.VesselNotes.CaptainCountryCode;
+                            d.Nationality.MasterCountryCode = s.VesselNotes.MasterCountryCode;
                         }
                     }
                 })               

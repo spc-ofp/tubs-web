@@ -87,7 +87,7 @@
                     </tr>
                     <tr>
                         <td>Branchline 2</td>
-                        <td>@Model.BranchlineMaterial1</td>
+                        <td>@Model.BranchlineMaterial2</td>
                         <td>@Html.DisplayFor(m => m.BranchlineDiameter2, new { format = "F1" })</td>
                         <td>N/A</td>
                     </tr>
@@ -134,11 +134,11 @@
                     </tr>
                     <tr>
                         <td>"J"</td>
-                        <td>@Model.JapanHookSize</td>
-                        <td>@Html.DisplayFor(m => m.JapanHookPercentage)</td>
+                        <td>@Model.JHookSize</td>
+                        <td>@Html.DisplayFor(m => m.JHookPercentage)</td>
                         @if (Model.ShowOffsetRingSwivel)
                         {
-                        <td>@Model.JapanOffsetRingSwivel</td>
+                        <td>@Model.JHookOffsetRingSwivel</td>
                         }
                     </tr>
                     @if (Model.ShowOtherHook)

@@ -1,0 +1,85 @@
+﻿<div class="accordion-group" data-bind="with: Characteristics">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#characteristics">
+            <i class="icon-chevron-down"></i> Vessel
+        </a>
+    </div>
+    <div id="characteristics" class="accordion-body collapse in">
+        <div class="accordion-inner">        
+            @* Owner / Registration Number / IRCS *@
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Owner</strong></label>
+                    <input type="text" data-bind="value: Owner" />
+                </div>
+                <div class="span3">
+                    <label><strong>Country Registration Number</strong></label>
+                    <input class="input-small" type="text" data-bind="value: RegistrationNumber" />
+                </div>
+                <div class="span4">
+                    <label><strong>IRCS</strong></label>
+                    <input type="text" data-bind="value: Ircs" />
+                </div>
+            </div>
+            <hr />
+            @* Captain / ID Document / Document Number / Flag *@
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Vessel Captain</strong></label>
+                    <input type="text" data-bind="value: Captain" />
+                </div>
+                <div class="span2">
+                    <label><strong>ID Document</strong></label>
+                    <input class="input-small" type="text" data-bind="value: CaptainDocument" />
+                </div>
+                <div class="span4">
+                    <label><strong>Document Number</strong></label>
+                    <input type="text" data-bind="value: CaptainDocumentNumber" />
+                </div>
+                <div class="span1">
+                    <label><strong>Flag</strong></label>
+                    <input class="input-mini" type="text" data-bind="value: CountryCode" maxlength="2"/>
+                </div>
+            </div>
+            <hr />
+            @* Fishing Master / ID Document / Document Number / Hold Capacity *@
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Fishing Master</strong></label>
+                    <input type="text" data-bind="value: Master" />
+                </div>
+                <div class="span2">
+                    <label><strong>ID Document</strong></label>
+                    <input class="input-small" type="text" data-bind="value: MasterDocument" />
+                </div>
+                <div class="span4">
+                    <label><strong>Document Number</strong></label>
+                    <input type="text" data-bind="value: MasterDocumentNumber" />
+                </div>
+                <div class="span1">
+                    <label><strong>Hold Capacity</strong></label>
+                    <input class="input-mini" type="number" step="any" min="0" data-bind="value: HoldCapacity" />
+                </div>
+            </div>
+            <hr />
+            @* Licenses / Length / Gross Tonnage *@
+            <div class="row-fluid"> 
+                <div class="span5">
+                    <label><strong>Licenses</strong></label>
+                    <textarea class="span10" rows="3" data-bind="value: PermitNumbers"></textarea>
+                </div>
+                <div class="span4">
+                    <label><strong>Length</strong></label>
+                    <input class="input-mini" type="number" step="any" min="0" data-bind="value: Length" />
+                    <select class="input-mini" data-bind="options: $root.LengthUnits, value: LengthUnits"></select>
+                </div>
+                <div class="span3">
+                    <label><strong>Gross Tonnage</strong></label>
+                    <input class="input-mini" type="number" step="any" min="0" data-bind="value: GrossTonnage" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

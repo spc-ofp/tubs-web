@@ -26,6 +26,10 @@ namespace TubsWeb.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    /// <summary>
+    /// PS-5 form ViewModel.
+    /// TODO: Move to ViewModel project
+    /// </summary>
     public class WellReconciliationViewModel
     {
         // UX state

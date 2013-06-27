@@ -30,6 +30,9 @@ namespace TubsWeb.Models
     /// </summary>
     public static class GearUnits
     {
+        /// <summary>
+        /// Unit 1 (from MS Access implementation)
+        /// </summary>
         public static IList<UnitOfMeasure> UnitOne = new List<UnitOfMeasure>()
         {
             UnitOfMeasure.Meters,
@@ -37,12 +40,18 @@ namespace TubsWeb.Models
             UnitOfMeasure.Yards
         };
 
+        /// <summary>
+        /// Unit 2 (from MS Access implementation)
+        /// </summary>
         public static IList<UnitOfMeasure> UnitTwo = new List<UnitOfMeasure>()
         {
             UnitOfMeasure.Centimeters,
             UnitOfMeasure.Inches
         };
 
+        /// <summary>
+        /// Unit 4 (from MS Access implementation)
+        /// </summary>
         public static IList<UnitOfMeasure> UnitFour = new List<UnitOfMeasure>()
         {
             UnitOfMeasure.Meters,

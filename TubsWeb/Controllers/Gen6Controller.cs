@@ -29,6 +29,9 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     
+    /// <summary>
+    /// Controller for GEN-6 (Pollution) form data.
+    /// </summary>
     public class Gen6Controller : SuperController
     {
         private PollutionEvent FindByTripAndPageNumber(Trip tripId, int pageNumber)

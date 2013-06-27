@@ -24,31 +24,55 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Web.Mvc;
-    using AutoMapper;
-    using Spc.Ofp.Tubs.DAL;
+    using System.Web.Routing;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Core;
-    using TubsWeb.ViewModels;
 
-    public class SamplingController : SuperController
+    /// <summary>
+    /// 
+    /// </summary>
+    public abstract class SamplingController : SuperController
     {
-        internal ActionResult ViewActionImpl(Trip tripId)
+        /// <summary>
+        /// Validate the incoming setNumber parameter
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="setNumber"></param>
+        /// <param name="maxSets"></param>
+        /// <returns></returns>
+        internal Tuple<bool, RouteValueDictionary> NeedsRedirect(int tripId, int setNumber, int maxSets)
         {
-            var trip = tripId as PurseSeineTrip;
-            if (null == trip)
+            var needsRedirect = false;
+            // Fill values that don't change
+            // TODO: Confirm CurrentController returns the "friendly" name (e.g. FishingSet)
+            // and not the full name (e.g. FishingSetController).
+            var rvd = new RouteValueDictionary(
+                new { controller = CurrentController(), tripId = tripId }
+            );
+
+            if (IsEdit())
             {
-                return InvalidTripResponse();
+                if (setNumber > maxSets)
+                {
+                    rvd["setNumber"] = maxSets;
+                    rvd["action"] = "Edit";
+                    needsRedirect = true;
+                }
             }
 
-            var vm = new object();
+            return Tuple.Create(needsRedirect, rvd);
 
-
-            return View(CurrentAction(), vm);
         }
 
-        public ActionResult Index(Trip tripId)
+        internal abstract ActionResult ViewActionImpl(Trip tripId, int setNumber);
+
+        public ActionResult Index(Trip tripId, int setNumber)
         {
-            return ViewActionImpl(tripId);
+            return ViewActionImpl(tripId, setNumber);
+        }
+
+        public ActionResult Edit(Trip tripId, int setNumber)
+        {
+            return ViewActionImpl(tripId, setNumber);
         }
 
     }

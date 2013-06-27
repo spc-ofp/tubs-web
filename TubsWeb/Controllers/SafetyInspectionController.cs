@@ -28,6 +28,9 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
 
+    /// <summary>
+    /// TODO:  Is this necessary?  Replaced by PS-1 controller?
+    /// </summary>
     public class SafetyInspectionController : SuperController
     {
         //

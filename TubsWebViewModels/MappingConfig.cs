@@ -36,6 +36,7 @@ namespace TubsWeb
                 cfg.AddProfile<Gen5Profile>();
                 cfg.AddProfile<PageCountProfile>();
                 cfg.AddProfile<TripSummaryProfile>();
+                cfg.AddProfile<LongLineSampleProfile>();
                 // Trim all strings.  If the trimmed string is empty, return a null
                 Mapper.CreateMap<string, string>().ConvertUsing(s =>
                 {

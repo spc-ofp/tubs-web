@@ -28,16 +28,24 @@ namespace TubsWeb.Controllers
     using System.Web.Mvc;
     using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.ViewModels;
-    using TubsWeb.Core;
     using Spc.Ofp.Tubs.DAL.Common;
-    using System.Collections.Generic;
+    using Spc.Ofp.Tubs.DAL.Entities;
+    using TubsWeb.Core;
+    using TubsWeb.ViewModels;
 
+    /// <summary>
+    /// MVC controller for GEN-5 (FAD) forms.
+    /// </summary>
     public class Gen5Controller : SuperController
     {
-        //
-        // GET: /GEN-5/Details
+        /// <summary>
+        /// Action for displaying a list of GEN-5 (FAD) interactions for a trip.
+        /// </summary>
+        /// <example>
+        /// GET: /Trip/12345/GEN-5/Index
+        /// </example>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
         public ActionResult Index(Trip tripId)
         {
             var trip = tripId as PurseSeineTrip;
@@ -58,6 +66,14 @@ namespace TubsWeb.Controllers
             return View(viewModels.AsEnumerable());
         }
 
+        /// <summary>
+        /// Used by the display and edit actions.  An ID must be specified for
+        /// either the FAD or the activity.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="fadId">FAD entity primary key (optional)</param>
+        /// <param name="activityId">Activity entity primary key (optional)</param>
+        /// <returns>ViewModel representing a single FAD interaction</returns>
         internal ActionResult ViewActionImpl(Trip tripId, int? fadId, int? activityId)
         {
             var trip = tripId as PurseSeineTrip;
@@ -97,9 +113,7 @@ namespace TubsWeb.Controllers
                     TripId = trip.Id,
                     TripNumber = trip.SpcTripNumber,
                     ActivityId = activityId.HasValue ? activityId.Value : 0,
-                    VersionNumber = trip.Version == WorkbookVersion.v2009 ? 2009 : 2007,
-                    MainMaterials = new List<Gen5ViewModel.FadMaterial>(),
-                    Attachments = new List<Gen5ViewModel.FadMaterial>()
+                    VersionNumber = trip.Version == WorkbookVersion.v2009 ? 2009 : 2007
                 };
             }
             if (IsApiRequest())
@@ -108,6 +122,12 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), fvm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="fvm"></param>
+        /// <returns></returns>
         internal ActionResult SaveActionImpl(Trip tripId, Gen5ViewModel fvm)
         {
             var trip = tripId as PurseSeineTrip;
@@ -139,8 +159,8 @@ namespace TubsWeb.Controllers
 
             using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
-                IRepository<Gen5Material> mrepo = TubsDataService.GetRepository<Gen5Material>(MvcApplication.CurrentSession);
-                IRepository<Gen5Object> frepo = TubsDataService.GetRepository<Gen5Object>(MvcApplication.CurrentSession);
+                IRepository<Gen5Object> frepo = TubsDataService.GetRepository<Gen5Object>(MvcApplication.CurrentSession);     
+                IRepository<Gen5Material> mrepo = TubsDataService.GetRepository<Gen5Material>(MvcApplication.CurrentSession);                
                 IRepository<Activity> erepo = TubsDataService.GetRepository<Activity>(MvcApplication.CurrentSession);
 
                 fad.Activity = erepo.FindById(fvm.ActivityId) as PurseSeineActivity;
@@ -149,31 +169,50 @@ namespace TubsWeb.Controllers
                     throw new Exception("Yo dawg, this shouldn't happen");
                 }
 
-                // Manually handle deletes
-                fvm.MainMaterials.Where(x => x != null && x._destroy).ToList().ForEach(x =>
+                // This is the tricky part.  If the item is new, it needs to be
+                // saved so that the child entities have a non-null parent key.
+                // _HOWEVER_, if the item is not new, NHibernate freaks out
+                // when you try to save the parent first, saying there are
+                // transient objects that need saving.
+                // I'm not super happy about this approach, but it works:
+                // 1)  If the item is new, save it before processing children
+                // 2)  If the item is not new, defer the save until after the children have been processed
+                // TODO:  Migrate this strategy through the app
+                bool isNew = fad.IsNew();
+                if (isNew)
                 {
-                    mrepo.DeleteById(x.Id);
-                });
+                    frepo.Save(fad);
+                }
 
-                fvm.Attachments.Where(x => x != null && x._destroy).ToList().ForEach(x =>
+                // Manually handle deletes
+                if (null != fvm.MainMaterials && fvm.MainMaterials.Count > 0)
                 {
-                    mrepo.DeleteById(x.Id);
-                });
+                    fvm.MainMaterials.Where(x => x != null && x._destroy).ToList().ForEach(x =>
+                    {
+                        mrepo.DeleteById(x.Id);
+                    });
+                }
+
+                if (null != fvm.Attachments && fvm.Attachments.Count > 0)
+                {
+                    fvm.Attachments.Where(x => x != null && x._destroy).ToList().ForEach(x =>
+                    {
+                        mrepo.DeleteById(x.Id);
+                    });
+                }
 
                 fad.Materials.ToList().ForEach(x =>
                 {
                     mrepo.Update(x, x.Id != default(int));
                 });
 
-                bool merge = fad.Id != default(int);
-                frepo.Update(fad, merge);
+                if (!isNew)
+                {
+                    frepo.Save(fad);
+                }
+                
                 xa.Commit();
-                MvcApplication.CurrentSession.Evict(fad);
-                // Reload doesn't appear to be all that valuable
-                // for entities with a parent-child relationship
-                // Still, we'll keep the reload so that we can guarantee
-                // we've got the correct entity primary key
-                frepo.Reload(fad);
+
             }
 
             if (IsApiRequest())
@@ -193,18 +232,36 @@ namespace TubsWeb.Controllers
             return RedirectToAction("Edit", "Gen5", new { tripId = tripId.Id, fadId = fad.Id });
         }
         
-        //
-        // GET: /GEN-5/Details
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <example>GET: /Trip/12345/GEN-5/Details</example>
+        /// <param name="tripId"></param>
+        /// <param name="fadId"></param>
+        /// <param name="activityId"></param>
+        /// <returns></returns>
         public ActionResult Details(Trip tripId, int? fadId, int? activityId)
         {
             return ViewActionImpl(tripId, fadId, activityId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="fadId"></param>
+        /// <returns></returns>
         public ActionResult Edit(Trip tripId, int fadId)
         {
             return ViewActionImpl(tripId, fadId, null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="fvm"></param>
+        /// <returns></returns>
         [HttpPost]
         [HandleTransactionManually]
         [EditorAuthorize]
@@ -213,13 +270,23 @@ namespace TubsWeb.Controllers
             return SaveActionImpl(tripId, fvm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="activityId"></param>
+        /// <returns></returns>
         public ActionResult Add(Trip tripId, int activityId)
         {
             return ViewActionImpl(tripId, null, activityId);
         }
 
-        // TODO:  Do we need this?  Not that there's much to it, but
-        // it could be confusing...
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="fvm"></param>
+        /// <returns></returns>
         [HttpPost]
         [HandleTransactionManually]
         [EditorAuthorize]

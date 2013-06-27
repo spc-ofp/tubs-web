@@ -32,7 +32,11 @@ namespace TubsWeb.Mapping.Profiles
     using TubsWeb.ViewModels.Resolvers;
     using Spc.Ofp.Tubs.DAL.Common;
     
-    public class SeaDayProfile : Profile
+    /// <summary>
+    /// AutoMapper profile for the conversion of PurseSeineSeaDay entities to/from
+    /// MVC ViewModels.
+    /// </summary>
+    public sealed class SeaDayProfile : Profile
     {
         internal string ActivityTime(DAL.Entities.Activity activity)
         {
@@ -100,7 +104,9 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.DctNotes, o => o.Ignore())
                 .ForMember(d => d.DctScore, o => o.Ignore())
                 .ForMember(d => d.Id, o => o.MapFrom(s => s.DayId))
-                .ForMember(d => d.Activities, o => o.MapFrom(s => s.Events))
+                // Original implementation was converting all activities, even those marked for deletion
+                // TODO May want to confirm that this bug isn't present in other profiles
+                .ForMember(d => d.Activities, o => o.MapFrom(s => s.Events.Where(e => null != e && !e._destroy)))
                 .ForMember(d => d.FadsNoSchool, o => o.MapFrom(s => s.AnchoredWithNoSchool))
                 .ForMember(d => d.FadsWithSchool, o => o.MapFrom(s => s.AnchoredWithSchool))
                 .ForMember(d => d.FloatingObjectsNoSchool, o => o.MapFrom(s => s.FreeFloatingWithNoSchool))

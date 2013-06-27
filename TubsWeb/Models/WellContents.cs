@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="GearUnits.cs" company="Secretariat of the Pacific Community">
+// <copyright file="WellContents.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2012 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
@@ -25,8 +25,15 @@ namespace TubsWeb.Models
     using System.Collections.Generic;
     using Spc.Ofp.Tubs.DAL.Common;
     
+    /// <summary>
+    /// PS-1 well contents enumeration for use in select box.
+    /// TODO: Replace with ViewModel
+    /// </summary>
     public static class WellContents
     {
+        /// <summary>
+        /// List of well content enumeration values.
+        /// </summary>
         public static IList<WellContentType> ContentTypes = new List<WellContentType>()
         {
             WellContentType.Fuel,

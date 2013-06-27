@@ -70,5 +70,105 @@ namespace TubsWeb.Controllers
             return ViewActionImpl(tripId);
         }
 
+        [HttpPost]
+        [EditorAuthorize]
+        [HandleTransactionManually]
+        public ActionResult Edit(Trip tripId, LongLineTripInfoViewModel tivm)
+        {
+            var trip = tripId as LongLineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+
+                return View(tivm);
+            }
+
+            // LL gear is a bit different from most other operations
+            // There are two ViewModels that contribute to a single DAL entity
+            // Start with the smallest set (refrigeration)...
+            var gear = Mapper.Map<LongLineTripInfoViewModel.RefrigerationMethod, LongLineGear>(tivm.Refrigeration);
+            // ...then add the rest of the gear information
+            Mapper.Map<LongLineTripInfoViewModel.FishingGear, LongLineGear>(tivm.Gear, gear);
+            var inspection = Mapper.Map<SafetyInspectionViewModel, SafetyInspection>(tivm.Inspection);
+
+            if (tivm.VersionNumber == 2009)
+            {
+                trip.HasWasteDisposal =
+                    string.IsNullOrEmpty(tivm.HasWasteDisposal) ? (bool?)null :
+                    "YES".Equals(tivm.HasWasteDisposal, StringComparison.InvariantCultureIgnoreCase) ? true :
+                    "NO".Equals(tivm.HasWasteDisposal, StringComparison.InvariantCultureIgnoreCase) ? false :
+                    (bool?)null;
+
+                trip.WasteDisposalDescription = tivm.WasteDisposalDescription;
+            }
+
+            if (null == trip.VesselNotes)
+                trip.VesselNotes = new VesselNotes();
+
+            Mapper.Map<LongLineTripInfoViewModel.VesselCharacteristics, VesselNotes>(tivm.Characteristics, trip.VesselNotes);
+            trip.VesselNotes.Comments = tivm.Comments;
+            if (null != tivm.Nationality)
+            { 
+                trip.VesselNotes.CaptainCountryCode = tivm.Nationality.CaptainCountryCode;
+                trip.VesselNotes.MasterCountryCode = tivm.Nationality.MasterCountryCode;
+            }
+
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+                if (null != gear)
+                {
+                    gear.Trip = trip;
+                    gear.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    var repo = TubsDataService.GetRepository<LongLineGear>(MvcApplication.CurrentSession);
+                    // TODO AuditHelper is a pretty ugly hack, so see about fixing this problem
+                    if (!gear.IsNew())
+                    {
+                        AuditHelper.BackfillTrail<LongLineGear>(gear.Id, gear, repo);
+                    }
+                    repo.Save(gear);
+                }
+
+                if (null != inspection)
+                {
+                    inspection.Trip = trip;
+                    inspection.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    var repo = TubsDataService.GetRepository<SafetyInspection>(MvcApplication.CurrentSession);
+                    if (!inspection.IsNew())
+                    {
+                        AuditHelper.BackfillTrail<SafetyInspection>(inspection.Id, inspection, repo);
+                    }
+                    repo.Save(inspection);
+                }
+
+                var trepo = TubsDataService.GetRepository<Trip>(MvcApplication.CurrentSession);
+                trip.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                AuditHelper.BackfillTrail<Trip>(trip.Id, trip, trepo);
+                trepo.Update(trip);
+
+                xa.Commit();
+            }
+
+
+            if (IsApiRequest())
+            {
+                using (var rrepo = TubsDataService.GetRepository<Trip>(false))
+                {
+                    var ntrip = rrepo.FindById(tripId.Id) as LongLineTrip;
+                    var vm = Mapper.Map<LongLineTrip, LongLineTripInfoViewModel>(ntrip);
+                    return GettableJsonNetData(vm);
+                }
+            }
+
+            // If this isn't an API request (which shouldn't really happen)
+            // always push to the Edit page.
+            return RedirectToAction("Edit", "TripInfo", new { tripId = tripId.Id });
+        }
+
     }
 }

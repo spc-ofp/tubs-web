@@ -104,6 +104,14 @@ amplify.request.define(
     $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/PS-1/Index' })
 );
 
+// Request for loading simple LL-1 data (not electronics)
+amplify.request.define(
+    "getTripInfo",
+    "ajax",
+    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/LL-1/Index' })
+);
+
+
 // Request for loading page count data
 amplify.request.define(
     "getPageCounts",
@@ -470,6 +478,44 @@ tubs.savePs1 = function (tripId, ps1, success_cb, error_cb) {
     //.done(success_cb)
     //.fail(error_cb);
 };
+
+/**
+ * Get LL-1 details for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.getTripInfo = function (tripId, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getTripInfo",
+        data: { "TripId": tripId },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+/**
+ * Save LL-1 details for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param tripInfo Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.saveTripInfo = function (tripId, tripInfo, success_cb, error_cb) {
+    var url = appBase + 'Trip/' + tripId + '/LL-1/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(tripInfo),
+        timeout: saveTimeout
+    })
+        .done(success_cb)
+        .fail(error_cb);
+};
+
+
 
 /**
  * Get page counts for a given trip.

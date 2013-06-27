@@ -29,9 +29,15 @@ namespace TubsWeb.Models
     /// </summary>
     public class TripClosureViewModel
     {
+        /// <summary>
+        /// Trip primary key
+        /// </summary>
         [Display(Name = "Trip Id")]
         public int? TripId { get; set; }
 
+        /// <summary>
+        /// Comments about trip entry
+        /// </summary>
         [Display(Name = "Entry Comments")]
         [DataType(DataType.MultilineText)]
         public string Comments { get; set; }

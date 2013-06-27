@@ -124,7 +124,7 @@ tubs.SightingViewModel = function (data) {
                     toastr.info('Reloaded sightings');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to reload sightings', xhr, status);
                     complete();
                 }
@@ -146,7 +146,7 @@ tubs.SightingViewModel = function (data) {
                     toastr.info('Saved sightings');
                     complete();
                 },
-                function (xhr, status, error) {
+                function (xhr, status) {
                     tubs.notify('Failed to save sightings', xhr, status);
                     complete();
                 }

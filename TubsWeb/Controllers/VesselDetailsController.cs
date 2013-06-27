@@ -28,6 +28,10 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     
+    /// <summary>
+    /// Controller for working with vessel information
+    /// TODO:  Replaced with PS1/LL1 implementation?
+    /// </summary>
     public class VesselDetailsController : SuperController
     {
         private ActionResult Modify(Trip trip, VesselNotes notes, string viewName)

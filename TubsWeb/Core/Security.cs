@@ -28,8 +28,11 @@ namespace TubsWeb.Core
     /// make implementing update security easier.
     /// </summary>
     public sealed class Security
-    {
-        // The raw 'Editor' role is for non-AD implementations
+    { 
+        /// <summary>
+        /// List of principals granted edit permissions.
+        /// The raw 'Editor' role is for non-AD implementations
+        /// </summary>
         public const string EditRoles = @"SPC\AL_DB-OFP-Tubs_Entry, NOUMEA\OFP Data Entry, NOUMEA\OFP Data Admin, Editor";
     }
 }

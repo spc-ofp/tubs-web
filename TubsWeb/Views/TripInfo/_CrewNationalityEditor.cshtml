@@ -1,0 +1,66 @@
+﻿<div class="accordion-group" data-bind="with: Nationality">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#crewNationality">
+            <i class="icon-chevron-right"></i> Crew Nationality
+        </a>
+    </div>
+    <div id="crewNationality" class="accordion-body collapse">
+        <div class="accordion-inner">
+            @* Captain / Fishing Master *@
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Captain</strong></label>
+                    <input type="text" class="input-mini" maxlength="2" data-bind="value: CaptainCountryCode" />
+                </div>
+                <div class="span3">
+                    <label><strong>Fishing Master</strong></label>
+                    <input type="text" class="input-mini" maxlength="2" data-bind="value: MasterCountryCode" />
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Other Crew</strong></label>
+                    <input type="text" class="input-mini" maxlength="2" data-bind="value: GroupOneCountryCode" />
+                </div>
+                <div class="span3">
+                    <label><strong>How Many?</strong></label>
+                    <input type="number" class="input-mini" min="0" data-bind="value: GroupOneCount" />
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Other Crew</strong></label>
+                    <input type="text" class="input-mini" maxlength="2" data-bind="value: GroupTwoCountryCode" />
+                </div>
+                <div class="span3">
+                    <label><strong>How Many?</strong></label>
+                    <input type="number" class="input-mini" min="0" data-bind="value: GroupTwoCount" />
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Other Crew</strong></label>
+                    <input type="text" class="input-mini" maxlength="2" data-bind="value: GroupThreeCountryCode" />
+                </div>
+                <div class="span3">
+                    <label><strong>How Many?</strong></label>
+                    <input type="number" class="input-mini" min="0" data-bind="value: GroupThreeCount" />
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span3">
+                    <label><strong>Other Crew</strong></label>
+                    <input type="text" class="input-mini" maxlength="2" data-bind="value: GroupFourCountryCode" />
+                </div>
+                <div class="span3">
+                    <label><strong>How Many?</strong></label>
+                    <input type="number" class="input-mini" min="0" data-bind="value: GroupFourCount" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

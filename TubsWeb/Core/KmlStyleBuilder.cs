@@ -26,20 +26,55 @@ namespace TubsWeb.Core
     using System.Collections.Generic;
     using Google.Kml;
     
+    /// <summary>
+    /// KML styles in TUBS are highly repetitive.  This class will build a KML stylesheet.
+    /// TODO:  See about replacing with external KML stylesheet that the client can cache.
+    /// </summary>
     public sealed class KmlStyleBuilder
     {
+        /// <summary>
+        /// Dot icon URI
+        /// </summary>
         public const string SHADED_DOT = "http://maps.google.com/mapfiles/kml/shapes/shaded_dot.png";
+
+        /// <summary>
+        /// Pushpin icon URI
+        /// </summary>
         public const string PUSHPIN_FORMAT = "http://maps.google.com/mapfiles/kml/pushpin/{0}-pushpin.png";
 
+        /// <summary>
+        /// ARGB color specification for an opaque white.
+        /// </summary>
         public const string OPAQUE_WHITE = "ffffffff";
+
+        /// <summary>
+        /// ARGB color specification for a transparent white.
+        /// </summary>
         public const string TRANSPARENT_WHITE = "00ffffff";
 
+        /// <summary>
+        /// Icon scale value 
+        /// </summary>
         public const float SN_SCALE = 0.72F;
+
+        /// <summary>
+        /// Icon scale value
+        /// </summary>
         public const float SH_SCALE = 0.6F;
+
+        /// <summary>
+        /// Scale value for pushpin icon
+        /// </summary>
         public const float PUSHPIN_SCALE = 1.3F;
 
+        /// <summary>
+        /// Shaded dot image as KML icon.
+        /// </summary>
         public static Icon SHADED_DOT_ICON = new Icon(SHADED_DOT);
 
+        /// <summary>
+        /// Lookup table for converting style suffix to an ARGB color value.
+        /// </summary>
         public static string[][] STYLE_DIFFS = 
         {
             new string[]{ "_shaded_dotred", "ff0000ff" },
@@ -51,6 +86,9 @@ namespace TubsWeb.Core
             new string[]{ "_shaded_dotblack", "ff000000" },
         };
 
+        /// <summary>
+        /// List of pushpin color values
+        /// </summary>
         public static List<string> PUSHPIN_COLORS = new List<string>()
         {
             "red",
@@ -62,6 +100,10 @@ namespace TubsWeb.Core
             "blk"
         };
         
+        /// <summary>
+        /// Create KML styles
+        /// </summary>
+        /// <returns>A list of KML abstract styles.</returns>
         public static List<AbstractStyleSelector> BuildStyles()
         {
             List<AbstractStyleSelector> styles = new List<AbstractStyleSelector>();

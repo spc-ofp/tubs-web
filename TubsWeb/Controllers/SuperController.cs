@@ -324,9 +324,8 @@ namespace TubsWeb.Controllers
             //    pills.Add(Tuple.Create("Close Trip", Url.Action("Close", "Trip", routeValues)));
             //}
 
-            // Check edit permissions.  Without edit privileges, user can't close trip, but why
-            // tempt people with forbidden fruit?
-            if (!tripId.IsReadOnly && User.IsInRole(EditorAuthorizeAttribute.EditorGroups()))
+            // TODO Add security trimming
+            if (!tripId.IsReadOnly)
             {
                 pills.Add(Tuple.Create("Close Trip", "#closeModal"));
             }
@@ -334,34 +333,5 @@ namespace TubsWeb.Controllers
             ViewBag.NavPills = pills;
         }
 
-        // FIXME Work on this as a refactoring effort
-        protected ActionResult LoadDoesntWork(Trip tripId, string titleFormat, string fieldName = "this", bool createNew = false)
-        {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
-            ViewBag.Title = String.Format(titleFormat, tripId.ToString());
-            string actionName = this.ControllerContext.RouteData.GetRequiredString("action");
-            AddMinMaxDates(tripId);
-            if ("this".Equals(fieldName, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return View(actionName, tripId);
-            }
-
-            var fi = tripId.GetType().GetField(fieldName);
-            if (null == fi)
-            {
-                // No such field
-                return View("Error");
-            }
-
-            return
-                createNew ?
-                View(actionName, fi.GetValue(tripId) ?? Activator.CreateInstance(fi.GetType())) :
-                View(actionName, fi.GetValue(tripId));
-
-        }
     }
 }

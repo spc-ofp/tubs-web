@@ -26,10 +26,19 @@ namespace TubsWeb.Models
     using System.ComponentModel.DataAnnotations;
     using Spc.Ofp.Tubs.DAL.Entities;
 
+    /// <summary>
+    /// ViewModel for trip position audit.
+    /// </summary>
     public class PositionAuditViewModel
     {
-        // Radius of the Earth in Km, naturally.
-        public const double RadiusOfTheEarth = 6371;
+        /// <summary>
+        /// Radius of the Earth in kilometers.
+        /// </summary>
+        public const double RadiusOfTheEarth = 6371d;
+
+        /// <summary>
+        /// Conversion factor for degrees to radians.
+        /// </summary>
         public const double DegreesToRadians = Math.PI / 180;
 
         [Display(Name = "Timestamp")]

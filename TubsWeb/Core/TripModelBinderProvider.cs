@@ -26,18 +26,22 @@ namespace TubsWeb.Core
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL.Entities;
     
+    /// <summary>
+    /// ModelBinderProvider for converting trip primary key value
+    /// in URL into model passed in to actions.
+    /// </summary>
     public class TripModelBinderProvider : IModelBinderProvider
     {
+        /// <summary>
+        /// Get the appropriate binder
+        /// </summary>
+        /// <param name="modelType">Type the action is requesting</param>
+        /// <returns>TripModelBinder if modelType is a Trip, null otherwise.</returns>
         public IModelBinder GetBinder(Type modelType)
         {
             return typeof(Trip).IsAssignableFrom(modelType) ?
                 new TripModelBinder() :
                 null;
-            /*
-            return modelType ==    typeof(Trip) ?
-                new TripModelBinder() :
-                null;
-            */
         }
     }
 }

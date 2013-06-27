@@ -29,6 +29,10 @@ namespace TubsWeb
     /// </summary>
     public class BundleConfig
     {
+        /// <summary>
+        /// Register CSS and JavaScript bundles.
+        /// </summary>
+        /// <param name="bundles">BundleCollection provided by application.</param>
         public static void RegisterBundles(BundleCollection bundles)
         {
             // Force optimization to be on or off, regardless of web.config setting

@@ -32,7 +32,8 @@ namespace TubsWeb.Mapping.Profiles
     using TubsWeb.ViewModels.Resolvers;
 
     /// <summary>
-    /// TODO: Update summary.
+    /// AutoMapper profile for the conversion of GEN-5 DAL to/from
+    /// MVC ViewModel.
     /// </summary>
     public class Gen5Profile : Profile
     {
@@ -44,12 +45,12 @@ namespace TubsWeb.Mapping.Profiles
             // ViewModel to Entity
             CreateMap<Gen5ViewModel, DAL.Entities.Gen5Object>()
                 .ForMember(d => d.Activity, o => o.Ignore()) // Caller's responsibility
-                .ForMember(d => d.EnteredBy, o => o.Ignore()) // Caller's responsibility
-                .ForMember(d => d.EnteredDate, o => o.Ignore()) // Caller's responsibility
-                .ForMember(d => d.UpdatedBy, o => o.Ignore()) // Caller's responsibility
-                .ForMember(d => d.UpdatedDate, o => o.Ignore()) // Caller's responsibility
-                .ForMember(d => d.DctNotes, o => o.Ignore()) // Caller's responsibility
-                .ForMember(d => d.DctScore, o => o.Ignore()) // Caller's responsibility
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore()) 
+                .ForMember(d => d.UpdatedBy, o => o.Ignore()) 
+                .ForMember(d => d.UpdatedDate, o => o.Ignore()) 
+                .ForMember(d => d.DctNotes, o => o.Ignore()) 
+                .ForMember(d => d.DctScore, o => o.Ignore()) 
                 .ForMember(d => d.IsSsiTrapped, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.SsiTrapped))
                 .ForMember(d => d.Origin, o => o.ResolveUsing<FadOriginResolver>().FromMember(s => s.OriginCode))
                 .ForMember(d => d.AsFound, o => o.ResolveUsing<FadTypeResolver>().FromMember(s => s.AsFoundCode))

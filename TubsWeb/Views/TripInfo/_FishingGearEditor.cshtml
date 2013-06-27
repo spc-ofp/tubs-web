@@ -1,0 +1,150 @@
+﻿@model TubsWeb.ViewModels.LongLineTripInfoViewModel.FishingGear
+@* This partial view is strongly typed to allow the server to render a form based on version *@
+
+<div class="accordion-group" data-bind="with: Gear">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#fishingGear">
+            <i class="icon-chevron-right"></i> Fishing Gear
+        </a>
+    </div>
+    <div id="fishingGear" class="accordion-body collapse">
+        <div class="accordion-inner">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Gear</th>
+                        <th>Is Installed</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mainline Hauler</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasMainlineHauler"></select></td>
+                        <td><select class="span2" data-bind="options: $root.UsageValues, value: MainlineHaulerUsage"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Branchline Hauler</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasBranchlineHauler"></select></td>
+                        <td><select class="span2" data-bind="options: $root.UsageValues, value: BranchlineHaulerUsage"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Line Shooter</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasLineShooter"></select></td>
+                        <td><select class="span2" data-bind="options: $root.UsageValues, value: LineShooterUsage"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Automatic Bait Thrower</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasBaitThrower"></select></td>
+                        <td><select class="span2" data-bind="options: $root.UsageValues, value: BaitThrowerUsage"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Automatic Branchline Attacher</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasBranchlineAttacher"></select></td>
+                        <td><select class="span2" data-bind="options: $root.UsageValues, value: BranchlineAttacherUsage"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Weighing Scales</td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasWeighingScales"></select></td>
+                        <td><select class="span2" data-bind="options: $root.UsageValues, value: WeighingScalesUsage"></select></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="New Gear" data-bind="value: Description" /></td>
+                        <td><select class="span2" data-bind="options: $root.BooleanValues, value: HasOther"></select></td>
+                        <td><select class="span2" data-bind="options: $root.UsageValues, value: OtherUsage"></select></td>
+                    </tr>
+                </tbody>
+            </table>
+            @* TODO Validate against terminal gear guide? *@
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Line</th>
+                        <th>Material</th>
+                        <th>Diameter (mm)</th>
+                        <th>Length (nM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mainline</td>
+                        <td><input type="text" class="span4" data-bind="value: MainlineMaterial" /></td>
+                        <td><input type="number" class="span1" step="any" data-bind="value: MainlineDiameter" /></td>
+                        <td><input type="number" class="span1" step="any" data-bind="value: MainlineLength" /></td>
+                    </tr>
+                    <tr>
+                        <td>Branchline 1</td>
+                        <td><input type="text" class="span4" data-bind="value: BranchlineMaterial1" /></td>
+                        <td><input type="number" class="span1" step="any" data-bind="value: BranchlineDiameter1" /></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>Branchline 2</td>
+                        <td><input type="text" class="span4" data-bind="value: BranchlineMaterial2" /></td>
+                        <td><input type="number" class="span1" step="any" data-bind="value: BranchlineDiameter2" /></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+            <div class="row">
+                <div class="span3">
+                    <label><strong>Has Wire Trace</strong></label>
+                    <select class="span2" data-bind="options: $root.BooleanValues, value: HasWireTrace"></select>
+                </div>
+            </div>
+            <hr />
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>Hook Type</th>
+                        <th class="span1">Size</th>
+                        <th class="span1">Percentage</th>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <th>Offset, Rings, Swivels</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Japan</td>
+                        <td><input type="text" data-bind="value: JapanHookSize" /></td>
+                        <td><input type="number" class="span1" data-bind="value: JapanHookPercentage" /></td>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <td><input type="text" class="span2" data-bind="value: JapanOffsetRingSwivel" /></td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Circle</td>
+                        <td><input type="text" data-bind="value: CircleHookSize" /></td>
+                        <td><input type="number" class="span1" data-bind="value: CircleHookPercentage" /></td>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <td><input type="text" class="span2" data-bind="value: CircleOffsetRingSwivel" /></td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>"J"</td>
+                        <td><input type="text" data-bind="value: JHookSize" /></td>
+                        <td><input type="number" class="span1" data-bind="value: JHookPercentage" /></td>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <td><input type="text" class="span2" data-bind="value: JHookOffsetRingSwivel" /></td>
+                        }
+                    </tr>
+                    <tr>
+                        <td><input type="text" data-bind="value: OtherHookType" placeholder="Other hook type"/></td>
+                        <td><input type="text" data-bind="value: OtherHookSize" /></td>
+                        <td><input type="number" class="span1" data-bind="value: OtherHookPercentage" /></td>
+                        @if (Model.ShowOffsetRingSwivel)
+                        {
+                        <td><input type="text" class="span2" data-bind="value: OtherOffsetRingSwivel" /></td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

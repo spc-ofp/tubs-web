@@ -29,6 +29,14 @@ namespace TubsWeb.ViewModels
 
     public class Gen5ViewModel
     {
+        public Gen5ViewModel()
+        {
+            this.MainMaterials = new List<FadMaterial>(6);
+            this.MainMaterialDescriptions = new List<string>(6);
+            this.Attachments = new List<FadMaterial>(6);
+            this.AttachmentDescriptions = new List<string>(6);
+        }
+        
         // UX state
         public string TripNumber { get; set; }
         public int VersionNumber { get; set; }
@@ -92,7 +100,7 @@ namespace TubsWeb.ViewModels
         [JsonIgnore]
         public IList<string> AttachmentDescriptions { get; set; }
 
-        public int? Depth { get; set; }
+        public decimal? Depth { get; set; }
 
         public decimal? Length { get; set; }
 

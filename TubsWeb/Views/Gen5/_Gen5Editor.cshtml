@@ -56,20 +56,22 @@
             <button id="addMainMaterialsWhenEmpty" type="button" data-bind="visible: ($root.MainMaterials().length == 0)" class="btn btn-info">Add</button>
             <ul data-bind="foreach: $root.MainMaterials()" class="mainMaterials unstyled">
                 <li>
-                    <button type="button"
-                            tabindex="3000"
-                            class="removeItem btn btn-mini btn-danger" 
-                            rel="tooltip" 
-                            title="Click to remove row">
-                        <i class="icon-remove icon-white"></i>
-                    </button>
-                    <select data-bind="options: $root.MaterialCodes, value: MaterialCode, hasfocus: NeedsFocus" class="input-mini"></select>
-                    <button type="button"
-                            class="addItem btn btn-mini btn-info" 
-                            rel="tooltip" 
-                            title="Click to add row">
-                        <i class="icon-plus icon-white"></i>
-                    </button>
+                    <div class="form-horizontal">
+                        <button type="button"
+                                tabindex="3000"
+                                class="removeItem btn btn-mini btn-danger" 
+                                rel="tooltip" 
+                                title="Click to remove row">
+                            <i class="icon-remove icon-white"></i>
+                        </button>
+                        <select data-bind="options: $root.MaterialCodes, value: MaterialCode, hasfocus: NeedsFocus" class="input-mini"></select>
+                        <button type="button"
+                                class="addItem btn btn-mini btn-info" 
+                                rel="tooltip" 
+                                title="Click to add row">
+                            <i class="icon-plus icon-white"></i>
+                        </button>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -78,19 +80,22 @@
             <button id="addAttachmentWhenEmpty" type="button" data-bind="visible: ($root.Attachments().length == 0)" class="btn btn-info">Add</button>
             <ul data-bind="foreach: $root.Attachments()" class="attachments unstyled">
                 <li>
-                    <button type="button"
-                            tabindex="3000"
-                            class="removeItem btn btn-mini btn-danger" 
-                            rel="tooltip" 
-                            title="Click to remove row">
-                        <i class="icon-remove icon-white"></i>
-                    </button>
-                    <select data-bind="options: $root.MaterialCodes, value: MaterialCode, hasfocus: NeedsFocus" class="input-mini"></select>
-                    <button class="addItem btn btn-mini btn-info" 
-                            rel="tooltip" 
-                            title="Click to add row">
-                        <i class="icon-plus icon-white"></i>
-                    </button>
+                    <div class="form-horizontal">
+                        <button type="button"
+                                tabindex="3000"
+                                class="removeItem btn btn-mini btn-danger" 
+                                rel="tooltip" 
+                                title="Click to remove row">
+                            <i class="icon-remove icon-white"></i>
+                        </button>
+                        <select data-bind="options: $root.MaterialCodes, value: MaterialCode, hasfocus: NeedsFocus" class="input-mini"></select>
+                        <button type="button"
+                                class="addItem btn btn-mini btn-info" 
+                                rel="tooltip" 
+                                title="Click to add row">
+                            <i class="icon-plus icon-white"></i>
+                        </button>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -99,15 +104,15 @@
     <div class="row-fluid">
         <div class="span1">
             <label><strong>Max est.<br />depth</strong></label>
-            <input id="Depth" name="Depth" type="number" data-bind="value: Depth" class="input-mini" />
+            <input id="Depth" name="Depth" type="number" step="any" min="0" data-bind="value: Depth" class="input-mini" />
         </div>
         <div class="span1">
             <label><strong>FAD<br />length</strong></label>
-            <input id="Length" name="Length" type="number" data-bind="value: Length" class="input-mini" />
+            <input id="Length" name="Length" type="number" step="any" min="0" data-bind="value: Length" class="input-mini" />
         </div>
         <div class="span2">
             <label><strong>FAD<br />width</strong></label>
-            <input id="Width" name="Width" type="number" data-bind="value: Width" class="input-mini" />
+            <input id="Width" name="Width" type="number" step="any" min="0" data-bind="value: Width" class="input-mini" />
         </div>
         <div class="span2">
             <label><strong>Buoy<br />number</strong></label>
@@ -184,6 +189,17 @@
             What type of floating object was this when it was found?
         </div>
     </li>
+    <li class="tlypageguide_top" data-tourtarget="#addMainMaterialsWhenEmpty">
+        <div>
+            Click here to add a FAD main material.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#addAttachmentWhenEmpty">
+        <div>
+            Click here to add a FAD attachment.
+        </div>
+    </li>
+
     <li class="tlypageguide_top" data-tourtarget="#Depth">
         <div>
             Maximum estimated depth of the FAD (in meters).

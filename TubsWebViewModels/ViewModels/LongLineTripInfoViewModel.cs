@@ -43,7 +43,7 @@ namespace TubsWeb.ViewModels
         // MAYBE Have GearId and SafetyId at the top level?
 
         // Use Knockout to help with common codes
-        public IList<string> AvailabilityValues = new List<string> { null, "Y", "N", "O" };
+        public IList<string> AvailabilityValues = new List<string> { null, "YES", "NO", "OWN" };
         public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
         public IList<string> LengthUnits = new List<string> { String.Empty, "M", "F" };
         public IList<string> UsageValues = new List<string> { String.Empty, "ALL", "TRA", "OIF", "SIF", "RAR", "BRO", "NOL" };

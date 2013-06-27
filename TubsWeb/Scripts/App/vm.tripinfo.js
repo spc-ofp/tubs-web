@@ -6,9 +6,12 @@
  * Depends on:
  * knockout.js
  * knockout.viewmodel plugin
+ * knockout.dirtyFlag
+ * knockout.command
  */
 
 /// <reference name="../knockout-2.1.0.debug.js" />
+/// <reference name="datacontext.js" />
 
 /**
  * Namespace for all TUBS javascript
@@ -44,6 +47,17 @@ tubs.TripInfo = function (data) {
 
     vm.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
+            tubs.getTripInfo(
+                vm.TripId(),
+                function (result) {
+                    ko.viewmodel.updateFromModel(vm, result);
+                    vm.clearDirtyFlag();
+                    toastr.info('Reloaded LL-1 details');
+                },
+                function (xhr, status) {
+                    tubs.notify('Failed to reload LL-1 details', xhr, status);
+                }
+            );
             complete();
         },
         canExecute: function (isExecuting) {
@@ -53,6 +67,18 @@ tubs.TripInfo = function (data) {
 
     vm.saveCommand = ko.asyncCommand({
         execute: function (complete) {
+            tubs.saveTripInfo(
+                vm.TripId(),
+                vm,
+                function (result) {
+                    ko.viewmodel.updateFromModel(vm, result);
+                    vm.clearDirtyFlag();
+                    toastr.info('LL-1 saved');
+                },
+                function (xhr, status) {
+                    tubs.notify('Failed to save LL-1 details', xhr, status);
+                }
+            );
             complete();
         },
         canExecute: function (isExecuting) {

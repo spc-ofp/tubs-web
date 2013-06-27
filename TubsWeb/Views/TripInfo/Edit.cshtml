@@ -1,0 +1,124 @@
+﻿@model TubsWeb.ViewModels.LongLineTripInfoViewModel
+@using Newtonsoft.Json
+@using System.Web.Optimization
+
+@{
+    ViewBag.Title = "Edit LL-1 for " + Model.TripNumber;
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
+        Tuple.Create(Url.Action("Index", "TripInfo", new {tripId = Model.TripId}), "LL-1"),
+        Tuple.Create("#", "Edit LL-1")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<p>
+        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
+
+<div class="accordion" id="ll-accordion">
+@{ 
+    Html.RenderPartial("_VesselCharacteristicsEditor");
+    Html.RenderPartial("_CrewNationalityEditor");
+    Html.RenderPartial("_FishingGearEditor", Model.Gear);
+    @* TODO Safety partial should be moved into shared folder *@
+    @* NOTE:  The Id strategy used by the accordion will make this tricky... *@
+    Html.RenderPartial("_SafetyInspectionEditor");
+    Html.RenderPartial("_RefrigerationMethodEditor");
+}
+    @* TODO Waste disposal should have partial that is shared with PS-1 *@
+    @* Waste Disposal (no separate class) *@
+    @if (Model.VersionNumber == 2009)
+    {
+    <div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#wasteDisposal">
+        <i class="icon-chevron-right"></i> Waste Disposal
+        </a>
+    </div>
+    <div id="wasteDisposal" class="accordion-body collapse">
+        <div class="accordion-inner">
+        <div class="row-fluid">
+            <div class="span3">
+                <label><strong>Has Waste Disposal?</strong></label>
+                <select id="HasWasteDisposal" name="HasWasteDisposal" data-bind="value: HasWasteDisposal, options: $root.BooleanValues" class="input-mini"></select>
+            </div>
+            <div class="span9">
+                <label><strong>Description</strong></label>
+                <textarea id="WasteDisposalDescription" name="WasteDisposalDescription" data-bind="value: WasteDisposalDescription" class="span9"></textarea>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div><!-- accordion-group -->
+    }
+    @* TODO Comments should be shared with PS-1. *@
+    @* NOTE:  This will require some work on the view models *@
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#ll-accordion" href="#comments">
+            <i class="icon-chevron-right"></i> Observations / Comments / Other Gear / Unusual Use of Gear
+            </a>
+        </div>
+        <div id="comments" class="accordion-body collapse">
+            <div class="accordion-inner">
+            <div class="row-fluid">
+                <textarea id="Page1Comments" name="Page1Comments" data-bind="value: Comments" rows="5" class="span12"></textarea>
+            </div>
+            </div>
+        </div>
+    </div><!-- accordion-group -->
+</div>
+
+@section AdditionalScripts {
+    @Scripts.Render("~/bundles/knockout")
+
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.tripinfo.js"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <script>
+        $(function () {
+            $('.accordion').on('show', function (e) {
+                $(e.target).prev('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-down icon-chevron-right');
+            });
+            $('.accordion').on('hide', function (e) {
+                $(e.target).prev('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-down icon-chevron-right');
+            });
+            var viewModel = new tubs.TripInfo(@modelAsJson);           
+            ko.applyBindings(viewModel);
+            viewModel.clearDirtyFlag();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function(e) {
+                if (viewModel.isDirty())
+                {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };
+        });
+    </script>
+}
