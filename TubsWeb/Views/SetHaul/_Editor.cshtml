@@ -34,14 +34,11 @@
     <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
         <i class="icon-refresh icon-white"></i>&nbsp;Reload
     </button>
-    @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
-    @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-    @if (Model.HasNext)
-    {
+    @* If the next set exists, this button will edit it.  Otherwise, go to add next set *@
+    @* Allow going to the next set regardless of dirty state, but notify that leaving a dirty form will discard changes *@
     <a href='@nextPage' id="nextSetButton" class="btn btn-info" data-bind="visible: $root.showNextItem()">
         Next Set&nbsp;<i class="icon-forward icon-white"></i>
     </a>
-    }
     @* Moving this after all the buttons makes for a less jarring visual experience *@
     <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
 </p>
@@ -160,6 +157,7 @@
 
 @section AdditionalScripts {
     @Scripts.Render("~/bundles/knockout")
+    <script src="~/Scripts/species-keys.js"></script>
     <script src="~/Scripts/App/errorlogger.js"></script>
     <script src="~/Scripts/App/datacontext.js"></script>
     <script src="~/Scripts/App/vm.sethaul.js"></script>
@@ -174,6 +172,12 @@
         }
 
         $(document).ready(function () {
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
             // Add some click handlers
             $('.nextTabButton').on("click", function () {
                 nextTab();

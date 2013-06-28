@@ -158,6 +158,14 @@
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
     <script>          
         $(document).ready(function () {
+            // TODO Collect up this and the window.onbeforeunload script into a single
+            // external script and include where necessary
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
             var viewModel = new tubs.psCrewViewModel(@modelAsJson);            
             ko.applyBindings(viewModel);
             viewModel.clearDirtyFlag();

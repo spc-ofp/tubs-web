@@ -386,6 +386,28 @@ tubs.SetHaul = function (data) {
         vm.IntermediateHaulPositions.Remove(position);
     };
 
+    // Set default values for the "named" positions when ship's date is changed
+    vm.ShipsDate.subscribe(function () {
+        if (vm.ShipsDate()) {
+            if (!vm.StartOfSet.DateOnly()) {
+                vm.StartOfSet.DateOnly(vm.ShipsDate());
+            }
+            if (!vm.EndOfSet.DateOnly()) {
+                vm.EndOfSet.DateOnly(vm.ShipsDate());
+            }
+            if (!vm.StartOfHaul.DateOnly()) {
+                vm.StartOfHaul.DateOnly(vm.ShipsDate());
+            }
+        }
+    });
+
+    // Set the start-of-set time automatically
+    vm.ShipsTime.subscribe(function () {
+        if (vm.ShipsTime() && !vm.StartOfSet.LocalTime()) {
+            vm.StartOfSet.LocalTime(vm.ShipsTime());
+        }
+    });
+
     vm.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.getSetHaul(

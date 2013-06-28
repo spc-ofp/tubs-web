@@ -104,9 +104,9 @@
                         <input id="LineSettingSpeed"
                                 name="LineSettingSpeed"
                                 type="number"
+                                step="any"
                                 data-bind="value: LineSettingSpeed"
                                 class="input-mini" />
-                        @* FIXME LineSettingSpeedUnit doesn't match VelocityUnits *@
                         <select id="LineSettingSpeedUnit" 
                                 name="LineSettingSpeedUnit" 
                                 data-bind="options: $root.VelocityUnits, value: LineSettingSpeedUnit"
@@ -126,6 +126,7 @@
                     <input id="DistanceBetweenBranchlines"
                             name="DistanceBetweenBranchlines"
                             type="number"
+                            step="any"
                             data-bind="value: DistanceBetweenBranchlines"
                             class="input-mini" />
                 </li>
@@ -134,6 +135,7 @@
                     <input id="BranchlineLength"
                             name="BranchlineLength"
                             type="number"
+                            step="any"
                             data-bind="value: BranchlineLength"
                             class="input-mini" />
                 </li>
@@ -146,6 +148,7 @@
                     <input id="VesselSpeed"
                             name="VesselSpeed"
                             type="number"
+                            step="any"
                             data-bind="value: VesselSpeed"
                             class="input-mini" />
                 </li>

@@ -59,6 +59,12 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
             var tooltipvalues = [ 'Obvious Error', 'Uncertain about transcription', 'Follow Up'];
             $('#rateIt').bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value-1]); });
         });

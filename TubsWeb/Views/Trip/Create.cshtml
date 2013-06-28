@@ -179,6 +179,13 @@ http://docs.jquery.com/Plugins/Validation/Methods/date
         var rpta = new spc.typeAheadFactory('@Url.Action("Find", "Port")', returnPortUpdater);
 
         $(function () {
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
+
             $('.datepicker').datepicker();
 
             $('#VesselName').typeahead(vta);

@@ -12,11 +12,16 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+@{
+    // Quick summary of effort
+    double hookCount = 0d;
+}
+
 <table class="table table-bordered table-condensed table-striped" id="setHaulTable">
     <thead>
         <tr>
             <th>&nbsp;</th>
-            <th>Set #</th>
+            <th class="nobr">Set #</th>
             <th>Start Of Set</th>            
             <th>Hooks</th>
             <th>Hooks Per Basket</th>
@@ -34,6 +39,11 @@
         var editTarget = Url.RouteUrl(TubsWeb.RouteConfig.SetHaul, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Edit" });
         string species = String.Join(",", set.TargetSpecies);
         string baits = String.Join(",", set.BaitSpecies);
+
+        if (set.TotalHookCount.HasValue) 
+        {
+            hookCount = hookCount + set.TotalHookCount.Value; 
+        }
                        
         <tr>
             <td class="nobr">
@@ -44,7 +54,7 @@
                 }
             </td>
             <td>@set.SetNumber</td>
-            <td class="nobr">@Html.DisplayFor(s => set.SetDate, new { format = "s"})</td>
+            <td class="nobr">@Html.DisplayFor(s => set.SetDate, new { format = "dd/MM/yy HHmm"})</td>
             <td>@Html.DisplayFor(s => set.TotalHookCount)</td>
             <td>@Html.DisplayFor(s => set.HooksPerBasket)</td>
             <td>@Html.DisplayFor(s => set.FloatlineLength) m</td>
@@ -55,11 +65,16 @@
         </tr>
     }
     </tbody>
-    <!--
     <tfoot>
         <tr>
+            <th colspan="3">Total Hooks</th>
+            <th>@hookCount</th>
             <th colspan="6">&nbsp;</th>
         </tr>
     </tfoot>
-    -->
 </table>
+
+@if (!ViewBag.IsReadOnly)
+{
+    @Html.ActionLink("Add new LL-2/3", "Add", "SetHaul", new { tripId = ViewBag.TripId, setNumber = (1 + Model.Count()) }, new { @class = "btn btn-primary" })
+}

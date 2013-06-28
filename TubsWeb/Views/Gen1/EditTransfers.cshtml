@@ -114,6 +114,12 @@
     <script src="~/Scripts/App/vm.transfer.js"></script>
     <script>
         $(function () {
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
             var viewModel = new tubs.TransferViewModel(@modelAsJson);
             viewModel.clearDirtyFlag();
             ko.applyBindings(viewModel);

@@ -120,9 +120,9 @@ namespace TubsWeb.Controllers
         /// ViewActionImpl implements the process of getting a set
         /// by trip and set number.
         /// </summary>
-        /// <param name="tripId"></param>
-        /// <param name="setNumber"></param>
-        /// <returns></returns>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Set number within the trip</param>
+        /// <returns>SetHaul ViewModel</returns>
         internal ActionResult ViewActionImpl(Trip tripId, int setNumber)
         {
             var trip = tripId as LongLineTrip;
@@ -145,8 +145,9 @@ namespace TubsWeb.Controllers
             // I expect SQL Server to be able to handle that...
             int maxSets = trip.FishingSets.Count();
 
-            // TODO: This needs more work.  Add shows "Set 9 of 8".  Blech!
-            ViewBag.TitleSuffix = String.Format("Set {0} of {1}", setNumber, maxSets);
+            ViewBag.TitleSuffix = IsAdd() ? 
+                String.Format("Add Set {0}", setNumber) :
+                String.Format("Set {0} of {1}", setNumber, maxSets); 
             ViewBag.Title = String.Format("{0}: {1}", tripId.SpcTripNumber ?? "This Trip", ViewBag.TitleSuffix);
 
             var checkpoint = NeedsRedirect(tripId.Id, setNumber, maxSets);
@@ -215,10 +216,15 @@ namespace TubsWeb.Controllers
                 IRepository<LongLineSetHaulNote> nrepo = TubsDataService.GetRepository<LongLineSetHaulNote>(MvcApplication.CurrentSession);
 
                 fset.Trip = trip;
+                bool isNewSet = fset.IsNew();
+                if (isNewSet)
+                {
+                    srepo.Save(fset);
+                }
                 
-                // SetHaul positions
                 // Deletes first
                 svm.DeletedPositions.ToList().ForEach(e => erepo.DeleteById(e.Id));
+                svm.DeletedComments.ToList().ForEach(n => nrepo.DeleteById(n.Id));
 
                 foreach (var position in fset.EventList)
                 {
@@ -229,16 +235,17 @@ namespace TubsWeb.Controllers
                     erepo.Save(position);
                 }               
 
-                // SetHaul comments
-                svm.DeletedComments.ToList().ForEach(n => nrepo.DeleteById(n.Id));
-
                 foreach (var note in fset.NotesList)
                 {
                     note.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     nrepo.Save(note);
                 }
 
-                srepo.Save(fset);
+                if (!isNewSet)
+                {
+                    srepo.Save(fset);
+                }
+                
 
                 xa.Commit();
 

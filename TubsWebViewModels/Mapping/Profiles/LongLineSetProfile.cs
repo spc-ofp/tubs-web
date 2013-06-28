@@ -31,6 +31,10 @@ namespace TubsWeb.Mapping.Profiles
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
     
+    /// <summary>
+    /// AutoMapper profile for the conversion of LongLineSet entity to/from
+    /// MVC ViewModel.
+    /// </summary>
     public class LongLineSetProfile : Profile
     {
         public const decimal KTS_TO_METERS_PER_SECOND = 0.5144M;
@@ -65,6 +69,13 @@ namespace TubsWeb.Mapping.Profiles
             };
         }
 
+        /// <summary>
+        /// A mismatch between the database and the UI means that there are 4 positions that are guaranteed to
+        /// be on the input form that might not have any data on the backend.
+        /// This method will exclude these positions if they have no data.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         internal bool IncludeInMap(LongLineSetViewModel.Position position)
         {
             if (null == position || position._destroy)

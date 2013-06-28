@@ -79,6 +79,7 @@ namespace TubsWeb
                     "~/Scripts/bootstrap-datepicker.js", // jQuery UI doesn't work well with Bootstrap
 
                     // jQuery plugins
+                    "~/Scripts/jquery.hotkeys.js",
                     "~/Scripts/activity-indicator-{version}.js",
                     "~/Scripts/jquery.rateit.js",
                     "~/Scripts/jquery.validate.js",

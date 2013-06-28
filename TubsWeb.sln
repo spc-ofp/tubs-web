@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TubsWeb", "TubsWeb\TubsWeb.csproj", "{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PivotViewerApp", "PivotViewerApp\PivotViewerApp.csproj", "{5980C976-9BA4-481D-9727-D50670C3A02B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TubsWebViewModels", "TubsWebViewModels\TubsWebViewModels.csproj", "{C0406A35-6B11-437B-968F-2DE21693EB93}"
 EndProject
 Global
@@ -20,12 +18,6 @@ Global
 		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Release-Forms-Security|Any CPU.ActiveCfg = Release-Forms-Security|Any CPU
 		{EB25CF8D-3C52-47D7-AF85-BEC5902702F6}.Release-Forms-Security|Any CPU.Build.0 = Release-Forms-Security|Any CPU
-		{5980C976-9BA4-481D-9727-D50670C3A02B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5980C976-9BA4-481D-9727-D50670C3A02B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5980C976-9BA4-481D-9727-D50670C3A02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5980C976-9BA4-481D-9727-D50670C3A02B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5980C976-9BA4-481D-9727-D50670C3A02B}.Release-Forms-Security|Any CPU.ActiveCfg = Release|Any CPU
-		{5980C976-9BA4-481D-9727-D50670C3A02B}.Release-Forms-Security|Any CPU.Build.0 = Release|Any CPU
 		{C0406A35-6B11-437B-968F-2DE21693EB93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0406A35-6B11-437B-968F-2DE21693EB93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0406A35-6B11-437B-968F-2DE21693EB93}.Release|Any CPU.ActiveCfg = Release|Any CPU

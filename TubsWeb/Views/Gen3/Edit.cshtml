@@ -95,6 +95,12 @@
     <script src="~/Scripts/App/vm.gen3.js"></script>
     <script>
         $(document).ready(function () {
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
             var viewModel = new tubs.gen3(@modelAsJson);            
             ko.applyBindings(viewModel);
             viewModel.clearDirtyFlag();

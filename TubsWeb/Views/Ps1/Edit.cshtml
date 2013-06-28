@@ -95,6 +95,12 @@
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
     <script>
         $(function () {
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
             $('.accordion').on('show', function (e) {
                 $(e.target).prev('.accordion-heading').find('.accordion-toggle i').toggleClass('icon-chevron-down icon-chevron-right');
             });

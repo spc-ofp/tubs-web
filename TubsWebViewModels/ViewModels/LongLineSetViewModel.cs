@@ -217,7 +217,9 @@ namespace TubsWeb.ViewModels
         {
             get
             {
-                return this.Comments.Where(c => c != null && c._destroy);
+                if (null == this.Comments || 0 == this.Comments.Count)
+                    return Enumerable.Empty<Comment>();
+                return this.Comments.Where(c => null != c && c._destroy);
             }
         }
 

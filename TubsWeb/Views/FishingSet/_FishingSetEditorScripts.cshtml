@@ -4,6 +4,7 @@
 
 @Scripts.Render("~/bundles/knockout")
 <script src="~/Scripts/spc.utilities.js"></script>
+<script src="~/Scripts/species-keys.js"></script>
 <!-- Ajax data layer -->
 <script src="~/Scripts/App/errorlogger.js"></script>
 <script src="~/Scripts/App/datacontext.js"></script>
@@ -12,8 +13,14 @@
 @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
 
 <script>
-    /* TODO: Integrate Keypress (http://dmauro.github.com/Keypress/) */
+    
     $(document).ready(function () {
+        $(document).on('keypress', 'enter', function () {
+            // It would be cool to convert this to a tab keypress, but I'll be happy to
+            // prevent unintended saves for now.
+            return false;
+        });
+
         var viewModel = new tubs.psSet(@modelAsJson);
         viewModel.clearDirtyFlag();
         ko.applyBindings(viewModel);
