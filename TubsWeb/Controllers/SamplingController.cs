@@ -63,13 +63,31 @@ namespace TubsWeb.Controllers
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
         internal abstract ActionResult ViewActionImpl(Trip tripId, int setNumber);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
         public ActionResult Index(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
         public ActionResult Edit(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);

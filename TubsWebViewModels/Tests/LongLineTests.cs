@@ -22,9 +22,13 @@ namespace TubsWeb.Tests
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using AutoMapper;
     using NUnit.Framework;
     using Spc.Ofp.Tubs.DAL;
+    using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.ViewModels;
 
@@ -35,6 +39,38 @@ namespace TubsWeb.Tests
     [TestFixture]
     public class LongLineTests
     {
+        
+        /// <summary>
+        /// This test was used to diagnose an issue with NHibernate.
+        /// https://nhibernate.jira.com/browse/NH-3043
+        /// </summary>
+        /// <param name="tripId"></param>
+        [Test]
+        public void LoadLongLineSetsForTrip([Values(4314,5150)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<LongLineSet>(false))
+            {
+                var sets = repo.FilterBy(s => s.Trip.Id == tripId).ToList();
+                Assert.NotNull(sets);
+                Assert.Greater(sets.Count, 0);
+
+                var summaries =
+                    from s in sets
+                    select new LongLineCatchSummaryViewModel
+                    {
+                        TripId = tripId,
+                        SetNumber = s.SetNumber.Value,
+                        SetDate = s.SetDate,
+                        SampleCount = null == s.CatchList ? 0 : s.CatchList.Count
+                    };
+
+                Assert.NotNull(summaries);
+                Assert.AreEqual(sets.Count, summaries.Count());
+
+            }
+        }
+        
         [Test]
         public void LongLineSampleToViewModel([Values(25)] int setId)
         {
@@ -52,7 +88,9 @@ namespace TubsWeb.Tests
                 Assert.NotNull(vm);
 
                 Assert.AreEqual(fset.CatchList.Count, vm.Details.Count);
-                StringAssert.AreEqualIgnoringCase(fset.MeasuringInstrument, vm.MeasuringInstrument);
+                Assert.True(fset.MeasuringInstrument.HasValue);
+                Assert.AreEqual(MeasuringInstrument.C, fset.MeasuringInstrument);
+                Assert.AreEqual("Aluminum Caliper", vm.MeasuringInstrument);
 
             }
         }

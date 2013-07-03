@@ -102,6 +102,7 @@
     <Compile Include="Mapping\Resolvers\InteractionActivityResolver.cs" />
     <Compile Include="Mapping\Resolvers\InteractionTypeResolver.cs" />
     <Compile Include="Mapping\Resolvers\LengthUnitResolver.cs" />
+    <Compile Include="Mapping\Resolvers\MeasuringInstrumentResolver.cs" />
     <Compile Include="Mapping\Resolvers\SamplingProtocolResolver.cs" />
     <Compile Include="Mapping\Resolvers\TransferVesselResolver.cs" />
     <Compile Include="Mapping\Resolvers\UsageCodeResolver.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="ViewModels\Gen3ViewModel.cs" />
     <Compile Include="ViewModels\Gen5ViewModel.cs" />
     <Compile Include="ViewModels\LengthFrequencyViewModel.cs" />
+    <Compile Include="ViewModels\LongLineCatchSummaryViewModel.cs" />
     <Compile Include="ViewModels\LongLineSampleViewModel.cs" />
     <Compile Include="ViewModels\LongLineSetViewModel.cs" />
     <Compile Include="ViewModels\LongLineTripInfoViewModel.cs" />

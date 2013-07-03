@@ -64,6 +64,16 @@ namespace TubsWeb.Areas.Testing.Controllers
         }
 
         /// <summary>
+        /// Longline LL-4 form unit tests.
+        /// </summary>
+        /// <returns>QUnit view</returns>
+        public ActionResult LongLineSample()
+        {
+            ViewBag.Title = "Longline catch monitoring unit tests";
+            return View();
+        }
+
+        /// <summary>
         /// Longline LL-1 form unit tests
         /// </summary>
         /// <returns>QUnit view</returns>

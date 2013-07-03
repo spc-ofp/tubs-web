@@ -84,17 +84,33 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), vm);
         }
 
+        /// <summary>
+        /// MVC action for displaying GEN-3 data for a trip.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         public ActionResult Index(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// MVC action for displaying GEN-3 edit form for a trip.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// MVC action for modifying GEN-3 data for a trip.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="vm">GEN-3 data</param>
+        /// <returns></returns>
         [HttpPost]
         [EditorAuthorize]
         [HandleTransactionManually]

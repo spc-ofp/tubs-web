@@ -33,6 +33,16 @@ namespace TubsWeb.ViewModels
     /// </summary>
     public class Gen3ViewModel
     {
+        /// <summary>
+        /// v2009 form has 31 available incidents.
+        /// </summary>
+        private const int QUESTION_COUNT_2009 = 31;
+
+        /// <summary>
+        /// v2007 form has 20 available incidents (a thru t).
+        /// </summary>
+        private const int QUESTION_COUNT_2007 = 20;
+        
         private static IDictionary<string, int> SortOrder = new Dictionary<string, int>()
         {
             { "RS-A", 0 },
@@ -70,8 +80,8 @@ namespace TubsWeb.ViewModels
         
         public Gen3ViewModel()
         {
-            Incidents = new List<Incident>(31);
-            IncidentByCode = new Dictionary<string, int>(31);
+            Incidents = new List<Incident>(QUESTION_COUNT_2009);
+            IncidentByCode = new Dictionary<string, int>(QUESTION_COUNT_2009);
             Notes = new List<Note>(6);
         }
 
@@ -79,7 +89,7 @@ namespace TubsWeb.ViewModels
         {
             if (2009 == this.VersionNumber)
             {
-                if (this.Incidents.Count != 31)
+                if (this.Incidents.Count != QUESTION_COUNT_2009)
                 {
                     var ilist = this.EmptyList;
                     for (int i = 0; i < ilist.Count; i++)
@@ -101,6 +111,13 @@ namespace TubsWeb.ViewModels
                 ArrayList.Adapter((IList)this.Incidents).Sort();
 
                 this.IndexIncidents();
+            }
+            else if (2007 == this.VersionNumber && 0 == this.Incidents.Count)
+            {
+                for (int i = 0; i < QUESTION_COUNT_2007; i++)
+                {
+                    this.Incidents.Add(new Incident());
+                }
             }
         }
 
@@ -131,7 +148,7 @@ namespace TubsWeb.ViewModels
         {
             get
             {
-                IList<Incident> incidents = new List<Incident>(31);
+                IList<Incident> incidents = new List<Incident>(QUESTION_COUNT_2009);
                 foreach (var code in QuestionCodes)
                 {
                     if (null == code) { continue; }

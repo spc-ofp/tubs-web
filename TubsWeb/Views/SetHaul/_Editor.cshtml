@@ -184,6 +184,8 @@
             });
 
             var viewModel = new tubs.SetHaul(@modelAsJson);
+            // To use validatedObservable, jam it into the apply bindings call
+            // ko.applyBindings(ko.validatedObservable(viewModel));
             ko.applyBindings(viewModel);
             // This is the trick:  
             // applyBindings will coerce certain values from null to something else

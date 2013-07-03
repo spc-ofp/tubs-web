@@ -12,7 +12,7 @@
     <div class="form-horizontal compact-row comment-row">
         <input type="text" class="span1q" placeholder="DD/MM/YY" data-bind="value: DateOnly.formattedDate, uniqueName: true"/>
         <input type="text" class="span1" placeholder="HHmm" data-bind="hasfocus: NeedsFocus, value: LocalTime, uniqueName: true"/>
-        <input type="text" class="span6" data-bind="value: Details, uniqueName: true"/>
+        <input type="text" class="span6" data-bind="value: Details, uniqueName: true" title="Comments"/>
         <button type="button" class="btn btn-danger removeItem" tabindex="5000"><i class="icon-minus-sign icon-white"></i> Delete</button>
     </div>
 </div>
@@ -31,7 +31,7 @@
     </div>
     <div class="span2">
         <label>GEN-3<br />Events?</label>
-        <select class="input-mini" data-bind="options: $root.BooleanValues, value: HasGen3Event"></select>
+        <select class="input-small" data-bind="options: $root.BooleanValues, value: HasGen3Event"></select>
     </div>
     <div class="span2">
         <label>Journal<br />Page</label>

@@ -273,7 +273,10 @@ namespace TubsWeb.Controllers
                 if (!tripId.IsReadOnly || (tripId.IsReadOnly || lltrip.FishingSets.Any()))
                 {
                     pills.Add(Tuple.Create("Sets (LL-2/3)", Url.Action("List", "SetHaul", routeValues)));
+                    pills.Add(Tuple.Create("Catch Monitoring (LL-4)", Url.RouteUrl(RouteConfig.LongLineSampleList, routeValues)));
                 }
+
+
             }
          
             // Hide pills if trip is closed and no such entity exists

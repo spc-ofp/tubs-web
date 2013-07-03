@@ -33,6 +33,9 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.ViewModels;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class LengthSampleController : SuperController
     {
         //

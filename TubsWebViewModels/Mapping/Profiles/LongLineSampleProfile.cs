@@ -22,10 +22,14 @@ namespace TubsWeb.Mapping.Profiles
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using AutoMapper;
     using DAL = Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common; // For DateTime 'Merge'
     using TubsWeb.ViewModels;
+    using TubsWeb.ViewModels.Resolvers;
 
     public class LongLineSampleProfile : Profile
     {
@@ -77,6 +81,7 @@ namespace TubsWeb.Mapping.Profiles
 
             CreateMap<DAL.Entities.LongLineCatchHeader, LongLineSampleViewModel>()
                 // Knockout UI details
+                .ForMember(d => d.MeasuringInstruments, o => o.Ignore())
                 .ForMember(d => d.ConditionCodes, o => o.Ignore())
                 .ForMember(d => d.FateCodes, o => o.Ignore())
                 .ForMember(d => d.SexCodes, o => o.Ignore())
@@ -85,12 +90,31 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.HasNext, o => o.Ignore())
                 .ForMember(d => d.HasPrevious, o => o.Ignore())
                 .ForMember(d => d.ActionName, o => o.Ignore())
+                .ForMember(d => d.SetCount, o => o.Ignore())
                 // Custom properties
-                .ForMember(d => d.MeasuringInstrument, o => o.MapFrom(s => s.FishingSet.MeasuringInstrument))
+                .ForMember(d => d.MeasuringInstrument, o => o.ResolveUsing<MeasuringInstrumentTypeResolver>().FromMember(s => s.FishingSet.MeasuringInstrument))
                 .ForMember(d => d.Details, o => o.MapFrom(s => s.Samples))
                 .ForMember(d => d.TripId, o => o.MapFrom(s => s.FishingSet.Trip.Id))
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => s.FishingSet.Trip.SpcTripNumber))
+                .ForMember(d => d.SetId, o => o.MapFrom(s => s.FishingSet.Id))
+                .ForMember(d => d.SetNumber, o => o.MapFrom(s => s.FishingSet.SetNumber.HasValue ? s.FishingSet.SetNumber.Value : 0))
+                .ForMember(d => d.SetDate, o => o.MapFrom(s => s.FishingSet.SetDate))
                 .ForMember(d => d.VersionNumber, o => o.MapFrom(s => s.FishingSet.Trip.Version == WorkbookVersion.v2009 ? 2009 : 2007))
+                // AfterMap
+                .ForMember(d => d.HaulDate, o => o.Ignore())
+                .AfterMap((s, d) => 
+                {
+                    // Set a reasonable default
+                    d.HaulDate = s.FishingSet.SetDateOnly;
+                    if (null != s.FishingSet.EventList)
+                    {
+                        var startOfHaul = s.FishingSet.EventList.Where(e => null != e && HaulActivityType.StartOfHaul == e.ActivityType).FirstOrDefault();
+                        if (null != startOfHaul)
+                        {
+                            d.HaulDate = startOfHaul.LogDateOnly;
+                        }
+                    }
+                })
                 ;
         }
     }

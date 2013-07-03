@@ -106,16 +106,31 @@ namespace TubsWeb.ViewModels
             "TW", // Trunk weight
             "SF"  // Shark fin
         };
+
+        public IList<string> MeasuringInstruments = new List<string>
+        {
+            String.Empty,
+            "Board",
+            "Aluminum Caliper",
+            "Ruler",
+            "Deck Tape",
+            "Wooden Caliper"
+        };
         #endregion
 
         public LongLineSampleViewModel()
         {
-            // LL-4 has ~ 30 line items
-            this.Details = new List<LongLineCatchDetail>(32);
+            // A single LL-4 form has ~ 30 lines.
+            // The average number of line items per set is 50
+            this.Details = new List<LongLineCatchDetail>(50);
         }
 
-        // TODO: Navigation data (SetId, Trip, etc.)
         // UX state
+        public int SetId { get; set; }
+        public int SetNumber { get; set; }
+        public int SetCount { get; set; }
+        public DateTime? SetDate { get; set; }
+        public DateTime? HaulDate { get; set; }
         public int TripId { get; set; }
         public string TripNumber { get; set; }
         public bool HasNext { get; set; }
@@ -140,32 +155,74 @@ namespace TubsWeb.ViewModels
             /// </summary>
             public int SampleNumber { get; set; }
 
+            /// <summary>
+            /// Date of catch (day only)
+            /// </summary>
             public DateTime? DateOnly { get; set; }
 
+            /// <summary>
+            /// Catch time (time of day only)
+            /// </summary>
             public string TimeOnly { get; set; }
 
+            /// <summary>
+            /// Date and time of catch
+            /// </summary>
             public DateTime? Date { get; set; }
 
+            /// <summary>
+            /// Position within the basket
+            /// </summary>
             public int? HookNumber { get; set; }
 
+            /// <summary>
+            /// Catch species
+            /// </summary>
             public string SpeciesCode { get; set; }
 
+            /// <summary>
+            /// Condition when caught
+            /// </summary>
             public string CaughtCondition { get; set; }
 
+            /// <summary>
+            /// Condition on discard/release
+            /// </summary>
             public string DiscardedCondition { get; set; }
 
+            /// <summary>
+            /// Length (cm)
+            /// </summary>
             public int? Length { get; set; }
 
+            /// <summary>
+            /// Code describing length measurement
+            /// </summary>
             public string LengthCode { get; set; }
 
+            /// <summary>
+            /// Weight (kg)
+            /// </summary>
             public decimal? Weight { get; set; }
 
+            /// <summary>
+            /// Code describing the weight measurement
+            /// </summary>
             public string WeightCode { get; set; }
 
+            /// <summary>
+            /// Final fate for this fish
+            /// </summary>
             public string FateCode { get; set; }
 
+            /// <summary>
+            /// Sex of this fish
+            /// </summary>
             public string SexCode { get; set; }
 
+            /// <summary>
+            /// Comments and/or tag number(s)
+            /// </summary>
             public string Comments { get; set; }
         }
     }

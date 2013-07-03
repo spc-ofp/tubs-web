@@ -11,8 +11,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate" />
-    @* Move X-UA-Compatible specification into web.config *@
-    @*<meta http-equiv="X-UA-Compatible" content="IE=Edge">*@
     <title>@ViewBag.Title</title>
     @* 
      * This link relation allows us to publish the starting URL for our application.
@@ -28,6 +26,29 @@
         color: Red;
         font-weight: bold;
       }
+
+      /* Try this: http://html.cita.illinois.edu/nav/form/checkbox/index.php?example=4 */
+
+      /* Works but ugly*/
+      input[type=checkbox]:focus {
+          outline: 3px solid blue;
+      }
+
+      /* http://css-tricks.com/the-checkbox-hack/
+      input[type=checkbox]:focus ~ label {
+          background: red;
+      }
+      */
+
+      /*
+       * This isn't working either:
+       * http://codepen.io/joshnh/pen/eIksb
+
+      label:focus,
+      label + input:focus {
+          background-color: #fa3;
+      }
+       */
       
       .input-validation-error 
       {
@@ -58,6 +79,7 @@
             padding-bottom: 5px;
         }
 
+        /* This is blowing away the Bootstrap styling on textboxes*/
         /* Bootstrap adds a 10 pixel bottom margin to all inputs.  This is undesirable in a table, so turn it off*/
         .table td select,
         .table td input[type="text"],

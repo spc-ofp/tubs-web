@@ -1,0 +1,160 @@
+﻿@model TubsWeb.ViewModels.LongLineSampleViewModel
+@using Newtonsoft.Json
+@using System.Web.Optimization
+
+@{
+    // Switch to full width layout
+    ViewBag.UseFluid = true;
+    string titleSuffix = String.Format("LL-4 Set {0} of {1}", Model.SetNumber, Model.SetCount);
+    ViewBag.Title = String.Format("{0}: {1}", Model.TripNumber, titleSuffix);
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber as string),
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.LongLineSampleList, new { tripId = Model.TripId }), "Catch Monitoring"),
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.LongLineSets, new { tripId = Model.TripId, setNumber = Model.SetNumber }), titleSuffix),
+        Tuple.Create("#", "Edit")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@{
+    // Set up some navigation URLs
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.LongLineSets, new { tripId = Model.TripId, setNumber = (Model.SetNumber + 1), action = "Edit" });
+    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.LongLineSets, new { tripId = Model.TripId, setNumber = (Model.SetNumber - 1), action = "Edit" });    
+}
+
+<p>
+    @if (Model.HasPrevious)
+    {
+    <a href='@previousPage' class="btn btn-info">
+        <i class="icon-backward icon-white"></i>&nbsp;Previous Set
+    </a>
+    }
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    @* Allow going to the next set regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+    @if (Model.HasNext)
+    {
+    <a href='@nextPage' id="nextSetButton" class="btn btn-info">
+        Next Set&nbsp;<i class="icon-forward icon-white"></i>
+    </a>
+    }
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
+<hr />
+
+<div class="row">
+    <div class="span4">
+        <label><strong>Measuring Instrument</strong></label>
+        <select data-bind="options: $root.MeasuringInstruments, value: MeasuringInstrument"></select>
+    </div>
+    <div class="span4">
+        <label><strong>Start of Set</strong></label>
+        @Html.DisplayFor(m => m.SetDate, new { format = "dd/MM/yy HHmm" })
+    </div>
+    <div class="span4">
+        <label><strong>Start of Haul</strong></label>
+        @Html.DisplayFor(m => m.HaulDate, new { format = "dd/MM/yy" })
+    </div>
+</div>
+
+<hr />
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th colspan="5">&nbsp;</th>
+            <th colspan="2">Condition</th>
+            <th colspan="2">Length</th>
+            <th colspan="2">Weight</th>
+            <th colspan="4">&nbsp;</th>
+        </tr>
+        <tr>            
+            <th>Sample #</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Hook #</th>
+            <th>Species</th>
+            <th>Caught</th>
+            <th>Discard</th>
+            <th>(cm)</th>
+            <th>Code</th>
+            <th>(kg)</th>
+            <th>Code</th>
+            <th>Fate</th>
+            <th>Sex</th>
+            <th>Comments</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: $root.Details" class="ll4details">
+        <tr data-bind="css: { warning: (Id() == 0) }">
+            @* TODO Should SampleNumber stay here? *@
+            @* TODO Any placeholders? *@
+            <td><span data-bind="text: SampleNumber" /></td>
+            <td><input tabindex="3000" class="input-mini" data-bind="value: DateOnly.formattedDate" /></td>
+            <td><input class="input-mini" data-bind="value: TimeOnly" /></td>
+            <td><input type="number" min="0" class="input-mini" data-bind="value: HookNumber" /></td>
+            <td><input class="input-mini species" data-bind="value: SpeciesCode" required="required"/></td>
+            <td><select class="input-mini" data-bind="options: $root.ConditionCodes, value: CaughtCondition"></select></td>
+            <td><select class="input-mini" data-bind="options: $root.ConditionCodes, value: DiscardedCondition"></select></td>
+            <td><input type="number" min="0" class="input-mini" data-bind="value: Length" /></td>
+            <td><select class="input-mini" data-bind="options: $root.LengthCodes, value: LengthCode"></select></td>
+            <td><input type="number" min="0" class="input-mini" data-bind="value: Weight" /></td>
+            <td><select class="input-mini" data-bind="options: $root.WeightCodes, value: WeightCode"></select></td>
+            <td><select class="input-small" data-bind="options: $root.FateCodes, value: FateCode"></select></td>
+            <td><select class="input-mini" data-bind="options: $root.SexCodes, value: SexCode"></select></td>
+            <td><input class="input-large" data-bind="value: Comments" /></td>            
+            <td>
+                <button type="button" class="btn btn-mini btn-danger removeItem" tabindex="5000" rel="tooltip" title="Click to remove row">
+                    <i class="icon-minus-sign icon-white"></i> Delete
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button id="addDetailButton" type="button" class="btn btn-info addItem"><i class="icon-plus-sign icon-white"></i> Add Detail</button>
+
+
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
+
+@{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+@section AdditionalScripts {
+    @Scripts.Render("~/bundles/knockout")
+    <script src="~/Scripts/species-keys.js"></script>
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.longlinesample.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
+            var viewModel = new tubs.LongLineSample(@modelAsJson);
+            ko.applyBindings(viewModel);
+            //viewModel.clearDirtyFlag();
+
+            // TODO Add binding for delete button in row
+
+            // TODO Add binding for addDetailButton
+
+            // TODO Add dirty handler
+        });
+    </script>
+}

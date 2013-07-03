@@ -16,6 +16,31 @@
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
 
+// TODO: Extract into a single script in the tubs namespace
+tubs.timeExtension = {
+    pattern: {
+        message: 'Must be a valid 24 hour time',
+        params: '^(20|21|22|23|[01][0-9])[0-5][0-9]$'
+    },
+    maxLength: 4
+};
+
+tubs.latitudeExtension = {
+    pattern: {
+        message: 'Latitude is ddmm.mmmN or ddmm.mmmS',
+        params: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$'
+    },
+    maxLength: 9
+};
+
+tubs.longitudeExtension = {
+    pattern: {
+        message: 'Longitude is dddmm.mmmE or dddmm.mmmW',
+        params: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$'
+    },
+    maxLength: 10
+};
+
 /**
  * Knockout ViewModel options for mapping JavaScript object
  * to full view model.
@@ -94,15 +119,15 @@ tubs.setHaulOptions = {
         },
         /* Validate time of day with a simple regex. */
         TimePattern: function (time) {
-            time.extend({ pattern: '^(20|21|22|23|[01][0-9])[0-5][0-9]$' });
+            time.extend(tubs.timeExtension);
         },
         /* Validate latitude with a simple regex.  It allows invalid values but it's a decent first pass. */
         LatitudePattern: function (latitude) {
-            latitude.extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
+            latitude.extend(tubs.latitudeExtension);
         },
         /* Validate longitude with a simple regex.  It allows invalid values but it's a decent first pass. */
         LongitudePattern: function (longitude) {
-            longitude.extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
+            longitude.extend(tubs.longitudeExtension);
         },
         /* Add formattedDate property to full date object */
         IsoDate: function (date) {
@@ -194,7 +219,7 @@ tubs.SetHaulComment = function (data) {
 
     self.Id = ko.observable(data.Id);
     self.DateOnly = ko.observable(data.DateOnly).extend({ isoDate: 'DD/MM/YY' });
-    self.LocalTime = ko.observable(data.LocalTime).extend({ pattern: '^(20|21|22|23|[01][0-9])[0-5][0-9]$' });
+    self.LocalTime = ko.observable(data.LocalTime).extend(tubs.timeExtension);
     self.Details = ko.observable(data.Details);
     self._destroy = ko.observable(data._destroy);
     self.NeedsFocus = ko.observable(data.NeedsFocus);
@@ -225,9 +250,9 @@ tubs.SetHaulPosition = function (data) {
 
     self.Id = ko.observable(data.Id);
     self.DateOnly = ko.observable(data.DateOnly).extend({ isoDate: 'DD/MM/YY' });
-    self.LocalTime = ko.observable(data.LocalTime).extend({ pattern: '^(20|21|22|23|[01][0-9])[0-5][0-9]$' });
-    self.Latitude = ko.observable(data.Latitude).extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
-    self.Longitude = ko.observable(data.Longitude).extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
+    self.LocalTime = ko.observable(data.LocalTime).extend(tubs.timeExtension);
+    self.Latitude = ko.observable(data.Latitude).extend(tubs.latitudeExtension);
+    self.Longitude = ko.observable(data.Longitude).extend(tubs.longitudeExtension);
     self.EezCode = ko.observable(data.EezCode);
     self._destroy = ko.observable(data._destroy);
     self.NeedsFocus = ko.observable(data.NeedsFocus);
@@ -329,6 +354,13 @@ tubs.SetHaul = function (data) {
     });
 
     vm.clearDirtyFlag = function () {
+        _.each(vm.Comments(), function (comment) {
+            comment.dirtyFlag().reset();
+        });
+
+        _.each(vm.IntermediateHaulPositions(), function (position) {
+            position.dirtyFlag().reset();
+        });
         vm.dirtyFlag().reset();
     };
 
@@ -447,6 +479,7 @@ tubs.SetHaul = function (data) {
             complete();
         },
         canExecute: function (isExecuting) {
+            // TODO Deny save if validation fails
             return !isExecuting && vm.isDirty();
         }
     });

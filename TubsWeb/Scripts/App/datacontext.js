@@ -126,6 +126,13 @@ amplify.request.define(
     $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/SetHaul/{SetNumber}/Edit' })
 );
 
+// Request for loading LL-4 data
+amplify.request.define(
+    "getSampleLL",
+    "ajax",
+    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/LL-4/{SetNumber}/Edit' })
+);
+
 /**
  * Load PS-2 data for a given sea day.
  * @param {Number} tripId Trip primary key
@@ -593,4 +600,41 @@ tubs.saveGen3 = function (tripId, gen3, success_cb, error_cb) {
     // TODO Use promise API
     //.done(success_cb)
     //.fail(error_cb);
+};
+
+/**
+ * Get LL-4 data for a given fishing set.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} setNumber Location of the set within the trip
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.getLonglineSample = function (tripId, setNumber, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getSampleLL",
+        data: { "TripId": tripId, "SetNumber": setNumber },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+/**
+ * Save LL-4 data for a given fishing set.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} setNumber Location of the set within the trip
+ * @param sample Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.saveLonglineSample = function (tripId, setNumber, sample, success_cb, error_cb) {
+    var url = appBase + 'Trip/' + tripId + '/LL-4/' + setNumber + '/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(sample),
+        timeout: saveTimeout
+    }).done(success_cb)
+      .fail(error_cb);
 };

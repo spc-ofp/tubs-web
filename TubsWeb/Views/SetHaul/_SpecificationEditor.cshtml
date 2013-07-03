@@ -114,6 +114,15 @@
                     </div>
                 </li>
                 <li>
+                    <label for="VesselSpeed">Vessel Speed (kts)</label>                        
+                    <input id="VesselSpeed"
+                            name="VesselSpeed"
+                            type="number"
+                            step="any"
+                            data-bind="value: VesselSpeed"
+                            class="input-mini" />
+                </li>
+                <li>
                     <label for="BranchlineSetInterval">Branchline Set Interval (s)</label>                        
                     <input id="BranchlineSetInterval"
                             name="BranchlineSetInterval"
@@ -142,16 +151,7 @@
             </ul>
         </div>
         <div class="span2">
-            <ul class="unstyled">
-                <li>
-                    <label for="VesselSpeed">Vessel Speed (kts)</label>                        
-                    <input id="VesselSpeed"
-                            name="VesselSpeed"
-                            type="number"
-                            step="any"
-                            data-bind="value: VesselSpeed"
-                            class="input-mini" />
-                </li>
+            <ul class="unstyled">                
                 <li>
                     <label for="SharkLineCount">No. Of Shark Lines</label>                        
                     <input id="SharkLineCount"
@@ -172,7 +172,7 @@
                     <label for="WasTdrDeployed">Were TDRs Deployed</label>
                     <select id="WasTdrDeployed"
                             name="WasTdrDeployed"
-                            class="input-mini"
+                            class="input-small"
                             data-bind="options: $root.BooleanValues, value: WasTdrDeployed"></select>                
                 </li>
             </ul>        

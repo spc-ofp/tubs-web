@@ -1,20 +1,21 @@
 ﻿@model TubsWeb.ViewModels.LongLineSetViewModel
 
+@* div.control-group > label > input[type=checkbox]*@
 <fieldset>
     <legend>Target Species</legend>
     <div class="row">
         <div class="span4">
             <div class="control-group">
-            <label class="checkbox">
-                <input type="checkbox" id="IsTargetingTuna" name="IsTargetingTuna" data-bind="checked: IsTargetingTuna" /> Tuna
-            </label>
-            <label class="checkbox">
-                <input type="checkbox" id="IsTargetingSwordfish" name="IsTargetingSwordfish" data-bind="checked: IsTargetingSwordfish" /> Swordfish
-            </label>
-            <label class="checkbox">
-                <input type="checkbox" id="IsTargetingShark" name="IsTargetingShark" data-bind="checked: IsTargetingShark" /> Shark
-            </label>
-        </div>   
+                <label for="IsTargetingTuna" class="checkbox inline">
+                    <input type="checkbox" id="IsTargetingTuna" name="IsTargetingTuna" data-bind="checked: IsTargetingTuna" />Tuna
+                </label>
+                <label class="checkbox inline">
+                    <input type="checkbox" id="IsTargetingSwordfish" name="IsTargetingSwordfish" data-bind="checked: IsTargetingSwordfish" /> Swordfish
+                </label>
+                <label class="checkbox inline">
+                    <input type="checkbox" id="IsTargetingShark" name="IsTargetingShark" data-bind="checked: IsTargetingShark" /> Shark
+                </label>
+            </div>   
         </div>
     </div>
 </fieldset>

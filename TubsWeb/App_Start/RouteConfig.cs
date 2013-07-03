@@ -31,51 +31,191 @@ namespace TubsWeb
     /// </summary>
     public class RouteConfig
     {
-        // TODO Add documentation to all these strings
+        /// <summary>
+        /// MVC route name for PS-1 form.
+        /// </summary>
         public static string Ps1 = "Ps1";
-        public static string TripInfo = "TripInfo"; // LL-1
+
+        /// <summary>
+        /// MVC route name for LL-1 form.
+        /// </summary>
+        public static string TripInfo = "TripInfo";
+
+        /// <summary>
+        /// MVC route name for electronics equipment detail
+        /// on the PS-1/LL-1 form.
+        /// </summary>
         public static string Electronics = "Electronics";
+
         public static string SafetyInspection = "SafetyInspection";
+
+        /// <summary>
+        /// MVC route name for the crew detail from the PS-1 form.
+        /// </summary>
         public static string Crew = "Crew";
+
         public static string Auxiliaries = "Auxiliaries";
+
         public static string VesselDetails = "VesselDetails";
-        // Revision of route for GEN-1
+
+        /// <summary>
+        /// MVC route name for vessel sightings (GEN-1)
+        /// </summary>
         public static string Gen1Sightings = "Gen1Sightings";
+
+        /// <summary>
+        /// MVC route name for editing vessel sightings (GEN-1)
+        /// </summary>
         public static string EditGen1Sightings = "EditGen1Sightings";
+
+        /// <summary>
+        /// MVC route name for catch transfer (GEN-1)
+        /// </summary>
         public static string Gen1Transfers = "Gen1Transfers";
+
+        /// <summary>
+        /// MVC route name for editing catch transfer (GEN-1)
+        /// </summary>
         public static string EditGen1Transfers = "EditGen1Transfers";
+
         // TODO:  This will go away...
         public static string Gen1 = "Gen1";
-        public static string Gen2Details = "Gen2Details";
+
+        /// <summary>
+        /// MVC route name for special species interaction (GEN-2)
+        /// </summary>
         public static string Gen2 = "Gen2";
+
+        /// <summary>
+        /// MVC route name for special species interaction details.
+        /// </summary>
+        public static string Gen2Details = "Gen2Details";
+
+        /// <summary>
+        /// MVC route name for compliance form (GEN-3)
+        /// </summary>
         public static string Gen3 = "Gen3";
+
+        /// <summary>
+        /// MVC route name for FAD form (GEN-5).
+        /// </summary>
         public static string Gen5 = "Gen5";
-        public static string Gen6Details = "Gen6Details";
+
+        /// <summary>
+        /// MVC route name for pollution form (GEN-6).
+        /// </summary>
         public static string Gen6 = "Gen6";
+
+        /// <summary>
+        /// MVC route name for pollution details.
+        /// </summary>
+        public static string Gen6Details = "Gen6Details";
+
+        /// <summary>
+        /// MVC route name for purse seine sets.
+        /// </summary>
         public static string Sets = "Sets";
+
+        /// <summary>
+        /// MVC route name for list of LL-4 forms for a trip.
+        /// </summary>
+        public static string LongLineSampleList = "LongLineSampleList";
+
+        /// <summary>
+        /// MVC route name for long line sets (LL-4)
+        /// </summary>
+        public static string LongLineSets = "LongLineSets";
+
+        /// <summary>
+        /// MVC route name for long line set/haul (LL-2/3 form)
+        /// </summary>
         public static string SetHaul = "SetHaul";
+
+
         public static string LengthSamples = "LengthSamples";
+
+
         public static string LengthFrequencyByTrip = "LengthFrequencyByTrip";
+
+        /// <summary>
+        /// MVC route name for Doddle Reports Excel export of trip.
+        /// </summary>
         public static string ExcelTripSummary = "ExcelTripSummary";
+
         public static string SeaDayById = "SeaDayById";
+
+        /// <summary>
+        /// MVC route name for purse seine sea days.
+        /// </summary>
         public static string SeaDays = "SeaDays";
+
+        /// <summary>
+        /// MVC route name for
+        /// </summary>
         public static string Gear = "Gear";
+
+        /// <summary>
+        /// MVC route name for
+        /// </summary>
         public static string WellContents = "WellContents";
-        public static string PageCount = "PageCount";       
+
+        /// <summary>
+        /// MVC route name for workbook page counts.
+        /// </summary>
+        public static string PageCount = "PageCount";
+
+        /// <summary>
+        /// MVC route name for trip details.
+        /// </summary>
         public static string TripDetails = "TripDetails";
+
+        /// <summary>
+        /// MVC route name for
+        /// </summary>
         public static string TripDefault = "TripDefault";
+
+        /// <summary>
+        /// MVC route name for standard list of trips.
+        /// </summary>
         public static string TripList = "TripList";
+
+        /// <summary>
+        /// MVC route name for the RSS feed of trips.
+        /// </summary>
         public static string RssFeed = "RssFeed";
+
+        /// <summary>
+        /// MVC route name for the default route.
+        /// </summary>
         public static string Default = "Default";
 
-        // Fix for MVC bug (that's still not fixed in MVC4!)
-        // http://stackoverflow.com/questions/780643/asp-net-mvc-html-actionlink-keeping-route-value-i-dont-want
+        /// <summary>
+        /// MVC route name for trips entered by current user.
+        /// This is to fix an MVC bug that is still not fixed in MVC4
+        /// http://stackoverflow.com/questions/780643/asp-net-mvc-html-actionlink-keeping-route-value-i-dont-want
+        /// </summary>
         public static string MyTrips = "MyTrips";
+
+        /// <summary>
+        /// MVC route name for open trips entered by current user.
+        /// </summary>
         public static string MyOpenTrips = "MyOpenTrips";
+
+        /// <summary>
+        /// MVC route name for creating a new trip.
+        /// </summary>
         public static string CreateTrip = "CreateTrip";
 
+        /// <summary>
+        /// Regular expression constraint for use with database primary key specifications
+        /// in MVC routes.
+        /// </summary>
         public const string IsPositiveInteger = @"^\d+$";
 
+        /// <summary>
+        /// Register MVC routes in the application.
+        /// </summary>
+        /// <param name="routes">Existing application route collection.</param>
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
@@ -108,17 +248,17 @@ namespace TubsWeb
             );
 
             routes.MapRoute(
-                SafetyInspection,
-                "Trip/{tripId}/SafetyInspection/{action}",
-                new { controller = "SafetyInspection", action = "Index" },
-                new { tripId = IsPositiveInteger }
+                name: SafetyInspection,
+                url: "Trip/{tripId}/SafetyInspection/{action}",
+                defaults: new { controller = "SafetyInspection", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
-                Crew,
-                "Trip/{tripId}/Crew/{action}",
-                new { controller = "Crew", action = "Index" },
-                new { tripId = IsPositiveInteger }
+                name: Crew,
+                url: "Trip/{tripId}/Crew/{action}",
+                defaults: new { controller = "Crew", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             // For now, route vessel attributes through Trip since there's a 1:1 relationship
@@ -237,6 +377,20 @@ namespace TubsWeb
                 new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
+            routes.MapRoute(
+                name: LongLineSets,
+                url: "Trip/{tripId}/LL-4/{setNumber}/{action}",
+                defaults: new  { controller = "LongLineSampling", action = "List", setNumber = UrlParameter.Optional },
+                constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: LongLineSampleList,
+                url: "Trip/{tripId}/LL-4/",
+                defaults: new  { controller = "LongLineSampling", action = "List" },
+                constraints: new { tripId = IsPositiveInteger }
+            );
+
             // Even though Set is subordinate to day, allow link directly to list of sets
             // and to a particular set number
             routes.MapRoute(
@@ -312,6 +466,7 @@ namespace TubsWeb
             );
 
             // Milestone!  First Long Line route!
+            // TODO: Consider changing route to LL-2?  (Problem is that the form is LL-2/3, and '/' isn't great in a route URL)
             routes.MapRoute(
                 name: SetHaul,
                 url: "Trip/{tripId}/SetHaul/{setNumber}/{action}",

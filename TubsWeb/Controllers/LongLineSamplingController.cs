@@ -90,11 +90,16 @@ namespace TubsWeb.Controllers
             // in a set -- it's just a list of entities hanging off the set.  AutoMapper doesn't work
             // very well in that situation.
             var header = new LongLineCatchHeader();
+            header.SetId = fset.Id;
             header.FishingSet = fset;
             header.Samples = fset.CatchList;
 
-            // TODO Replace with AutoMapper from proxy
-            var svm = new LongLineSampleViewModel();
+            var svm = Mapper.Map<LongLineCatchHeader, LongLineSampleViewModel>(header);
+            // Set some properties that AutoMapper can't manage for us
+            svm.ActionName = CurrentAction();
+            svm.HasNext = setNumber < maxSets;
+            svm.HasPrevious = setNumber > 1;
+            svm.SetCount = maxSets;
 
             if (IsApiRequest())
                 return GettableJsonNetData(svm);
@@ -103,9 +108,60 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), svm);
         }
 
+        /// <summary>
+        /// MVC action for viewing list of LL-4 forms associated with a trip.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         public ActionResult List(Trip tripId)
         {
-            return View();
+            // This should never happen, but a little defensive coding goes a long way
+            var trip = tripId as LongLineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            ViewBag.TripId = trip.Id;
+            ViewBag.TripNumber = trip.SpcTripNumber;
+
+            // NHibernate issue NH-3043
+            // https://nhibernate.jira.com/browse/NH-3043
+            // If this list isn't materialized, then the following query, which calls an aggregation
+            // function (Count), results in a "Code supposed to be unreachable" exception
+            // This results in an N+1 select, but there shouldn't be that many sets associated
+            // with a trip.
+            var sets =
+                TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession)
+                    .FilterBy(s => s.Trip.Id == tripId.Id).ToList();
+
+            var summaries =
+                from s in sets
+                select new LongLineCatchSummaryViewModel
+                {
+                    TripId = tripId.Id,
+                    SetNumber = s.SetNumber.Value,
+                    SetDate = s.SetDate,
+                    SampleCount = null == s.CatchList ? 0 : s.CatchList.Count
+                };
+            
+            
+            return View(summaries.ToList());
+        }
+
+        /// <summary>
+        /// MVC action for adding/editing a single LL-4 form.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Location of the set within the trip</param>
+        /// <param name="vm">LL-4 data</param>
+        /// <returns></returns>
+        [HttpPost]
+        [EditorAuthorize]
+        [HandleTransactionManually]
+        public ActionResult Edit(Trip tripId, int setNumber, LongLineSampleViewModel vm)
+        {
+            throw new NotImplementedException();
         }
 
     }

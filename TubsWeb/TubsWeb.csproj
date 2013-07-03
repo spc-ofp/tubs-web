@@ -684,6 +684,7 @@
     <Content Include="Areas\Testing\Views\UnitTest\Gen3v2007.cshtml" />
     <Content Include="Areas\Testing\Views\UnitTest\Experimental.cshtml" />
     <Content Include="Areas\Testing\Views\UnitTest\TripInfo.cshtml" />
+    <Content Include="Areas\Testing\Views\UnitTest\LongLineSample.cshtml" />
     <None Include="NWebsecConfig\HttpHeaderSecurityModuleConfig.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -696,6 +697,7 @@
     <Content Include="Scripts\App\vm.fad.js" />
     <Content Include="Scripts\App\vm.fishingset.js" />
     <Content Include="Scripts\App\vm.gen2.js" />
+    <Content Include="Scripts\App\vm.longlinesample.js" />
     <Content Include="Scripts\App\vm.pagecounts.js" />
     <Content Include="Scripts\App\vm.ps1.js" />
     <Content Include="Scripts\App\vm.seaday.js" />
@@ -879,6 +881,9 @@
     <Content Include="Views\TripInfo\_RefrigerationMethodEditor.cshtml" />
     <Content Include="Views\TripInfo\_CrewNationalityEditor.cshtml" />
     <Content Include="Views\TripInfo\_VesselCharacteristicsEditor.cshtml" />
+    <Content Include="Views\LongLineSampling\List.cshtml" />
+    <Content Include="Views\LongLineSampling\Index.cshtml" />
+    <Content Include="Views\LongLineSampling\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

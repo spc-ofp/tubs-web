@@ -1,0 +1,60 @@
+﻿@model IEnumerable<TubsWeb.ViewModels.LongLineCatchSummaryViewModel>
+
+@{
+    ViewBag.Title = String.Format("{0}: Catch Monitoring", ViewBag.TripNumber);
+}
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), ViewBag.TripNumber as string),
+        Tuple.Create("#", "Catch Monitoring")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+@{
+    // Might as well display total trip samples here.
+    int totalSamples = 0;
+}
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th class="span1">&nbsp;</th>
+            <th>Set #</th>
+            <th>Set Date</th>
+            <th>Recorded Catch</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var set in @Model)
+    {
+        var detailTarget = Url.RouteUrl(TubsWeb.RouteConfig.LongLineSets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Index" });
+        var editTarget = Url.RouteUrl(TubsWeb.RouteConfig.LongLineSets, new { tripId = ViewBag.TripId, setNumber = set.SetNumber, action = "Edit" });
+        var currentSamples = set.SampleCount;
+        totalSamples += currentSamples;
+        <tr>
+            <td class="nobr">
+                <a href="@detailTarget"><i class="icon-list-alt icon-large" title="Details" rel="tooltip"></i></a>
+                @if(!ViewBag.IsReadOnly)
+                {
+                    <text> | </text><a href="@editTarget"><i class="icon-edit icon-large" title="Edit" rel="tooltip"></i></a> 
+                }
+            </td>
+            <td>@set.SetNumber</td>
+            <td>@Html.DisplayFor(m => set.SetDate)</td>
+            <td>@set.SampleCount</td>
+        </tr>
+    }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="3">Total Samples</th>
+            <th>@Html.DisplayFor(i => totalSamples)</th>
+        </tr>
+    </tfoot>
+</table>
