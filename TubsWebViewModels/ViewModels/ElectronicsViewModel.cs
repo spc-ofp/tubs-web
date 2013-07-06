@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ElectronicsViewModel.cs" company="Secretariat of the Pacific Community">
-// Copyright (C) 2011 Secretariat of the Pacific Community
+// Copyright (C) 2013 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
 
@@ -23,14 +23,24 @@ namespace TubsWeb.ViewModels
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     /// <summary>
-    /// 
+    /// Electronic equipment ViewModel for data recorded on PS-1 and LL-1.
     /// </summary>
-    public class ElectronicsViewModel
+    public sealed class ElectronicsViewModel
     {
+        #region Knockout Lists
+        // TODO UsageCode
+
+        // TODO Named device types (PS and LL all together)
+        #endregion
+
+
         public ElectronicsViewModel()
         {
+            Buoys = new List<DeviceModel>();
+            Vms = new List<DeviceModel>();
             OtherDevices = new List<DeviceModel>();
         }
 
@@ -38,38 +48,74 @@ namespace TubsWeb.ViewModels
         public int TripId { get; set; }
         public string TripNumber { get; set; }
 
-        // Devices for which Make, Model, and Comments are not collected
-        public DeviceModel Gps { get; set; }
-        public DeviceModel TrackPlotter { get; set; }
-        public DeviceModel DepthSounder { get; set; }
-        public DeviceModel SstGauge { get; set; }
+        public DeviceCategory Gps { get; set; }
+        public DeviceCategory TrackPlotter { get; set; }
+        public DeviceCategory DepthSounder { get; set; }
+        public DeviceCategory SstGauge { get; set; }
 
-        // Named devices that the Observer is checking for
-        public DeviceModel BirdRadar { get; set; }
-        public DeviceModel Sonar { get; set; }
-        public DeviceModel GpsBuoys { get; set; }
-        public DeviceModel EchoSoundingBuoy { get; set; }
-        public DeviceModel NetDepthInstrumentation { get; set; }
-        public DeviceModel DopplerCurrentMeter { get; set; }
-        public DeviceModel Vms { get; set; }
+        // These devices represent those with associated buoys.
+        // Buoys have additional user interface requirements, so that shows up only in this section.
+        public List<DeviceModel> Buoys { get; set; }
 
-        // Anything else that's not in the above two categories
+        // As with buoy, the VMS UI has different fields and so needs a different section.
+        public List<DeviceModel> Vms { get; set; }
+
+        // Everything else
         public List<DeviceModel> OtherDevices { get; set; }
 
-        public class DeviceModel
+        /// <summary>
+        /// Electronic device category.
+        /// </summary>
+        /// <remarks>
+        /// These devices represent electronics that are:
+        /// a) Expected to be onboard nearly all the time
+        /// b) At or near the pinnacle of their development
+        /// As such, there's not a high value in tracking specific
+        /// makes and models, merely the use of this category of equipment in fishing.
+        /// 
+        /// Per conversation with Peter Sharples on 05/07/2013.
+        /// </remarks>
+        public sealed class DeviceCategory
         {
-            public DeviceModel(string deviceName)
-            {
-                DeviceName = deviceName;
-            }
+            public int Id { get; set; }
 
-            public int Id;
-            public string DeviceName;
-            public string Installed = "N/A";
-            public string Usage = "N/A";
-            public string Make;
-            public string Model;
-            public string Comments;
+            public string IsInstalled { get; set; }
+
+            // GPS, Track Plotter, Depth Sounder, SST Gauge
+            public string Name { get; set; }
+
+            public string Usage { get; set; }
+        }
+
+        /// <summary>
+        /// Detailed electronic device record.
+        /// </summary>
+        public sealed class DeviceModel
+        {
+            public int Id  { get; set; }
+
+            public string DeviceType { get; set; }
+            
+            // This should only be filled for DeviceType "Other"
+            public string Description { get; set; }
+
+            public string IsInstalled { get; set; }
+
+            public string Usage { get; set; }
+            public string Make { get; set; }
+            public string Model { get; set; }
+            public string Comments { get; set; }
+
+            // Only for buoy gear
+            public int? BuoyCount { get; set; }
+
+            // Only for VMS gear
+            public string SealsIntact { get; set; }
+            public string SystemDescription { get; set; }
+
+            // Knockout UI integration
+            public bool _destroy { get; set; }
+            public bool NeedsFocus { get; set; }
         }
     }
 }

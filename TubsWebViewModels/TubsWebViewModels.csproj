@@ -94,6 +94,7 @@
     <Compile Include="Mapping\Resolvers\AvailabilityResolver.cs" />
     <Compile Include="Mapping\Resolvers\BooleanResolver.cs" />
     <Compile Include="Mapping\Resolvers\DetectionResolver.cs" />
+    <Compile Include="Mapping\Resolvers\DeviceResolver.cs" />
     <Compile Include="Mapping\Resolvers\EnumDescriptionResolver.cs" />
     <Compile Include="Mapping\Resolvers\FadMaterialResolver.cs" />
     <Compile Include="Mapping\Resolvers\FadOriginResolver.cs" />

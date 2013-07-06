@@ -23,13 +23,14 @@ namespace TubsWeb.Mapping.Profiles
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using AutoMapper;
+    using Spc.Ofp.Tubs.DAL.Common;
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
     using DAL = Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Common;
 
     /// <summary>
-    /// TODO: Update summary.
+    /// AutoMapper profile for the conversion of GEN-1 transfer entity to/from
+    /// MVC ViewModel..
     /// </summary>
     public class TransferProfile : Profile
     {
@@ -37,6 +38,7 @@ namespace TubsWeb.Mapping.Profiles
         {
             base.Configure();
 
+            // ViewModel to Entity
             Mapper.CreateMap<TransferViewModel.Transfer, DAL.Entities.Transfer>()
                 .ForMember(d => d.EnteredBy, o => o.Ignore())
                 .ForMember(d => d.EnteredDate, o => o.Ignore())
@@ -60,7 +62,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.ActionType, o => o.ResolveUsing<ActionCodeResolver>().FromMember(s => s.ActionCode))
                 ;
 
-
+            // Entity to ViewModel
             Mapper.CreateMap<DAL.Entities.Transfer, TransferViewModel.Transfer>()
                 .ForMember(d => d._destroy, o => o.Ignore())
                 .ForMember(d => d.NeedsFocus, o => o.Ignore())

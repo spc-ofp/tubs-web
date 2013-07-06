@@ -22,15 +22,14 @@ namespace TubsWeb.Mapping.Profiles
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System;
-    using System.Globalization;
     using AutoMapper;
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
     using DAL = Spc.Ofp.Tubs.DAL;
 
     /// <summary>
-    /// AutoMapper profile
+    /// AutoMapper profile for the conversion of PS-1 ViewModel to
+    /// data access layer entities.
     /// </summary>
     public class Ps1ViewModelProfile : Profile
     {        

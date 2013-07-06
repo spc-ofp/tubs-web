@@ -22,14 +22,10 @@ namespace TubsWeb.Mapping.Profiles
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using AutoMapper;
-    using DAL = Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Common; // For DateTime 'Merge'
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
+    using DAL = Spc.Ofp.Tubs.DAL;
 
     /// <summary>
     /// AutoMapper profile for conversion of data access layer

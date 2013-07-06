@@ -234,5 +234,28 @@ namespace TubsWeb.Tests
                 Assert.GreaterOrEqual(vm.PageCounts.Count, 6);
             }
         }
+
+        [Test]
+        public void TripEntityToElectronicsViewModel([Values(389)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<Trip, ElectronicsViewModel>(trip);
+                Assert.NotNull(vm);
+                Assert.NotNull(vm.Gps);
+                Assert.NotNull(vm.TrackPlotter);
+                Assert.NotNull(vm.DepthSounder);
+                Assert.AreEqual(1, vm.Buoys.Count, "Buoys");
+                Assert.AreEqual(1, vm.Vms.Count, "VMS");
+                Assert.Less(0, vm.OtherDevices.Count, "Other Devices");
+                Assert.AreEqual(1, 
+                    vm.OtherDevices.Where(d => "Doppler Current Meter".Equals(
+                        d.DeviceType, StringComparison.InvariantCultureIgnoreCase)).Count());
+                
+            }
+        }
     }
 }

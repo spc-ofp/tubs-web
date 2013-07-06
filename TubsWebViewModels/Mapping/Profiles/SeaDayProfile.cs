@@ -23,14 +23,12 @@ namespace TubsWeb.Mapping.Profiles
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
 
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
     using AutoMapper;
-    using DAL = Spc.Ofp.Tubs.DAL;
+    using Spc.Ofp.Tubs.DAL.Common;
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
-    using Spc.Ofp.Tubs.DAL.Common;
+    using DAL = Spc.Ofp.Tubs.DAL;
     
     /// <summary>
     /// AutoMapper profile for the conversion of PurseSeineSeaDay entities to/from

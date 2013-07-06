@@ -41,8 +41,8 @@ namespace TubsWeb.Controllers
             if (!lhs.HasValue && !rhs.HasValue)
                 return null;
 
-            decimal lhsv = lhs.HasValue ? lhs.Value : (decimal)0.0;
-            decimal rhsv = rhs.HasValue ? rhs.Value : (decimal)0.0;
+            decimal lhsv = lhs.HasValue ? lhs.Value : 0.0M;
+            decimal rhsv = rhs.HasValue ? rhs.Value : 0.0M;
             return lhsv + rhsv;
         }
 
@@ -118,6 +118,7 @@ namespace TubsWeb.Controllers
         /// ActivityLogLineItem is an internal class to simplify
         /// Excel output.  DoddleReports picks up header names from
         /// the property name.
+        /// TODO: Add association and beacon
         /// </summary>
         public class ActivityLogLineItem
         {
@@ -135,6 +136,7 @@ namespace TubsWeb.Controllers
         /// SetLogLineItem is an internal class to simplify
         /// Excel output.  DoddleReports picks up header names from
         /// the property name.
+        /// TODO: Replace SumOfBrails with brail count
         /// </summary>
         public class SetLogLineItem
         {

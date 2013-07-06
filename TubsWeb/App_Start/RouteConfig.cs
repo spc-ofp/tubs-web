@@ -243,7 +243,7 @@ namespace TubsWeb
             routes.MapRoute(
                 name: Electronics,
                 url: "Trip/{tripId}/Electronics/{action}",
-                defaults: new { controller = "Electronics", action = "List" },
+                defaults: new { controller = "Electronics", action = "Index" },
                 constraints: new { tripId = IsPositiveInteger }
             );
 

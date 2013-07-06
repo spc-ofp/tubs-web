@@ -23,14 +23,16 @@ namespace TubsWeb.Mapping.Profiles
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using System.Globalization;
     using AutoMapper;
-    using DAL = Spc.Ofp.Tubs.DAL;
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
-    using System.Globalization;
+    using DAL = Spc.Ofp.Tubs.DAL;
 
+    /// <summary>
+    /// AutoMapper profile for the conversion of safety inspection entity to/from
+    /// MVC ViewModel. 
+    /// </summary>
     public class SafetyInspectionProfile : Profile
     {
 

@@ -23,13 +23,12 @@ namespace TubsWeb.Mapping.Profiles
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using AutoMapper;
-    using DAL = Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common; // For DateTime 'Merge'
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
+    using DAL = Spc.Ofp.Tubs.DAL;
     
     /// <summary>
     /// AutoMapper profile for the conversion of LongLineSet entity to/from

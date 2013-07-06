@@ -243,7 +243,7 @@ namespace TubsWeb.Controllers
                 pills.Add(Tuple.Create("PS-1", Url.Action("Index", "Ps1", routeValues)));
                 if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.Electronics.Any()))
                 {
-                    pills.Add(Tuple.Create("Electronics (PS-1)", Url.Action("List", "Electronics", routeValues)));
+                    pills.Add(Tuple.Create("Electronics (PS-1)", Url.Action("Index", "Electronics", routeValues)));
                 }
                 if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.WellContent.Any()))
                 {

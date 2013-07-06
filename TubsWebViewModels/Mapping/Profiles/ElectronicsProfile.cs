@@ -26,61 +26,91 @@ namespace TubsWeb.Mapping.Profiles
     using System.Collections.Generic;
     using System.Linq;
     using AutoMapper;
-    using DAL = Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Common; // For DateTime 'Merge'
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
+    using DAL = Spc.Ofp.Tubs.DAL;
 
     /// <summary>
-    /// TODO: Update summary.
+    /// AutoMapper profile for the conversion of electronic equipment to/from
+    /// MVC ViewModel.
     /// </summary>
     public class ElectronicsProfile : Profile
     {
-        /*
-         * I'm aware that this is awful, terrible, gross.  However, due to time
-         * pressure (and a large set of legacy data), this is probably the easiest
-         * way to manage this.
-         */
-        public const int GpsId = 21;
-        public const int DepthSounderId = 14;
-        public const int TrackPlotterId = 51;
-        public const int SstId = 47;
-        public const int BirdRadarId = 5;
-        public const int SonarId = 48;
-        public const int GpsBuoyId = 89;
-        public const int EchoSoundingBuoyId = 99;
-        public const int NetDepthId = 127;
-        public const int DopplerCurrentMeterId = 17;
-        public const int VmsId = 53;
-        
         protected override void Configure()
         {
             base.Configure();
 
-            CreateMap<DAL.Entities.ElectronicDevice, ElectronicsViewModel.DeviceModel>()
-                .ForMember(d => d.DeviceName, o => o.MapFrom(s => s.DeviceType.Category))
-                .ForMember(d => d.Installed, o => o.MapFrom(s => s.IsInstalled))
+            // ViewModel to Entity
+
+            
+            // Entity to ViewModel
+            CreateMap<DAL.Entities.ElectronicDevice, ElectronicsViewModel.DeviceCategory>()
+                .ForMember(d => d.IsInstalled, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.IsInstalled))
+                .ForMember(d => d.Name, o => o.ResolveUsing<DeviceNameResolver>().FromMember(s => s.DeviceType))
                 ;
+
+            CreateMap<DAL.Entities.ElectronicDevice, ElectronicsViewModel.DeviceModel>()
+                // Ignore Knockout properties
+                .ForMember(d => d._destroy, o => o.Ignore())
+                .ForMember(d => d.NeedsFocus, o => o.Ignore())
+                // Same property name, but needs a resolver
+                .ForMember(d => d.IsInstalled, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.IsInstalled))
+                .ForMember(d => d.DeviceType, o => o.ResolveUsing<DeviceNameResolver>().FromMember(s => s.DeviceType))
+                // Custom property
+                .ForMember(d => d.BuoyCount, o => o.MapFrom(s => s.HowMany))
+                ;
+
+            /*
+             * NOTE:  For older trips, devices which are currently considered ubiquitous were less common.
+             * In order to correctly manage the device to category mapping, we'll want to come up with the
+             * "best" usage code from all the alternatives.
+             * 
+             * For example, if there are 3 or 4 GPS devices, and one is ALL, the usage code for the GPS
+             * category should be "ALL".  Handle this in the AfterMap by deleting "category" devices and updating
+             * usage code as necessary.
+             * 
+             * This might also be managed via database update, creating an electronic device record with no make, model, or comments content
+             * that contains the best usage code.
+             * 
+             */
 
             CreateMap<DAL.Entities.Trip, ElectronicsViewModel>()
+                .BeforeMap((s, d) =>
+                {
+                    // Sort Electronics by UsageCode from best to worst.
+                    // In this way, .FirstOrDefault should pick up the best case for
+                    // category devices
+                    if (null != s && null != s.Electronics)
+                    {
+                        s.SortElectronics();
+                    }                   
+                })
                 .ForMember(d => d.TripId, o => o.MapFrom(s => s.Id))
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.SpcTripNumber ?? "This Trip").Trim()))
-                .ForMember(d => d.Gps, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == GpsId).FirstOrDefault()))
-                .ForMember(d => d.DepthSounder, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == DepthSounderId).FirstOrDefault()))
-                .ForMember(d => d.TrackPlotter, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == TrackPlotterId).FirstOrDefault()))
-                .ForMember(d => d.SstGauge, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == SstId).FirstOrDefault()))
-                .ForMember(d => d.BirdRadar, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == BirdRadarId).FirstOrDefault()))
-                .ForMember(d => d.Sonar, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == SonarId).FirstOrDefault()))
-                .ForMember(d => d.GpsBuoys, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == GpsBuoyId).FirstOrDefault()))
-                .ForMember(d => d.EchoSoundingBuoy, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == EchoSoundingBuoyId).FirstOrDefault()))
-                .ForMember(d => d.NetDepthInstrumentation, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == NetDepthId).FirstOrDefault()))
-                .ForMember(d => d.DopplerCurrentMeter, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == DopplerCurrentMeterId).FirstOrDefault()))
-                .ForMember(d => d.Vms, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.Id == VmsId).FirstOrDefault()))
-                .AfterMap((s,d) => 
+                // Categories
+                .ForMember(d => d.Gps, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType == DAL.Common.ElectronicDeviceType.Gps).FirstOrDefault()))
+                .ForMember(d => d.TrackPlotter, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType == DAL.Common.ElectronicDeviceType.TrackPlotter).FirstOrDefault()))
+                .ForMember(d => d.DepthSounder, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType == DAL.Common.ElectronicDeviceType.DepthSounder).FirstOrDefault()))
+                .ForMember(d => d.SstGauge, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType == DAL.Common.ElectronicDeviceType.SstGauge).FirstOrDefault()))
+                // VMS devices
+                .ForMember(d => d.Vms, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType == DAL.Common.ElectronicDeviceType.Vms)))
+                // Buoy devices
+                .ForMember(d => d.Buoys, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.IsBuoy())))
+                // Everything else handled in AfterMap
+                .ForMember(d => d.OtherDevices, o => o.Ignore())
+                .AfterMap((s, d) => 
                 {
+                    foreach (var device in s.Electronics)
+                    {
+                        // Skip categories, buoys, and VMS, which are all mapped elsewhere
+                        if (null == device || device.DeviceType.IsDeviceCategory() || device.DeviceType.IsBuoy() || device.DeviceType == DAL.Common.ElectronicDeviceType.Vms)
+                            continue;
 
+                        d.OtherDevices.Add(Mapper.Map<DAL.Entities.ElectronicDevice, ElectronicsViewModel.DeviceModel>(device));
+                    }
                 })
                 ;
+
         }
     }
 }

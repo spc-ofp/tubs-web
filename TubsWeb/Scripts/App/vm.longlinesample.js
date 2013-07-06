@@ -136,7 +136,7 @@ tubs.LongLineSampleDetail = function (data) {
 
     self.Id = ko.observable(data.Id);
     self.SampleNumber = ko.observable(data.SampleNumber);
-    self.DateOnly = ko.observable(data.DateOnly).extend({ isoDate: 'DD/MM/YY' })
+    self.DateOnly = ko.observable(data.DateOnly).extend({ isoDate: 'DD/MM/YY' });
     self.TimeOnly = ko.observable(data.TimeOnly);
     self.HookNumber = ko.observable(data.HookNumber);
     self.SpeciesCode = ko.observable(data.SpeciesCode);
@@ -182,7 +182,10 @@ tubs.LongLineSample = function (data) {
     'use strict';
 
     // Use knockout.viewmodel to manage most of the mapping
-    var vm = ko.viewmodel.fromModel(tubs.longlineSampleDefaults(data), tubs.longlineSampleOptions);
+    var vm = ko.viewmodel.fromModel(
+        tubs.longlineSampleDefaults(data),
+        tubs.longlineSampleOptions
+    );
 
     vm.dirtyFlag = new ko.DirtyFlag([
         vm.MeasuringInstrument,

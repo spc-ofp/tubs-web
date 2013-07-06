@@ -29,7 +29,7 @@ namespace TubsWeb
                 cfg.AddProfile<SightingProfile>();
                 cfg.AddProfile<TransferProfile>();
                 cfg.AddProfile<CrewProfile>();
-                //cfg.AddProfile<ElectronicsProfile>();
+                cfg.AddProfile<ElectronicsProfile>();
                 cfg.AddProfile<LengthFrequencyProfile>();
                 cfg.AddProfile<Gen2Profile>();
                 cfg.AddProfile<Gen3Profile>();

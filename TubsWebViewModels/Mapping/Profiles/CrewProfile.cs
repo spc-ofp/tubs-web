@@ -22,7 +22,6 @@ namespace TubsWeb.Mapping.Profiles
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System.Collections.Generic;
     using System.Linq;
     using AutoMapper;
     using Spc.Ofp.Tubs.DAL.Common;
@@ -30,7 +29,8 @@ namespace TubsWeb.Mapping.Profiles
     using TubsWeb.ViewModels;
 
     /// <summary>
-    /// TODO: Update summary.
+    /// AutoMapper profile for the conversion of Purse Seine crew list entity to/from
+    /// MVC ViewModel.
     /// </summary>
     public class CrewProfile : Profile
     {
@@ -39,6 +39,7 @@ namespace TubsWeb.Mapping.Profiles
         {
             base.Configure();
 
+            // ViewModel item to Entity
             CreateMap<CrewViewModel.CrewMemberModel, PurseSeineCrew>()
                 .ForMember(d => d.DctNotes, o => o.Ignore())
                 .ForMember(d => d.DctScore, o => o.Ignore())

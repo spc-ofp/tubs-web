@@ -22,14 +22,17 @@ namespace TubsWeb.Mapping.Profiles
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
-    using System;
     using System.Linq;
     using AutoMapper;
-    using DAL = Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common;
     using TubsWeb.ViewModels;
     using TubsWeb.ViewModels.Resolvers;
+    using DAL = Spc.Ofp.Tubs.DAL;
 
+    /// <summary>
+    /// AutoMapper profile for the conversion of GEN-2 entity to/from
+    /// MVC ViewModel. 
+    /// </summary>
     class Gen2Profile : Profile
     {
         protected override void Configure()
