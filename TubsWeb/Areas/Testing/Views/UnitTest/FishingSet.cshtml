@@ -188,7 +188,7 @@
             ok(viewmodel.showCatchTotalNote(), "Computed catch not close to recorded value");
         });
         test("Dirty flag", function () {
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             viewmodel.Comments("Sweet gorilla of Manila!");
             ok(viewmodel.isDirty(), "viewmodel is dirty");
             viewmodel.clearDirtyFlag();
@@ -198,6 +198,7 @@
             //equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
         });
         test("Async commands", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
             equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
             viewmodel.Comments("Live long and prosper");
@@ -206,21 +207,21 @@
             ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
         });
         test("Change bycatch property", function () {
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             var bycatch = viewmodel.ByCatch()[0];
             equal(bycatch.SpeciesCode(), "AML", "bycatch mapped correctly");
             bycatch.SpeciesCode("RHN");
             ok(viewmodel.isDirty(), "viewmodel is dirty after bycatch change");
         });
         test("Change target catch property", function () {
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             var tcatch = viewmodel.TargetCatch()[0];
             equal(tcatch.SpeciesCode(), "YFT", "target catch mapped correctly");
             tcatch.FateCode("DTS");
             ok(viewmodel.isDirty(), "viewmodel is dirty after target catch change");
         });
         test("Add/remove new bycatch", function () {
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             viewmodel.addByCatch();
             ok(viewmodel.isDirty(), "viewmodel is dirty after creating bycatch record");
             equal(viewmodel.ByCatch().length, 4, "Correct number of bycatch records");
@@ -231,14 +232,14 @@
             equal(viewmodel.ByCatch().length, 3, "Correct number of records");
         });
         test("Remove existing bycatch", function () {
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             var bycatch = viewmodel.ByCatch()[0];
             viewmodel.removeByCatch(bycatch);
             ok(viewmodel.isDirty(), "viewmodel is dirty after removing existing record");
             equal(viewmodel.ByCatch().length, 3, "Correct number of records");
         });
         test("Add/remove new target catch", function () {
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             viewmodel.addTargetCatch();
             ok(viewmodel.isDirty(), "viewmodel is dirty after creating record");
             equal(viewmodel.TargetCatch().length, 3, "Correct number of records");
@@ -249,7 +250,7 @@
             equal(viewmodel.TargetCatch().length, 2, "Correct number of records");
         });
         test("Remove existing target catch", function () {
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             var tcatch = viewmodel.TargetCatch()[0];
             viewmodel.removeTargetCatch(tcatch);
             ok(viewmodel.isDirty(), "viewmodel is dirty after removing record");

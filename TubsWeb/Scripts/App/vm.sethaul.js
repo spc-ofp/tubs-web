@@ -176,7 +176,7 @@ tubs.setHaulBaitDefaults = {
 };
 
 /**
- * @param {data} data SetHaul object model that may need gain missing properties.
+ * @param {data} data SetHaul object model that may need missing properties.
  * 
  */
 tubs.setHaulDefaults = function (data) {
@@ -272,7 +272,9 @@ tubs.SetHaulPosition = function (data) {
 };
 
 /**
- *
+ * LL-2/3 form ViewModel
+ * @constructor
+ * @param {object} data - Entity data
  */
 tubs.SetHaul = function (data) {
     'use strict';

@@ -1,0 +1,240 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.electronics.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "TripId": 70,
+            "TripNumber": "DJB / 10-04",
+            "ServiceId": 2,
+            "Gps": {
+                "Id": 6,
+                "IsInstalled": "YES",
+                "Name": "GPS",
+                "Usage": "ALL"
+            },
+            "TrackPlotter": {
+                "Id": 7,
+                "IsInstalled": "YES",
+                "Name": "Track Plotter",
+                "Usage": "ALL"
+            },
+            "DepthSounder": {
+                "Id": 8,
+                "IsInstalled": "YES",
+                "Name": "Depth Sounder",
+                "Usage": "OIF"
+            },
+            "SstGauge": {
+                "Id": 0,
+                "IsInstalled": "",
+                "Usage": ""
+            },
+            "Buoys": [
+              {
+                  "Id": 12,
+                  "DeviceType": "Echo Sounding Buoy",
+                  "Description": null,
+                  "IsInstalled": "YES",
+                  "Usage": "ALL",
+                  "Make": "SAMSUNG",
+                  "Model": "SYNCMASTER 191",
+                  "Comments": null,
+                  "BuoyCount": null,
+                  "SealsIntact": null,
+                  "SystemDescription": null,
+                  "_destroy": false,
+                  "NeedsFocus": false,
+                  "isDirty": false
+              },
+              {
+                  "Id": 11,
+                  "DeviceType": "GPS Buoys",
+                  "Description": null,
+                  "IsInstalled": "YES",
+                  "Usage": "RAR",
+                  "Make": "FURUONO",
+                  "Model": null,
+                  "Comments": null,
+                  "BuoyCount": null,
+                  "SealsIntact": null,
+                  "SystemDescription": null,
+                  "_destroy": false,
+                  "NeedsFocus": false,
+                  "isDirty": false
+              }
+            ],
+            "Vms": [
+              {
+                  "Id": 14,
+                  "DeviceType": "VMS",
+                  "Description": null,
+                  "IsInstalled": "YES",
+                  "Usage": null,
+                  "Make": null,
+                  "Model": null,
+                  "Comments": null,
+                  "BuoyCount": null,
+                  "SealsIntact": null,
+                  "SystemDescription": null,
+                  "_destroy": false,
+                  "NeedsFocus": false,
+                  "isDirty": false
+              }
+            ],
+            "OtherDevices": [
+              {
+                  "Id": 9,
+                  "DeviceType": "Bird Radar",
+                  "Description": null,
+                  "IsInstalled": "YES",
+                  "Usage": "ALL",
+                  "Make": "FURUONO",
+                  "Model": null,
+                  "Comments": null,
+                  "BuoyCount": null,
+                  "SealsIntact": null,
+                  "SystemDescription": null,
+                  "_destroy": false,
+                  "NeedsFocus": false,
+                  "isDirty": false
+              },
+              {
+                  "Id": 10,
+                  "DeviceType": "Sonar",
+                  "Description": null,
+                  "IsInstalled": "YES",
+                  "Usage": "OIF",
+                  "Make": "FURUONO",
+                  "Model": null,
+                  "Comments": null,
+                  "BuoyCount": null,
+                  "SealsIntact": null,
+                  "SystemDescription": null,
+                  "_destroy": false,
+                  "NeedsFocus": false,
+                  "isDirty": false
+              },
+              {
+                  "Id": 13,
+                  "DeviceType": "Doppler Current Meter",
+                  "Description": null,
+                  "IsInstalled": "YES",
+                  "Usage": "SIF",
+                  "Make": "FURUONO",
+                  "Model": null,
+                  "Comments": null,
+                  "BuoyCount": null,
+                  "SealsIntact": null,
+                  "SystemDescription": null,
+                  "_destroy": false,
+                  "NeedsFocus": false,
+                  "isDirty": false
+              }
+            ],
+            "Communications": {
+                "HasSatellitePhone": "YES",
+                "SatellitePhoneNumber": "357687110",
+                "HasMobilePhone": "YES",
+                "MobilePhoneNumber": "761115017",
+                "HasFax": "YES",
+                "FaxNumber": "357687111",
+                "HasEmail": "YES",
+                "EmailAddress": null
+            },
+            "Info": {
+                "HasWeatherFax": "YES",
+                "HasSatelliteMonitor": "YES",
+                "HasOther": "NO",
+                "HasPhytoplanktonService": "NO",
+                "PhytoplanktonUrl": null,
+                "HasSeaSurfaceTemperatureService": "NO",
+                "SeaSurfaceTemperatureUrl": null,
+                "HasSeaHeightService": "NO",
+                "SeaHeightServiceUrl": null
+            }
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("Electronics", {
+            setup: function () {
+                viewmodel = new tubs.Electronics(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "viewmodel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber correct");
+            ok(viewmodel.Gps, "GPS Category");
+            ok(viewmodel.TrackPlotter, "Track Plotter Category");
+            ok(viewmodel.DepthSounder, "Depth Sounder Category");
+            ok(viewmodel.SstGauge, "SST Gauge Category");
+            ok(viewmodel.Communications, "Communications Services");
+            ok(viewmodel.Info, "Information Services");
+            equal(viewmodel.Buoys().length, 2, "Correct number of buoys");
+            equal(viewmodel.Vms().length, 1, "Correct number of VMS systems");
+            equal(viewmodel.OtherDevices().length, 3, "Correct number of VMS systems");
+        });
+        test("Dirty flag", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.SstGauge.Usage("NOL");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+        });
+        test("Async commands", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.SstGauge.IsInstalled("YES");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+        test("Change Communication Services property", function () {
+
+        });
+        test("Change Information Services property", function () {
+
+        });
+        test("Change Buoy property", function () {
+
+        });
+        test("Change VMS property", function () {
+
+        });
+        test("Change 'Other Device' property", function () {
+
+        });
+        test("Add/remove new Buoy", function () {
+
+        });
+        test("Remove existing Buoy", function () {
+
+        });
+        test("Add/remove new VMS", function () {
+
+        });
+        test("Remove existing VMS", function () {
+
+        });
+        test("Add/remove new 'Other Device'", function () {
+
+        });
+        test("Remove existing 'Other Device'", function () {
+
+        });
+    </script>
+}

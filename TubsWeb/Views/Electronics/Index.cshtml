@@ -15,139 +15,40 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@*
- * TODO:  Add Edit button if not closed
- *@
-
-@* TODO: Use tabs and include comms and information services *@
-
-<fieldset>
-    <legend>Categories</legend>
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th class="span2">&nbsp;</th>
-                <th>Installed</th>
-                <th>Usage</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>GPS</strong></td>
-                <td>@(null == Model.Gps ? "N/A" : Model.Gps.IsInstalled)</td>
-                <td>@(null == Model.Gps ? "N/A" : Model.Gps.Usage)</td>
-            </tr>
-            <tr>
-                <td><strong>Depth Sounder</strong></td>
-                <td>@(null == Model.DepthSounder ? "N/A" : Model.DepthSounder.IsInstalled)</td>
-                <td>@(null == Model.DepthSounder ? "N/A" : Model.DepthSounder.Usage)</td>
-            </tr>
-            <tr>
-                <td><strong>Track Plotter</strong></td>
-                <td>@(null == Model.TrackPlotter ? "N/A" : Model.TrackPlotter.IsInstalled)</td>
-                <td>@(null == Model.TrackPlotter ? "N/A" : Model.TrackPlotter.Usage)</td>
-            </tr>
-            <tr>
-                <td><strong>SST Gauge</strong></td>
-                <td>@(null == Model.SstGauge ? "N/A" : Model.SstGauge.IsInstalled)</td>
-                <td>@(null == Model.SstGauge ? "N/A" : Model.SstGauge.Usage)</td>
-            </tr>
-        </tbody>
-    </table>
-</fieldset>
-
-@if (Model.Buoys.Any())
+@if (!ViewBag.IsReadOnly)
 {
-<fieldset>
-    <legend>Buoys</legend>
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Installed</th>
-                <th>Usage</th>
-                <th>Make</th>
-                <th>Model</th>
-                <th>How Many</th>
-                <th>Comments</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var buoy in Model.Buoys)
-        { 
-            <tr>
-                <td>@buoy.DeviceType</td>
-                <td>@buoy.IsInstalled</td>
-                <td>@buoy.Usage</td>
-                <td>@buoy.Make</td>
-                <td>@buoy.Model</td>
-                <td>@buoy.BuoyCount</td>
-                <td>@buoy.Comments</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</fieldset>
+<p>
+    @Html.ActionLink("Edit Electronics", "Edit", null, new { @class = "btn btn-primary" })
+</p>
 }
 
-@if (Model.Vms.Any())
-{
-<fieldset>
-    <legend>VMS</legend>
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>System</th>
-                <th>Installed</th>
-                <th>Make</th>
-                <th>Model</th>
-                <th>Seals Intact</th>
-                <th>Comments</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var vms in Model.Vms)
-        { 
-            <tr>
-                <td>@vms.SystemDescription</td>
-                <td>@vms.IsInstalled</td>
-                <td>@vms.Make</td>
-                <td>@vms.Model</td>
-                <td>@vms.SealsIntact</td>
-                <td>@vms.Comments</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</fieldset>
-}
-
-@if (Model.OtherDevices.Any())
-{
-<fieldset>
-    <legend>Other Devices</legend>
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Installed</th>
-                <th>Make</th>
-                <th>Model</th>
-                <th>Comments</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var device in Model.OtherDevices)
-        { 
-            <tr>
-                <td>@(device.DeviceType ?? device.Description)</td>
-                <td>@device.IsInstalled</td>
-                <td>@device.Make</td>
-                <td>@device.Model</td>
-                <td>@device.Comments</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</fieldset>
-}
+<div class="tabbable tabs-top">
+    <ul id="formSections" class="nav nav-tabs">
+        <li class="active"><a href="#categories" data-toggle="tab">Categories</a></li>
+        <li><a href="#buoys" data-toggle="tab">Buoys</a></li>
+        <li><a href="#vms" data-toggle="tab">VMS</a></li>
+        <li><a href="#other" data-toggle="tab">Other Devices</a></li>
+        <li><a href="#comms" data-toggle="tab">Communication Services</a></li>
+        <li><a href="#info" data-toggle="tab">Information Services</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="categories">
+            @{ Html.RenderPartial("_CategoryViewer", Model); }
+        </div>
+        <div class="tab-pane" id="buoys">
+            @{ Html.RenderPartial("_BuoyViewer", Model.Buoys); }
+        </div>
+        <div class="tab-pane" id="vms">
+            @{ Html.RenderPartial("_VmsViewer", Model.Vms); }
+        </div>
+        <div class="tab-pane" id="other">
+            @{ Html.RenderPartial("_OtherDeviceViewer", Model.OtherDevices); }
+        </div>
+        <div class="tab-pane" id="comms">
+            @{ Html.RenderPartial("_CommServiceViewer", Model.Communications); }
+        </div>
+        <div class="tab-pane" id="info">
+            @{ Html.RenderPartial("_InfoServiceViewer", Model.Info); }
+        </div>
+    </div>
+</div>

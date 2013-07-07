@@ -684,6 +684,7 @@
     <Content Include="Areas\Testing\Views\UnitTest\Experimental.cshtml" />
     <Content Include="Areas\Testing\Views\UnitTest\TripInfo.cshtml" />
     <Content Include="Areas\Testing\Views\UnitTest\LongLineSample.cshtml" />
+    <Content Include="Areas\Testing\Views\UnitTest\Electronics.cshtml" />
     <None Include="NWebsecConfig\HttpHeaderSecurityModuleConfig.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -693,6 +694,7 @@
     <Content Include="Scripts\App\datacontext.js" />
     <Content Include="Scripts\App\errorlogger.js" />
     <Content Include="Scripts\App\vm.crew.js" />
+    <Content Include="Scripts\App\vm.electronics.js" />
     <Content Include="Scripts\App\vm.fad.js" />
     <Content Include="Scripts\App\vm.fishingset.js" />
     <Content Include="Scripts\App\vm.gen2.js" />
@@ -707,7 +709,6 @@
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\GPL-LICENSE.txt" />
     <Content Include="Scripts\Highcharts-3.0.1\js\highcharts-more.js" />
     <Content Include="Scripts\Highcharts-3.0.1\js\highcharts.js" />
     <Content Include="Scripts\Highcharts-3.0.1\js\highcharts.src.js" />
@@ -882,6 +883,12 @@
     <Content Include="Views\LongLineSampling\Index.cshtml" />
     <Content Include="Views\LongLineSampling\Edit.cshtml" />
     <Content Include="Views\Electronics\Edit.cshtml" />
+    <Content Include="Views\Electronics\_CategoryViewer.cshtml" />
+    <Content Include="Views\Electronics\_BuoyViewer.cshtml" />
+    <Content Include="Views\Electronics\_VmsViewer.cshtml" />
+    <Content Include="Views\Electronics\_OtherDeviceViewer.cshtml" />
+    <Content Include="Views\Electronics\_InfoServiceViewer.cshtml" />
+    <Content Include="Views\Electronics\_CommServiceViewer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

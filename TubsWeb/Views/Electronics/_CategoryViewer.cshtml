@@ -1,0 +1,33 @@
+﻿@model TubsWeb.ViewModels.ElectronicsViewModel
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th class="span2">&nbsp;</th>
+            <th>Installed</th>
+            <th>Usage</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>GPS</strong></td>
+            <td>@(null == Model.Gps ? "N/A" : Model.Gps.IsInstalled)</td>
+            <td>@(null == Model.Gps ? "N/A" : Model.Gps.Usage)</td>
+        </tr>
+        <tr>
+            <td><strong>Depth Sounder</strong></td>
+            <td>@(null == Model.DepthSounder ? "N/A" : Model.DepthSounder.IsInstalled)</td>
+            <td>@(null == Model.DepthSounder ? "N/A" : Model.DepthSounder.Usage)</td>
+        </tr>
+        <tr>
+            <td><strong>Track Plotter</strong></td>
+            <td>@(null == Model.TrackPlotter ? "N/A" : Model.TrackPlotter.IsInstalled)</td>
+            <td>@(null == Model.TrackPlotter ? "N/A" : Model.TrackPlotter.Usage)</td>
+        </tr>
+        <tr>
+            <td><strong>SST Gauge</strong></td>
+            <td>@(null == Model.SstGauge ? "N/A" : Model.SstGauge.IsInstalled)</td>
+            <td>@(null == Model.SstGauge ? "N/A" : Model.SstGauge.Usage)</td>
+        </tr>
+    </tbody>
+</table>

@@ -18,6 +18,101 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@section AdditionalScripts {
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
 
+<ul id="tlyPageGuide" data-tourtitle="Detailed electronics entry instructions">
+    <li class="tlypageguide_top" data-tourtarget="#saveButton">
+        <div>
+            The save button will only be active if there are unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#reloadButton">
+        <div>
+            Use the reload button to discard any unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget=".addItem:first">
+        <div>
+            Click here to add another row.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#addCommentButton">
+        <div>
+            Click here to add another comment row.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget=".removeItem:first">
+        <div>
+            Click here to remove this row.  The row won't be deleted until
+            you click on the 'Save' button.  Until then, you can undo the delete
+            by using the 'Reload' button.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget=".nextTabButton">
+        <div>
+            Click here to advance to the next section.  This is useful when you want to
+            navigate to the next section without using the mouse.
+        </div>
+    </li>
+</ul>
+
+@section AdditionalScripts {
+    @Scripts.Render("~/bundles/knockout")
+    <script src="~/Scripts/species-keys.js"></script>
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.electronics.js"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <script>
+        /*
+         * Tab advance functionality from StackOverflow
+         * http://stackoverflow.com/questions/9252127/how-to-change-twitter-bootstrap-tab-when-button-is-pressed
+         */
+        function nextTab() {
+            $('#formSections li.active').next().find('a[data-toggle="tab"]').click();
+        }
+
+        $(document).ready(function () {
+            $(document).on('keypress', 'enter', function () {
+                // It would be cool to convert this to a tab keypress, but I'll be happy to
+                // prevent unintended saves for now.
+                return false;
+            });
+
+            // Add some click handlers
+            $('.nextTabButton').on("click", function () {
+                nextTab();
+            });
+
+            var viewModel = new tubs.Electronics(@modelAsJson);
+            // To use validatedObservable, jam it into the apply bindings call
+            // ko.applyBindings(ko.validatedObservable(viewModel));
+            ko.applyBindings(viewModel);
+            // This is the trick:  
+            // applyBindings will coerce certain values from null to something else
+            // If the dirty flag is cleared _after_ the bindings are set, then this is the
+            // "normal" state for the viewmodel
+            viewModel.clearDirtyFlag();
+
+            // PageGuide initialization
+            tl.pg.init();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function (e) {
+                if (viewModel.isDirty()) {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };
+        });
+    </script>
 }

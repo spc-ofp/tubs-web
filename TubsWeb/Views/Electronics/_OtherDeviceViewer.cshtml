@@ -1,0 +1,25 @@
+﻿@model IEnumerable<TubsWeb.ViewModels.ElectronicsViewModel.DeviceModel>
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Installed</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var device in Model)
+    { 
+        <tr>
+            <td>@(device.DeviceType ?? device.Description)</td>
+            <td>@device.IsInstalled</td>
+            <td>@device.Make</td>
+            <td>@device.Model</td>
+            <td>@device.Comments</td>
+        </tr>
+    }
+    </tbody>
+</table>

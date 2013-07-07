@@ -1,0 +1,34 @@
+﻿@model TubsWeb.ViewModels.ElectronicsViewModel.CommunicationServices
+
+@* See RFC2806 for more details on tel/fax URL schemes *@
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Installed</th>
+            <th>Number / Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Satellite Phone</strong></td>
+            <td>@Model.HasSatellitePhone</td>
+            <td><a href="tel:@Model.SatellitePhoneNumber">@Model.SatellitePhoneNumber</a></td>
+        </tr>
+        <tr>
+            <td><strong>Mobile Phone</strong></td>
+            <td>@Model.HasMobilePhone</td>
+            <td><a href="tel:@Model.MobilePhoneNumber">@Model.MobilePhoneNumber</a></td>
+        </tr>
+        <tr>
+            <td><strong>Facsimilie</strong></td>
+            <td>@Model.HasFax</td>
+            <td><a href="fax:@Model.FaxNumber">@Model.FaxNumber</a></td>
+        </tr>
+        <tr>
+            <td><strong>Email</strong></td>
+            <td>@Model.HasEmail</td>
+            <td><a href="mailto:@Model.EmailAddress">@Model.EmailAddress</a></td>
+        </tr>
+    </tbody>
+</table>

@@ -44,6 +44,24 @@ namespace TubsWeb.Mapping.Profiles
 
             
             // Entity to ViewModel
+            CreateMap<DAL.Entities.CommunicationServices, ElectronicsViewModel.InformationServices>()
+                // Same property names, but use BooleanResolver to get correct string representation
+                .ForMember(d => d.HasWeatherFax, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasWeatherFax))
+                .ForMember(d => d.HasSatelliteMonitor, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasSatelliteMonitor))
+                .ForMember(d => d.HasPhytoplanktonService, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasPhytoplanktonService))
+                .ForMember(d => d.HasSeaSurfaceTemperatureService, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasSeaSurfaceTemperatureService))
+                .ForMember(d => d.HasSeaHeightService, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasSeaHeightService))
+                .ForMember(d => d.HasOther, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasOther))
+                ;
+
+            CreateMap<DAL.Entities.CommunicationServices, ElectronicsViewModel.CommunicationServices>()
+                // Same property names, but use BooleanResolver to get correct string representation
+                .ForMember(d => d.HasSatellitePhone, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasSatellitePhone))
+                .ForMember(d => d.HasMobilePhone, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasMobilePhone))
+                .ForMember(d => d.HasFax, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasFax))
+                .ForMember(d => d.HasEmail, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.HasEmail))
+                ;
+
             CreateMap<DAL.Entities.ElectronicDevice, ElectronicsViewModel.DeviceCategory>()
                 .ForMember(d => d.IsInstalled, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.IsInstalled))
                 .ForMember(d => d.Name, o => o.ResolveUsing<DeviceNameResolver>().FromMember(s => s.DeviceType))
@@ -87,6 +105,7 @@ namespace TubsWeb.Mapping.Profiles
                 })
                 .ForMember(d => d.TripId, o => o.MapFrom(s => s.Id))
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.SpcTripNumber ?? "This Trip").Trim()))
+                .ForMember(d => d.ServiceId, o => o.MapFrom(s => null == s.CommunicationServices ? 0 : s.CommunicationServices.Id))
                 // Categories
                 .ForMember(d => d.Gps, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType == DAL.Common.ElectronicDeviceType.Gps).FirstOrDefault()))
                 .ForMember(d => d.TrackPlotter, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType == DAL.Common.ElectronicDeviceType.TrackPlotter).FirstOrDefault()))
@@ -96,10 +115,18 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.Vms, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType == DAL.Common.ElectronicDeviceType.Vms)))
                 // Buoy devices
                 .ForMember(d => d.Buoys, o => o.MapFrom(s => s.Electronics.Where(e => e.DeviceType.IsBuoy())))
+                .ForMember(d => d.Communications, o => o.MapFrom(s => s.CommunicationServices))
+                .ForMember(d => d.Info, o => o.MapFrom(s => s.CommunicationServices))
                 // Everything else handled in AfterMap
                 .ForMember(d => d.OtherDevices, o => o.Ignore())
                 .AfterMap((s, d) => 
                 {
+                    if (null == d.Info)
+                        d.Info = new ElectronicsViewModel.InformationServices();
+
+                    if (null == d.Communications)
+                        d.Communications = new ElectronicsViewModel.CommunicationServices();
+
                     foreach (var device in s.Electronics)
                     {
                         // Skip categories, buoys, and VMS, which are all mapped elsewhere

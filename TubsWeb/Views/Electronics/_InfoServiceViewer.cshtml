@@ -1,0 +1,43 @@
+﻿@model TubsWeb.ViewModels.ElectronicsViewModel.InformationServices
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Installed</th>
+            <th>Service</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Weather Fax</strong></td>
+            <td>@Model.HasWeatherFax</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><strong>Satellite Monitor</strong></td>
+            <td>@Model.HasSatelliteMonitor</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><strong>Other</strong></td>
+            <td>@Model.HasOther</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><strong>Phytoplankton</strong></td>
+            <td>@Model.HasPhytoplanktonService</td>
+            <td>@Model.PhytoplanktonUrl</td>
+        </tr>
+        <tr>
+            <td><strong>SST</strong></td>
+            <td>@Model.HasSeaSurfaceTemperatureService</td>
+            <td>@Model.SeaSurfaceTemperatureUrl</td>
+        </tr>
+        <tr>
+            <td><strong>Sea Height</strong></td>
+            <td>@Model.HasSeaHeightService</td>
+            <td>@Model.SeaHeightServiceUrl</td>
+        </tr>
+    </tbody>
+</table>

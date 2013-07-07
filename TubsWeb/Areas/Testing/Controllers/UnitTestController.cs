@@ -94,6 +94,16 @@ namespace TubsWeb.Areas.Testing.Controllers
         }
 
         /// <summary>
+        /// PS-1/LL-1 electronics unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
+        public ActionResult Electronics()
+        {
+            ViewBag.Title = "Electronics unit tests";
+            return View();
+        }
+
+        /// <summary>
         /// Purse Seine crew unit tests
         /// </summary>
         /// <returns>QUnit view</returns>

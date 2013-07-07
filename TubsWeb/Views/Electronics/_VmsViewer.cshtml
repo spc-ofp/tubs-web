@@ -1,0 +1,27 @@
+﻿@model IEnumerable<TubsWeb.ViewModels.ElectronicsViewModel.DeviceModel>
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>System</th>
+            <th>Installed</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Seals Intact</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var vms in Model)
+    { 
+        <tr>
+            <td>@vms.SystemDescription</td>
+            <td>@vms.IsInstalled</td>
+            <td>@vms.Make</td>
+            <td>@vms.Model</td>
+            <td>@vms.SealsIntact</td>
+            <td>@vms.Comments</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,29 @@
+﻿@model IEnumerable<TubsWeb.ViewModels.ElectronicsViewModel.DeviceModel>
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Installed</th>
+            <th>Usage</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>How Many</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var buoy in Model)
+    { 
+        <tr>
+            <td>@buoy.DeviceType</td>
+            <td>@buoy.IsInstalled</td>
+            <td>@buoy.Usage</td>
+            <td>@buoy.Make</td>
+            <td>@buoy.Model</td>
+            <td>@buoy.BuoyCount</td>
+            <td>@buoy.Comments</td>
+        </tr>
+    }
+    </tbody>
+</table>

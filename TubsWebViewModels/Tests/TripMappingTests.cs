@@ -257,5 +257,33 @@ namespace TubsWeb.Tests
                 
             }
         }
+
+        [Test]
+        public void TripEntityToElectronicsViewModelWithComms([Values(70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<Trip, ElectronicsViewModel>(trip);
+                Assert.NotNull(vm);
+                Assert.NotNull(vm.Communications);
+                StringAssert.AreEqualIgnoringCase("YES", vm.Communications.HasEmail);
+                Assert.Null(vm.Communications.EmailAddress);
+                StringAssert.AreEqualIgnoringCase("YES", vm.Communications.HasFax);
+                StringAssert.AreEqualIgnoringCase("357687111", vm.Communications.FaxNumber);
+                StringAssert.AreEqualIgnoringCase("YES", vm.Communications.HasSatellitePhone);
+                StringAssert.AreEqualIgnoringCase("357687110", vm.Communications.SatellitePhoneNumber);
+
+                Assert.NotNull(vm.Info);
+                StringAssert.AreEqualIgnoringCase("NO", vm.Info.HasOther);
+                StringAssert.AreEqualIgnoringCase("NO", vm.Info.HasSeaHeightService);
+                Assert.Null(vm.Info.SeaHeightServiceUrl);
+                StringAssert.AreEqualIgnoringCase("NO", vm.Info.HasPhytoplanktonService);
+                Assert.Null(vm.Info.PhytoplanktonUrl);
+                StringAssert.AreEqualIgnoringCase("YES", vm.Info.HasSatelliteMonitor);
+            }
+        }
     }
 }

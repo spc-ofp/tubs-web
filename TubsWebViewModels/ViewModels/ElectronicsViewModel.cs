@@ -47,6 +47,8 @@ namespace TubsWeb.ViewModels
         // Necessary for navigation
         public int TripId { get; set; }
         public string TripNumber { get; set; }
+        // PK for CommunicationServices Entity
+        public int ServiceId { get; set; }
 
         public DeviceCategory Gps { get; set; }
         public DeviceCategory TrackPlotter { get; set; }
@@ -62,6 +64,11 @@ namespace TubsWeb.ViewModels
 
         // Everything else
         public List<DeviceModel> OtherDevices { get; set; }
+
+
+        public CommunicationServices Communications { get; set; }
+
+        public InformationServices Info { get; set; }
 
         /// <summary>
         /// Electronic device category.
@@ -82,6 +89,7 @@ namespace TubsWeb.ViewModels
             public string IsInstalled { get; set; }
 
             // GPS, Track Plotter, Depth Sounder, SST Gauge
+            // TODO: Do we need the Name property?
             public string Name { get; set; }
 
             public string Usage { get; set; }
@@ -116,6 +124,39 @@ namespace TubsWeb.ViewModels
             // Knockout UI integration
             public bool _destroy { get; set; }
             public bool NeedsFocus { get; set; }
+        }
+
+        public sealed class CommunicationServices
+        {
+            public string HasSatellitePhone { get; set; }
+            public string SatellitePhoneNumber { get; set; }
+
+            public string HasMobilePhone { get; set; }
+            public string MobilePhoneNumber { get; set; }
+
+            public string HasFax { get; set; }
+            public string FaxNumber { get; set; }
+
+            public string HasEmail { get; set; }
+            public string EmailAddress { get; set; }
+        }
+
+        public sealed class InformationServices
+        {
+            public string HasWeatherFax { get; set; }
+
+            public string HasSatelliteMonitor { get; set; }
+
+            public string HasOther { get; set; }
+
+            public string HasPhytoplanktonService { get; set; }
+            public string PhytoplanktonUrl { get; set; }
+
+            public string HasSeaSurfaceTemperatureService { get; set; }
+            public string SeaSurfaceTemperatureUrl { get; set; }
+
+            public string HasSeaHeightService { get; set; }
+            public string SeaHeightServiceUrl { get; set; }
         }
     }
 }
