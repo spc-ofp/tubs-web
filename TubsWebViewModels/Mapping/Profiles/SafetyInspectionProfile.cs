@@ -49,11 +49,11 @@ namespace TubsWeb.Mapping.Profiles
                 Capacity = capacity,
             };
 
-            // mm/yy
+            // MM/yy
             if (hasDate)
             {
                 DateTime idate;
-                if (DateTime.TryParseExact(date, "mm/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out idate))
+                if (DateTime.TryParseExact(date, "MM/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out idate))
                 {
                     raft.InspectionDate = idate;
                 }
@@ -123,6 +123,7 @@ namespace TubsWeb.Mapping.Profiles
 
             // Entity to ViewModel
             CreateMap<DAL.Entities.SafetyInspection, SafetyInspectionViewModel>()
+                .ForMember(d => d.LastOrDue, o => o.Ignore())
                 .ForMember(d => d.LifejacketAvailability, o => o.MapFrom(s => s.LifejacketAvailability))
                 .ForMember(d => d.LifejacketSizeOk, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.LifejacketSizeOk))
                 .ForMember(d => d.Epirb406Count, o => o.MapFrom(s => s.Epirb1.Count))
@@ -132,22 +133,22 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.OtherEpirbExpiration, o => o.MapFrom(s => s.Epirb2.Expiration))
                 .ForMember(d => d.LifeRaft1Capacity, o => o.MapFrom(s => s.Raft1.Capacity))
                 .ForMember(d => d.LifeRaft1Inspection,
-                    o => o.MapFrom(s => s.Raft1.InspectionDate.HasValue ? s.Raft1.InspectionDate.Value.ToString("mm/yy") : string.Empty))
+                    o => o.MapFrom(s => s.Raft1.InspectionDate.HasValue ? s.Raft1.InspectionDate.Value.ToString("MM/yy") : string.Empty))
                 .ForMember(d => d.LifeRaft1LastOrDue, o => o.MapFrom(s => s.Raft1.LastOrDue))
                 //
                 .ForMember(d => d.LifeRaft2Capacity, o => o.MapFrom(s => s.Raft2.Capacity))
                 .ForMember(d => d.LifeRaft2Inspection,
-                    o => o.MapFrom(s => s.Raft2.InspectionDate.HasValue ? s.Raft2.InspectionDate.Value.ToString("mm/yy") : string.Empty))
+                    o => o.MapFrom(s => s.Raft2.InspectionDate.HasValue ? s.Raft2.InspectionDate.Value.ToString("MM/yy") : string.Empty))
                 .ForMember(d => d.LifeRaft2LastOrDue, o => o.MapFrom(s => s.Raft2.LastOrDue))
                 //
                 .ForMember(d => d.LifeRaft3Capacity, o => o.MapFrom(s => s.Raft3.Capacity))
                 .ForMember(d => d.LifeRaft3Inspection,
-                    o => o.MapFrom(s => s.Raft3.InspectionDate.HasValue ? s.Raft3.InspectionDate.Value.ToString("mm/yy") : string.Empty))
+                    o => o.MapFrom(s => s.Raft3.InspectionDate.HasValue ? s.Raft3.InspectionDate.Value.ToString("MM/yy") : string.Empty))
                 .ForMember(d => d.LifeRaft3LastOrDue, o => o.MapFrom(s => s.Raft3.LastOrDue))
                 //
                 .ForMember(d => d.LifeRaft4Capacity, o => o.MapFrom(s => s.Raft4.Capacity))
                 .ForMember(d => d.LifeRaft4Inspection,
-                    o => o.MapFrom(s => s.Raft4.InspectionDate.HasValue ? s.Raft4.InspectionDate.Value.ToString("mm/yy") : string.Empty))
+                    o => o.MapFrom(s => s.Raft4.InspectionDate.HasValue ? s.Raft4.InspectionDate.Value.ToString("MM/yy") : string.Empty))
                 .ForMember(d => d.LifeRaft4LastOrDue, o => o.MapFrom(s => s.Raft4.LastOrDue))
                 ;
 

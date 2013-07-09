@@ -136,6 +136,7 @@
     <Compile Include="ViewModels\SeaDayViewModel.cs" />
     <Compile Include="ViewModels\SightingViewModel.cs" />
     <Compile Include="ViewModels\TransferViewModel.cs" />
+    <Compile Include="ViewModels\TripCreationViewModel.cs" />
     <Compile Include="ViewModels\TripSummaryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

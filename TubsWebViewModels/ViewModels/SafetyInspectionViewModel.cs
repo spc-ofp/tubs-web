@@ -23,9 +23,17 @@ namespace TubsWeb.ViewModels
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
 
     public sealed class SafetyInspectionViewModel
     {
+        public IList<string> LastOrDue = new List<string> 
+        {
+            String.Empty,
+            "D",
+            "L"
+        };
+        
         public int Id { get; set; }
 
         public string LifejacketProvided { get; set; }

@@ -74,6 +74,7 @@ namespace TubsWeb.Mapping.Profiles
                 ;
 
             CreateMap<DAL.Entities.PurseSeineTrip, Ps1ViewModel>()
+                .ForMember(d => d.AvailabilityValues, o => o.Ignore())
                 .ForMember(d => d.BooleanValues, o => o.Ignore())
                 .ForMember(d => d.NetUnits, o => o.Ignore())
                 .ForMember(d => d.MeshUnits, o => o.Ignore())

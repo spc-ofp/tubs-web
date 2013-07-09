@@ -11,7 +11,7 @@
             <div class="row-fluid">
                 <div class="span3">
                     <label><strong>Lifejacket Provided?</strong></label>
-                    <select id="LifejacketProvided" name="LifejacketProvided" data-bind="value: LifejacketProvided, options: $root.BooleanValues" class="input-small"></select>
+                    <select id="LifejacketProvided" name="LifejacketProvided" data-bind="value: LifejacketProvided, options: $root.AvailabilityValues" class="input-small"></select>
                 </div>
                 <div class="span3">
                     <label><strong>Suitable Size?</strong></label>
@@ -57,6 +57,44 @@
                 <div class="span3">
                     <label><strong>Expiration</strong></label>
                     <input id="OtherEpirbExpiration" name="OtherEpirbExpiration" type="text" data-bind="value: OtherEpirbExpiration" class="input-small" />
+                </div>
+            </div>
+            <div class="row editor-row">
+                <div class="span1q compact-header"><strong>Raft</strong></div>
+                <div class="span2 compact-header"><strong># of People</strong></div>
+                <div class="span2 compact-header"><strong>Date</strong></div>
+                <div class="span2 compact-header"><strong>Due/Last</strong></div>
+            </div>
+            <div class="row editor-row">
+                <div class="form-horizontal compact-row">
+                    <label class="span1q"><strong>1</strong></label>
+                    <input type="number" class="span2" data-bind="value: LifeRaft1Capacity"/>
+                    <input type="text" class="span2" placeholder="mm/yy" data-bind="value: LifeRaft1Inspection" />
+                    <select class="span2" data-bind="options: LastOrDue, value: LifeRaft1LastOrDue"></select>
+                </div>
+            </div>
+            <div class="row editor-row">
+                <div class="form-horizontal compact-row">
+                    <label class="span1q"><strong>2</strong></label>
+                    <input type="number" class="span2" data-bind="value: LifeRaft2Capacity"/>
+                    <input type="text" class="span2" placeholder="mm/yy" data-bind="value: LifeRaft2Inspection" />
+                    <select class="span2" data-bind="options: LastOrDue, value: LifeRaft2LastOrDue"></select>
+                </div>
+            </div>
+            <div class="row editor-row">
+                <div class="form-horizontal compact-row">
+                    <label class="span1q"><strong>3</strong></label>
+                    <input type="number" class="span2" data-bind="value: LifeRaft3Capacity"/>
+                    <input type="text" class="span2" placeholder="mm/yy" data-bind="value: LifeRaft3Inspection" />
+                    <select class="span2" data-bind="options: LastOrDue, value: LifeRaft3LastOrDue"></select>
+                </div>
+            </div>
+            <div class="row editor-row">
+                <div class="form-horizontal compact-row">
+                    <label class="span1q"><strong>4</strong></label>
+                    <input type="number" class="span2" data-bind="value: LifeRaft4Capacity"/>
+                    <input type="text" class="span2" placeholder="mm/yy" data-bind="value: LifeRaft4Inspection" />
+                    <select class="span2" data-bind="options: LastOrDue, value: LifeRaft4LastOrDue"></select>
                 </div>
             </div>
         </div>

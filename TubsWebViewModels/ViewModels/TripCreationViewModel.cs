@@ -37,7 +37,7 @@ namespace TubsWeb.ViewModels
             "v2009"
         };
 
-        public IList<string> ProgramCode = new List<string>
+        public IList<string> ProgramCodes = new List<string>
         {
             String.Empty
         };

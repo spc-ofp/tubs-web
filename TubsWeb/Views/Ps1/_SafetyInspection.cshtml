@@ -61,6 +61,43 @@
                     <span>@Model.OtherEpirbExpiration</span>
                 </div>
             </div>
+            <hr />
+            <table class="table table-bordered table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th>Raft</th>
+                        <th>Number of People</th>
+                        <th>Inspection Date</th>
+                        <th>Due/Last</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>@Html.DisplayFor(m => m.LifeRaft1Capacity)</td>
+                        <td>@Html.DisplayFor(m => m.LifeRaft1Inspection, new { format = "MM/yy" })</td>
+                        <td>@(Model.LifeRaft1LastOrDue ?? "N/A")</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>@Html.DisplayFor(m => m.LifeRaft2Capacity)</td>
+                        <td>@Html.DisplayFor(m => m.LifeRaft2Inspection, new { format = "MM/yy" })</td>
+                        <td>@(Model.LifeRaft2LastOrDue ?? "N/A")</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>@Html.DisplayFor(m => m.LifeRaft3Capacity)</td>
+                        <td>@Html.DisplayFor(m => m.LifeRaft3Inspection, new { format = "MM/yy" })</td>
+                        <td>@(Model.LifeRaft3LastOrDue ?? "N/A")</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>@Html.DisplayFor(m => m.LifeRaft4Capacity)</td>
+                        <td>@Html.DisplayFor(m => m.LifeRaft4Inspection, new { format = "MM/yy" })</td>
+                        <td>@(Model.LifeRaft4LastOrDue ?? "N/A")</td>
+                    </tr>
+                </tbody>
+            </table>
             }
         </div>
     </div>
