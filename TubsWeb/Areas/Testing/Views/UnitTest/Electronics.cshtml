@@ -187,7 +187,7 @@
             ok(viewmodel.Info, "Information Services");
             equal(viewmodel.Buoys().length, 2, "Correct number of buoys");
             equal(viewmodel.Vms().length, 1, "Correct number of VMS systems");
-            equal(viewmodel.OtherDevices().length, 3, "Correct number of VMS systems");
+            equal(viewmodel.OtherDevices().length, 3, "Correct number of other systems");
         });
         test("Dirty flag", function () {
             ok(!viewmodel.isDirty(), "viewmodel is clean");
@@ -195,7 +195,9 @@
             ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Async commands", function () {
-            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            // Not sure why I'm getting an undefined on these two async commands.
+            // Implementation is directly copied from another, working viewmodel, and the
+            // test is exactly the same.  Further, the rest of the test works just fine...
             equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
             equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
             viewmodel.SstGauge.IsInstalled("YES");
@@ -204,37 +206,87 @@
             ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
         });
         test("Change Communication Services property", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.Communications.EmailAddress("barney@rubble.com");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Change Information Services property", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.Info.HasPhytoplanktonService("YES");
+            viewmodel.Info.PhytoplanktonUrl("http://localhost/phyto");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Change Buoy property", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.Buoys()[0].Comments("Yo dawg");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Change VMS property", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.Vms()[0].Comments("Yo dawg");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Change 'Other Device' property", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.OtherDevices()[0].Comments("Bird is the word.");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
         });
         test("Add/remove new Buoy", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.Buoys().length, 2, "Correct number of buoys");
+            viewmodel.addBuoy();
+            equal(viewmodel.Buoys().length, 3, "Correct number of buoys");
+            var buoy = viewmodel.Buoys().slice(-1)[0];
+            ok(buoy, "New buoy not null");
+            equal(buoy.Id(), 0, "New record has no primary key");
+            viewmodel.removeBuoy(buoy);
+            equal(viewmodel.Buoys().length, 2, "Correct number of buoys");
         });
         test("Remove existing Buoy", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.Buoys().length, 2, "Correct number of buoys");
+            var buoy = viewmodel.Buoys().slice(-1)[0];
+            viewmodel.removeBuoy(buoy);
+            ok(buoy._destroy, "Buoy marked for deletion");
+            equal(viewmodel.Buoys().length, 2, "Correct number of buoys");
         });
         test("Add/remove new VMS", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.Vms().length, 1, "Correct number of VMS systems");
+            viewmodel.addVms();
+            equal(viewmodel.Vms().length, 2, "Correct number of VMS systems");
+            var vms = viewmodel.Vms().slice(-1)[0];
+            ok(vms, "New vms not null");
+            equal(vms.Id(), 0, "New record has no primary key");
+            viewmodel.removeVms(vms);
+            equal(viewmodel.Vms().length, 1, "Correct number of VMS systems");
         });
         test("Remove existing VMS", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.Vms().length, 1, "Correct number of VMS systems");
+            var vms = viewmodel.Vms().slice(-1)[0];
+            viewmodel.removeVms(vms);
+            ok(vms._destroy, "VMS marked for deletion");
+            equal(viewmodel.Vms().length, 1, "Correct number of VMS systems");
         });
         test("Add/remove new 'Other Device'", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.OtherDevices().length, 3, "Correct number of other systems");
+            viewmodel.addOtherDevice();
+            equal(viewmodel.OtherDevices().length, 4, "Correct number of other systems");
+            var device = viewmodel.OtherDevices().slice(-1)[0];
+            ok(device, "New device not null");
+            equal(device.Id(), 0, "New record has no primary key");
+            viewmodel.removeOtherDevice(device);
+            equal(viewmodel.OtherDevices().length, 3, "Correct number of other systems");
         });
         test("Remove existing 'Other Device'", function () {
-
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            equal(viewmodel.OtherDevices().length, 3, "Correct number of other systems");
+            var device = viewmodel.OtherDevices().slice(-1)[0];
+            viewmodel.removeOtherDevice(device);
+            ok(device._destroy, "Device marked for deletion");
+            equal(viewmodel.OtherDevices().length, 3, "Correct number of other systems");
         });
     </script>
 }

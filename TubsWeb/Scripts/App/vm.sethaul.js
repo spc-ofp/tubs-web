@@ -337,7 +337,7 @@ tubs.SetHaul = function (data) {
         if (vm.dirtyFlag().isDirty()) {
             return true;
         }
-        
+       
         hasDirtyChild = _.any(vm.Comments(), function (comment) {
             return comment.isDirty();
         });

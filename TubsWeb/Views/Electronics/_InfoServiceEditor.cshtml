@@ -1,0 +1,41 @@
+﻿<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Installed</th>
+            <th>Service</th>
+        </tr>
+    </thead>
+    <tbody data-bind="with: $root.Info">
+        <tr>
+            <td><strong>Weather Fax</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasWeatherFax"></select></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><strong>Satellite Monitor</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasSatelliteMonitor"></select></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><strong>Other</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasOther"></select></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><strong>Phytoplankton</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasPhytoplanktonService"></select></td>
+            <td><input type="text" id="PhytoplanktonUrl" name="PhytoplanktonUrl" class="input-large" data-bind="value: PhytoplanktonUrl" /></td>
+        </tr>
+        <tr>
+            <td><strong>SST</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasSeaSurfaceTemperatureService"></select></td>
+            <td><input type="text" id="SeaSurfaceTemperatureUrl" name="SeaSurfaceTemperatureUrl" class="input-large" data-bind="value: SeaSurfaceTemperatureUrl" /></td>
+        </tr>
+        <tr>
+            <td><strong>Sea Height</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasSeaHeightService"></select></td>
+            <td><input type="text" id="SeaHeightServiceUrl" name="SeaHeightServiceUrl" class="input-large" data-bind="value: SeaHeightServiceUrl" /></td>
+        </tr>
+    </tbody>
+</table>

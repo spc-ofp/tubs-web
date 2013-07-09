@@ -67,7 +67,7 @@ tubs.electronicsOptions = {
                 device.Usage,
                 device.Make,
                 device.Model,
-                device.Comments,
+                device.Comments
             ], false);
 
             device.isDirty = ko.computed(function () {
@@ -164,17 +164,18 @@ tubs.electronicsDeviceDefaults = {
  * 
  */
 tubs.electronicsDefaults = function (data) {
-    // defaults can't deal with null objects
-    data.Gps = data.Gps || {};
+    // The category objects use the .Name field to keep track of what
+    // they are when they get back to the server.
+    data.Gps = data.Gps || { Name: "GPS" };
     _.defaults(data.Gps, tubs.electronicsCategoryDefaults);
 
-    data.TrackPlotter = data.TrackPlotter || {};
+    data.TrackPlotter = data.TrackPlotter || { Name: "Track Plotter" };
     _.defaults(data.TrackPlotter, tubs.electronicsCategoryDefaults);
 
-    data.DepthSounder = data.DepthSounder || {};
+    data.DepthSounder = data.DepthSounder || { Name: "Depth Sounder" };
     _.defaults(data.DepthSounder, tubs.electronicsCategoryDefaults);
 
-    data.SstGauge = data.SstGauge || {};
+    data.SstGauge = data.SstGauge || { Name: "SST Gauge" };
     _.defaults(data.SstGauge, tubs.electronicsCategoryDefaults);
 
     data.Buoys = data.Buoys || [];
@@ -195,6 +196,31 @@ tubs.ElectronicsBuoy = function (data) {
     data = data || {};
     _.defaults(data, tubs.electronicsBuoyDefaults);
 
+    self.Id = ko.observable(data.Id);
+    self.DeviceType = ko.observable(data.DeviceType);
+    self.IsInstalled = ko.observable(data.IsInstalled);
+    self.Usage = ko.observable(data.Usage);
+    self.Make = ko.observable(data.Make);
+    self.Model = ko.observable(data.Model);
+    self.Comments = ko.observable(data.Comments);
+    self.BuoyCount = ko.observable(data.BuoyCount);
+    self._destroy = ko.observable(data._destroy);
+    self.NeedsFocus = ko.observable(data.NeedsFocus);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.DeviceType,
+        self.IsInstalled,
+        self.Usage,
+        self.Make,
+        self.Model,
+        self.Comments,
+        self.BuoyCount
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        return self.dirtyFlag().isDirty();
+    });
+
     return self;
 };
 
@@ -209,6 +235,29 @@ tubs.ElectronicsVms = function (data) {
     data = data || {};
     _.defaults(data, tubs.electronicsVmsDefaults);
 
+    self.Id = ko.observable(data.Id);
+    self.IsInstalled = ko.observable(data.IsInstalled);
+    self.Usage = ko.observable(data.Usage);
+    self.Make = ko.observable(data.Make);
+    self.Model = ko.observable(data.Model);
+    self.Comments = ko.observable(data.Comments);
+    self.SystemDescription = ko.observable(data.SystemDescription);
+    self.SealsIntact = ko.observable(data.SealsIntact);
+    self._destroy = ko.observable(data._destroy);
+    self.NeedsFocus = ko.observable(data.NeedsFocus);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.IsInstalled,
+        self.Make,
+        self.Model,
+        self.SystemDescription,
+        self.SealsIntact,
+        self.Comments
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        return self.dirtyFlag().isDirty();
+    });
 
     return self;
 };
@@ -224,13 +273,41 @@ tubs.ElectronicsDevice = function (data) {
     data = data || {};
     _.defaults(data, tubs.electronicsDeviceDefaults);
 
+    self.Id = ko.observable(data.Id);    
+    self.DeviceType = ko.observable(data.DeviceType);
+    self.Description = ko.observable(data.Description);
+    self.IsInstalled = ko.observable(data.IsInstalled);
+    self.Usage = ko.observable(data.Usage);
+    self.Make = ko.observable(data.Make);
+    self.Model = ko.observable(data.Model);
+    self.Comments = ko.observable(data.Comments);
+    self._destroy = ko.observable(data._destroy);
+    self.NeedsFocus = ko.observable(data.NeedsFocus);
+
+    self.dirtyFlag = new ko.DirtyFlag([
+        self.DeviceType,
+        self.Description,
+        self.IsInstalled,
+        self.Usage,
+        self.Make,
+        self.Model,
+        self.Comments
+    ], false);
+
+    self.isDirty = ko.computed(function () {
+        return self.dirtyFlag().isDirty();
+    });
+
     return self;
 };
 
 tubs.Electronics = function (data) {
     'use strict';
 
-    var vm = ko.viewmodel.fromModel(tubs.electronicsDefaults(data), tubs.electronicsOptions);
+    var vm = ko.viewmodel.fromModel(
+        tubs.electronicsDefaults(data),
+        tubs.electronicsOptions
+    );
 
     vm.dirtyFlag = new ko.DirtyFlag([
         vm.Gps,
@@ -323,18 +400,38 @@ tubs.Electronics = function (data) {
 
     vm.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
-            // TODO Call function in datacontext
+            tubs.getElectronics(
+                vm.TripId(),
+                function (result) {
+                    ko.viewmodel.updateFromModel(vm, tubs.electronicsDefaults(result));
+                    vm.clearDirtyFlag();
+                    toastr.success('Reloaded electronics data');
+                },
+                function (xhr, status) {
+                    tubs.notify('Failed to reload electronics', xhr, status);
+                }
+            );
             complete();
         },
         canExecute: function (isExecuting) {
-            // TODO isValid check
             return !isExecuting && vm.isDirty();
         }
     });
 
     vm.saveCommand = ko.asyncCommand({
         execute: function (complete) {
-            // TODO Call function in datacontext
+            tubs.saveElectronics(
+                vm.TripId(),
+                vm,
+                function (result) {
+                    ko.viewmodel.updateFromModel(vm, tubs.electronicsDefaults(result));
+                    vm.clearDirtyFlag();
+                    toastr.success('Saved electronics data');
+                },
+                function (xhr, status) {
+                    tubs.notify('Failed to save electronics', xhr, status);
+                }
+            );
             complete();
         },
         canExecute: function (isExecuting) {

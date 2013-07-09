@@ -25,8 +25,14 @@ tubs.Gen2Event = function (data) {
     self.PageNumber = ko.observable(data.PageNumber || 0);
     self.ShipsDate = ko.observable(data.ShipsDate || '').extend({ isoDate: 'DD/MM/YY' });
     self.ShipsTime = ko.observable(data.ShipsTime || '');
-    self.Latitude = ko.observable(data.Latitude || '').extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
-    self.Longitude = ko.observable(data.Longitude || '').extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
+    self.Latitude =
+        ko.observable(data.Latitude || '').extend({
+            pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$'
+        });
+    self.Longitude =
+        ko.observable(data.Longitude || '').extend({
+            pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$'
+        });
     self.SpeciesCode = ko.observable(data.SpeciesCode || '');
     self.SpeciesDescription = ko.observable(data.SpeciesDescription || '');
     self.ActionName = ko.observable(data.ActionName || 'add');

@@ -1,0 +1,33 @@
+﻿<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th class="span2">&nbsp;</th>
+            <th>Installed</th>
+            <th>Usage</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-bind="with: Gps">
+            <td><strong>GPS</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: IsInstalled"></select></td>
+            <td><select class="input-small" data-bind="options: $root.UsageCodes, value: Usage"></select></td>
+        </tr>
+        <tr data-bind="with: DepthSounder">
+            <td><strong>Depth Sounder</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: IsInstalled"></select></td>
+            <td><select class="input-small" data-bind="options: $root.UsageCodes, value: Usage"></select></td>
+        </tr>
+        <tr data-bind="with: TrackPlotter">
+            <td><strong>Track Plotter</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: IsInstalled"></select></td>
+            <td><select class="input-small" data-bind="options: $root.UsageCodes, value: Usage"></select></td>
+        </tr>
+        <tr data-bind="with: SstGauge">
+            <td><strong>SST Gauge</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: IsInstalled"></select></td>
+            <td><select class="input-small" data-bind="options: $root.UsageCodes, value: Usage"></select></td>
+        </tr>
+    </tbody>
+</table>
+
+<a href="#" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></a>

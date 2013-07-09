@@ -1,0 +1,33 @@
+﻿<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Installed</th>
+            <th>Number / Address</th>
+        </tr>
+    </thead>
+    <tbody data-bind="with: $root.Communications">
+        <tr>
+            <td><strong>Satellite Phone</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasSatellitePhone"></select></td>
+            <td><input type="tel" class="input-medium" data-bind="value: SatellitePhoneNumber" /></td>
+        </tr>
+        <tr>
+            <td><strong>Mobile Phone</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasMobilePhone"></select></td>
+            <td><input type="tel" class="input-medium" data-bind="value: MobilePhoneNumber" /></td>
+        </tr>
+        <tr>
+            <td><strong>Facsimile</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasFax"></select></td>
+            <td><input type="tel" class="input-medium" data-bind="value: FaxNumber" /></td>
+        </tr>
+        <tr>
+            <td><strong>Email</strong></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: HasEmail"></select></td>
+            <td><input type="email" class="input-medium" data-bind="value: EmailAddress" /></td>
+        </tr>
+    </tbody>
+</table>
+
+<a href="#" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></a>

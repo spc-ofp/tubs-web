@@ -132,6 +132,37 @@ namespace TubsWeb.Tests
             
         }
 
+        [Test]
+        public void MergeInfoAndComms([Values(69,70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                Assert.NotNull(trip.Electronics);
+                Assert.Less(0, trip.Electronics.Count);
+                Assert.NotNull(trip.CommunicationServices);
+
+                var evm = Mapper.Map<Trip, ElectronicsViewModel>(trip);
+                Assert.AreEqual(trip.CommunicationServices.Id, evm.ServiceId);
+
+                var svc = Mapper.Map<ElectronicsViewModel.CommunicationServices, CommunicationServices>(evm.Communications);
+                Assert.NotNull(svc);
+                Mapper.Map<ElectronicsViewModel.InformationServices, CommunicationServices>(evm.Info, svc);
+                Assert.NotNull(svc);
+
+                // Something from communication services
+                Assert.AreEqual(trip.CommunicationServices.HasSatellitePhone, svc.HasSatellitePhone);
+                StringAssert.AreEqualIgnoringCase(trip.CommunicationServices.SatellitePhoneNumber, svc.SatellitePhoneNumber);
+
+                // Something from information services
+                Assert.AreEqual(trip.CommunicationServices.HasSeaHeightService, svc.HasSeaHeightService);
+                Assert.AreEqual(trip.CommunicationServices.HasSatelliteMonitor, svc.HasSatelliteMonitor);
+
+            }
+        }
+
         // Trips picked at random from those with gear and safety inspection records
         [Test]
         public void TripInfoRoundTrip([Values(4177, 4231, 4242)] int tripId)

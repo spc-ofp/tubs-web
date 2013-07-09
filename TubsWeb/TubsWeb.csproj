@@ -749,6 +749,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knockout-2.2.1.debug.js" />
     <Content Include="Scripts\knockout-2.2.1.js" />
+    <Content Include="Scripts\knockout-2.3.0rc.debug.js" />
+    <Content Include="Scripts\knockout-2.3.0rc.js" />
     <Content Include="Scripts\knockout.activity.js" />
     <Content Include="Scripts\knockout.command.js" />
     <Content Include="Scripts\knockout.custom-bindings.js" />
@@ -889,6 +891,12 @@
     <Content Include="Views\Electronics\_OtherDeviceViewer.cshtml" />
     <Content Include="Views\Electronics\_InfoServiceViewer.cshtml" />
     <Content Include="Views\Electronics\_CommServiceViewer.cshtml" />
+    <Content Include="Views\Electronics\_CategoryEditor.cshtml" />
+    <Content Include="Views\Electronics\_BuoyEditor.cshtml" />
+    <Content Include="Views\Electronics\_VmsEditor.cshtml" />
+    <Content Include="Views\Electronics\_OtherDeviceEditor.cshtml" />
+    <Content Include="Views\Electronics\_CommServiceEditor.cshtml" />
+    <Content Include="Views\Electronics\_InfoServiceEditor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

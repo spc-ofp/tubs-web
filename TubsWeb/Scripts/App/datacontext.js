@@ -62,6 +62,13 @@ amplify.request.define(
     $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Sets/{SetNumber}/Edit' })
 );
 
+// Request for loading PS-1/LL-1 electronics data
+amplify.request.define(
+    "getElectronics",
+    "ajax",
+    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Electronics/Edit' })
+);
+
 // Request for loading GEN-1 (sighting) data
 amplify.request.define(
     "getSightings",
@@ -246,6 +253,41 @@ tubs.saveCrew = function (tripId, crew, success_cb, error_cb) {
     // TODO Use promise API
     //.done(success_cb)
     //.fail(error_cb);
+};
+
+/**
+ * Load electronics for a given trip
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.getElectronics = function (tripId, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getElectronics",
+        data: { "TripId": tripId },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+/**
+ * Save electronics data for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param electronics Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.saveElectronics = function (tripId, electronics, success_cb, error_cb) {
+    var url = appBase + 'Trip/' + tripId + '/Electronics/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(electronics),
+        timeout: saveTimeout
+    }).done(success_cb)
+      .fail(error_cb);
 };
 
 /**

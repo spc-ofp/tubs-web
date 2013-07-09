@@ -3,7 +3,6 @@
 };
 
 $(document).ready(function () {
-
     /* Stolen from here */
     /* http://stackoverflow.com/questions/2335553/jquery-how-to-catch-enter-key-and-change-event-to-tab */
     $(".autotab").on('keyup', function () {

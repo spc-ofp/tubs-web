@@ -3,6 +3,8 @@
 @using System.Web.Optimization
 
 @{
+    // Due to large fields and use of tab container, UX is better with the fluid layout
+    ViewBag.UseFluid = true;
     ViewBag.Title = String.Format("{0}: Electronics", Model.TripNumber);
 }
 @* For now, create this in the View. *@
@@ -18,7 +20,52 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+<p>
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    @* Moving this after all the buttons makes for a less jarring visual experience *@
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
+
+<br />
+
+<div class="tabbable tabs-top">
+    <ul id="formSections" class="nav nav-tabs">
+        <li class="active" id="categoryTab"><a href="#categories" data-toggle="tab">Categories</a></li>
+        <li id="buoyTab"><a href="#buoys" data-toggle="tab">Buoys</a></li>
+        <li id="vmsTab"><a href="#vms" data-toggle="tab">VMS</a></li>
+        <li id="otherDeviceTab"><a href="#other" data-toggle="tab">Other Devices</a></li>
+        <li id="commsTab"><a href="#comms" data-toggle="tab">Communication Services</a></li>
+        <li id="infoTab"><a href="#info" data-toggle="tab">Information Services</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="categories">
+            @{ Html.RenderPartial("_CategoryEditor"); }
+        </div>
+        <div class="tab-pane" id="buoys">
+            @{ Html.RenderPartial("_BuoyEditor"); }
+        </div>
+        <div class="tab-pane" id="vms">
+            @{ Html.RenderPartial("_VmsEditor"); }
+        </div>
+        <div class="tab-pane" id="other">
+            @{ Html.RenderPartial("_OtherDeviceEditor"); }
+        </div>
+        <div class="tab-pane" id="comms">
+            @{ Html.RenderPartial("_CommServiceEditor"); }
+        </div>
+        <div class="tab-pane" id="info">
+            @{ Html.RenderPartial("_InfoServiceEditor"); }
+        </div>
+    </div>
+</div>
+
+@*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
 
 <ul id="tlyPageGuide" data-tourtitle="Detailed electronics entry instructions">
     <li class="tlypageguide_top" data-tourtarget="#saveButton">
@@ -29,6 +76,37 @@
     <li class="tlypageguide_top" data-tourtarget="#reloadButton">
         <div>
             Use the reload button to discard any unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#categoryTab">
+        <div>
+            This tab contains common devices for which make and model information is not important.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#buoyTab">
+        <div>
+            This tab contains devices with associated buoys.  
+            Devices should be recorded here when there is (or should be) a count of associated buoys.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#vmsTab">
+        <div>
+            This tab contains vessel monitoring system (VMS) devices.  
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#otherDeviceTab">
+        <div>
+            This tab contains devices that don't belong in the previous three tabs.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#commsTab">
+        <div>
+            This tab vessel phone numbers and/or an email address.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#infoTab">
+        <div>
+            This tab contains details about the information services used by this vessel.
         </div>
     </li>
     <li class="tlypageguide_top" data-tourtarget=".addItem:first">
@@ -58,7 +136,6 @@
 
 @section AdditionalScripts {
     @Scripts.Render("~/bundles/knockout")
-    <script src="~/Scripts/species-keys.js"></script>
     <script src="~/Scripts/App/errorlogger.js"></script>
     <script src="~/Scripts/App/datacontext.js"></script>
     <script src="~/Scripts/App/vm.electronics.js"></script>
@@ -93,6 +170,34 @@
             // If the dirty flag is cleared _after_ the bindings are set, then this is the
             // "normal" state for the viewmodel
             viewModel.clearDirtyFlag();
+
+            // Add click handlers for managing child lists (e.g. Buoy, VMS, and 'Other Devices')
+            // Other Device
+            $('#addNewDevice').on("click", function () {
+                viewModel.addOtherDevice();
+            });
+
+            $('#otherDeviceTable').on("click", ".removeItem", function () {
+                viewModel.removeOtherDevice(ko.dataFor(this));
+            });
+
+            // VMS
+            $('#addNewVms').on("click", function () {
+                viewModel.addVms();
+            });
+
+            $('#vmsTable').on("click", ".removeItem", function () {
+                viewModel.removeVms(ko.dataFor(this));
+            });
+
+            // Buoy
+            $('#addNewBuoy').on("click", function () {
+                viewModel.addBuoy();
+            });
+
+            $('#buoyTable').on("click", ".removeItem", function () {
+                viewModel.removeBuoy(ko.dataFor(this));
+            });
 
             // PageGuide initialization
             tl.pg.init();

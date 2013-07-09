@@ -22,7 +22,9 @@ namespace TubsWeb.ViewModels
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -31,9 +33,25 @@ namespace TubsWeb.ViewModels
     public sealed class ElectronicsViewModel
     {
         #region Knockout Lists
-        // TODO UsageCode
+        public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
+        public IList<string> UsageCodes = new List<string> { String.Empty, "ALL", "TRA", "OIF", "SIF", "RAR", "BRO", "NOL" };
+        public IList<string> DeviceTypes = new List<string>
+        {
+            "Other",
+            "Bird Radar",
+            "Sonar",            
+            "Net Depth Instrumentation",
+            "Doppler Current Meter",
+            "Radio Beacon Direction Finder",
+            "Bathythermograph"
+        };
+        public IList<string> BuoyTypes = new List<string>
+        {
+            "GPS Buoys",
+            "Echo Sounding Buoy",
+        };
+        public IList<string> SatelliteSystems = new List<string> { String.Empty, "INMARSAT", "Iridium", "Argos" };
 
-        // TODO Named device types (PS and LL all together)
         #endregion
 
 
@@ -71,6 +89,56 @@ namespace TubsWeb.ViewModels
         public InformationServices Info { get; set; }
 
         /// <summary>
+        /// This read-only property assists with finding devices that the client-side
+        /// script marked for deletion.
+        /// </summary>
+        [JsonIgnore]
+        public IEnumerable<int> DeletedDevices
+        {
+            get
+            {
+                var deletedBuoys =
+                    from b in this.Buoys
+                    where b != null && b._destroy
+                    select b.Id;
+
+                var deletedVms =
+                    from v in this.Vms
+                    where v != null && v._destroy
+                    select v.Id;
+
+                var deletedOther =
+                    from d in this.OtherDevices
+                    where d != null && d._destroy
+                    select d.Id;
+
+                // Who doesn't love LINQ?
+                return deletedBuoys.Union(deletedVms).Union(deletedOther);
+            }
+        }
+
+        [JsonIgnore]
+        public IEnumerable<DeviceCategory> Categories
+        {
+            // TODO:  It might make sense to force the name property for these devices
+            // Existing code sets the data, but it seems a bit fiddly for my tastes.
+            get
+            {
+                if (null != this.Gps && this.Gps.HasData)
+                    yield return this.Gps;
+
+                if (null != this.TrackPlotter && this.TrackPlotter.HasData)
+                    yield return this.TrackPlotter;
+
+                if (null != this.DepthSounder && this.DepthSounder.HasData)
+                    yield return this.DepthSounder;
+
+                if (null != this.SstGauge && this.SstGauge.HasData)
+                    yield return this.SstGauge;
+            }
+        }
+
+        /// <summary>
         /// Electronic device category.
         /// </summary>
         /// <remarks>
@@ -93,6 +161,18 @@ namespace TubsWeb.ViewModels
             public string Name { get; set; }
 
             public string Usage { get; set; }
+
+            [JsonIgnore]
+            public bool HasData
+            {
+                get
+                {
+                    return
+                        this.Id != default(int) ||
+                        !String.IsNullOrEmpty(this.IsInstalled) ||
+                        !String.IsNullOrEmpty(this.Usage);
+                }
+            }
         }
 
         /// <summary>

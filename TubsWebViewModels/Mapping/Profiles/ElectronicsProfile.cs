@@ -41,6 +41,90 @@ namespace TubsWeb.Mapping.Profiles
             base.Configure();
 
             // ViewModel to Entity
+            // CommunicationServices is slightly smaller, so set Ignore on these members
+            var cmap = CreateMap<ElectronicsViewModel.CommunicationServices, DAL.Entities.CommunicationServices>();
+            cmap.ForAllMembers(o => o.Ignore());
+            cmap.ForMember(d => d.HasSatellitePhone, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasSatellitePhone))
+                .ForMember(d => d.HasMobilePhone, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasMobilePhone))
+                .ForMember(d => d.HasFax, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasFax))
+                .ForMember(d => d.HasEmail, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasEmail))
+                .ForMember(d => d.SatellitePhoneNumber, o => o.MapFrom(s => s.SatellitePhoneNumber))
+                .ForMember(d => d.MobilePhoneNumber, o => o.MapFrom(s => s.MobilePhoneNumber))
+                .ForMember(d => d.FaxNumber, o => o.MapFrom(s => s.FaxNumber))
+                .ForMember(d => d.EmailAddress, o => o.MapFrom(s => s.EmailAddress))
+                ;
+
+            CreateMap<ElectronicsViewModel.InformationServices, DAL.Entities.CommunicationServices>()
+                // Ignore entity relationships
+                .ForMember(d => d.Trip, o => o.Ignore())
+                // Standard ignores
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore())
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
+                .ForMember(d => d.DctNotes, o => o.Ignore())
+                .ForMember(d => d.DctScore, o => o.Ignore())
+                // Ignore data that will be filled by another map
+                .ForMember(d => d.HasSatellitePhone, o => o.Ignore())
+                .ForMember(d => d.HasMobilePhone, o => o.Ignore())
+                .ForMember(d => d.HasFax, o => o.Ignore())
+                .ForMember(d => d.HasEmail, o => o.Ignore())
+                .ForMember(d => d.SatellitePhoneNumber, o => o.Ignore())
+                .ForMember(d => d.MobilePhoneNumber, o => o.Ignore())
+                .ForMember(d => d.FaxNumber, o => o.Ignore())
+                .ForMember(d => d.EmailAddress, o => o.Ignore())
+                // Caller's responsibility
+                .ForMember(d => d.Id, o => o.Ignore())
+                // Same name but needs a resolver
+                .ForMember(d => d.HasWeatherFax, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasWeatherFax))
+                .ForMember(d => d.HasSatelliteMonitor, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasSatelliteMonitor))
+                .ForMember(d => d.HasOther, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasOther))
+                .ForMember(d => d.HasSeaSurfaceTemperatureService, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasSeaSurfaceTemperatureService))
+                .ForMember(d => d.HasSeaHeightService, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasSeaHeightService))
+                .ForMember(d => d.HasPhytoplanktonService, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.HasPhytoplanktonService))
+                ;
+            
+
+            CreateMap<ElectronicsViewModel.DeviceModel, DAL.Entities.ElectronicDevice>()
+                // Ignore entity relationships
+                .ForMember(d => d.Trip, o => o.Ignore())
+                // Standard ignores
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore())
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
+                .ForMember(d => d.DctNotes, o => o.Ignore())
+                .ForMember(d => d.DctScore, o => o.Ignore())
+                // Same name but needs a resolver
+                .ForMember(d => d.IsInstalled, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.IsInstalled))
+                .ForMember(d => d.DeviceType, o => o.ResolveUsing<DeviceTypeResolver>().FromMember(s => s.DeviceType))
+                // Custom property
+                .ForMember(d => d.HowMany, o => o.MapFrom(s => s.BuoyCount))
+                ;
+
+            CreateMap<ElectronicsViewModel.DeviceCategory, DAL.Entities.ElectronicDevice>()
+                // Ignore entity relationships
+                .ForMember(d => d.Trip, o => o.Ignore())
+                // Standard ignores
+                .ForMember(d => d.EnteredBy, o => o.Ignore())
+                .ForMember(d => d.EnteredDate, o => o.Ignore())
+                .ForMember(d => d.UpdatedBy, o => o.Ignore())
+                .ForMember(d => d.UpdatedDate, o => o.Ignore())
+                .ForMember(d => d.DctNotes, o => o.Ignore())
+                .ForMember(d => d.DctScore, o => o.Ignore())
+                // These properties don't apply to a category
+                .ForMember(d => d.Description, o => o.Ignore())
+                .ForMember(d => d.SystemDescription, o => o.Ignore())
+                .ForMember(d => d.SealsIntact, o => o.Ignore())
+                .ForMember(d => d.Make, o => o.Ignore())
+                .ForMember(d => d.Model, o => o.Ignore())
+                .ForMember(d => d.Comments, o => o.Ignore())
+                .ForMember(d => d.HowMany, o => o.Ignore())
+                // Same name but needs a resolver
+                .ForMember(d => d.IsInstalled, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.IsInstalled))
+                // Categories store DeviceType here
+                .ForMember(d => d.DeviceType, o => o.ResolveUsing<DeviceTypeResolver>().FromMember(s => s.Name))
+                ;
 
             
             // Entity to ViewModel
@@ -103,6 +187,13 @@ namespace TubsWeb.Mapping.Profiles
                         s.SortElectronics();
                     }                   
                 })
+                // Ignore Knockout UI properties
+                .ForMember(d => d.BooleanValues, o => o.Ignore())
+                .ForMember(d => d.UsageCodes, o => o.Ignore())
+                .ForMember(d => d.SatelliteSystems, o => o.Ignore())
+                .ForMember(d => d.DeviceTypes, o => o.Ignore())
+                .ForMember(d => d.BuoyTypes, o => o.Ignore())
+                // Custom properties
                 .ForMember(d => d.TripId, o => o.MapFrom(s => s.Id))
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => (s.SpcTripNumber ?? "This Trip").Trim()))
                 .ForMember(d => d.ServiceId, o => o.MapFrom(s => null == s.CommunicationServices ? 0 : s.CommunicationServices.Id))

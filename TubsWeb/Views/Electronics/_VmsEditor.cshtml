@@ -1,0 +1,38 @@
+﻿<table id="vmsTable" class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>System</th>
+            <th>Installed</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Seals Intact</th>
+            <th>Comments</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: $root.Vms">
+        <tr>
+            <td>
+                @* TODO Typeahead values should come out of the view model's "SatelliteSystems" member *@
+                <input type="text" 
+                       class="input-medium vmsSystemType" 
+                       autocomplete="off"
+                       data-provide="typeahead"
+                       data-source='["INMARSAT","Iridium","Argos"]'
+                       data-bind="hasfocus: NeedsFocus, value: SystemDescription, uniqueName: true" />
+            </td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: IsInstalled"></select></td>
+            <td><input type="text" class="input-medium" data-bind="value: Make, uniqueName: true" /></td>
+            <td><input type="text" class="input-medium" data-bind="value: Model, uniqueName: true" /></td>
+            <td><select class="input-small" data-bind="options: $root.BooleanValues, value: SealsIntact"></select></td>
+            <td><input type="text" class="input-large" data-bind="value: Comments, uniqueName: true" /></td>
+            <td>
+                <button type="button" class="btn btn-danger removeItem nobr" tabindex="5000"><i class="icon-minus-sign icon-white"></i> Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button id="addNewVms" type="button" class="btn btn-info addItem"><i class="icon-plus-sign icon-white"></i> Add VMS</button>
+<hr />
+<a href="#" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></a>
