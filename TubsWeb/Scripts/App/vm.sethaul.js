@@ -16,31 +16,6 @@
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
 
-// TODO: Extract into a single script in the tubs namespace
-tubs.timeExtension = {
-    pattern: {
-        message: 'Must be a valid 24 hour time',
-        params: '^(20|21|22|23|[01][0-9])[0-5][0-9]$'
-    },
-    maxLength: 4
-};
-
-tubs.latitudeExtension = {
-    pattern: {
-        message: 'Latitude is ddmm.mmmN or ddmm.mmmS',
-        params: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$'
-    },
-    maxLength: 9
-};
-
-tubs.longitudeExtension = {
-    pattern: {
-        message: 'Longitude is dddmm.mmmE or dddmm.mmmW',
-        params: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$'
-    },
-    maxLength: 10
-};
-
 /**
  * Knockout ViewModel options for mapping JavaScript object
  * to full view model.
@@ -337,7 +312,7 @@ tubs.SetHaul = function (data) {
         if (vm.dirtyFlag().isDirty()) {
             return true;
         }
-       
+
         hasDirtyChild = _.any(vm.Comments(), function (comment) {
             return comment.isDirty();
         });

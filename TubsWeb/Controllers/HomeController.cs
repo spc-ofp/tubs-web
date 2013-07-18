@@ -84,15 +84,23 @@ namespace TubsWeb.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Application 'About' screen.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult About()
         {
             return View();
         }
 
-        // TODO: Consider pushing this into a comma separated list in web.config
-        // and then just doing a split here...
+        /// <summary>
+        /// Help screen for entry staff.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult EntryHelp()
         {
+            // TODO: Consider pushing this into a comma separated list in web.config
+            // and then just doing a split here...
             // Everybody wants some!
             HashSet<string> sections = new HashSet<string>
             {

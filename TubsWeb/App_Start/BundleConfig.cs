@@ -58,17 +58,20 @@ namespace TubsWeb
                 ));
 
             // knockout and plugins
+            // TODO Remove Knockout.Viewmodel plugin for now.
+            // Knockout.Mapping may not have a maintainer, but it's very performant
             bundles.Add(new ScriptBundle("~/bundles/knockout")
                 .Include(
                     "~/Scripts/toastr.js", // For some reason, toastr in the jsextlibs bundle isn't appearing here...
                     "~/Scripts/knockout-{version}.js",
-                    "~/Scripts/knockout.mapping-latest.js", // TODO: This plugin is going away, replace with knockout.viewmodel
+                    "~/Scripts/knockout.mapping-latest.js",
                     "~/Scripts/knockout.activity.js",
                     "~/Scripts/knockout.command.js",
                     "~/Scripts/knockout.dirtyFlag.js",
                     "~/Scripts/knockout.validation.js",
                     "~/Scripts/knockout.viewmodel.{version}.js",
-                    "~/Scripts/knockout.custom-bindings.js" // TODO: Rename this so it's apparent it's SPC derived
+                    "~/Scripts/tubs-common-extensions.js",
+                    "~/Scripts/tubs-custom-bindings.js"
                 ));
 
             // 3rd Party JavaScript files
@@ -102,6 +105,13 @@ namespace TubsWeb
                     "~/Scripts/sco.modal.js",
                     "~/Scripts/sco.panes.js",
                     "~/Scripts/sco.tab.js"
+                ));
+
+            bundles.Add(new ScriptBundle("~/bundles/leaflet")
+                .Include(
+                    "~/Scripts/leaflet-src.js",
+                    "~/Scripts/KML.js",
+                    "~/Scripts/TileLayer.Common.js"
                 ));
 
             // Typeahead is, at least at present, a fairly uncommon facility

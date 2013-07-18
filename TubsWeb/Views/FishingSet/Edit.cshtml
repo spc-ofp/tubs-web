@@ -2,27 +2,149 @@
 
 @{
     // No longer set in controller
-    ViewBag.Title = String.Format("Editing Set {0} of {1}", Model.SetNumber, Model.MaxSets);
+    string titleSuffix = String.Format("Set {0} of {1}", Model.SetNumber, Model.MaxSets);
+    ViewBag.Title = String.Format("{0}: {1}", Model.TripNumber ?? "This Trip", titleSuffix);
 }
 
-@* TODO Maybe add a link back to the index view for this set? *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
         Tuple.Create(Url.Action("List", "FishingSet", new { tripId = Model.TripId }), "Sets"),
-        Tuple.Create("#", ViewBag.Title)
+        Tuple.Create(Url.Action("Index", "FishingSet", new {}), titleSuffix),
+        Tuple.Create("#", "Edit")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@{ Html.RenderPartial("_FishingSetEditor", Model); }
+@{
+    // Set up some navigation URLs
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.NextSet, action = "Edit" });
+    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Sets, new { tripId = Model.TripId, setNumber = Model.PreviousSet, action = "Edit" });    
+}
+
+<p>
+    @if (Model.HasPrevious)
+    {
+    <a href='@previousPage' class="btn btn-info">
+        <i class="icon-backward icon-white"></i>&nbsp;Previous Set
+    </a>
+    }
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    @* Allow going to the next set regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+    @if (Model.HasNext)
+    {
+    <a href='@nextPage' id="nextSetButton" class="btn btn-info">
+        Next Set&nbsp;<i class="icon-forward icon-white"></i>
+    </a>
+    }
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
+
+<br />
+@* NOTE:  The onboard entry flow might be different from the office entry flow *@
+
+<div class="tabbable tabs-top">
+    <ul id="formSections" class="nav nav-tabs">
+        <li class="active"><a href="#times" data-toggle="tab">Set Times</a></li>
+        <li><a href="#totalCatch" data-toggle="tab">Total Catch</a></li>
+        <li><a href="#breakdown" data-toggle="tab">Catch Breakdown</a></li>
+        <li><a href="#targetCatch" data-toggle="tab">Target Tuna</a></li>
+        <li><a href="#byCatch" data-toggle="tab">By-Catch</a></li>
+        <li><a href="#comments" data-toggle="tab">Comments / Tags</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="times">
+            @{ Html.RenderPartial("_SequenceTimeEditor"); }
+        </div>
+        <div class="tab-pane" id="totalCatch">
+            @{ Html.RenderPartial("_SetCatchEditor"); }
+        </div>
+        <div class="tab-pane" id="breakdown">
+            @{ Html.RenderPartial("_CatchBreakdownEditor", Model); }
+        </div>
+        <div class="tab-pane" id="targetCatch">
+            @{ Html.RenderPartial("_TargetCatchEditor"); }
+        </div>
+        <div class="tab-pane" id="byCatch">
+            @{ Html.RenderPartial("_ByCatchEditor"); }
+        </div>
+        <div class="tab-pane" id="comments">
+            @{ Html.RenderPartial("_CommentsEditor"); }
+        </div>
+    </div>
+</div>
 
 @*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
 *@
+
+<ul id="tlyPageGuide" data-tourtitle="Detailed PS-3 entry instructions">
+    <li class="tlypageguide_top" data-tourtarget="#saveButton">
+        <div>
+            The save button will only be active if there are unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#reloadButton">
+        <div>
+            Use the reload button to discard any unsaved changes.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#nextSetButton">
+        <div>
+            Use this button to move to the next set.  If the PS-3 for
+            the next set has not yet been entered, this will start a new entry form.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#LogbookDate">
+        <div>
+            Enter the date portion of the start of set recorded in the vessel's logbook.  
+            Entry must be of the form dd/mm/yy.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#LogbookTime">
+        <div>
+            Enter the time portion of the start of set recorded in the vessel's logbook.  
+            Entry must be of the form HHmm.
+        </div>
+    </li>
+    <!-- // TODO Ensure that the pageguide tour is appropriate for the workbook version
+    SkiffOffTimeOnly
+    WinchOnTimeOnly
+    RingsUpTimeOnly
+    BeginBrailingTimeOnly
+    EndBrailingTimeOnly
+    EndOfSetTimeOnly
+    SumOfBrail1
+    SumOfBrail2
+    TotalCatch
+    ContainsSkipjack
+    SkipjackPercentage
+    TonsOfSkipjackObserved
+    ContainsYellowfin
+    YellowfinPercentage
+    TonsOfYellowfinObserved
+    ContainsLargeYellowfin
+    LargeYellowfinPercentage
+    LargeYellowfinCount
+    ContainsBigeye
+    BigeyePercentage
+    TonsOfBigeyeObserved
+    ContainsLargeBigeye
+    LargeBigeyePercentage
+    LargeBigeyeCount
+
+    RecoveredTagCount
+    Comments
+        -->
+</ul>
+
+
 
 @section AdditionalScripts {
     @{ Html.RenderPartial("_FishingSetEditorScripts", Model); }

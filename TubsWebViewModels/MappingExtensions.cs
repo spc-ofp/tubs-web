@@ -14,12 +14,22 @@ namespace TubsWeb.ViewModels
     using System.Text;
     using AutoMapper;
     using Spc.Ofp.Tubs.DAL.Common;
+    using Spc.Ofp.Tubs.DAL.Entities;
 
     /// <summary>
     /// 
     /// </summary>
     public static class MappingExtensions
     {
+        // Purse Seine target species
+        private static string[] TARGET_TUNA = 
+        { 
+            "BET",
+            "YFT",
+            "SKJ"
+        };
+        
+        
         /// <summary>
         /// Extension method for marking all properties as ignored.  This is dangerous as it could
         /// mean that using AutoMapper's built-in facilities for confirming that a map is complete
@@ -37,7 +47,52 @@ namespace TubsWeb.ViewModels
             return expression;
         }
 
-        public static bool IsDeviceCategory(this ElectronicDeviceType deviceType)
+        /// <summary>
+        /// Target and bycatch records are saved in the same table.
+        /// This extension method (and IncludeInBycatch) use the species
+        /// code and the presence of extra information to determine which
+        /// UI list this record should be displayed in.
+        /// </summary>
+        /// <param name="sc">PurseSeineSetCatch to be examined</param>
+        /// <returns>True if target species and no extra information, false otherwise.</returns>
+        public static bool IncludeInTargetCatch(this PurseSeineSetCatch sc)
+        {
+            if (null == sc)
+                return false;
+
+            return TARGET_TUNA.Contains(sc.SpeciesCode) &&
+                   !(sc.CountObserved.HasValue ||
+                     sc.CountFromLog.HasValue ||
+                     !String.IsNullOrEmpty(sc.Comments));            
+        }
+
+        /// <summary>
+        /// Target and bycatch records are saved in the same table.
+        /// This extension method (and IncludeInBycatch) use the species
+        /// code and the presence of extra information to determine which
+        /// UI list this record should be displayed in.
+        /// </summary>
+        /// <param name="sc">PurseSeineSetCatch to be examined</param>
+        /// <returns>True if bycatch species or extra information, false otherwise.</returns>
+        public static bool IncludeInBycatch(this PurseSeineSetCatch sc)
+        {
+            if (null == sc)
+                return false;
+
+            return sc.CountObserved.HasValue ||
+                   sc.CountFromLog.HasValue ||
+                   !String.IsNullOrEmpty(sc.Comments) ||
+                   !TARGET_TUNA.Contains(sc.SpeciesCode);
+        }
+
+        /// <summary>
+        /// Electronic devices which are commonly found on all fishing vessels.
+        /// There is little value in collecting make or model information of common
+        /// devices.
+        /// </summary>
+        /// <param name="deviceType"></param>
+        /// <returns>True if common equipment type, false otherwise.</returns>
+        public static bool IsCommonDevice(this ElectronicDeviceType deviceType)
         {
             return
                 deviceType == ElectronicDeviceType.Gps ||
@@ -46,6 +101,11 @@ namespace TubsWeb.ViewModels
                 deviceType == ElectronicDeviceType.SstGauge;
         }
 
+        /// <summary>
+        /// Electronic devices that are associated with buoys.
+        /// </summary>
+        /// <param name="deviceType"></param>
+        /// <returns>True if associated with buoys, false otherwise.</returns>
         public static bool IsBuoy(this ElectronicDeviceType deviceType)
         {
             return

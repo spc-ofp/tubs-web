@@ -1,21 +1,15 @@
-﻿/*
- * vm.seaday.js
- * Knockout.js ViewModel for editing a PS-2 Daily Log
- * Depends on:
- * jquery
- * knockout
- * knockout.mapping (automatically maps JSON)
- * knockout.asyncCommand (makes it easier to show user activity)
- * knockout.dirtyFlag (avoid unneccesary saves)
- * knockout.activity (fancy UI gadget)
- * amplify (local storage and Ajax mapping
- * toastr (user notification)
- * knockout.custom-bindings (date binding)
+﻿/**
+ * @file Knockout ViewModel for editing a PS-2 form
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
  */
 
-/// <reference name="../knockout-2.1.0.debug.js" />
-/// <reference name="../amplify.js" />
-/// <reference name="../knockout-custom-bindings.js" />
+/// <reference name="../underscore.js" />
+/// <reference name="../knockout-2.2.1.debug.js" />
+/// <reference name="../knockout.mapping-latest.debug.js" />
+/// <reference name="../tubs-custom-bindings.js" />
+/// <reference name="datacontext.js" />
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
@@ -29,16 +23,19 @@ tubs.psSeaDayMapping = {
     'Events': {
         create: function (options) {
             return new tubs.psEvent(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.EventId);
         }
     },
     'ShipsDate': {
         create: function (options) {
-            return ko.observable(options.data).extend({ isoDate: 'DD/MM/YY' });
+            return ko.observable(options.data).extend(tubs.dateExtension);
         }
     },
     'UtcDate': {
         create: function (options) {
-            return ko.observable(options.data).extend({ isoDate: 'DD/MM/YY' });
+            return ko.observable(options.data).extend(tubs.dateExtension);
         }
     }
 };
@@ -46,25 +43,25 @@ tubs.psSeaDayMapping = {
 // TODO:  Add draft auto-save via AmplifyJS
 // http://craigcav.wordpress.com/2012/05/16/simple-client-storage-for-view-models-with-amplifyjs-and-knockout/
 
-//'^([01]?[0-9]|2[0-3])[0-5][0-9]$'
-//
-// Adding validation is much easier via manual mapping
-// https://github.com/ericmbarnard/Knockout-Validation
-// https://github.com/ericmbarnard/Knockout-Validation/wiki/Native-Rules
-//
+
+/**
+ * A single event during purse seine trip.
+ * @constructor
+ * @param {object} eventData - ViewModel data
+ */
 tubs.psEvent = function (eventData) {
     'use strict';
-    /// <summary>A single event during purse seine trip.</summary>
     var self = this;
+
     self.EventId = ko.observable(eventData.EventId || 0);
     self.Gen5Id = ko.observable(eventData.Gen5Id || 0);
-    self.Time = ko.observable(eventData.Time || '').extend({ required: true, pattern: '^[0-2][0-9][0-5][0-9]$' });
-    self.Latitude = ko.observable(eventData.Latitude || '').extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
-    self.Longitude = ko.observable(eventData.Longitude || '').extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
+    self.Time = ko.observable(eventData.Time || '').extend(tubs.timeExtension);
+    self.Latitude = ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
+    self.Longitude = ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
     self.EezCode = ko.observable(eventData.EezCode || '').extend({ minLength: 2, maxLength: 2 });
     self.ActivityCode = ko.observable(eventData.ActivityCode || '');
-    self.WindSpeed = ko.observable(eventData.WindSpeed || null).extend({ min: 0 }); // No negative wind speeds
-    self.WindDirection = ko.observable(eventData.WindDirection || null).extend({ min: 0, max: 360 });
+    self.WindSpeed = ko.observable(eventData.WindSpeed || null);
+    self.WindDirection = ko.observable(eventData.WindDirection || null);
     self.SeaCode = ko.observable(eventData.SeaCode || '');
     // NOTE:  Knockout is very sensitive to data types
     // If the value is coerced to a string, that will count as a 'change'
@@ -112,16 +109,15 @@ tubs.psEvent = function (eventData) {
     return self;
 };
 
-
+/**
+ * ViewModel for an an entire day at sea.
+ * @constructor
+ * @param {object} data - ViewModel data
+ */
 tubs.psSeaDay = function (data) {
-    /// <summary>ViewModel for an an entire day at sea.</summary>
-    /// <param name="data" mayBeNull="false" type="Object">ViewModel data</param>
+    'use strict';
     var self = this;
-    // Map the incoming JSON in 'data' to self, using
-    // the options in psSeaDayMapping
     ko.mapping.fromJS(data, tubs.psSeaDayMapping, self);
-
-    self.addPattern = /add/i;
 
     // Define the fields that are watched to determine the 'dirty' state   
     self.dirtyFlag = new ko.DirtyFlag([
@@ -140,7 +136,7 @@ tubs.psSeaDay = function (data) {
     ], false, tubs.seaDayHashFunction);
 
     self.isAdd = ko.computed(function () {
-        return self.addPattern.test(self.ActionName());
+        return (/add/i).test(self.ActionName());
     });
 
     // Only show the "Next Day" button for any Edit
@@ -149,18 +145,21 @@ tubs.psSeaDay = function (data) {
         return !self.isAdd() || (self.DayId() !== 0);
     });
 
+    // The clear function preps this ViewModel for being reloaded
+    self.clear = function () {
+        if (self.Events) {
+            self.Events([]);
+        }
+    };
+
     self.isDirty = ko.computed(function () {
-        // Avoid iterating over the events if the header
-        // has changed
-        if (self.dirtyFlag().isDirty()) { return true; }
-        // Check each child event, bailing on the first
-        // dirty child.
         var hasDirtyChild = false;
-        $.each(self.Events(), function (i, evt) { //ignore jslint
-            if (evt.isDirty()) {
-                hasDirtyChild = true;
-                return false;
-            }
+        if (self.dirtyFlag().isDirty()) {
+            return true;
+        }
+
+        hasDirtyChild = _.any(self.Events(), function (evt) {
+            return evt.isDirty();
         });
         return hasDirtyChild;
     });
@@ -168,10 +167,10 @@ tubs.psSeaDay = function (data) {
     // Clear the dirty flag for the this entity, plus all the
     // child entities stored in the Events observableArray
     self.clearDirtyFlag = function () {
-        self.dirtyFlag().reset();
-        $.each(self.Events(), function (index, value) { //ignore jslint
-            value.dirtyFlag().reset();
+        _.each(self.Events(), function (evt) {
+            evt.dirtyFlag().reset();
         });
+        self.dirtyFlag().reset();
     };
 
     // Operations
@@ -204,6 +203,7 @@ tubs.psSeaDay = function (data) {
                 self.TripId(),
                 self.DayNumber(),
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.psSeaDayMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded daily log');
@@ -227,6 +227,7 @@ tubs.psSeaDay = function (data) {
                 self.DayNumber(),
                 self,
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.psSeaDayMapping, self);
                     self.clearDirtyFlag();
                     toastr.success('Daily log saved');

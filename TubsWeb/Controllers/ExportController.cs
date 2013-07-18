@@ -73,21 +73,19 @@ namespace TubsWeb.Controllers
                 };
 
             var sets =
-                from d in trip.SeaDays
-                from a in d.Activities
-                where a.ActivityType == ActivityType.Fishing && null != a.FishingSet
+                from fset in trip.FishingSets
                 select new SetLogLineItem
                 {
-                    SetNumber = a.FishingSet.SetNumber,
-                    VesselLogDate = a.LocalTime.Value,
-                    SkiffOff = a.FishingSet.SkiffOff,
-                    WinchOn = a.FishingSet.WinchOn,
-                    RingsUp = a.FishingSet.RingsUp,
-                    BrailStart = a.FishingSet.BeginBrailing,
-                    BrailEnd = a.FishingSet.EndBrailing,
-                    EndOfSet = a.FishingSet.EndOfSet,
-                    SumOfBrails = Sum(a.FishingSet.SumOfBrail1, a.FishingSet.SumOfBrail2), // Regular addition operator doesn't work as expected
-                    TotalCatch = a.FishingSet.TotalCatch
+                    SetNumber = fset.SetNumber,
+                    VesselLogDate = fset.Activity.LocalTime.Value,
+                    SkiffOff = fset.SkiffOff,
+                    WinchOn = fset.WinchOn,
+                    RingsUp = fset.RingsUp,
+                    BrailStart = fset.BeginBrailing,
+                    BrailEnd = fset.EndBrailing,
+                    EndOfSet = fset.EndOfSet,
+                    SumOfBrails = Sum(fset.SumOfBrail1, fset.SumOfBrail2), // Regular addition operator doesn't work as expected
+                    TotalCatch = fset.TotalCatch
                 };
 
             // From here (see jshannon99 response of 9 November)
@@ -106,6 +104,11 @@ namespace TubsWeb.Controllers
             return new ReportResult(activityReport, writer);
         }
 
+        /// <summary>
+        /// Summary report action.
+        /// </summary>
+        /// <param name="tripId">Trip to be summarized.</param>
+        /// <returns></returns>
         public ReportResult Summary(Trip tripId)
         {
             return

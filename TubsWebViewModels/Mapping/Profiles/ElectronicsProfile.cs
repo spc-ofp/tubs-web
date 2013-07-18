@@ -98,8 +98,9 @@ namespace TubsWeb.Mapping.Profiles
                 // Same name but needs a resolver
                 .ForMember(d => d.IsInstalled, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.IsInstalled))
                 .ForMember(d => d.DeviceType, o => o.ResolveUsing<DeviceTypeResolver>().FromMember(s => s.DeviceType))
+                .ForMember(d => d.SealsIntact, o => o.ResolveUsing<YesNoResolver>().FromMember(s => s.SealsIntact))
                 // Custom property
-                .ForMember(d => d.HowMany, o => o.MapFrom(s => s.BuoyCount))
+                .ForMember(d => d.HowMany, o => o.MapFrom(s => s.BuoyCount))                
                 ;
 
             CreateMap<ElectronicsViewModel.DeviceCategory, DAL.Entities.ElectronicDevice>()
@@ -220,8 +221,8 @@ namespace TubsWeb.Mapping.Profiles
 
                     foreach (var device in s.Electronics)
                     {
-                        // Skip categories, buoys, and VMS, which are all mapped elsewhere
-                        if (null == device || device.DeviceType.IsDeviceCategory() || device.DeviceType.IsBuoy() || device.DeviceType == DAL.Common.ElectronicDeviceType.Vms)
+                        // Skip common devices, buoys, and VMS, which are all mapped elsewhere
+                        if (null == device || device.DeviceType.IsCommonDevice() || device.DeviceType.IsBuoy() || device.DeviceType == DAL.Common.ElectronicDeviceType.Vms)
                             continue;
 
                         d.OtherDevices.Add(Mapper.Map<DAL.Entities.ElectronicDevice, ElectronicsViewModel.DeviceModel>(device));

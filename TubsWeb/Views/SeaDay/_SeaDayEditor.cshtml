@@ -6,206 +6,199 @@
     var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.SeaDays, new { tripId = Model.TripId, dayNumber = Model.PreviousDay, action = "Edit" });    
 }
 
-<form id="seaDayForm">
-    @* 
-     * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
-     * when the first 'dirtying' change occurs.
-     *@
-    <p>
-        @if (Model.HasPrevious)
-        {
-        <a href='@previousPage' class="btn btn-info">
-            <i class="icon-backward icon-white"></i>&nbsp;Previous Day
-        </a>
-        }
-        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
-            <i class="icon-refresh icon-white"></i>&nbsp;Reload
-        </button>
-        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
-        @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
-        @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-        <a href='@nextPage' id="nextDayButton" class="btn btn-info" data-bind="visible: $root.showNextDayButton()">
-            Next Day&nbsp;<i class="icon-forward icon-white"></i>
-        </a>
-    </p>
-    <hr />
-    <fieldset>
-        <legend>Start of Day</legend>
-        <div class="row-fluid">
-            <div class="span1">
-                <label for="ShipsDate">Ship's Date</label>
-                <div class="input-append">
-                    <input id="ShipsDate"
-                           name="ShipsDate"
-                           type="text"
-                           data-val="true"
-                           data-val-required="Date portion of start of day is required"
-                           data-bind="value: ShipsDate.formattedDate"
-                           class="input-mini" />
-                    <span class="add-on"><i class="icon-calendar"></i></span>
-                </div>
-            </div>
-            <div class="span1">
-                <label for="ShipsTime">Ship's Time</label>
-                <div class="input-append">
-                    <input id="ShipsTime"
-                           name="ShipsTime"
-                           type="text"
-                           data-bind="value: ShipsTime"
-                           maxlength="4"
-                           class="input-mini advance" />
-                    <span class="add-on"><i class="icon-time"></i></span>
-                </div>
-            </div>
-            <div class="span1">
-                <label for="UtcDate">UTC Date</label>
-                <div class="input-append">
-                    <input id="UtcDate"
-                           name="UtcDate"
-                           type="text"
-                           data-bind="value: UtcDate.formattedDate"
-                           class="input-mini" />
-                    <span class="add-on"><i class="icon-calendar"></i></span>
-                </div>
-            </div>
-            <div class="span1">
-                <label for="UtcTime">UTC Time</label>
-                <div class="input-append">
-                    <input id="UtcTime"
-                           name="UtcTime"
-                           type="text"
-                           data-bind="value: UtcTime"
-                           maxlength="4"
-                           class="input-mini advance" />
-                    <span class="add-on"><i class="icon-time"></i></span>
-                </div>
+@* 
+ * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+ * when the first 'dirtying' change occurs.
+ *@
+<p>
+    @if (Model.HasPrevious)
+    {
+    <a href='@previousPage' class="btn btn-info">
+        <i class="icon-backward icon-white"></i>&nbsp;Previous Day
+    </a>
+    }
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
+    @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+    <a href='@nextPage' id="nextDayButton" class="btn btn-info" data-bind="visible: $root.showNextDayButton()">
+        Next Day&nbsp;<i class="icon-forward icon-white"></i>
+    </a>
+</p>
+<hr />
+<fieldset>
+    <legend>Start of Day</legend>
+    <div class="row-fluid">
+        <div class="span1">
+            <label for="ShipsDate">Ship's Date</label>
+            <div class="input-append">
+                <input id="ShipsDate"
+                        name="ShipsDate"
+                        type="text"
+                        data-val="true"
+                        data-val-required="Date portion of start of day is required"
+                        data-bind="value: ShipsDate.formattedDate"
+                        class="input-mini" />
+                <span class="add-on"><i class="icon-calendar"></i></span>
             </div>
         </div>
-    </fieldset>
-    <fieldset>
-        <legend>Activities</legend>
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Time</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                    <th>EEZ Code</th>
-                    <th>Activity Code</th>
-                    <th>Wind Speed</th>
-                    <th>Wind Direction</th>
-                    <th>Sea Code</th>
-                    <th>How Detect</th>
-                    <th>School Assoc</th>
-                    @if (Model.VersionNumber != 2009)
-                    {
-                    <th>FAD / Payao #</th>
-                    <th>Buoy</th>
-                    }
-                    <th>Comments</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: $root.Events" class="ps2events">
-                <tr data-bind="css: { warning: (isDirty() || EventId() == 0) }">
-                    <td>
-                        @* Delete button is taken out of the tab order to prevent accidents *@
-                        <button data-bind="visible: !IsLocked()" 
-                                type="button"
-                                tabindex="3000"
-                                class="removeItem btn btn-mini btn-danger" 
-                                rel="tooltip" 
-                                title="Click to remove row"><i class="icon-remove icon-white"></i></button>
-                        <button data-bind="visible: IsLocked, event: { click: toggleUnlock }"
-                                type="button"
-                                class="btn btn-mini btn-info unlockItem"
-                                rel="tooltip"
-                                title="Click to unlock row">
-                                <i class="icon-lock icon-white"></i>
-                        </button>
-                    </td>
-                    <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini advance" type="text" required placeholder="HHmm" maxlength="4"/></td>
-                    <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small advance" type="text" required placeholder="dd&deg;mm.mmm'" maxlength="9" /></td>
-                    <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small advance" type="text" required placeholder="ddd&deg;mm.mmm'" maxlength="10"/></td>
-                    <td><input data-bind="value: EezCode, uniqueName: true" class="input-mini advance" type="text" maxlength="2" /></td>
-                    <td><select data-bind="options: $root.ActivityCodes, value: ActivityCode, attr: { disabled: IsLocked() }" class="input-mini"></select></td>
-                    <td><input data-bind="value: WindSpeed, uniqueName: true" class="input-mini" type="number" /></td>
-                    <td><input data-bind="value: WindDirection, uniqueName: true" class="input-mini" type="number" /></td>
-                    <td><select data-bind="options: $root.SeaCodes, value: SeaCode" class="input-mini"></select></td>
-                    <td><select data-bind="options: $root.DetectionCodes, value: DetectionCode" class="input-mini"></select></td>
-                    <td><select data-bind="options: $root.AssociationCodes, value: AssociationCode" class="input-mini"></select></td>
-                    @if (Model.VersionNumber != 2009)
-                    {
-                    <td><input data-bind="value: FadNumber, uniqueName: true" class="input-small" type="text" /></td>
-                    <td><input data-bind="value: BuoyNumber, uniqueName: true" class="input-mini" type="text" /></td>
-                    <td><input data-bind="value: Comments, uniqueName: true" class="input-large" type="text" /></td>
-                    }
-                    else
-                    {
-                    @* 2009 version removed 2 columns, so make up for it by expanding the comments input block *@
-                    <td><input data-bind="value: Comments, uniqueName: true" class="input-xlarge" type="text" placeholder="And Set No. from PS-3" /></td>
-                    }
-                    <td>
-                        <button class="addItem btn btn-mini btn-info" 
-                                type="button"
-                                rel="tooltip" 
-                                title="Click to add row">
-                            <i class="icon-plus icon-white"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </fieldset>
-    <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Events().length == 0">Add Event</button>
-    <fieldset>
-        <legend>Floating Object and School Sightings</legend>
-            <div class="span2">
-                <label>Anchored<br />with NO school</label>
-                @Html.TextBoxFor(m => Model.AnchoredWithNoSchool, new { data_bind = "value: $root.AnchoredWithNoSchool", @type = "number", @class = "input-mini" })
+        <div class="span1">
+            <label for="ShipsTime">Ship's Time</label>
+            <div class="input-append">
+                <input id="ShipsTime"
+                        name="ShipsTime"
+                        type="text"
+                        data-bind="value: ShipsTime"
+                        maxlength="4"
+                        class="input-mini advance" />
+                <span class="add-on"><i class="icon-time"></i></span>
             </div>
-            <div class="span2">
-                <label>Anchored<br />with school</label>
-                @Html.TextBoxFor(m => Model.AnchoredWithSchool, new { data_bind = "value: $root.AnchoredWithSchool", @type = "number", @class = "input-mini" })
+        </div>
+        <div class="span1">
+            <label for="UtcDate">UTC Date</label>
+            <div class="input-append">
+                <input id="UtcDate"
+                        name="UtcDate"
+                        type="text"
+                        data-bind="value: UtcDate.formattedDate"
+                        class="input-mini" />
+                <span class="add-on"><i class="icon-calendar"></i></span>
             </div>
-            <div class="span2">
-                <label>Free floating<br />with NO school</label>
-                @Html.TextBoxFor(m => Model.FreeFloatingWithNoSchool, new { data_bind = "value: $root.FreeFloatingWithNoSchool", @type = "number", @class = "input-mini" })
+        </div>
+        <div class="span1">
+            <label for="UtcTime">UTC Time</label>
+            <div class="input-append">
+                <input id="UtcTime"
+                        name="UtcTime"
+                        type="text"
+                        data-bind="value: UtcTime"
+                        maxlength="4"
+                        class="input-mini advance" />
+                <span class="add-on"><i class="icon-time"></i></span>
             </div>
-            <div class="span2">
-                <label>Free floating<br />with school</label>
-                @Html.TextBoxFor(m => Model.FreeFloatingWithSchool, new { data_bind = "value: $root.FreeFloatingWithSchool", @type = "number", @class = "input-mini" })
-            </div>
-            <div class="span1">
-                @Html.LabelFor(m => Model.FreeSchool)
-                @Html.TextBoxFor(m => Model.FreeSchool, new { data_bind = "value: $root.FreeSchool", @type = "number", @class = "input-mini" })
-            </div>
-            <div class="span2">
-                <label>GEN-3<br />Event?</label>
-                <select id="HasGen3Event" class="input-small" data-bind="value: $root.HasGen3Event">
-                    <option value=""></option>
-                    <option value="YES">YES</option>
-                    <option value="NO">NO</option>
-                </select>
-            </div>
-            <div class="span1">
-                @Html.LabelFor(m => Model.DiaryPage)
-                @Html.TextBoxFor(m => Model.DiaryPage, new { data_bind = "value: $root.DiaryPage", @class = "input-mini" })
-            </div>
-    </fieldset>
-    @* Second save button, useful for mouse-free workflow *@
-    <hr />
-    <p>
-        <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
-        @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-        <a href='@nextPage' class="btn btn-info"  data-bind="visible: $root.showNextDayButton()">
-            Next Day&nbsp;<i class="icon-forward icon-white"></i>
-        </a>
-    </p>
-</form>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Activities</legend>
+    @* TODO: Move 'Delete' button to last column and use full text in button (e.g. SetHaul _LogEditor) *@
+    @* Full text will also allow for better notification of attached set *@
+    <table class="table table-condensed">
+        <thead>
+            <tr>                
+                <th>Time</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>EEZ Code</th>
+                <th>Activity Code</th>
+                <th>Wind Speed</th>
+                <th>Wind Direction</th>
+                <th>Sea Code</th>
+                <th>How Detect</th>
+                <th>School Assoc</th>
+                @if (Model.VersionNumber != 2009)
+                {
+                <th>FAD / Payao #</th>
+                <th>Buoy</th>
+                }
+                <th>Comments</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: $root.Events" class="ps2events">
+            <tr data-bind="css: { warning: (isDirty() || EventId() == 0) }">                
+                <td><input data-bind="hasfocus: NeedsFocus, value: Time, uniqueName: true" class="required input-mini advance" type="text" required="required" placeholder="HHmm" maxlength="4"/></td>
+                <td><input data-bind="value: Latitude, uniqueName: true" class="required input-small advance" type="text" required placeholder="dd&deg;mm.mmm'" maxlength="9" /></td>
+                <td><input data-bind="value: Longitude, uniqueName: true" class="required input-small advance" type="text" required placeholder="ddd&deg;mm.mmm'" maxlength="10"/></td>
+                <td><input data-bind="value: EezCode, uniqueName: true" class="input-mini advance" type="text" maxlength="2" /></td>
+                <td><select data-bind="options: $root.ActivityCodes, value: ActivityCode, attr: { disabled: IsLocked() }" class="input-mini"></select></td>
+                <td><input data-bind="value: WindSpeed, uniqueName: true" class="input-mini" type="number" min="0"/></td>
+                <td><input data-bind="value: WindDirection, uniqueName: true" class="input-mini" type="number" min="0" max="360"/></td>
+                <td><select data-bind="options: $root.SeaCodes, value: SeaCode" class="input-mini"></select></td>
+                <td><select data-bind="options: $root.DetectionCodes, value: DetectionCode" class="input-mini"></select></td>
+                <td><select data-bind="options: $root.AssociationCodes, value: AssociationCode" class="input-mini"></select></td>
+                @if (Model.VersionNumber != 2009)
+                {
+                <td><input data-bind="value: FadNumber, uniqueName: true" class="input-small" type="text" /></td>
+                <td><input data-bind="value: BuoyNumber, uniqueName: true" class="input-mini" type="text" /></td>
+                <td><input data-bind="value: Comments, uniqueName: true" class="input-large" type="text" placeholder="And Set No. from PS-3" /></td>
+                }
+                else
+                {
+                @* 2009 version removed 2 columns, so make up for it by expanding the comments input block *@
+                <td><input data-bind="value: Comments, uniqueName: true" class="input-xlarge" type="text" placeholder="And Set No. from PS-3" /></td>
+                }
+                <td>
+                    @* Delete button is taken out of the tab order to prevent accidents *@
+                    <button data-bind="visible: !IsLocked()" 
+                            type="button"
+                            tabindex="3000"
+                            class="removeItem btn btn-danger nobr" 
+                            rel="tooltip" 
+                            title="Click to delete row">
+                        <i class="icon-trash icon-white"></i></button>
+                    <button data-bind="visible: IsLocked, event: { click: toggleUnlock }"
+                            type="button"
+                            class="btn btn-info unlockItem"
+                            rel="tooltip"
+                            title="Associate set.  Click to unlock row">
+                        <i class="icon-lock icon-white"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>
+<button id="btnAddActivity" type="button" class="btn btn-info" rel="tooltip" title="Click to add row"><i class="icon-plus-sign icon-white"></i> Add Activity</button>
+<br />
+<fieldset>
+    <legend>Floating Object and School Sightings</legend>
+        <div class="span2">
+            <label>Anchored<br />with NO school</label>
+            @Html.TextBoxFor(m => Model.AnchoredWithNoSchool, new { data_bind = "value: $root.AnchoredWithNoSchool", @type = "number", @class = "input-mini" })
+        </div>
+        <div class="span2">
+            <label>Anchored<br />with school</label>
+            @Html.TextBoxFor(m => Model.AnchoredWithSchool, new { data_bind = "value: $root.AnchoredWithSchool", @type = "number", @class = "input-mini" })
+        </div>
+        <div class="span2">
+            <label>Free floating<br />with NO school</label>
+            @Html.TextBoxFor(m => Model.FreeFloatingWithNoSchool, new { data_bind = "value: $root.FreeFloatingWithNoSchool", @type = "number", @class = "input-mini" })
+        </div>
+        <div class="span2">
+            <label>Free floating<br />with school</label>
+            @Html.TextBoxFor(m => Model.FreeFloatingWithSchool, new { data_bind = "value: $root.FreeFloatingWithSchool", @type = "number", @class = "input-mini" })
+        </div>
+        <div class="span1">
+            @Html.LabelFor(m => Model.FreeSchool)
+            @Html.TextBoxFor(m => Model.FreeSchool, new { data_bind = "value: $root.FreeSchool", @type = "number", @class = "input-mini" })
+        </div>
+        <div class="span2">
+            <label>GEN-3<br />Event?</label>
+            <select id="HasGen3Event" class="input-small" data-bind="value: $root.HasGen3Event">
+                <option value=""></option>
+                <option value="YES">YES</option>
+                <option value="NO">NO</option>
+            </select>
+        </div>
+        <div class="span1">
+            @Html.LabelFor(m => Model.DiaryPage)
+            @Html.TextBoxFor(m => Model.DiaryPage, new { data_bind = "value: $root.DiaryPage", @class = "input-mini" })
+        </div>
+</fieldset>
+@* Second save button, useful for mouse-free workflow *@
+<hr />
+<p>
+    <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    @* If the next day exists, this button will edit it.  Otherwise, go to add next day *@
+    @* Allow going to the next day regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+    <a href='@nextPage' class="btn btn-info"  data-bind="visible: $root.showNextDayButton()">
+        Next Day&nbsp;<i class="icon-forward icon-white"></i>
+    </a>
+</p>
 
 <ul id="tlyPageGuide" data-tourtitle="Detailed PS-2 entry instructions">
     <li class="tlypageguide_top" data-tourtarget="#saveButton">
@@ -240,6 +233,12 @@
         <div>
             Enter the date portion of the UTC start of day.  Entry must be of
             the form dd/mm/yy.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#UtcTime">
+        <div>
+            Enter the time portion of the UTC start of day.  Entry must be of
+            the form HHmm.
         </div>
     </li>
     <li class="tlypageguide_top" data-tourtarget="#UtcTime">

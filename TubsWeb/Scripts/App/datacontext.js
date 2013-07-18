@@ -9,20 +9,17 @@
 /// <reference path="../amplify.js" />
 var tubs = tubs || {};
 
-// TODO: I believe these variables are in the global namespace,
-// not the 'tubs' namespace
+tubs.saveTimeout = 10000; /* 10 seconds */
 
 // Since we're only using AmplifyJS for (re)load
 // requests, the settings are very similar across
 // all the definitions.  Using this for all
 // requests ensures that timeout is consistent.
-var defaultSettings = {
+tubs.defaultNetworkSettings = {
     dataType: 'json',
     type: 'GET',
     timeout: 10000 /* 10 seconds */
 };
-
-var saveTimeout = 10000; /* 10 seconds */
 
 /*
  * After much screwing around, this looks to be
@@ -35,6 +32,7 @@ var saveTimeout = 10000; /* 10 seconds */
  * http://stackoverflow.com/questions/16092473/dynamically-generated-javascript-css-in-asp-net-mvc
  * http://www.codeproject.com/Articles/171695/Dynamic-CSS-using-Razor-Engine
  */
+// TODO appBase and start are still in the global namespace
 var appBase = '/';
 var start = $('#applicationHome');
 if (start) {
@@ -45,77 +43,77 @@ if (start) {
 amplify.request.define(
     "getSeaDay",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Days/{DayNumber}/Edit' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Days/{DayNumber}/Edit' })
 );
 
 // Request for loading PS-1 crew data
 amplify.request.define(
     "getCrew",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Crew/Edit' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Crew/Edit' })
 );
 
 // Request for loading PS-3 data
 amplify.request.define(
     "getFishingSet",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Sets/{SetNumber}/Edit' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Sets/{SetNumber}/Edit' })
 );
 
 // Request for loading PS-1/LL-1 electronics data
 amplify.request.define(
     "getElectronics",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Electronics/Edit' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Electronics/Edit' })
 );
 
 // Request for loading GEN-1 (sighting) data
 amplify.request.define(
     "getSightings",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Sightings' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Sightings' })
 );
 
 // Request for loading GEN-1 (transfer) data
 amplify.request.define(
     "getTransfers",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/Transfers' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Transfers' })
 );
 
 // Request for loading GEN-2 data
 amplify.request.define(
     "getInteraction",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-2/{PageNumber}/Edit' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/GEN-2/{PageNumber}/Edit' })
 );
 
 // Request for loading GEN-3 data
 amplify.request.define(
     "getGen3",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-3' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/GEN-3' })
 );
 
 // Request for loading GEN-5 (transfer) data
 amplify.request.define(
     "getFad",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/GEN-5/Details?fadId={FadId}' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/GEN-5/Details?fadId={FadId}' })
 );
 
 // Request for loading simple PS-1 data (not crew, wells, or electronics)
 amplify.request.define(
     "getPs1",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/PS-1/Index' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/PS-1/Index' })
 );
 
 // Request for loading simple LL-1 data (not electronics)
 amplify.request.define(
     "getTripInfo",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/LL-1/Index' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/LL-1/Index' })
 );
 
 
@@ -123,21 +121,21 @@ amplify.request.define(
 amplify.request.define(
     "getPageCounts",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/PageCount' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/PageCount' })
 );
 
 // Request for loading LL-2/3 data
 amplify.request.define(
     "getSetHaul",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/SetHaul/{SetNumber}/Edit' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/SetHaul/{SetNumber}/Edit' })
 );
 
 // Request for loading LL-4 data
 amplify.request.define(
     "getSampleLL",
     "ajax",
-    $.extend(defaultSettings, { url: appBase + 'Trip/{TripId}/LL-4/{SetNumber}/Edit' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/LL-4/{SetNumber}/Edit' })
 );
 
 /**
@@ -174,7 +172,7 @@ tubs.saveSeaDay = function (tripId, dayNumber, seaDay, success_cb, error_cb) {
         data: ko.toJSON(seaDay),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
 };
 
@@ -210,7 +208,7 @@ tubs.saveSetHaul = function (tripId, setNumber, setHaul, success_cb, error_cb) {
         contentType: 'application/json',
         dataType: 'json',
         data: ko.toJSON(setHaul),
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     }).done(success_cb)
       .fail(error_cb);
 };
@@ -248,7 +246,7 @@ tubs.saveCrew = function (tripId, crew, success_cb, error_cb) {
         data: ko.toJSON(crew),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -285,7 +283,7 @@ tubs.saveElectronics = function (tripId, electronics, success_cb, error_cb) {
         contentType: 'application/json',
         dataType: 'json',
         data: ko.toJSON(electronics),
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     }).done(success_cb)
       .fail(error_cb);
 };
@@ -324,7 +322,7 @@ tubs.saveFishingSet = function (tripId, setNumber, fishingSet, success_cb, error
         data: ko.toJSON(fishingSet),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -363,7 +361,7 @@ tubs.saveSightings = function (tripId, sightings, success_cb, error_cb) {
         data: ko.toJSON(sightings),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -402,7 +400,7 @@ tubs.saveTransfers = function (tripId, transfers, success_cb, error_cb) {
         data: ko.toJSON(transfers),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -442,7 +440,7 @@ tubs.saveInteraction = function (tripId, interaction, success_cb, error_cb) {
         data: ko.toJSON(interaction),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -482,7 +480,7 @@ tubs.saveFad = function (tripId, fad, success_cb, error_cb) {
         data: ko.toJSON(fad),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -521,7 +519,7 @@ tubs.savePs1 = function (tripId, ps1, success_cb, error_cb) {
         data: ko.toJSON(ps1),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -558,7 +556,7 @@ tubs.saveTripInfo = function (tripId, tripInfo, success_cb, error_cb) {
         contentType: 'application/json',
         dataType: 'json',
         data: ko.toJSON(tripInfo),
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     })
         .done(success_cb)
         .fail(error_cb);
@@ -598,7 +596,7 @@ tubs.savePageCounts = function (tripId, pageCounts, success_cb, error_cb) {
         data: ko.toJSON(pageCounts),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -637,7 +635,7 @@ tubs.saveGen3 = function (tripId, gen3, success_cb, error_cb) {
         data: ko.toJSON(gen3),
         success: success_cb,
         error: error_cb,
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     });
     // TODO Use promise API
     //.done(success_cb)
@@ -676,7 +674,7 @@ tubs.saveLonglineSample = function (tripId, setNumber, sample, success_cb, error
         contentType: 'application/json',
         dataType: 'json',
         data: ko.toJSON(sample),
-        timeout: saveTimeout
+        timeout: tubs.saveTimeout
     }).done(success_cb)
       .fail(error_cb);
 };

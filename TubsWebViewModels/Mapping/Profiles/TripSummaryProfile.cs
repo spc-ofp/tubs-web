@@ -33,43 +33,6 @@ namespace TubsWeb.Mapping.Profiles
     /// </summary>
     public class TripSummaryProfile : Profile
     {
-
-        // TODO: This could potentially be a read-only property of Trip
-        internal int TripLength(DAL.Entities.Trip trip)
-        {
-            if (!trip.DepartureDate.HasValue || !trip.ReturnDate.HasValue)
-                return 0;
-
-            var dep = trip.DepartureDate.Value;
-            var ret = trip.ReturnDate.Value;
-            var diff = dep.Subtract(ret);
-            return (int)Math.Abs(diff.TotalDays);
-        }
-
-        // TODO: This could potentially be a read-only property of PurseSeineTrip
-        // TODO: Consider adding an additional read-only property to PurseSeineTrip
-        // to return catch by weight for target species
-        internal int SetCount(DAL.Entities.PurseSeineTrip trip)
-        {
-            return (
-                from d in trip.SeaDays
-                from a in d.Activities
-                where a.ActivityType.HasValue && a.ActivityType.Value == Spc.Ofp.Tubs.DAL.Common.ActivityType.Fishing
-                select 1
-            ).Sum();
-        }
-
-        // TODO:  Add this to PurseSeineTrip
-        internal int FadCount(DAL.Entities.PurseSeineTrip trip)
-        {
-            return (
-                from d in trip.SeaDays
-                from a in d.Activities
-                where a.Fad != null
-                select 1
-            ).Sum();
-        }
-        
         protected override void Configure()
         {
             base.Configure();
@@ -95,6 +58,8 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.InteractionCount, o => o.MapFrom(s => s.Interactions.Count()))
                 .ForMember(d => d.HasPositions, o => o.MapFrom(s => s.Pushpins.Count()))
                 .ForMember(d => d.GearCode, o => o.Ignore()) // Set in submap
+                .ForMember(d => d.VesselDays, o => o.Ignore()) // PS only
+                .ForMember(d => d.Cpue, o => o.Ignore()) // LL and PS, but only present on PS trips currently
                 .ForMember(d => d.SeaDayCount, o => o.Ignore())
                 .ForMember(d => d.ExpectedSeaDayCount, o => o.Ignore())
                 .ForMember(d => d.SetCount, o => o.Ignore())
@@ -104,12 +69,15 @@ namespace TubsWeb.Mapping.Profiles
                 ;
 
             CreateMap<DAL.Entities.PurseSeineTrip, TripSummaryViewModel>()
+                .ForMember(d => d.Cpue, o => o.MapFrom(s => s.Cpue))
+                .ForMember(d => d.VesselDays, o => o.MapFrom(s => s.VesselDays))
                 .ForMember(d => d.GearCode, o => o.UseValue("S"))
                 .ForMember(d => d.SeaDayCount, o => o.MapFrom(s => s.SeaDays.Count()))
-                .ForMember(d => d.HasCrew, o => o.MapFrom(s => s.Crew.Count()))
-                .ForMember(d => d.ExpectedSeaDayCount, o => o.MapFrom(s => TripLength(s)))
-                .ForMember(d => d.SetCount, o => o.MapFrom(s => SetCount(s)))
-                .ForMember(d => d.Gen5Count, o => o.MapFrom(s => FadCount(s)))
+                .ForMember(d => d.HasCrew, o => o.MapFrom(s => s.Crew.Any()))
+                // TODO: This should also take into account # of PS-2 pages
+                .ForMember(d => d.ExpectedSeaDayCount, o => o.MapFrom(s => s.LengthInDays))
+                .ForMember(d => d.SetCount, o => o.MapFrom(s => s.FishingSets.Count()))
+                .ForMember(d => d.Gen5Count, o => o.MapFrom(s => s.FishAggregatingDevices.Count()))
                 ;
 
             CreateMap<DAL.Entities.LongLineTrip, TripSummaryViewModel>()

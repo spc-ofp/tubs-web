@@ -83,6 +83,11 @@ namespace TubsWeb.Models.ExtensionMethods
             }
         }
 
+        /// <summary>
+        /// Convert a single trip to an RSS feed entry.
+        /// </summary>
+        /// <param name="trip">Trip to be converted</param>
+        /// <returns>RSS entry</returns>
         public static SyndicationItem ToFeedEntry(this Trip trip)
         {
             SyndicationItem entry = new SyndicationItem();

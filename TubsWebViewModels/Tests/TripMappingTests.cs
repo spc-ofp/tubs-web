@@ -38,9 +38,22 @@ namespace TubsWeb.Tests
     [TestFixture]
     public class TripMappingTests
     {
+        [Test]
+        public void TripEntityToTripSamplingViewModel([Values(70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId) as PurseSeineTrip;
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<PurseSeineTrip, TripSamplingViewModel>(trip);
+                Assert.NotNull(vm);
+            }
+        }
+        
         
         [Test]
-        public void PurseTripEntityToTripSummaryViewModel([Values(70)] int tripId)
+        public void PurseSeineTripEntityToTripSummaryViewModel([Values(70)] int tripId)
         {
             Mapper.AssertConfigurationIsValid();
             using (var repo = TubsDataService.GetRepository<Trip>(false))

@@ -38,8 +38,14 @@ namespace TubsWeb.Controllers
     /// </summary>
     public class LengthSampleController : SuperController
     {
-        //
-        // GET: "Trip/{tripId}/Samples/{setNumber}/Page/{pageNumber}",
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <example>GET: "Trip/{tripId}/Samples/{setNumber}/Page/{pageNumber}"</example>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Set number within the trip</param>
+        /// <param name="pageNumber">Page number within the trip</param>
+        /// <returns></returns>
         public ActionResult Index(Trip tripId, int setNumber, int? pageNumber)
         {
             var trip = tripId as PurseSeineTrip;
@@ -123,7 +129,12 @@ namespace TubsWeb.Controllers
             return new ReportResult(report);
         }
 
-        // GET: "Trip/{tripId}/LengthFrequency.xlsx" 
+        /// <summary>
+        /// Export a summary of the trip as an Excel spreadsheet.
+        /// </summary>
+        /// <example>GET: "Trip/{tripId}/LengthFrequency.xlsx</example>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
         public ReportResult AllSamples(Trip tripId)
         {
             return
@@ -137,14 +148,49 @@ namespace TubsWeb.Controllers
         /// </summary>
         public class LengthSampleLineItem
         {
+            /// <summary>
+            /// Date and time of set.
+            /// </summary>
             public DateTime? SetDate { get; set; }
+
+            /// <summary>
+            /// Set latitude.
+            /// </summary>
             public string Latitude { get; set; }
+
+            /// <summary>
+            /// Set longitude.
+            /// </summary>
             public string Longitude { get; set; }
+
+            /// <summary>
+            /// Set EEZ.
+            /// </summary>
             public string Eez { get; set; }
+
+            /// <summary>
+            /// Set association
+            /// </summary>
             public string Association { get; set; }
+
+            /// <summary>
+            /// Set number (within current trip)
+            /// </summary>
             public int SetNumber { get; set; }
+
+            /// <summary>
+            /// Biological sample sequence number (1-120 on a single PS-4
+            /// </summary>
             public int SequenceNumber { get; set; }
+
+            /// <summary>
+            /// Biological sample species code.
+            /// </summary>
             public string SpeciesCode { get; set; }
+
+            /// <summary>
+            /// Biological sample length.
+            /// </summary>
             public int Length { get; set; }
         }
 

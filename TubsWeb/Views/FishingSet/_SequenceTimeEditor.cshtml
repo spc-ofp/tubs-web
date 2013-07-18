@@ -1,0 +1,108 @@
+﻿<div class="row">
+    <div class="span2">
+        <label>Logbook Date</label>
+        <div class="input-append">
+            <input type="text" class="input-mini" required data-bind="value: LogbookDate.formattedDate"/>
+            <span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <label>Logbook Time</label>
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: $root.LogbookTime"/>
+            <span class="add-on"><i class="icon-time"></i></span>
+        </div>
+    </div>
+</div>
+<hr />
+@* 
+ * It is possible (although fairly unusual) for a set to cross a day boundary.  In the initial
+ * versions of TUBS, it was assumed that the date for all the sequence times was the same.
+ * Using a pre-filled date field makes the assumption explicit while allowing the user
+ * to mark when the set crosses a date boundary.
+ *@
+<div class="row">
+    <div class="span2">
+        <label>Skiff Off</label>
+        <div class="input-append">
+            <input type="text" class="input-mini" disabled data-bind="value: SkiffOff.formattedDate"/>
+            <span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <label>Winch On</label>
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: WinchOnDateOnly.formattedDate"/>
+            <span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <label>Rings Up</label>
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: RingsUpDateOnly.formattedDate"/>
+            <span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <label>Begin Brailing</label>
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: BeginBrailingDateOnly.formattedDate"/>
+            <span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <label>End Brailing</label>
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: EndBrailingDateOnly.formattedDate"/>
+            <span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <label>End Of Set</label>
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: EndOfSetDateOnly.formattedDate"/>
+            <span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+    </div>
+</div>
+@* Times *@
+<div class="row">
+    <div class="span2">
+        <div class="input-append">
+            <input type="text" class="input-mini" disabled data-bind="value: SkiffOffTimeOnly" />
+            <span class="add-on"><i class="icon-time"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: WinchOnTimeOnly" />
+            <span class="add-on"><i class="icon-time"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: RingsUpTimeOnly" />
+            <span class="add-on"><i class="icon-time"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: BeginBrailingTimeOnly" />
+            <span class="add-on"><i class="icon-time"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: EndBrailingTimeOnly" />
+            <span class="add-on"><i class="icon-time"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <div class="input-append">
+            <input type="text" class="input-mini" data-bind="value: EndOfSetTimeOnly" />
+            <span class="add-on"><i class="icon-time"></i></span>
+        </div>
+    </div>
+</div>
+<br />
+<button type="button" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></button>

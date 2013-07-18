@@ -4,186 +4,35 @@
     bool IncludeLegacyColumn = Model.VersionNumber != 2009;
 }
 
-<fieldset>
-    <legend>Total Tuna Catch Breakdown</legend>
-    @* 
-     * Although it's possible to make this look more like the form,
-     * this particular layout is more tab friendly without screwing around
-     * with setting tab order.
-     *@
-    <table class="table table-condensed">
-        <thead>
-            <tr>
-                <td>&nbsp;</td>
-                <td>In Set</td>
-                <td>Percentage</td>
-                <td>Number</td>
-                @if (IncludeLegacyColumn)
-                {
-                <td>Weight (mT)</td>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Skipjack</strong></td>
-                <td>
-                    <select id="ContainsSkipjack" 
-                            name="ContainsSkipjack" 
-                            class="input-small" 
-                            data-bind="value: ContainsSkipjack, options: $root.BooleanValues" />
-                </td>
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.SkipjackPercentage,
-                        new {
-                            @class = "input-mini",
-                            data_bind = "value: SkipjackPercentage",
-                            type = "number"
-                        }
-                    )
-                </td>
-                <!-- The following blank column is for count (not captured for Skipjack) -->
-                <td>&nbsp;</td>
-                @if (IncludeLegacyColumn)
-                {
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.TonsOfSkipjackObserved,
-                        new {
-                            data_bind = "value: TonsOfSkipjackObserved",
-                            @class = "input-mini"
-                        })
-                </td>
-                }
-            </tr>
-            <tr>
-                <td><strong>Small Yellowfin (&lt; 9kgs)</strong></td>
-                <td>
-                    <select id="ContainsYellowfin" 
-                            name="ContainsYellowfin" 
-                            class="input-small" 
-                            data-bind="value: ContainsYellowfin, options: $root.BooleanValues" />
-                </td>
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.YellowfinPercentage,
-                        new {
-                            @class = "input-mini",
-                            data_bind = "value: YellowfinPercentage",
-                            type = "number"
-                        }
-                    )
-                </td>
-                <!-- The following blank column is for count (not captured for small Yellowfin) -->
-                <td>&nbsp;</td>
-                @if (IncludeLegacyColumn)
-                {
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.TonsOfYellowfinObserved,
-                        new {
-                            data_bind = "value: TonsOfYellowfinObserved",
-                            @class = "input-mini"
-                        })
-                </td>
-                }
-            </tr>
-            <tr>
-                <td><strong>Large Yellowfin (&gt; 9kgs)</strong></td>
-                <td>
-                    <select id="ContainsLargeYellowfin" 
-                            name="ContainsLargeYellowfin" 
-                            class="input-small" 
-                            data-bind="value: ContainsLargeYellowfin, options: $root.BooleanValues" />
-                </td>
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.LargeYellowfinPercentage,
-                        new {
-                            @class = "input-mini",
-                            data_bind = "value: LargeYellowfinPercentage",
-                            type = "number"
-                        }
-                    )
-                </td>
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.LargeYellowfinCount,
-                        new {
-                            @class = "input-mini",
-                            data_bind = "value: LargeYellowfinCount",
-                            type = "number"
-                        })
-                </td>
-                @if (IncludeLegacyColumn)
-                {
-                <td>&nbsp;</td>
-                }
-            </tr>
-            <tr>
-                <td><strong>Small Bigeye (&lt; 9kgs)</strong></td>
-                <td>
-                    <select id="ContainsBigeye" 
-                            name="ContainsBigeye" 
-                            class="input-small" 
-                            data-bind="value: ContainsBigeye, options: $root.BooleanValues" />
-                </td>
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.BigeyePercentage,
-                        new {
-                            @class = "input-mini",
-                            data_bind = "value: BigeyePercentage",
-                            type = "number"
-                        }
-                    )
-                </td>
-                <td>&nbsp;</td>
-                @if (IncludeLegacyColumn)
-                {
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.TonsOfBigeyeObserved,
-                        new {
-                            data_bind = "value: TonsOfBigeyeObserved",
-                            @class = "input-mini"
-                        })
-                </td>
-                }
-            </tr>
-            <tr>
-                <td><strong>Large Bigeye (&gt; 9kgs)</strong></td>
-                <td>
-                    <select id="ContainsLargeBigeye" 
-                            name="ContainsLargeBigeye" 
-                            class="input-small" 
-                            data-bind="value: ContainsLargeBigeye, options: $root.BooleanValues" />
-                </td>
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.LargeBigeyePercentage,
-                        new {
-                            @class = "input-mini",
-                            data_bind = "value: LargeBigeyePercentage",
-                            type = "number"
-                        }
-                    )
-                </td>
-                <td>
-                    @Html.TextBoxFor(
-                        m => Model.LargeBigeyeCount,
-                        new {
-                            @class = "input-mini",
-                            data_bind = "value: LargeBigeyeCount",
-                            type = "number"
-                        })
-                </td>
-                @if (IncludeLegacyColumn)
-                {
-                <td>&nbsp;</td>
-                }
-            </tr>
-        </tbody>
-    </table>
-</fieldset>
+
+<table class="table table-bordered table-condensed table-striped">
+    <caption>Target Species Totals</caption>
+    <thead>
+        <tr>
+            <th class="span3">&nbsp;</th>
+            <th>SKJ</th>
+            <th>YFT</th>
+            <th>BET</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>In Set</strong></td>
+            <td>@Html.DisplayFor(m => Model.ContainsSkipjack)</td>
+            <td>@Html.DisplayFor(m => Model.ContainsYellowfin)</td>
+            <td>@Html.DisplayFor(m => Model.ContainsBigeye)</td>
+        </tr>
+        <tr>
+            <td><strong>Approximate %</strong></td>
+            <td>@Html.DisplayFor(m => Model.SkipjackPercentage)</td>
+            <td>@Html.DisplayFor(m => Model.YellowfinPercentage)</td>
+            <td>@Html.DisplayFor(m => Model.BigeyePercentage)</td>
+        </tr>
+        <tr>
+            <td><strong>Observed Weight</strong></td>
+            <td>@Html.DisplayFor(m => Model.TonsOfSkipjackObserved)</td>
+            <td>@Html.DisplayFor(m => Model.TonsOfYellowfinObserved)</td>
+            <td>@Html.DisplayFor(m => Model.TonsOfBigeyeObserved)</td>
+        </tr>
+    </tbody>
+</table>

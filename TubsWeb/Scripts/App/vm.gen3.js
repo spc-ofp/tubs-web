@@ -17,10 +17,16 @@
 // All the view models are in the tubs namespace
 var tubs = tubs || {};
 
+// WARNING:  The v2007 workbook, with it's use of "0" as a key
+// for all the incidents, breaks when using a "key" function
+// in knockout.mapping
 tubs.gen3Mapping = {
     'Notes': {
         create: function (options) {
             return new tubs.gen3Note(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     },
     'Incidents': {
@@ -86,6 +92,15 @@ tubs.gen3 = function (data) {
     var self = this;
     ko.mapping.fromJS(data, tubs.gen3Mapping, self);
 
+    self.clear = function () {
+        if (self.Notes) {
+            self.Notes([]);
+        }
+        if (self.Incidents) {
+            self.Incidents([]);
+        }
+    };
+
     // TODO:  Adding Incidents to DirtyFlag allows save
     // at the cost of a false positive
     self.dirtyFlag = new ko.DirtyFlag([
@@ -115,6 +130,7 @@ tubs.gen3 = function (data) {
         return hasDirtyChild;
     });
 
+    // TODO Replace with underscore
     self.clearDirtyFlag = function () {
         self.dirtyFlag().reset();
         $.each(self.Incidents(), function (index, value) { //ignore jslint
@@ -129,15 +145,6 @@ tubs.gen3 = function (data) {
         self.Notes.push(new tubs.gen3Note({ "NeedsFocus": true }));
     };
 
-    // This function takes advantage of the RoR integration
-    // in Knockout.  A call to .destroy(...) sets the "_destroy" property
-    // to true.  Knockout then ignores the entity in the 'foreach' binding.
-    // This removes the requirement to manage deleted Ids on the client and
-    // the server.
-    // NOTE:  We're not using destroy on events that have an Id of zero.
-    // If the user had added a row and then realized they didn't need it,
-    // we wouldn't want to ship garbage data back to the server and complicate
-    // the validation.
     self.removeNote = function (evt) {
         if (evt && evt.Id()) {
             self.Notes.destroy(evt);
@@ -151,16 +158,16 @@ tubs.gen3 = function (data) {
             tubs.getGen3(
                 self.TripId(),
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.gen3Mapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded GEN-3');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload GEN-3', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
@@ -173,16 +180,16 @@ tubs.gen3 = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.gen3Mapping, self);
                     self.clearDirtyFlag();
                     toastr.success('GEN-3 saved');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save GEN-3', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();

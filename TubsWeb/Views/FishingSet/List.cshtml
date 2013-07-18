@@ -1,13 +1,5 @@
 ﻿@model IEnumerable<Spc.Ofp.Tubs.DAL.Entities.PurseSeineSet>
-@using Spc.Ofp.Tubs.DAL.Common           
-
-@helper IsSkunk(IList<Spc.Ofp.Tubs.DAL.Entities.PurseSeineSetCatch> setcatch) {
-    if (0 == setcatch.Count) {
-        <text>Y</text>   
-    } else {
-        <text>N</text>
-    }
-}
+@using Spc.Ofp.Tubs.DAL.Common
 
 @* For now, create this in the View. *@
 @{
@@ -30,9 +22,8 @@
     <thead>
         <tr>
             <th>&nbsp;</th>
-            <th>Set #</th>
+            <th class="nobr">Set #</th>
             <th>Association</th>
-            <th>Skunk Set</th>
             <th>Total Catch (Observed)</th>
             <th>Comments</th>
         </tr>
@@ -54,7 +45,6 @@
             </td>
             <td>@set.SetNumber</td>
             <td>@set.Activity.SchoolAssociation.GetDescription()</td>
-            <td>@IsSkunk(set.CatchList)</td>
             <td>@Html.DisplayFor(i => currentCatch)</td>
             <td><div class="large-text">@set.Comments</div></td>
         </tr>
@@ -62,7 +52,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="4">Total Catch</th>
+            <th colspan="3">Total Catch</th>
             <th>@Html.DisplayFor(i => totalCatch) mT</th>
             <th>&nbsp;</th>
         </tr>

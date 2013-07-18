@@ -19,9 +19,13 @@
     };
 }
 
-@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+@{ 
+    Html.RenderPartial("_BreadCrumbs", crumbs);
+    // Country code datalist
+    Html.RenderPartial("_CountryCodes");
+}
 
-<form id="sightingsForm">
+@*<form id="sightingsForm">*@
     @* 
      * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
      * when the first 'dirtying' change occurs.
@@ -73,10 +77,8 @@
                 <td><input type="text" data-bind="value: Longitude, uniqueName: true" class="input-small" /></td>
                 <td><input type="text" data-bind="value: Name, uniqueName: true" class="vesselName" /></td>
                 <td><input type="text" data-bind="value: Ircs, uniqueName: true" class="input-mini" /></td>
-                <td><input type="text" data-bind="value: CountryCode, uniqueName: true" class="input-mini" /></td>
-                <td>
-                    <select data-bind="value: TypeCode, options: $root.TypeCodes" class="input-mini"></select>
-                </td>
+                <td><input type="text" data-bind="value: CountryCode, uniqueName: true" class="input-mini" list="countryCodes"/></td>
+                <td><select data-bind="value: TypeCode, options: $root.TypeCodes" class="input-mini"></select></td>
                 <td><input type="number" data-bind="value: Skipjack, uniqueName: true" class="input-mini" /></td>
                 <td><input type="number" data-bind="value: Yellowfin, uniqueName: true" class="input-mini" /></td>
                 <td><input type="number" data-bind="value: Bigeye, uniqueName: true" class="input-mini" /></td>
@@ -97,7 +99,7 @@
         </tbody>
     </table>
     <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Transfers().length == 0">Add Sighting</button>
-</form>
+@*</form>*@
 
 @*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>

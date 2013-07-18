@@ -161,7 +161,73 @@ namespace TubsWeb.Controllers
         [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, int setNumber, LongLineSampleViewModel vm)
         {
-            throw new NotImplementedException();
+            var trip = tripId as LongLineTrip;
+            if (null == trip)
+            {
+                return InvalidTripResponse();
+            }
+
+            // TODO Validation
+
+            if (!ModelState.IsValid)
+            {
+                LogModelErrors();
+                if (IsApiRequest())
+                    return ModelErrorsResponse();
+                return View(vm);
+            }
+
+            var header = Mapper.Map<LongLineSampleViewModel, LongLineCatchHeader>(vm);
+
+            using (var xa = MvcApplication.CurrentSession.BeginTransaction())
+            {
+                // We need a LongLineSet repository to get the set that will be the parent for all the catch
+                IRepository<LongLineSet> srepo = TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession);
+                IRepository<LongLineCatch> crepo = TubsDataService.GetRepository<LongLineCatch>(MvcApplication.CurrentSession);
+
+                vm.DeletedCatch.ToList().ForEach(id => crepo.DeleteById(id));
+
+                var fset = srepo.FindById(vm.SetId);
+
+                int index = 1;
+                foreach (var sample in header.Samples.OrderBy(s => s.Date))
+                {
+                    sample.SampleNumber = index;
+                    sample.FishingSet = fset;
+                    sample.SetAuditTrail(User.Identity.Name, DateTime.Now);
+                    crepo.Save(sample);
+                    ++index;
+                }
+
+                xa.Commit();
+
+            }
+
+            if (IsApiRequest())
+            {
+                using (var repo = TubsDataService.GetRepository<LongLineSet>(false))
+                {
+                    var updatedSet = repo.FindById(vm.SetId);
+                    var xheader = new LongLineCatchHeader();
+                    xheader.SetId = updatedSet.Id;
+                    xheader.FishingSet = updatedSet;
+                    xheader.Samples = updatedSet.CatchList;
+
+                    var svm = Mapper.Map<LongLineCatchHeader, LongLineSampleViewModel>(xheader);
+                    // Set some properties that AutoMapper can't manage for us
+                    svm.ActionName = CurrentAction();
+                    svm.HasNext = vm.HasNext;
+                    svm.HasPrevious = setNumber > 1;
+                    svm.SetCount = vm.SetCount;
+
+                    return GettableJsonNetData(svm);
+                }
+            }
+
+            // If this isn't an API request (which shouldn't really happen)
+            // always push to the Edit page.  It's been saved, so an Add is counter-productive
+            // (besides, redirecting to Add with the current dayNumber will redirect to Edit anyways...)
+            return RedirectToAction("Edit", "LongLineSampling", new { tripId = tripId.Id, setNumber = setNumber });
         }
 
     }

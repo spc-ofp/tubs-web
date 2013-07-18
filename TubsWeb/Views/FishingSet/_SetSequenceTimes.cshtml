@@ -1,75 +1,62 @@
 ﻿@model TubsWeb.ViewModels.PurseSeineSetViewModel
 
-<fieldset>
-    <legend>Set Sequence Times</legend>
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Skiff Off</label>
-            <div class="input-append">
-                @Html.TextBoxFor(
-                    m => Model.SkiffOffTimeOnly, 
-                    new { 
-                        data_bind = "value: SkiffOffTimeOnly",
-                        @class = "input-mini",
-                        disabled = string.Empty})
-                <span class="add-on"><i class="icon-time"></i></span>
-            </div>
-        </div>
-        <div class="span2">
-            <label>Winch On</label>
-            <div class="input-append">
-                @Html.TextBoxFor(
-                    m => Model.WinchOnTimeOnly, 
-                    new { 
-                        data_bind = "value: WinchOnTimeOnly", 
-                        @class = "input-mini" })
-                <span class="add-on"><i class="icon-time"></i></span>
-            </div>
-        </div>
-        <div class="span2">
-            <label>Rings Up</label>
-            <div class="input-append">
-                @Html.TextBoxFor(
-                    m => Model.RingsUpTimeOnly, 
-                    new {
-                        data_bind = "value: RingsUpTimeOnly", 
-                        @class = "input-mini" })
-                <span class="add-on"><i class="icon-time"></i></span>
-            </div>
-        </div>
-        <div class="span2">
-            <label>Begin Brailing</label>
-            <div class="input-append">
-                @Html.TextBoxFor(
-                    m => Model.BeginBrailingTimeOnly, 
-                    new {
-                        data_bind = "value: BeginBrailingTimeOnly", 
-                        @class = "input-mini" })
-                <span class="add-on"><i class="icon-time"></i></span>
-            </div>
-        </div>
-        <div class="span2">
-            <label>End Brailing</label>
-            <div class="input-append">
-                @Html.TextBoxFor(
-                    m => Model.EndBrailingTimeOnly, 
-                    new {
-                        data_bind = "value: EndBrailingTimeOnly", 
-                        @class = "input-mini" })
-                <span class="add-on"><i class="icon-time"></i></span>
-            </div>
-        </div>
-        <div class="span2">
-            <label>End Of Set</label>
-            <div class="input-append">
-                @Html.TextBoxFor(
-                    m => Model.EndOfSetTimeOnly, 
-                    new {
-                        data_bind = "value: EndOfSetTimeOnly", 
-                        @class = "input-mini" })
-                <span class="add-on"><i class="icon-time"></i></span>
-            </div>
-        </div>
+<div class="row">
+    <div class="span2">
+        <label><strong>Logbook Date</strong></label>
+        @Html.DisplayFor(m => m.LogbookDate, new { format = "dd/MM/yy" })
     </div>
-</fieldset>
+</div>
+<div class="row">
+    <div class="span2">
+        @Model.LogbookTime
+    </div>
+</div>
+<hr />
 
+<div class="row">
+    <div class="span2">
+        <label><strong>Skiff Off</strong></label>
+        @Html.DisplayFor(m => m.SkiffOff, new { format = "dd/MM/yy" })
+    </div>
+    <div class="span2">
+        <label><strong>Winch On</strong></label>
+        @Html.DisplayFor(m => m.WinchOnDateOnly, new { format = "dd/MM/yy" })
+    </div>
+    <div class="span2">
+        <label><strong>Rings Up</strong></label>
+        @Html.DisplayFor(m => m.RingsUpDateOnly, new { format = "dd/MM/yy" })
+    </div>
+    <div class="span2">
+        <label><strong>Begin Brailing</strong></label>
+        @Html.DisplayFor(m => m.BeginBrailingDateOnly, new { format = "dd/MM/yy" })
+    </div>
+    <div class="span2">
+        <label><strong>End Brailing</strong></label>
+        @Html.DisplayFor(m => m.EndBrailingDateOnly, new { format = "dd/MM/yy" })
+    </div>
+    <div class="span2">
+        <label><strong>End Of Set</strong></label>
+        @Html.DisplayFor(m => m.EndOfSetDateOnly, new { format = "dd/MM/yy" })
+    </div>
+</div>
+@* Times *@
+<div class="row">
+    <div class="span2">
+        @Model.SkiffOffTimeOnly
+    </div>
+    <div class="span2">
+        @Model.WinchOnTimeOnly
+    </div>
+    <div class="span2">
+        @Model.RingsUpTimeOnly
+    </div>
+    <div class="span2">
+        @Model.BeginBrailingTimeOnly
+    </div>
+    <div class="span2">
+        @Model.EndBrailingTimeOnly
+    </div>
+    <div class="span2">
+        @Model.EndOfSetTimeOnly
+    </div>
+</div>

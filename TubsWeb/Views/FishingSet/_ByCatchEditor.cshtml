@@ -1,0 +1,42 @@
+﻿<table id="byCatchTable" class="table table-condensed">
+    <thead>
+        <tr>
+            <th colspan="2">&nbsp;</th>
+            <th colspan="2">Observer</th>
+            <th colspan="2">Vessel Log</th>
+            <th colspan="2">&nbsp;</th>
+        </tr>
+        <tr>
+            <th>Species Code</th>
+            <th>Fate Code</th>
+            <th>Weight (mT)</th>
+            <th>Count</th>
+            <th>Weight (mT)</th>
+            <th>Count</th>
+            <th>Comments</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: ByCatch">
+        <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
+            <td><input type="text" class="required input-mini species" data-bind="hasfocus: NeedsFocus, value: SpeciesCode, uniqueName: true" /></td>
+            <td><select class="input-small" data-bind="value: FateCode, options: $root.FateCodes"></select></td>
+            <td><input type="number" class="input-mini" data-bind="value: ObservedWeight, uniqueName: true" /></td>
+            <td><input type="number" class="input-mini" data-bind="value: ObservedCount, uniqueName: true" /></td>
+            <td><input type="number" class="input-mini" data-bind="value: LogbookWeight, uniqueName: true" /></td>
+            <td><input type="number" class="input-mini" data-bind="value: LogbookCount, uniqueName: true" /></td>
+            <td><input type="text" data-bind="value: Comments, uniqueName: true" /></td>
+            <td>
+                <button type="button"
+                            tabindex="3000"
+                            class="removeItem btn btn-danger" 
+                            rel="tooltip" 
+                            title="Click to delete row">
+                        <i class="icon-trash icon-white"></i>
+                </button>
+            </td>
+    </tbody>
+</table>
+<button id="btnAddByCatch" type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i> Add By-Catch</button>
+<hr />
+<button type="button" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></button>

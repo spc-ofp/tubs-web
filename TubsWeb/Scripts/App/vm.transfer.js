@@ -23,6 +23,9 @@ tubs.transferMapping = {
     'Transfers': {
         create: function (options) {
             return new tubs.transfer(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     }
 };
@@ -31,10 +34,10 @@ tubs.transfer = function (eventData) {
     'use strict';
     var self = this;
     self.Id = ko.observable(eventData.Id || 0);
-    self.DateOnly = ko.observable(eventData.DateOnly || null).extend({ isoDate: 'DD/MM/YY' });
-    self.TimeOnly = ko.observable(eventData.TimeOnly || '').extend({ pattern: '^[0-2][0-9][0-5][0-9]$' });
-    self.Latitude = ko.observable(eventData.Latitude || '').extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
-    self.Longitude = ko.observable(eventData.Longitude || '').extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
+    self.DateOnly = ko.observable(eventData.DateOnly || null).extend(tubs.dateExtension);
+    self.TimeOnly = ko.observable(eventData.TimeOnly || '').extend(tubs.timeExtension);
+    self.Latitude = ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
+    self.Longitude = ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
     self.VesselId = ko.observable(eventData.VesselId || 0);
     self.Name = ko.observable(eventData.Name || '');
     self.Ircs = ko.observable(eventData.Ircs || '');
@@ -79,6 +82,13 @@ tubs.TransferViewModel = function (data) {
     var self = this;
     ko.mapping.fromJS(data, tubs.transferMapping, self);
 
+    // The clear function preps this ViewModel for being reloaded
+    self.clear = function () {
+        if (self.Transfers) {
+            self.Transfers([]);
+        }
+    };
+
     self.dirtyFlag = new ko.DirtyFlag([
         self.Transfers
     ], false);
@@ -121,6 +131,7 @@ tubs.TransferViewModel = function (data) {
             tubs.getTransfers(
                 self.TripId(),
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.transferMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded transfers');
@@ -143,6 +154,7 @@ tubs.TransferViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.transferMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved transfers');

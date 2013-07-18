@@ -76,6 +76,14 @@ namespace TubsWeb.ViewModels
         public string EntryComments { get; set; }
 
         // 0 for Longline trips
+        public int VesselDays { get; set; }
+
+        // Not currently calculated for longline, but should be
+        public decimal Cpue { get; set; }
+
+        // TODO Add decimal for entry percent complete
+
+        // 0 for Longline trips
         public int SeaDayCount { get; set; }
 
         // 0 for Longline trips

@@ -9,7 +9,7 @@ namespace TubsWeb.Core
     using System;
 
     /// <summary>
-    /// 
+    /// Extension methods for working with String objects.
     /// </summary>
     public static class StringExtensions
     {

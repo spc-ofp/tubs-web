@@ -1,11 +1,8 @@
 ﻿@model TubsWeb.ViewModels.PurseSeineSetViewModel
 
 @{
-    ViewBag.Title = String.Format(
-        "Set {0} of {1} for {2}", 
-        Model.SetNumber, 
-        Model.MaxSets, 
-        Model.TripNumber);
+    string titleSuffix = String.Format("Set {0} of {1}", Model.SetNumber, Model.MaxSets);
+    ViewBag.Title = String.Format("{0}: {1}", Model.TripNumber, titleSuffix);
 }
 @* For now, create this in the View. *@
 @{
@@ -14,7 +11,7 @@
         Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
         Tuple.Create(Url.Action("List", "FishingSet", new { tripId = Model.TripId }), "Sets"),
-        Tuple.Create("#", String.Format("Set {0} of {1}", Model.SetNumber, Model.MaxSets))
+        Tuple.Create("#", titleSuffix)
     };
 }
 
@@ -35,222 +32,31 @@
     </li>
 }
 </ul>   
- 
-<fieldset>
-    <legend>Set Sequence Times</legend>     
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>Skiff Off</th>
-                <th>Winch On</th>
-                <th>Rings Up</th>
-                <th>Begin Brailing</th>
-                <th>End Brailing</th>
-                <th>End of Set</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@Html.DisplayFor(m => Model.SkiffOff, new { format = "dd/MM/yy HHmm" })</td>
-                <td>@Html.DisplayFor(m => Model.WinchOnTimeOnly)</td>
-                <td>@Html.DisplayFor(m => Model.RingsUpTimeOnly)</td>
-                <td>@Html.DisplayFor(m => Model.BeginBrailingTimeOnly)</td>
-                <td>@Html.DisplayFor(m => Model.EndBrailingTimeOnly)</td>
-                <td>@Html.DisplayFor(m => Model.EndOfSetTimeOnly)</td>
-            </tr>
-        </tbody>
-    </table>
-</fieldset>
-    
-<fieldset>
-    <legend>Catch Summary</legend>
-    <table class="table table-bordered table-condensed table-striped">
-        <caption>Cumulative Catch Onboard (mT)</caption>
-        <thead>
-            <tr>
-                <th>Source</th>
-                <th>Onboard Total</th>
-                <th>Retained This Set</th>
-                <th>New Onboard Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Observer</td>
-                <td>@Html.DisplayFor(m => Model.WeightOnboardObserved)</td>
-                <td>
-                    @Html.DisplayFor(m => Model.RetainedTonnageObserved)
-                    @* // Need a better means of display Only from this set? @Html.DisplayFor(m => Model.VesselTonnageOnlyFromThisSet)*@
-                </td>
-                <td>@Html.DisplayFor(m => Model.NewOnboardTotalObserved)</td>
-            </tr>
-            <tr>
-                <td>Vessel Log</td>
-                <td>@Html.DisplayFor(m => Model.WeightOnboardFromLog)</td>
-                <td>@Html.DisplayFor(m => Model.RetainedTonnageFromLog)</td>
-                <td>@Html.DisplayFor(m => Model.NewOnboardTotalFromLog)</td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div class="row">
-        <div class="span3">@Html.LabelFor(m => Model.SumOfBrail1)</div>
-        <div class="span2">@Html.DisplayFor(m => Model.SumOfBrail1)</div>
-    </div>
-    <div class="row">
-        <div class="span3">@Html.LabelFor(m => Model.SumOfBrail2)</div>
-        <div class="span2">@Html.DisplayFor(m => Model.SumOfBrail2)</div>
-    </div>
-    <div class="row">
-        <div class="span3">@Html.LabelFor(m => Model.TonsOfTunaObserved)</div>
-        <div class="span2">@Html.DisplayFor(m => Model.TonsOfTunaObserved)</div>
-    </div>
-    <div class="row">
-        <div class="span3">@Html.LabelFor(m => Model.TotalCatch)</div>
-        <div class="span2">@Html.DisplayFor(m => Model.TotalCatch)</div>
-    </div>
-    <div class="row">
-        <div class="span3">@Html.LabelFor(m => Model.RecoveredTagCount)</div>
-        <div class="span2">@Html.DisplayFor(m => Model.RecoveredTagCount)</div>
-    </div>
-   
-    <table class="table table-bordered table-condensed table-striped">
-        <caption>Target Species Totals</caption>
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>SKJ</th>
-                <th>YFT</th>
-                <th>BET</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>In Set</td>
-                <td>@Html.DisplayFor(m => Model.ContainsSkipjack)</td>
-                <td>@Html.DisplayFor(m => Model.ContainsYellowfin)</td>
-                <td>@Html.DisplayFor(m => Model.ContainsBigeye)</td>
-            </tr>
-            <tr>
-                <td>Approximate %</td>
-                <td>@Html.DisplayFor(m => Model.SkipjackPercentage)</td>
-                <td>@Html.DisplayFor(m => Model.YellowfinPercentage)</td>
-                <td>@Html.DisplayFor(m => Model.BigeyePercentage)</td>
-            </tr>
-            <tr>
-                <td>Observed Weight</td>
-                <td>@Html.DisplayFor(m => Model.TonsOfSkipjackObserved)</td>
-                <td>@Html.DisplayFor(m => Model.TonsOfYellowfinObserved)</td>
-                <td>@Html.DisplayFor(m => Model.TonsOfBigeyeObserved)</td>
-            </tr>
-        </tbody>
-    </table>
-</fieldset>
-    
-<fieldset>
-    <legend>Catch Details</legend>
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>Species</th>
-                <th>Fate</th>
-                <th>Observed Weight (mT)</th>
-                <th>Observed Count</th>
-                <th>Log Weight (mT)</th>
-                <th>Log Count</th>
-                <th>Comments</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var sc in Model.AllCatch)
-        {
-            <tr>
-                <td>@Html.DisplayFor(s => sc.SpeciesCode)</td>
-                <td>@Html.DisplayFor(s => sc.FateCode)</td>
-                <td>@Html.DisplayFor(s => sc.ObservedWeight)</td>
-                <td>@Html.DisplayFor(s => sc.ObservedCount)</td>
-                <td>@Html.DisplayFor(s => sc.LogbookWeight)</td>
-                <td>@Html.DisplayFor(s => sc.LogbookCount)</td>
-                <td>@Html.DisplayFor(s => sc.Comments)</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-    
-    <table class="table table-bordered table-condensed table-striped">
-        <caption>Large Tuna Catch (&gt; 80cm or &gt; 9kg)</caption>
-        <thead>
-            <tr>
-                <th>Species</th>
-                <th>Percentage of All Tuna</th>
-                <th>Number</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@Html.DisplayFor(m => Model.LargeSpecies)</td>
-                <td>@Html.DisplayFor(m => Model.LargeSpeciesPercentage)</td>
-                <td>@Html.DisplayFor(m => Model.LargeSpeciesCount)</td>
-            </tr>
-        </tbody>
-    </table>
-    
-    @* Revisit this later...
-    <div class="row">
-        <div class="span4">
-            <div id="skj_length_frequency"></div>
+
+@* TODO:  Add catch LF graphs in another tab *@
+<div class="tabbable tabs-top">
+    <ul id="formSections" class="nav nav-tabs">
+        <li class="active"><a href="#times" data-toggle="tab">Set Times</a></li>
+        <li><a href="#totalCatch" data-toggle="tab">Total Catch</a></li>
+        <li><a href="#breakdown" data-toggle="tab">Catch Breakdown</a></li>
+        <li><a href="#allCatch" data-toggle="tab">Catch</a></li>
+        <li><a href="#comments" data-toggle="tab">Comments / Tags</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="times">
+            @{ Html.RenderPartial("_SetSequenceTimes", Model); }
         </div>
-        <div class="span4">
-            <div id="yft_length_frequency"></div>
+        <div class="tab-pane" id="totalCatch">
+            @{ Html.RenderPartial("_SetCatchDetails", Model); }
         </div>
-        <div class="span4">
-            <div id="bet_length_frequency"></div>
-        </div>        
+        <div class="tab-pane" id="breakdown">
+            @{ Html.RenderPartial("_CatchBreakdown", Model); }
+        </div>
+        <div class="tab-pane" id="allCatch">
+            @{ Html.RenderPartial("_AllCatch", Model); }
+        </div>
+        <div class="tab-pane" id="comments">
+            @{ Html.RenderPartial("_Comments", Model); }
+        </div>
     </div>
-    *@
-
-    <hr />
-    <div class="row">
-        <div class="span3"><strong>Comments</strong></div>
-    </div>
-    <div class="row">
-        <div class="span12">@Html.DisplayFor(m => Model.Comments)</div>
-    </div>
-</fieldset>
-
-
-@*
-@section AdditionalScripts {
-    <!--
-    http://blog.jeremi.info/entry/creating-a-chart-with-raphael-js-from-a-google-spreadsheet
-    https://github.com/kennyshen/g.raphael
-     -->
-    <script src="@Url.Content("~/Scripts/raphael-min.js")"></script>
-    <script src="@Url.Content("~/Scripts/g.raphael-min.js")"></script>
-    <script src="@Url.Content("~/Scripts/g.bar-min.js")"></script>
-
-    <script>
-        var yft_data = [];
-        jQuery.getJSON('@Url.RouteUrl("ApiRoute", new { controller = "FishingSet", action = "LengthFrequency", id = @Model.Id, speciesCode = "YFT" })', function (data) {
-            for (item in data) {
-                console.log("item: " + item);
-                var lfrecord = item[1];
-                console.log("lfrecord: " + lfrecord);
-                if (lfrecord) { yft_data.push(lfrecord); }
-            }
-        });
-        var g_skj = Raphael("skj_length_frequency");
-        g_skj.text(160, 10, "SKJ Length Frequency");
-        g_skj.barchart(10, 10, 300, 200, [[55, 20, 13, 32, 5, 1, 2, 10]]);
-
-        var g_yft = Raphael("yft_length_frequency");
-        g_yft.text(160, 10, "YFT Length Frequency");
-        g_yft.barchart(10, 10, 300, 200, [yft_data]);
-
-        var g_bet = Raphael("bet_length_frequency");
-        g_bet.text(160, 10, "BET Length Frequency");
-        g_bet.barchart(10, 10, 300, 200, [[55, 20, 13, 32, 5, 1, 2, 10]]);
-
-    </script>
-}
-*@
+</div>

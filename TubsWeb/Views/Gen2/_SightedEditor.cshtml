@@ -6,167 +6,165 @@
     var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Gen2Details, new { tripId = Model.TripId, pageNumber = Model.PreviousPage, action = "Edit" });    
 }
 
-<form id="gen2SightedForm">
-    <p>
-        @if (Model.HasPrevious)
-        { 
-        <a href='@previousPage' id="previousEventButton" class="btn btn-info">
-            <i class="icon-backward icon-white"></i>
-        </a>
-        }
-        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
-            <i class="icon-refresh icon-white"></i>&nbsp;Reload
-        </button>
-        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+<p>
+    @if (Model.HasPrevious)
+    { 
+    <a href='@previousPage' id="previousEventButton" class="btn btn-info">
+        <i class="icon-backward icon-white"></i>
+    </a>
+    }
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    @* Allow going to the next event regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+    @if (Model.HasNext)
+    {
+    <a href='@nextPage' id="nextEventButton" class="btn btn-info">
+        Next Event&nbsp;<i class="icon-forward icon-white"></i>
+    </a>
+    }
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
+<hr />
+<fieldset>
+    <legend>Species Sighted</legend>
+</fieldset>
+<div class="row-fluid">
+    <div class="span2">
+        <label>Date</label>
+        <div class="input-append date datepicker" data-date-format="dd/mm/yy">
+            @Html.TextBoxFor(
+                m => Model.ShipsDate,
+                new
+                {
+                    data_val = "true",
+                    data_val_required = "Date portion of landing date is required",
+                    data_bind = "value: ShipsDate.formattedDate",
+                    placeholder = "dd/mm/yy",
+                    @class = "input-small"
+                })
+            <span class="add-on"><i class="icon-calendar"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <label>Time</label>
+        <div class="input-append">
+            @Html.TextBoxFor(
+                m => Model.ShipsTime, 
+                new { 
+                    data_val_required = "Time portion of landing date is required", 
+                    data_bind = "value: $root.ShipsTime",
+                    placeholder = "HHmm",
+                    @class = "input-mini"
+                })
+            <span class="add-on"><i class="icon-time"></i></span>
+        </div>
+    </div>
+    <div class="span2">
+        <label>Latitude</label>
+        <div>
+            <input data-bind="value: Latitude" class="required input-small" type="text" required placeholder="dd&deg;mm.mmm'"/>
+        </div>
+    </div>
+    <div class="span2">
+        <label>Longitude</label>
+        <div>
+            <input data-bind="value: Longitude" class="required input-medium" type="text" required placeholder="ddd&deg;mm.mmm'"/>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row-fluid">
+    <div class="span2">
+        <label>Species Code</label>
+        <div>
+            <input data-bind="value: SpeciesCode" class="required input-mini" type="text" required />
+        </div>
+    </div>
+    <div class="span10">
+        <label>Species Description</label>
+        <div>
+            <textarea data-bind="value: SpeciesDescription" 
+                        class="span10" 
+                        rows="4" 
+                        placeholder="Use this field to describe some of the identifying features of the species.">
+            </textarea>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row-fluid">
+    <div class="span2">
+        <label>Vessel Activity</label>
+        <div>
+            <select data-bind="options: $root.Activities, value: VesselActivity" class="input-small"></select>
+        </div>
+    </div>
+    <div class="span4">
+        <label>Description (if other)</label>
+        <div>
+            <input type="text" data-bind="value: VesselActivityDescription" class="input-medium" />
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row-fluid">
+    <div class="span2">
+        <label>Number Sighted</label>
+        <div>
+            <input data-bind="value: NumberSighted" class="input-mini" type="number" />
+        </div>
+    </div>
+    <div class="span2">
+        <label>Number of Adults</label>
+        <div>
+            <input data-bind="value: NumberOfAdults" class="input-mini" type="number" />
+        </div>
+    </div>
+    <div class="span2">
+        <label>Number of Juveniles</label>
+        <div>
+            <input data-bind="value: NumberOfJuveniles" class="input-mini" type="number" />
+        </div>
+    </div>
+    <div class="span6">
+        <label>Estimate Overall Length</label>
+        <div>
+            <input data-bind="value: SightingLength" class="input-xlarge" type="text" />
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row-fluid">
+    <div class="span3">
+        <label>Distance From Vessel</label>
+        <div>
+            <input data-bind="value: SightingDistance" class="input-mini" type="number" />
+            <select data-bind="options:  $root.DistanceUnits, value: SightingDistanceUnit" class="input-small"></select>
+        </div>
+    </div>
+    <div class="span8">
+        <label>Describe the Interaction</label>
+        <div>
+            <textarea data-bind="value: SightingBehavior" 
+                        class="span12"
+                        placeholder="Make detailed notes on the interaction." 
+                        rows="4">
+            </textarea>
+        </div>
+    </div>
+</div>
+<hr />
+<p>
+    <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    @* If the next event exists, this button will edit it.  Otherwise, go to add next event *@
+    @* Allow going to the next event regardless of dirty state, but notify that leaving a dirty form will discard changes *@
+    <a href='@nextPage' class="btn btn-info"  data-bind="visible: $root.showNextEventButton()">
+        Next Event&nbsp;<i class="icon-forward icon-white"></i>
+    </a>
+</p>
 
-        @* Allow going to the next event regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-        @if (Model.HasNext)
-        {
-        <a href='@nextPage' id="nextEventButton" class="btn btn-info">
-            Next Event&nbsp;<i class="icon-forward icon-white"></i>
-        </a>
-        }
-    </p>
-    <hr />
-    <fieldset>
-        <legend>Species Sighted</legend>
-    </fieldset>
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Date</label>
-            <div class="input-append date datepicker" data-date-format="dd/mm/yy">
-                @Html.TextBoxFor(
-                    m => Model.ShipsDate,
-                    new
-                    {
-                        data_val = "true",
-                        data_val_required = "Date portion of landing date is required",
-                        data_bind = "value: ShipsDate.formattedDate",
-                        placeholder = "dd/mm/yy",
-                        @class = "input-small"
-                    })
-                <span class="add-on"><i class="icon-calendar"></i></span>
-            </div>
-        </div>
-        <div class="span2">
-            <label>Time</label>
-            <div class="input-append">
-                @Html.TextBoxFor(
-                    m => Model.ShipsTime, 
-                    new { 
-                        data_val_required = "Time portion of landing date is required", 
-                        data_bind = "value: $root.ShipsTime",
-                        placeholder = "HHmm",
-                        @class = "input-mini"
-                    })
-                <span class="add-on"><i class="icon-time"></i></span>
-            </div>
-        </div>
-        <div class="span2">
-            <label>Latitude</label>
-            <div>
-                <input data-bind="value: Latitude" class="required input-small" type="text" required placeholder="dd&deg;mm.mmm'"/>
-            </div>
-        </div>
-        <div class="span2">
-            <label>Longitude</label>
-            <div>
-                <input data-bind="value: Longitude" class="required input-medium" type="text" required placeholder="ddd&deg;mm.mmm'"/>
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Species Code</label>
-            <div>
-                <input data-bind="value: SpeciesCode" class="required input-mini" type="text" required />
-            </div>
-        </div>
-        <div class="span10">
-            <label>Species Description</label>
-            <div>
-                <textarea data-bind="value: SpeciesDescription" 
-                          class="span10" 
-                          rows="4" 
-                          placeholder="Use this field to describe some of the identifying features of the species.">
-                </textarea>
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Vessel Activity</label>
-            <div>
-                <select data-bind="options: $root.Activities, value: VesselActivity" class="input-small"></select>
-            </div>
-        </div>
-        <div class="span4">
-            <label>Description (if other)</label>
-            <div>
-                <input type="text" data-bind="value: VesselActivityDescription" class="input-medium" />
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span2">
-            <label>Number Sighted</label>
-            <div>
-                <input data-bind="value: NumberSighted" class="input-mini" type="number" />
-            </div>
-        </div>
-        <div class="span2">
-            <label>Number of Adults</label>
-            <div>
-                <input data-bind="value: NumberOfAdults" class="input-mini" type="number" />
-            </div>
-        </div>
-        <div class="span2">
-            <label>Number of Juveniles</label>
-            <div>
-                <input data-bind="value: NumberOfJuveniles" class="input-mini" type="number" />
-            </div>
-        </div>
-        <div class="span6">
-            <label>Estimate Overall Length</label>
-            <div>
-                <input data-bind="value: SightingLength" class="input-xlarge" type="text" />
-            </div>
-        </div>
-    </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span3">
-            <label>Distance From Vessel</label>
-            <div>
-                <input data-bind="value: SightingDistance" class="input-mini" type="number" />
-                <select data-bind="options:  $root.DistanceUnits, value: SightingDistanceUnit" class="input-small"></select>
-            </div>
-        </div>
-        <div class="span8">
-            <label>Describe the Interaction</label>
-            <div>
-                <textarea data-bind="value: SightingBehavior" 
-                          class="span12"
-                          placeholder="Make detailed notes on the interaction." 
-                          rows="4">
-                </textarea>
-            </div>
-        </div>
-    </div>
-    <hr />
-    <p>
-        <button type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        @* If the next event exists, this button will edit it.  Otherwise, go to add next event *@
-        @* Allow going to the next event regardless of dirty state, but notify that leaving a dirty form will discard changes *@
-        <a href='@nextPage' class="btn btn-info"  data-bind="visible: $root.showNextEventButton()">
-            Next Event&nbsp;<i class="icon-forward icon-white"></i>
-        </a>
-    </p>
-</form>
 
 @*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>

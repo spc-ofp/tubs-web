@@ -1,0 +1,38 @@
+﻿@*
+ * TODO:  The form has a bycatch rollup that is used to determine total
+ * tuna catch.  Consider adding these fields. 
+ *@
+<div class="row">
+    <div class="span3">
+        <label>Brail 1</label>
+        <div class="form-horizontal">
+            <input type="number" disabled class="input-mini" data-bind="value: SizeOfBrail1" /> &times;
+            <input type="number" step="any" class="input-mini" data-bind="value: SumOfBrail1" />
+        </div>
+    </div>
+    <div class="span3">
+        <label>Total Catch (actual)</label>
+        <input type="number" step="any" min="0" class="input-mini" data-bind="value: TotalCatch" />
+    </div>
+    <div class="span3">
+        <label>Tuna Catch</label>
+        <input type="number" step="any" min="0" class="input-mini" data-bind="value: TonsOfTunaObserved" />
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="span3">
+        <label>Brail 2</label>
+        <div class="form-horizontal">
+            <input type="number" disabled class="input-mini" data-bind="value: SizeOfBrail2" /> &times;
+            <input type="number" step="any" class="input-mini" data-bind="value: SumOfBrail2" />
+        </div>
+    </div>
+    <div class="span3">
+        <label>Total Catch (expected)</label>
+        <span data-bind="text: computedCatch">N/A</span>
+        <span data-bind="visible: showCatchTotalNote" class="text-warning">Total catch mismatch</span>
+    </div>
+</div>
+<br />
+<button type="button" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></button>

@@ -68,11 +68,13 @@ namespace TubsWeb.Mapping.Profiles
             CreateMap<LongLineSampleViewModel, DAL.Entities.LongLineCatchHeader>()
                 // Ignore entity relationships
                 .ForMember(d => d.FishingSet, o => o.Ignore())
-                .ForMember(d => d.Samples, o => o.MapFrom(s => s.Details))
+                .ForMember(d => d.Samples, o => o.MapFrom(s => s.Details.Where(d => null != d && !d._destroy)))
                 ;
 
             // Entity to ViewModel
             CreateMap<DAL.Entities.LongLineCatch, LongLineSampleViewModel.LongLineCatchDetail>()
+                .ForMember(d => d._destroy, o => o.Ignore())
+                .ForMember(d => d.NeedsFocus, o => o.Ignore())
                 .ForMember(d => d.CaughtCondition, o => o.MapFrom(s => s.LandedConditionCode))
                 .ForMember(d => d.DiscardedCondition, o => o.MapFrom(s => s.DiscardedConditionCode))
                 // Property names match.  C# is able to convert the enum to a string without issue

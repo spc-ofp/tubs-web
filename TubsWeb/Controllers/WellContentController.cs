@@ -29,9 +29,11 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     
+    /// <summary>
+    /// 
+    /// </summary>
     public class WellContentController : SuperController
     {
-        // TODO What about Longline trips?
         public ActionResult Index(Trip tripId)
         {
             var trip = tripId as PurseSeineTrip;

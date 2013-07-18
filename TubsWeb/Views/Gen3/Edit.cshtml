@@ -15,70 +15,61 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-<form id="gen3Form">
-    <p>
-        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
-            <i class="icon-refresh icon-white"></i>&nbsp;Reload
-        </button>
-        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
-    </p>
-    @if (2007 == Model.VersionNumber)
-    {
-        Html.RenderPartial("_Edit_v07");
-    }
-    else if (2009 == Model.VersionNumber)
-    {
-        Html.RenderPartial("_Edit_v09");
-    }
-    else
-    {
-        @: GEN-3 questions not available for this trip
-    }
-    <hr />
-    @* TODO: .length isn't zero after all existing items have been destroyed but _before_ a save *@
-    <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Notes().length == 0">Add Note</button>
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Date</th>
-                <th>Comments</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody class="gen3Notes" data-bind="foreach: $root.Notes">
-            <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
-                <td>
-                    @* Delete button is taken out of the tab order to prevent accidents *@
-                    <button type="button"
-                            tabindex="3000"
-                            class="removeItem btn btn-mini btn-danger" 
-                            rel="tooltip" 
-                            title="Click to remove row"><i class="icon-remove icon-white"></i></button>
-                </td>
-                <td>
-                    <div class="input-append">
-                        <input type="text"
-                               data-bind="hasfocus: NeedsFocus, uniqueName: true, value: Date.formattedDate"
-                               placeholder="dd/mm/yy"
-                               class="input-mini" />
-                        <span class="add-on"><i class="icon-calendar"></i></span>
-                    </div>
-                </td>
-                <td><textarea class="field span9" rows="6" data-bind="value: Comments"></textarea></td>
-                <td>
-                    <button class="addItem btn btn-mini btn-info" 
-                            type="button"
-                            rel="tooltip" 
-                            title="Click to add row">
-                        <i class="icon-plus icon-white"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</form>
+
+<p>
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
+@if (2007 == Model.VersionNumber)
+{
+    Html.RenderPartial("_Edit_v07");
+}
+else if (2009 == Model.VersionNumber)
+{
+    Html.RenderPartial("_Edit_v09");
+}
+else
+{
+    @: GEN-3 questions not available for this trip
+}
+<hr />
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Comments</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody class="gen3Notes" data-bind="foreach: $root.Notes">
+        <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
+            
+            <td>
+                <div class="input-append">
+                    <input type="text"
+                            data-bind="hasfocus: NeedsFocus, uniqueName: true, value: Date.formattedDate"
+                            placeholder="dd/mm/yy"
+                            class="input-mini" />
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+            </td>
+            <td><textarea class="field span9" rows="6" data-bind="value: Comments"></textarea></td>
+            <td>
+                @* Delete button is taken out of the tab order to prevent accidents *@
+                <button type="button"
+                        tabindex="3000"
+                        class="removeItem btn btn-danger" 
+                        rel="tooltip" 
+                        title="Click to remove row"><i class="icon-trash icon-white"></i></button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<button id="btnAddNote" type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i> Add Note</button>
+
 
 <!-- TODO Add a debug param so that this can be displayed for troubleshooting -->
 @*
@@ -109,11 +100,7 @@
                 viewModel.removeNote(ko.dataFor(this));
             });
 
-            $(".gen3Notes").on("click", ".addItem", function() {
-                viewModel.addNote();
-            });
-
-            $("#btnAddWhenEmpty").on("click", function () {
+            $("#btnAddNote").on("click", function () {
                 viewModel.addNote();
             });
 

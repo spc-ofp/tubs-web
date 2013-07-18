@@ -25,6 +25,9 @@ tubs.psCrewMapping = {
     'Hands': {
         create: function (options) {
             return new tubs.CrewMember(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     },
     'Captain': {

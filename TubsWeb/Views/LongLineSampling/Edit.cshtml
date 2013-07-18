@@ -65,20 +65,23 @@
         @Html.DisplayFor(m => m.HaulDate, new { format = "dd/MM/yy" })
     </div>
 </div>
-
 <hr />
-
-<table class="table table-bordered table-condensed table-striped">
+<table id="ll4-details-table" class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>
-            <th colspan="5">&nbsp;</th>
+            <th colspan="4">&nbsp;</th>
             <th colspan="2">Condition</th>
             <th colspan="2">Length</th>
             <th colspan="2">Weight</th>
             <th colspan="4">&nbsp;</th>
         </tr>
         <tr>            
-            <th>Sample #</th>
+            @*
+             * Ignore sample number for now.
+             * Potential option is to run a stored proc on close that sets
+             * sample numbers based on date/time ordering.
+             *@
+            @*<th>Sample #</th>*@
             <th>Date</th>
             <th>Time</th>
             <th>Hook #</th>
@@ -99,7 +102,7 @@
         <tr data-bind="css: { warning: (Id() == 0) }">
             @* TODO Should SampleNumber stay here? *@
             @* TODO Any placeholders? *@
-            <td><span data-bind="text: SampleNumber" /></td>
+            @*<td><span data-bind="text: SampleNumber" /></td>*@
             <td><input tabindex="3000" class="input-mini" data-bind="value: DateOnly.formattedDate" /></td>
             <td><input class="input-mini" data-bind="value: TimeOnly" /></td>
             <td><input type="number" min="0" class="input-mini" data-bind="value: HookNumber" /></td>
@@ -108,13 +111,13 @@
             <td><select class="input-mini" data-bind="options: $root.ConditionCodes, value: DiscardedCondition"></select></td>
             <td><input type="number" min="0" class="input-mini" data-bind="value: Length" /></td>
             <td><select class="input-mini" data-bind="options: $root.LengthCodes, value: LengthCode"></select></td>
-            <td><input type="number" min="0" class="input-mini" data-bind="value: Weight" /></td>
-            <td><select class="input-mini" data-bind="options: $root.WeightCodes, value: WeightCode"></select></td>
+            <td><input type="number" min="0" class="input-mini" data-bind="    value: Weight" /></td>
+            <td><select class="input-mini" data-bind="    options: $root.WeightCodes, value: WeightCode"></select></td>
             <td><select class="input-small" data-bind="options: $root.FateCodes, value: FateCode"></select></td>
             <td><select class="input-mini" data-bind="options: $root.SexCodes, value: SexCode"></select></td>
             <td><input class="input-large" data-bind="value: Comments" /></td>            
             <td>
-                <button type="button" class="btn btn-mini btn-danger removeItem" tabindex="5000" rel="tooltip" title="Click to remove row">
+                <button type="button" class="btn btn-danger removeItem nobr" tabindex="5000" rel="tooltip" title="Click to remove row">
                     <i class="icon-minus-sign icon-white"></i> Delete
                 </button>
             </td>
@@ -148,13 +151,35 @@
 
             var viewModel = new tubs.LongLineSample(@modelAsJson);
             ko.applyBindings(viewModel);
-            //viewModel.clearDirtyFlag();
+            viewModel.clearDirtyFlag();
 
-            // TODO Add binding for delete button in row
+            $('#addDetailButton').on("click", function () {
+                viewModel.addDetail();
+            });
 
-            // TODO Add binding for addDetailButton
+            $('#ll4-details-table').on("click", ".removeItem", function () {
+                viewModel.removeDetail(ko.dataFor(this));
+            });
 
-            // TODO Add dirty handler
+            // PageGuide initialization
+            tl.pg.init();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function (e) {
+                if (viewModel.isDirty()) {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };
         });
     </script>
 }

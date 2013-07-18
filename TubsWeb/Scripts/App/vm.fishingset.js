@@ -21,17 +21,53 @@ var tubs = tubs || {};
 tubs.psSetMapping = {
     'LogbookDate': {
         create: function (options) {
-            return ko.observable(options.data).extend({ isoDate: 'DD/MM/YY' });
+            return ko.observable(options.data).extend(tubs.dateExtension);
+        }
+    },
+    'SkiffOff': {
+        create: function (options) {
+            return ko.observable(options.data).extend(tubs.dateExtension);
+        }
+    },
+    'WinchOnDateOnly': {
+        create: function (options) {
+            return ko.observable(options.data).extend(tubs.dateExtension);
+        }
+    },
+    'RingsUpDateOnly': {
+        create: function (options) {
+            return ko.observable(options.data).extend(tubs.dateExtension);
+        }
+    },
+    'BeginBrailingDateOnly': {
+        create: function (options) {
+            return ko.observable(options.data).extend(tubs.dateExtension);
+        }
+    },
+    'EndBrailingDateOnly': {
+        create: function (options) {
+            return ko.observable(options.data).extend(tubs.dateExtension);
+        }
+    },
+    'EndOfSetDateOnly': {
+        create: function (options) {
+            return ko.observable(options.data).extend(tubs.dateExtension);
         }
     },
     'ByCatch': {
         create: function (options) {
             return new tubs.psSetCatch(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     },
     'TargetCatch': {
         create: function (options) {
             return new tubs.psSetCatch(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     }
 };
@@ -144,6 +180,16 @@ tubs.psSet = function (data) {
         });
     };
 
+    // The clear function preps this ViewModel for being reloaded
+    self.clear = function () {
+        if (self.ByCatch) {
+            self.ByCatch([]);
+        }
+        if (self.TargetCatch) {
+            self.TargetCatch([]);
+        }
+    };
+
     // Compute total catch, not to store, but as a possible check
     self.computedCatch = ko.computed(function () {
         var brail1 = 0,
@@ -206,6 +252,7 @@ tubs.psSet = function (data) {
                 self.TripId(),
                 self.SetNumber(),
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.psSetMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded set details');
@@ -230,6 +277,7 @@ tubs.psSet = function (data) {
                 self.SetNumber(),
                 self,
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.psSetMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved set details');

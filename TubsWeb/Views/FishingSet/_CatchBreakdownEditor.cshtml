@@ -1,0 +1,124 @@
+﻿@model TubsWeb.ViewModels.PurseSeineSetViewModel
+
+@{
+    // With Knockout, we wouldn't normally have a strongly typed
+    // partial view.  But this particular bit is easier if we use
+    // Razor
+    bool IncludeLegacyColumn = Model.VersionNumber != 2009;
+}
+
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <td>&nbsp;</td>
+            <td>In Set</td>
+            <td>Percentage</td>
+            <td>Number</td>
+            @if (IncludeLegacyColumn)
+            {
+            <td>Weight (mT)</td>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Skipjack</strong></td>
+            <td>
+                <select id="ContainsSkipjack" 
+                        name="ContainsSkipjack" 
+                        class="input-small" 
+                        data-bind="value: ContainsSkipjack, options: $root.BooleanValues" />
+            </td>
+            <td>
+                <input type="number" step="1" min="0" max="100" class="input-mini" data-bind="value: SkipjackPercentage" />
+            </td>
+            <!-- The following blank column is for count (not captured for Skipjack) -->
+            <td>&nbsp;</td>
+            @if (IncludeLegacyColumn)
+            {
+            <td>
+                <input type="number" step="any" min="0" class="input-mini" data-bind="value: TonsOfSkipjackObserved" />
+            </td>
+            }
+        </tr>
+        <tr>
+            <td><strong>Small Yellowfin (&lt; 9kgs)</strong></td>
+            <td>
+                <select id="ContainsYellowfin" 
+                        name="ContainsYellowfin" 
+                        class="input-small" 
+                        data-bind="value: ContainsYellowfin, options: $root.BooleanValues" />
+            </td>
+            <td>
+                <input type="number" step="1" min="0" max="100" class="input-mini" data-bind="value: YellowfinPercentage" />
+            </td>
+            <!-- The following blank column is for count (not captured for small Yellowfin) -->
+            <td>&nbsp;</td>
+            @if (IncludeLegacyColumn)
+            {
+            <td>
+                <input type="number" step="any" min="0" class="input-mini" data-bind="value: TonsOfYellowfinObserved" />
+            </td>
+            }
+        </tr>
+        <tr>
+            <td><strong>Large Yellowfin (&gt; 9kgs)</strong></td>
+            <td>
+                <select id="ContainsLargeYellowfin" 
+                        name="ContainsLargeYellowfin" 
+                        class="input-small" 
+                        data-bind="value: ContainsLargeYellowfin, options: $root.BooleanValues" />
+            </td>
+            <td>
+                <input type="number" step="1" min="0" max="100" class="input-mini" data-bind="value: LargeYellowfinPercentage" />
+            </td>
+            <td>
+                <input type="number" step="1" min="0" class="input-mini" data-bind="value: LargeYellowfinCount" />
+            </td>
+            @if (IncludeLegacyColumn)
+            {
+            <td>&nbsp;</td>
+            }
+        </tr>
+        <tr>
+            <td><strong>Small Bigeye (&lt; 9kgs)</strong></td>
+            <td>
+                <select id="ContainsBigeye" 
+                        name="ContainsBigeye" 
+                        class="input-small" 
+                        data-bind="value: ContainsBigeye, options: $root.BooleanValues" />
+            </td>
+            <td>
+                <input type="number" step="1" min="0" max="100" class="input-mini" data-bind="value: BigeyePercentage" />
+            </td>
+            <td>&nbsp;</td>
+            @if (IncludeLegacyColumn)
+            {
+            <td>
+                <input type="number" step="any" min="0" class="input-mini" data-bind="value: TonsOfBigeyeObserved" />
+            </td>
+            }
+        </tr>
+        <tr>
+            <td><strong>Large Bigeye (&gt; 9kgs)</strong></td>
+            <td>
+                <select id="ContainsLargeBigeye" 
+                        name="ContainsLargeBigeye" 
+                        class="input-small" 
+                        data-bind="value: ContainsLargeBigeye, options: $root.BooleanValues" />
+            </td>
+            <td>
+                <input type="number" step="1" min="0" max="100" class="input-mini" data-bind="value: LargeBigeyePercentage" />
+            </td>
+            <td>
+                <input type="number" step="1" min="0" class="input-mini" data-bind="value: LargeBigeyeCount" />
+            </td>
+            @if (IncludeLegacyColumn)
+            {
+            <td>&nbsp;</td>
+            }
+        </tr>
+    </tbody>
+</table>
+<br />
+<button type="button" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></button>

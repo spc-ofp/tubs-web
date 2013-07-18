@@ -47,16 +47,10 @@ namespace TubsWeb
         /// </summary>
         public static string Electronics = "Electronics";
 
-        public static string SafetyInspection = "SafetyInspection";
-
         /// <summary>
         /// MVC route name for the crew detail from the PS-1 form.
         /// </summary>
         public static string Crew = "Crew";
-
-        public static string Auxiliaries = "Auxiliaries";
-
-        public static string VesselDetails = "VesselDetails";
 
         /// <summary>
         /// MVC route name for vessel sightings (GEN-1)
@@ -78,7 +72,9 @@ namespace TubsWeb
         /// </summary>
         public static string EditGen1Transfers = "EditGen1Transfers";
 
-        // TODO:  This will go away...
+        /// <summary>
+        /// MVC route for displaying all GEN-1 data.
+        /// </summary>
         public static string Gen1 = "Gen1";
 
         /// <summary>
@@ -130,6 +126,13 @@ namespace TubsWeb
         /// MVC route name for long line set/haul (LL-2/3 form)
         /// </summary>
         public static string SetHaul = "SetHaul";
+
+        /// <summary>
+        /// MVC route name for all PS-4 forms associated with a trip
+        /// </summary>
+        public static string Ps4List = "Ps4List";
+
+        public static string Ps4ByPage = "Ps4ByPage";
 
 
         public static string LengthSamples = "LengthSamples";
@@ -248,38 +251,10 @@ namespace TubsWeb
             );
 
             routes.MapRoute(
-                name: SafetyInspection,
-                url: "Trip/{tripId}/SafetyInspection/{action}",
-                defaults: new { controller = "SafetyInspection", action = "Index" },
-                constraints: new { tripId = IsPositiveInteger }
-            );
-
-            routes.MapRoute(
                 name: Crew,
                 url: "Trip/{tripId}/Crew/{action}",
                 defaults: new { controller = "Crew", action = "Index" },
                 constraints: new { tripId = IsPositiveInteger }
-            );
-
-            // For now, route vessel attributes through Trip since there's a 1:1 relationship
-            // and it's PS only.
-            routes.MapRoute(
-                Auxiliaries,
-                "Trip/{tripId}/Auxiliaries/{action}",
-                new { controller = "Auxiliaries", action = "Index" },
-                new { tripId = IsPositiveInteger }
-            );
-
-            // As with vessel attributes, hang this off of Trip
-            // Alternately, we could hang this off Vessel and allow users to see the progression of
-            // attributes/details over time.
-            // Second alternate is to move attributes and details into a ViewModel and handle them
-            // elsewhere.
-            routes.MapRoute(
-                VesselDetails,
-                "Trip/{tripId}/VesselDetails/{action}",
-                new { controller = "VesselDetails", action = "Index" },
-                new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
@@ -400,6 +375,28 @@ namespace TubsWeb
                 constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger }
             );
 
+            routes.MapRoute(
+                name: "Ps4ByPageAndColumn",
+                url: "Trip/{tripId}/PS-4/Pages/{pageNumber}/Column/{columnNumber}",
+                defaults: new { controller = "Ps4", action = "Column" },
+                constraints: new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger, columnNumber = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: Ps4ByPage,
+                url: "Trip/{tripId}/PS-4/Pages/{pageNumber}",
+                defaults: new { controller = "Ps4", action = "Page" },
+                constraints: new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: Ps4List,
+                url: "Trip/{tripId}/PS-4/Pages",
+                defaults: new { controller = "Ps4", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
+            );
+
+
             // Although length samples are subordinate to Sets, they'll be available at a higher level
             // for a more readable URL.
             routes.MapRoute(
@@ -465,7 +462,6 @@ namespace TubsWeb
                 new { tripId = IsPositiveInteger }
             );
 
-            // Milestone!  First Long Line route!
             // TODO: Consider changing route to LL-2?  (Problem is that the form is LL-2/3, and '/' isn't great in a route URL)
             routes.MapRoute(
                 name: SetHaul,

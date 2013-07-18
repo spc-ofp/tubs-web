@@ -42,7 +42,18 @@ namespace TubsWeb.Core
         /// log4net logger.
         /// </summary>
         protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(JsonNetResult));
-        
+
+        /// <summary>
+        /// Generally, the defaults will be okay.  But in at least one instance
+        /// (Trip export), the default settings aren't correct.
+        /// </summary>
+        public JsonSerializerSettings SerializerSettings { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Formatting Formatting { get; set; }
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -50,6 +61,7 @@ namespace TubsWeb.Core
         {
             // Might flip this to AllowGet, since I'm using it for API type behavior
             JsonRequestBehavior = JsonRequestBehavior.DenyGet;
+            SerializerSettings = new JsonSerializerSettings();
         }
 
         public override void ExecuteResult(ControllerContext context)
@@ -65,19 +77,6 @@ namespace TubsWeb.Core
             }
 
             HttpResponseBase response = context.HttpContext.Response;
-
-            /*
-            // This appears to operate differently between IIS and Cassini, so
-            // I'm hard-coding to an appropriate ContentType
-            if (!String.IsNullOrEmpty(ContentType))
-            {
-                response.ContentType = ContentType;
-            }
-            else
-            {
-                response.ContentType = "application/json";
-            }
-            */
             response.ContentType = "application/json";
 
             if (ContentEncoding != null)
@@ -90,14 +89,24 @@ namespace TubsWeb.Core
             // http://msdn.microsoft.com/en-us/library/system.web.httpresponse.tryskipiiscustomerrors(v=vs.100).aspx
             response.TrySkipIisCustomErrors = true;
 
-            Logger.WarnFormat("Data is null? {0}", null == Data);
+            //Logger.DebugFormat("Data is null? {0}", null == Data);
+            //if (Data != null)
+            //{
+            //    Logger.DebugFormat("Data.GetType(): {0}", Data.GetType());
+            //    var serialized = JsonConvert.SerializeObject(Data);
+            //    Logger.DebugFormat("JSON error text:\n{0}", serialized);
+            //    response.Write(serialized);
+            //    response.Flush();
+            //}
+
             if (Data != null)
             {
-                Logger.WarnFormat("Data.GetType(): {0}", Data.GetType());
-                var serialized = JsonConvert.SerializeObject(Data);
-                Logger.WarnFormat("JSON error text:\n{0}", serialized);
-                response.Write(serialized);
-                response.Flush();
+                JsonTextWriter writer = new JsonTextWriter(response.Output)
+                {
+                    Formatting = Formatting
+                };
+                JsonSerializer serializer = JsonSerializer.Create(SerializerSettings);
+                serializer.Serialize(writer, Data);
             }
         }
     }

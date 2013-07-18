@@ -53,6 +53,7 @@ namespace TubsWeb.ViewModels
         #region v2009 Activity Codes
         public static IList<string> v2009ActivityCodes = new List<string>()
         {
+            String.Empty,
             "1",
             "2",
             "3",
@@ -80,6 +81,7 @@ namespace TubsWeb.ViewModels
         #region v2007 Activity Codes
         public static IList<string> v2007ActivityCodes = new List<string>()
         {
+            String.Empty,
             "1",
             "2",
             "3",
@@ -270,6 +272,9 @@ namespace TubsWeb.ViewModels
             [StringLength(2, ErrorMessage = "EEZ Code must be 2 characters")]
             public string EezCode { get; set; }
 
+            [Required(
+                AllowEmptyStrings=false,
+                ErrorMessage="Activity Code is required")]
             public string ActivityCode { get; set; }
 
             public int? WindSpeed { get; set; }

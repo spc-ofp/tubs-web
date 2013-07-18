@@ -21,74 +21,6 @@
     <link rel="start" href="~/" id="applicationHome" />    
     <link rel="alternate" type="application/rss+xml" title="Latest Trips" href="@Url.RouteUrl(TubsWeb.RouteConfig.RssFeed)" />
     @Styles.Render("~/Content/css")
-    <style>
-      .lookatme {
-        color: Red;
-        font-weight: bold;
-      }
-
-      /* Try this: http://html.cita.illinois.edu/nav/form/checkbox/index.php?example=4 */
-
-      /* Works but ugly*/
-      input[type=checkbox]:focus {
-          outline: 3px solid blue;
-      }
-
-      /* http://css-tricks.com/the-checkbox-hack/
-      input[type=checkbox]:focus ~ label {
-          background: red;
-      }
-      */
-
-      /*
-       * This isn't working either:
-       * http://codepen.io/joshnh/pen/eIksb
-
-      label:focus,
-      label + input:focus {
-          background-color: #fa3;
-      }
-       */
-      
-      .input-validation-error 
-      {
-          /* Bootstrap is overriding the color:  In MVC3, this was handled by hooking the validator...*/
-          color: #b94a48;
-          font-weight: bold;
-      }
-      
-      .nobr { white-space: nowrap; }
-
-        /* div.compact-header, div.compact-row, editor-row, and span1q are all part of using divs to contain multi-row inputs instead of a table */
-        .row div.compact-header {
-            margin-left: 10px;
-        }
-
-        .editor-row
-        {
-            margin-left: 10px;
-        }
-
-        /* Bigger than span1 (60px), but smaller than span2 (140px) */
-        .span1q
-        {
-            width: 80px;
-        }
-
-        div.compact-row {
-            padding-bottom: 5px;
-        }
-
-        /* This is blowing away the Bootstrap styling on textboxes*/
-        /* Bootstrap adds a 10 pixel bottom margin to all inputs.  This is undesirable in a table, so turn it off*/
-        .table td select,
-        .table td input[type="text"],
-        .table td input[type="number"]
-        {
-            margin-bottom: 0px;
-        }
-
-    </style>
     @RenderSection("AdditionalCss", false) 
 
     <!-- Use Modernizr instead of html5shim / html5shiv, at least until it breaks -->
@@ -134,19 +66,6 @@
                     <li>@Html.RouteLink("Reports", new { controller = "Home", action = "Reports" })</li>
                     <li>@Html.RouteLink("About", new { controller = "Home", action = "About" })</li>
                     <li>@Html.RouteLink("Help", new { controller = "Home", action = "EntryHelp" })</li>
-                    @* Redundant for IE, but put it up there in the user's face... *@
-                    @* TODO:  Make this full width...
-                    <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">RSS<b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="@Url.Action("Rss", "Trip")">
-                            <img src="~/Content/images/feed-icon.png" width="8" height="8" alt="RSS Feed Icon"/>
-                            Latest Trips</a>
-                        </li>
-                    </ul>
-                    </li>
-                    *@    
                 </ul>
             }
             @{ Html.RenderPartial("_UserWidget"); }

@@ -1,0 +1,47 @@
+﻿@model TubsWeb.ViewModels.PurseSeineSetViewModel
+
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>Species</th>
+            <th>Fate</th>
+            <th>Observed Weight (mT)</th>
+            <th>Observed Count</th>
+            <th>Log Weight (mT)</th>
+            <th>Log Count</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var sc in Model.AllCatch)
+    {
+        <tr>
+            <td>@Html.DisplayFor(s => sc.SpeciesCode)</td>
+            <td>@Html.DisplayFor(s => sc.FateCode)</td>
+            <td>@Html.DisplayFor(s => sc.ObservedWeight)</td>
+            <td>@Html.DisplayFor(s => sc.ObservedCount)</td>
+            <td>@Html.DisplayFor(s => sc.LogbookWeight)</td>
+            <td>@Html.DisplayFor(s => sc.LogbookCount)</td>
+            <td>@Html.DisplayFor(s => sc.Comments)</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<hr />
+<table class="table table-bordered table-condensed table-striped">
+    <caption>Large Tuna Catch (&gt; 80cm or &gt; 9kg)</caption>
+    <thead>
+        <tr>
+            <th>Species</th>
+            <th>Percentage of All Tuna</th>
+            <th>Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Html.DisplayFor(m => Model.LargeSpecies)</td>
+            <td>@Html.DisplayFor(m => Model.LargeSpeciesPercentage)</td>
+            <td>@Html.DisplayFor(m => Model.LargeSpeciesCount)</td>
+        </tr>
+    </tbody>
+</table>

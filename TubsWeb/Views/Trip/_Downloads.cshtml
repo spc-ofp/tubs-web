@@ -1,0 +1,95 @@
+﻿@model TubsWeb.ViewModels.TripSummaryViewModel
+
+@{
+    string formatString = System.Web.Configuration.WebConfigurationManager.AppSettings["ReportingServicesFormatUrl"].ToString();
+    string baseFileName = ViewBag.BaseDownloadName ?? string.Empty;
+}
+
+@* TODO Add downloads for CSV downloads of GEN-1, GEN-2, GEN-6, Days, and Sets *@
+@* TODO Better yet, figure out how to push this all into the controller.  This is too messy for Razor *@
+
+@{
+    // TODO:  It would be even better if this only showed for people not in the editors group...
+    string confirmDownload = "This is confidential data subject to a data disclosure policy.  Continue?";
+}
+
+<div class="row">
+    <div class="span2"><strong>Cover Page</strong></div>
+    @{ 
+        string coverPageUrl = String.Format(formatString, "CoverPage", ViewBag.TripId);
+        if (!coverPageUrl.EndsWith("&rs:Format=PDF"))
+        {
+            coverPageUrl += "&rs:Format=PDF";
+        }
+    }
+    <div class="span2">
+        <a id="coverPageLink" href="@coverPageUrl" target="_blank" download="@(baseFileName)cover.pdf">
+            <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="span2"><strong>Trip Summary</strong></div>
+    @{ 
+        string reportName =
+            "S".Equals(Model.GearCode) ? "PS-TripSummary" :
+            "L".Equals(Model.GearCode) ? "LL-TripSummary" :
+            "P".Equals(Model.GearCode) ? "PL-TripSummary" :
+            String.Empty;
+        string tripSummaryUrl = String.Format(formatString, reportName, ViewBag.TripId);
+        string externalPdf = tripSummaryUrl + "&rs:Format=PDF";
+    }
+    <div class="span2">
+        <a id="summaryPdf" href="@externalPdf" target="_blank">
+            <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
+        </a>
+    </div>
+    <div class="span2">
+        <a id="summaryOther" href="@tripSummaryUrl">Other Formats</a>
+    </div>
+</div>
+<div class="row">
+    <div class="span2"><strong>Trip Positions</strong></div>
+    <div class="span2">
+        @if (!Model.HasPositions)
+        {
+            @: N/A
+        }
+        else
+        {
+        <a id="kmlLink" href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })' download="@(baseFileName)positions.kml">
+            <img src="~/Content/images/google-earth-16x16.png" alt="KML" height="16" width="16" />&nbsp;KML
+        </a>
+        }
+    </div>
+    <div class="span2"><a href="#">Other Formats</a></div>
+</div>
+<div class="row">
+    <div class="span2"><strong>Length Frequency</strong></div>
+    <div class="span2">
+        @* TODO:  Change this to N/A if no LF data available *@
+        @{ var lflink = Url.RouteUrl(TubsWeb.RouteConfig.LengthFrequencyByTrip, new { tripId = ViewBag.TripId });}
+        <a id="lfexcelLink" href="@lflink" download="@(baseFileName)lengthfrequency.xlsx" data-trigger="confirm" data-content="@confirmDownload">
+            <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="span2"><strong>Quick Summary</strong></div>
+    <div class="span2">
+        @* TODO:  Change this to N/A if no LF data available *@
+        @{ var tslink = Url.RouteUrl(TubsWeb.RouteConfig.ExcelTripSummary, new { tripId = ViewBag.TripId });}
+        <a id="tsexcelLink" href="@tslink" download="@(baseFileName)TripSummary.xlsx">
+            <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="span2"><strong>Full Export</strong></div>
+    <div class="span2">
+        @{ var jsonLink = Url.Action("Export", "Trip", new { tripId = ViewBag.TripId }); }
+        <a id="jsonLink" href="@jsonLink" download="@(baseFileName)Export.json">
+            <img src="~/Content/images/json-16x16.png" alt="JSON" height="16" width="16" />&nbsp;JSON
+        </a>
+    </div>
+</div>

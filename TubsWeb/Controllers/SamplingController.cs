@@ -28,7 +28,8 @@ namespace TubsWeb.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
 
     /// <summary>
-    /// 
+    /// I go through all the trouble to extract the common code for navigating through LL and
+    /// PS sets and then I can't use this navigation scheme for PS-4 entry.
     /// </summary>
     public abstract class SamplingController : SuperController
     {

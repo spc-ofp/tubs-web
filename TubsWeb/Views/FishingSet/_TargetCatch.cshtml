@@ -16,15 +16,17 @@
                 <th>&nbsp;</th>
             </tr>
         </thead>
+        @* TODO: Remove Count/Comments columns and train users to use "ByCatch" if there are comments *@
+        @* ViewModel mapping will discriminate between target and bycatch not just on species but also on presence of count/comments *@
         <tbody data-bind="foreach: TargetCatch" class="targetCatch">
             <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">
                 <td>
                     <button type="button"
                             tabindex="3000"
-                            class="removeItem btn btn-mini btn-danger" 
+                            class="removeItem btn btn-danger" 
                             rel="tooltip" 
-                            title="Click to remove row">
-                        <i class="icon-remove icon-white"></i>
+                            title="Click to delete row">
+                        <i class="icon-trash icon-white"></i>
                     </button>
                 </td>
                 <td>
@@ -49,6 +51,7 @@
                 <td>
                     <input type="text" data-bind="value: Comments, uniqueName: true" />
                 </td>
+                @* TODO: Move this outside *@
                 <td>
                     <button type="button"
                             class="addItem btn btn-mini btn-info" 
@@ -60,5 +63,5 @@
             </tr>
         </tbody>
     </table>
-    <button id="btnAddTargetCatchWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.TargetCatch().length == 0">Add Record</button>
+    <button id="btnAddTargetCatchWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.TargetCatch().length == 0"><i class="icon-plus-sign icon-white"></i> Add Target Tuna</button>
 </fieldset>

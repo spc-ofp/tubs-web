@@ -112,7 +112,7 @@ namespace TubsWeb.Controllers
             var electronics = new List<ElectronicDevice>(16);
             electronics.AddRange(
                 from d in vm.Vms.Union(vm.Buoys).Union(vm.OtherDevices)
-                where d != null && !d._destroy
+                where null !=d && !d._destroy
                 select Mapper.Map<ElectronicsViewModel.DeviceModel, ElectronicDevice>(d)
             );
 

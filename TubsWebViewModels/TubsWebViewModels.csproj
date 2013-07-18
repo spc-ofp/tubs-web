@@ -87,6 +87,7 @@
     <Compile Include="Mapping\Profiles\SightingProfile.cs" />
     <Compile Include="Mapping\Profiles\TransferProfile.cs" />
     <Compile Include="Mapping\Profiles\TripInfoProfile.cs" />
+    <Compile Include="Mapping\Profiles\TripSamplingProfile.cs" />
     <Compile Include="Mapping\Profiles\TripSummaryProfile.cs" />
     <Compile Include="Mapping\Resolvers\ActionCodeResolver.cs" />
     <Compile Include="Mapping\Resolvers\ActivityResolver.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="ViewModels\SightingViewModel.cs" />
     <Compile Include="ViewModels\TransferViewModel.cs" />
     <Compile Include="ViewModels\TripCreationViewModel.cs" />
+    <Compile Include="ViewModels\TripSamplingViewModel.cs" />
     <Compile Include="ViewModels\TripSummaryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

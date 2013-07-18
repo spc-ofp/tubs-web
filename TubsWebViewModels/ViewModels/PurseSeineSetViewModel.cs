@@ -27,6 +27,9 @@ namespace TubsWeb.ViewModels
     using System.ComponentModel.DataAnnotations;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// PS-3 form ViewModel.
+    /// </summary>
     public class PurseSeineSetViewModel
     {
         public PurseSeineSetViewModel()
@@ -38,7 +41,7 @@ namespace TubsWeb.ViewModels
 
         // Use Knockout to help with common codes
         public IList<string> TargetSpecies = new List<string>() { "SKJ", "YFT", "BET" };        
-        public IList<string> BooleanValues = new List<string> { null, "YES", "NO" };
+        public IList<string> BooleanValues = new List<string> { String.Empty, "YES", "NO" };
         public IList<string> FateCodes = new List<string>
         {
             "RWW",
@@ -60,6 +63,7 @@ namespace TubsWeb.ViewModels
             "DPD",
             "DPU",
             "DOR",
+            "ESC"
         };
         // TODO Not sure about ByCatch yet...
         
@@ -68,10 +72,6 @@ namespace TubsWeb.ViewModels
         public bool HasNext { get; set; }
         public bool HasPrevious { get; set; }
         public int VersionNumber { get; set; }
-        // It can happen that set activities start during one day and end
-        // during another.  If that happens, rather than puke and require
-        // a manual SQL operation, allow the data entry tech to confirm
-        public bool CrossesDayBoundary { get; set; }
 
         public int TripId { get; set; }
         public int ActivityId { get; set; }
@@ -87,6 +87,14 @@ namespace TubsWeb.ViewModels
         public string LogbookTime { get; set; }
 
         public DateTime? SkiffOff { get; set; }
+
+        // New DateOnly fields are to fix hole in PS-3 implementation
+        // CLC 12/07/13
+        public DateTime? WinchOnDateOnly { get; set; }
+        public DateTime? RingsUpDateOnly { get; set; }
+        public DateTime? BeginBrailingDateOnly { get; set; }
+        public DateTime? EndBrailingDateOnly { get; set; }
+        public DateTime? EndOfSetDateOnly { get; set; }
 
         [Display(Name = "Start of Set")]
         [RegularExpression(@"^[0-2]\d[0-5]\d$")]

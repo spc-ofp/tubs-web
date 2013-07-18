@@ -142,6 +142,17 @@ namespace TubsWeb.ViewModels
 
         public IList<LongLineCatchDetail> Details { get; set; }
 
+        [JsonIgnore]
+        public IEnumerable<int> DeletedCatch
+        {
+            get
+            {
+                return from d in this.Details
+                       where d != null && d._destroy
+                       select d.Id;
+            }
+        }
+
         
         /// <summary>
         /// LL-4 line item
@@ -224,6 +235,10 @@ namespace TubsWeb.ViewModels
             /// Comments and/or tag number(s)
             /// </summary>
             public string Comments { get; set; }
+
+            public bool _destroy { get; set; }
+
+            public bool NeedsFocus { get; set; }
         }
     }
 }

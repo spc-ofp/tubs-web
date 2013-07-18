@@ -37,6 +37,7 @@ namespace TubsWeb
                 cfg.AddProfile<PageCountProfile>();
                 cfg.AddProfile<TripSummaryProfile>();
                 cfg.AddProfile<LongLineSampleProfile>();
+                cfg.AddProfile<TripSamplingProfile>(); // Purse Seine sampling
                 // Trim all strings.  If the trimmed string is empty, return a null
                 Mapper.CreateMap<string, string>().ConvertUsing(s =>
                 {

@@ -13,6 +13,13 @@
  *  
  * You should have received a copy of the GNU Affero General Public License
  * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* NOTE:  It would probably be useful to migrate from straight-out-of-the-box Bootstrap to
+ * one of the Less/Sass versions and then muck with font sizes and control heights to jam
+ * more stuff onto the page.
+ * Default Bootstrap is good for low-volume forms, but there's a lot of white space
+ * inside the controls.
  */    
 
 /*
@@ -45,6 +52,18 @@ footer
     padding-top: 60px;
 }
 
+/* div.compact-header, div.compact-row, editor-row, and span1q are all part of using divs to contain multi-row inputs instead of a table */
+.editor-row
+{
+    margin-left: 10px;
+}
+
+/* Bigger than span1 (60px), but smaller than span2 (140px) */
+.span1q
+{
+    width: 80px;
+}
+
 /*
  * compact-header resets the margin on
  * a div inside a row-fluid.
@@ -54,6 +73,11 @@ footer
  */
 .row-fluid div.compact-header {
     margin-left: 5px;
+}
+
+.row div.compact-header
+{
+    margin-left: 10px;
 }
 
 /*
@@ -71,9 +95,76 @@ div.compact-row {
 }
 
 /*
-    * snap-content is transparent without an explicit background color
-    * http://stackoverflow.com/questions/16726270/twitter-bootstrap-and-snap-js
-    */
+ * snap-content is transparent without an explicit background color
+ * http://stackoverflow.com/questions/16726270/twitter-bootstrap-and-snap-js
+ */
 .snap-content {
     background: white;
 }
+
+/* Bootstrap adds a 10 pixel bottom margin to all inputs.  This is undesirable in a table, so turn it off*/
+.table td input[type="text"],
+.table td input[type="number"]
+{
+    display: inline-block;
+    height: 20px;
+    padding: 4px 6px;
+    margin-bottom: 0px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #555555;
+    vertical-align: middle;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+    
+}
+
+.table td .control-group,
+.table td select
+{
+    margin-bottom: 0px;
+}
+
+.nobr
+{ 
+    white-space: nowrap;
+}
+
+.lookatme {
+color: Red;
+font-weight: bold;
+}
+
+.input-validation-error 
+{
+    /* Bootstrap is overriding the color:  In MVC3, this was handled by hooking the validator...*/
+    color: #b94a48;
+    font-weight: bold;
+}
+
+
+/* Try this: http://html.cita.illinois.edu/nav/form/checkbox/index.php?example=4 */
+
+/* Works but ugly*/
+input[type=checkbox]:focus {
+    outline: 3px solid blue;
+}
+
+/* http://css-tricks.com/the-checkbox-hack/
+input[type=checkbox]:focus ~ label {
+    background: red;
+}
+*/
+
+/*
+* This isn't working either:
+* http://codepen.io/joshnh/pen/eIksb
+
+label:focus,
+label + input:focus {
+    background-color: #fa3;
+}
+*/
+      
+

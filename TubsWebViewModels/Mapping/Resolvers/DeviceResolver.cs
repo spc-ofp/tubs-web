@@ -37,12 +37,15 @@ namespace TubsWeb.ViewModels.Resolvers
         protected override ElectronicDeviceType ResolveCore(string source)
         {
             var deviceType = Tubs.ElectronicDeviceType.Other;
-            try
+            if (!String.IsNullOrEmpty(source))
             {
-                deviceType = MappingExtensions.FromDescription<Tubs.ElectronicDeviceType>(source);
-            }
-            catch (ArgumentException ae)
-            { /* NOPMD: Swallow this type of exception */}
+                try
+                {
+                    deviceType = MappingExtensions.FromDescription<Tubs.ElectronicDeviceType>(source);
+                }
+                catch (ArgumentException ae)
+                { /* NOPMD: Swallow this type of exception */}
+            }           
             return deviceType;
         }
     }

@@ -16,12 +16,12 @@
     </td>
     <td>
         <div class="control-group">
-            @Html.TextBoxFor(m => Model.Years, new { data_bind = string.Format("value: {0}.Years", bindingSource), @class = "input-mini number", @type = "number" })
+            @Html.TextBoxFor(m => Model.Years, new { data_bind = string.Format("value: {0}.Years", bindingSource), @class = "input-mini number", @type = "number", min = "0" })
         </div>
     </td>
     <td>
         <div class="control-group">
-            @Html.TextBoxFor(m => Model.Nationality, new { data_bind = string.Format("value: {0}.Nationality", bindingSource), @class = "input-mini" })
+            @Html.TextBoxFor(m => Model.Nationality, new { data_bind = string.Format("value: {0}.Nationality", bindingSource), @class = "input-mini", list="countryCodes" })
         </div>
     </td>
     <td>

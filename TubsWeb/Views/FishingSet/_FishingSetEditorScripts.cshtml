@@ -13,7 +13,14 @@
 @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
 
 <script>
-    
+    /*
+     * Tab advance functionality from StackOverflow
+     * http://stackoverflow.com/questions/9252127/how-to-change-twitter-bootstrap-tab-when-button-is-pressed
+     */
+    function nextTab() {
+        $('#formSections li.active').next().find('a[data-toggle="tab"]').click();
+    }
+
     $(document).ready(function () {
         $(document).on('keypress', 'enter', function () {
             // It would be cool to convert this to a tab keypress, but I'll be happy to
@@ -21,31 +28,28 @@
             return false;
         });
 
-        var viewModel = new tubs.psSet(@modelAsJson);
-        viewModel.clearDirtyFlag();
-        ko.applyBindings(viewModel);
+        // Add some click handlers
+        $('.nextTabButton').on("click", function () {
+            nextTab();
+        });
 
-        $(".bycatch").on("click", ".removeItem", function () {
+        var viewModel = new tubs.psSet(@modelAsJson);       
+        ko.applyBindings(viewModel);
+        viewModel.clearDirtyFlag();
+
+        $("#byCatchTable").on("click", ".removeItem", function () {
             viewModel.removeByCatch(ko.dataFor(this));
         });
 
-        $(".bycatch").on("click", ".addItem", function () {
-            viewModel.addByCatch();
-        });
-
-        $(".targetCatch").on("click", ".removeItem", function () {
+        $("#targetCatch").on("click", ".removeItem", function () {
             viewModel.removeTargetCatch(ko.dataFor(this));
         });
 
-        $(".targetCatch").on("click", ".addItem", function () {
-            viewModel.addTargetCatch();
-        });
-
-        $("#btnAddByCatchWhenEmpty").on("click", function () {
+        $("#btnAddByCatch").on("click", function () {
             viewModel.addByCatch();
         });
 
-        $("#btnAddTargetCatchWhenEmpty").on("click", function () {
+        $("#btnAddTargetCatch").on("click", function () {
             viewModel.addTargetCatch();
         });
 
@@ -69,14 +73,6 @@
 
                 return "Leaving the page will discard unsaved changes.";
             }
-        };  
-
-        // This will toggle visibility of legends, but it needs some
-        // work, as we want to hide all but the first on load
-        // Also, want to use these as a clickable hint:
-        // icon-chevron-down icon-chevron-up
-        //$('legend').click(function(){
-        //    $(this).siblings().slideToggle("slow");
-        //});
+        };
     });
 </script>

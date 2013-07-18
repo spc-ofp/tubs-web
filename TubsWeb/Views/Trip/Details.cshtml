@@ -12,96 +12,25 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@{Html.RenderPartial("_TripSummary");}
-
-@{
-    string formatString = System.Web.Configuration.WebConfigurationManager.AppSettings["ReportingServicesFormatUrl"].ToString();
-    string baseFileName = ViewBag.BaseDownloadName ?? string.Empty;
-}
-
-@* TODO Add downloads for CSV downloads of GEN-1, GEN-2, GEN-6, Days, and Sets *@
-@* TODO Better yet, figure out how to push this all into the controller.  This is too messy for Razor *@
-
-@{
-    // TODO:  It would be even better if this only showed for people not in the editors group...
-    string confirmDownload = "This is confidential data subject to a data disclosure policy.  Continue?";
-}
-
-<fieldset>
-    <legend><i class="icon-download-alt"></i> Downloads</legend>
-
-    <div class="row">
-        <div class="span2"><strong>Cover Page</strong></div>
-        @{ 
-            string coverPageUrl = String.Format(formatString, "CoverPage", ViewBag.TripId);
-            if (!coverPageUrl.EndsWith("&rs:Format=PDF"))
-            {
-                coverPageUrl += "&rs:Format=PDF";
-            }
-        }
-        <div class="span2">
-            <a id="coverPageLink" href="@coverPageUrl" target="_blank" download="@(baseFileName)cover.pdf">
-                <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
-            </a>
+<div class="tabbable tabs-top">
+    <ul id="summarySections" class="nav nav-tabs">
+        <li class="active" id="summaryTab"><a href="#summary" data-toggle="tab">Summary</a></li>
+        <li id="downloadTab"><a href="#downloads" data-toggle="tab">Downloads</a></li>        
+        <li><a href="#map" data-toggle="tab">Map</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="summary">
+            @{ Html.RenderPartial("_TripSummary", Model); }
+        </div>
+        <div class="tab-pane" id="downloads">
+            @{ Html.RenderPartial("_Downloads", Model); }
+        </div>
+        <div class="tab-pane" id="map">
+            <div id="mapX" style="width: 600px; height: 400px;"></div>
         </div>
     </div>
-    <div class="row">
-        <div class="span2"><strong>Trip Summary</strong></div>
-        @{ 
-            string reportName =
-                "S".Equals(Model.GearCode) ? "PS-TripSummary" :
-                "L".Equals(Model.GearCode) ? "LL-TripSummary" :
-                "P".Equals(Model.GearCode) ? "PL-TripSummary" :
-                String.Empty;
-            string tripSummaryUrl = String.Format(formatString, reportName, ViewBag.TripId);
-            string externalPdf = tripSummaryUrl + "&rs:Format=PDF";
-        }
-        <div class="span2">
-            <a id="summaryPdf" href="@externalPdf" target="_blank">
-                <img src="~/Content/images/pdf-16x16.png" alt="PDF" height="16" width="16" />&nbsp;PDF
-            </a>
-        </div>
-        <div class="span2">
-            <a id="summaryOther" href="@tripSummaryUrl">Other Formats</a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span2"><strong>Trip Positions</strong></div>
-        <div class="span2">
-            @if (!Model.HasPositions)
-            {
-                @: N/A
-            }
-            else
-            {
-            <a id="kmlLink" href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })' download="@(baseFileName)positions.kml">
-                <img src="~/Content/images/google-earth-16x16.png" alt="KML" height="16" width="16" />&nbsp;KML
-            </a>
-            }
-        </div>
-        <div class="span2"><a href="#">Other Formats</a></div>
-    </div>
-    <div class="row">
-        <div class="span2"><strong>Length Frequency</strong></div>
-        <div class="span2">
-            @* TODO:  Change this to N/A if no LF data available *@
-            @{ var lflink = Url.RouteUrl(TubsWeb.RouteConfig.LengthFrequencyByTrip, new { tripId = ViewBag.TripId });}
-            <a id="lfexcelLink" href="@lflink" download="@(baseFileName)lengthfrequency.xlsx" data-trigger="confirm" data-content="@confirmDownload">
-                <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel
-            </a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span2"><strong>Quick Summary</strong></div>
-        <div class="span2">
-            @* TODO:  Change this to N/A if no LF data available *@
-            @{ var tslink = Url.RouteUrl(TubsWeb.RouteConfig.ExcelTripSummary, new { tripId = ViewBag.TripId });}
-            <a id="tsexcelLink" href="@tslink" download="@(baseFileName)TripSummary.xlsx">
-                <img src="~/Content/images/excel-16x16.gif" alt="Excel" height="16" width="16" />&nbsp;Excel
-            </a>
-        </div>
-    </div>
-</fieldset>
+</div>
+
 
 @* The following infrastructure moves the trip close form to a Bootstrap modal form *@
 <div id="closeModal" class="modal hide fade" tabindex="-1" role="dialog">
@@ -127,20 +56,48 @@
 </div>
 
 <ul id="tlyPageGuide" data-tourtitle="Trip data navigation">
-    <li class="tlypageguide_right" data-tourtarget="#subsectionNavbar">
+    <li class="tlypageguide_top" data-tourtarget="#subsectionNavbar">
         <div>
             Use these links to navigate to different sections of the trip.
         </div>
     </li>
-    <li class="tlypageguide_bottom" data-tourtarget="#crumb_1">
+    <li class="tlypageguide_top" data-tourtarget="#crumb_1">
         <div>
             This link will always take you back to the list of all trips.
         </div>
     </li>
-    <li class="tlypageguide_bottom" data-tourtarget="#crumb_2">
+    <li class="tlypageguide_top" data-tourtarget="#crumb_2">
         <div>
             As you navigate through the different sections, this link will always
             return you to this page.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#summaryTab">
+        <div>
+            This tab displays a quick summary of the trip.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#downloadTab">
+        <div>
+            This tab holds links to all available downloads for this trip.
+        </div>
+    </li>
+    <li class="tlypageguide_top" data-tourtarget="#ExpectedSeaDayCount">
+        <div>
+            The first number is the number of PS-2 forms that have been filled out
+            for this trip.  The second number is the expected number of PS-2 forms
+            for the trip based on the length of the trip in days.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#vesselDays">
+        <div>
+            The total count of days spent fishing or searching for fish.
+            Any fishing or searching activities in a day is counted as a whole day.
+        </div>
+    </li>
+    <li class="tlypageguide_bottom" data-tourtarget="#cpue">
+        <div>
+            Catch per unit effort.  Includes all species (including bycatch).
         </div>
     </li>
     <li class="tlypageguide_left" data-tourtarget="#coverPageLink">
@@ -185,9 +142,14 @@
 
 }
 
+@section AdditionalCss {
+    <link rel="stylesheet" href="~/Content/leaflet.css" />
+}
+
 @section AdditionalScripts {
     @* Sco.js integrates with Bootstrap and adds some useful features *@
     @System.Web.Optimization.Scripts.Render("~/bundles/scojs")
+    @System.Web.Optimization.Scripts.Render("~/bundles/leaflet")
     <script>
         $(function () {
             $('.large-text').trunk8({
@@ -195,6 +157,34 @@
             });
             /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
             tl.pg.init();
+        });
+    </script>
+    <script>
+        $(function () {
+            /*
+             * Couple problems with this:
+             * 1) Leaflet uses a single map marker, negating the custom styling in the KML
+             * 2) OSM tiles appear to be _very_ slow
+             * 3) Clicking on a marker gives us the label (YAY), but it does some kind of strange auto-movement thing
+             * 4) The folders in the KML aren't being respected
+             * 5) The default OSM map is probably more detailed than we want
+             * 6) This map should have some additional layers with EEZ, 12 mile boundary, etc.
+             *
+             * GeoJSON looks promising except for some different issues:
+             * 1)  The only package for GeoJSON in C# is 3 years old and is not being updated
+             * 2)  GeoJSON has no timestamps, so times need to go into item properties
+             * 3)  There are no good examples for using the GeoJSON.Net project
+             */
+            L.Icon.Default.imagePath = '@Url.Content("~/Content/images")';
+            var map = new L.Map('mapX');
+            var osm = new L.TileLayer.OpenStreetMap();
+            var track = new L.KML('@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId }, this.Request.Url.Scheme)');
+            track.on("loaded", function (e) {
+                map.fitBounds(e.target.getBounds());
+            });
+            map.addLayer(track);
+            map.addLayer(osm);
+            map.addControl(new L.Control.Layers({}, { 'Track': track }));
         });
     </script>
 }

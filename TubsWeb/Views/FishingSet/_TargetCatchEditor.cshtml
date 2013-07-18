@@ -1,0 +1,36 @@
+﻿@*
+ * The number of target fields is small enough that this shouldn't be a table (which is too spread out)
+ * But should instead be an unordered list.
+ *@
+<div class="row editor-row">
+    <div class="span2 compact-header"><br /><strong>Species Code</strong></div>
+    <div class="span2 compact-header"><br /><strong>Fate Code</strong></div>
+    <div class="span2 compact-header"><strong>Observer<br />Weight (mT)</strong></div>
+    <div class="span2 compact-header"><strong>Vessel<br />Weight (mT)</strong></div>
+    <div class="span1q compact-header">&nbsp;</div>
+</div>
+@*
+ * Knockout allows containerless binding.  That's why there's a knockout call inside HTML comments
+ * http://knockoutjs.com/documentation/foreach-binding.html
+ *@
+<!-- ko foreach: TargetCatch -->
+<div class="row editor-row targetCatchRow" data-bind="css: { warning: (isDirty() || Id() == 0) }">
+    <div class="form-horizontal compact-row">
+        <select data-bind="hasfocus: NeedsFocus, options: $root.TargetSpecies, value: SpeciesCode, uniqueName: true" class="span2 species"></select>
+        <select class="span2" data-bind="value: FateCode, options: $root.FateCodes"></select>
+        <input type="number" class="span2" step="any" min="0" data-bind="value: ObservedWeight, uniqueName: true" />
+        <input type="number" class="span2" step="any" min="0" data-bind="value: LogbookWeight, uniqueName: true" />
+        <button type="button"
+                tabindex="3000"
+                class="removeItem btn btn-danger" 
+                rel="tooltip" 
+                title="Click to delete row">
+               <i class="icon-trash icon-white"></i>
+        </button>
+    </div>
+</div>
+<!-- /ko -->
+<hr />
+<button id="btnAddTargetCatch" type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i> Add Target Catch</button>
+<hr />
+<button type="button" class="btn btn-info nextTabButton">Next Section <i class="icon-forward"></i></button>

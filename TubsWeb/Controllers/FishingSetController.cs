@@ -76,6 +76,11 @@ namespace TubsWeb.Controllers
                 return InvalidTripResponse();
             }
 
+            // While PurseSeineTrip can access sets directly,
+            // the current implementation is preferred as it
+            // doesn't actually hydrate the sets in question
+            // until we're sure the provided setNumber is correct.
+
             var sets = TubsDataService.GetRepository<PurseSeineSet>(
                 MvcApplication.CurrentSession).FilterBy(
                     s => s.Activity.Day.Trip.Id == tripId.Id);
@@ -118,10 +123,15 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), fsvm);
         }
 
-
+        /// <summary>
+        /// MVC Action for displaying a list of all sets in a trip.
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
         public ActionResult List(Trip tripId)
         {
-            if (null == tripId)
+            var trip = tripId as PurseSeineTrip;
+            if (null == trip)
             {
                 return new NoSuchTripResult();
             }
@@ -129,9 +139,8 @@ namespace TubsWeb.Controllers
             ViewBag.Title = String.Format("Sets for {0}", tripId.ToString());
             ViewBag.TripNumber = tripId.SpcTripNumber ?? "This Trip";
 
-            var repo = new TubsRepository<PurseSeineSet>(MvcApplication.CurrentSession);
-            // Push the projection into a List so that it's not the NHibernate collection implementation
-            var sets = repo.FilterBy(s => s.Activity.Day.Trip.Id == tripId.Id).ToList<PurseSeineSet>();
+            // Materialize list so that sets can be sorted
+            var sets = trip.FishingSets.ToList();
             sets.Sort(delegate(PurseSeineSet s1, PurseSeineSet s2)
             {
                 return Comparer<int?>.Default.Compare(s1.SetNumber, s2.SetNumber);

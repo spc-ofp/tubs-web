@@ -1,108 +1,109 @@
 ﻿@model TubsWeb.ViewModels.TripSummaryViewModel
 
-@{
-    // Not too happy about the fieldset here (maybe move it to the calling view?)
-    // but for now this will at least hide the legend in the modal
-    string legendText = (null != ViewBag.IsModal && ViewBag.IsModal) ? String.Empty : "Trip Summary";
-}
-
-<fieldset>
-    <legend>@legendText</legend>
-
 @* 
     I don't normally like using tables for anything but tabular information, but I think we can stretch the
     definition to include this info.
  *@
-    <table class="table table-striped table-bordered table-condensed">
+<table class="table table-striped table-bordered table-condensed">
+    <tr>
+        <td>Observer:</td>
+        <td>@Model.ObserverName</td>
+        <td>Program:</td>
+        <td>@Model.ProgramCode</td>
+    </tr>
+    <tr>
+        <td>Trip Number:</td>
+        <td>@Model.TripNumber</td>
+        <td>Alternate Trip Number:</td>
+        <td>@Model.AlternateTripNumber</td>
+    </tr>
+    <tr>
+        <td>Departure Date:</td>
+        <td>@Html.DisplayFor(m => m.DepartureDate, new { format = "dd/MM/yy HHmm" })</td>
+        <td>Return Date:</td>
+        <td>@Html.DisplayFor(m => m.ReturnDate, new { format = "dd/MM/yy HHmm" })</td>
+    </tr>
+    <tr>
+        <td>Vessel Name:</td>
+        <td>@Html.DisplayFor(m => m.VesselName)</td>
+        <td>Vessel Flag:</td>
+        <td>
+            @if (!String.IsNullOrEmpty(Model.VesselFlag))
+            {
+                var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", Model.VesselFlag.ToLower()));
+                <img src="@imgLink" alt="@Model.VesselFlag" title="@Model.VesselFlag" /> @:&nbsp;
+            }
+            @Html.DisplayFor(m => m.VesselFlag)
+        </td>
+    </tr>
+    <tr>
+        <td>Departure Port:</td>
+        <td>@Model.DeparturePort.ToString()</td>
+        <td>Return Port:</td>
+        <td>@Model.ReturnPort.ToString()</td>
+    </tr>
+    <!-- Add Sea days and sets for PS trips -->
+    @if ("S".Equals(Model.GearCode))
+    {
+        @*
+         * If the number of PS-2 forms is greater than the length of the trip in days, use the number of entered
+         * PS-2 forms as the max instead of the number of days at sea.
+         *@
         <tr>
-            <td>Observer:</td>
-            <td>@Model.ObserverName</td>
-            <td>Program:</td>
-            <td>@Model.ProgramCode</td>
-        </tr>
-        <tr>
-            <td>Trip Number:</td>
-            <td>@Model.TripNumber</td>
-            <td>Alternate Trip Number:</td>
-            <td>@Model.AlternateTripNumber</td>
-        </tr>
-        <tr>
-            <td>Departure Date:</td>
-            <td>@Html.DisplayFor(m => m.DepartureDate, new { format = "dd/MM/yy HHmm" })</td>
-            <td>Return Date:</td>
-            <td>@Html.DisplayFor(m => m.ReturnDate, new { format = "dd/MM/yy HHmm" })</td>
-        </tr>
-        <tr>
-            <td>Vessel Name:</td>
-            <td>@Html.DisplayFor(m => m.VesselName)</td>
-            <td>Vessel Flag:</td>
-            <td>
-                @if (!String.IsNullOrEmpty(Model.VesselFlag))
-                {
-                    var imgLink = @Url.Content(String.Format("~/Content/images/flags/{0}.png", Model.VesselFlag.ToLower()));
-                    <img src="@imgLink" alt="@Model.VesselFlag" title="@Model.VesselFlag" /> @:&nbsp;
-                }
-                @Html.DisplayFor(m => m.VesselFlag)
+            <td>Sea Days:</td>
+            <td id="ExpectedSeaDayCount">
+                @Model.SeaDayCount
+                /
+                @(Model.SeaDayCount > Model.ExpectedSeaDayCount ? Model.SeaDayCount : Model.ExpectedSeaDayCount)
             </td>
+            <td>Sets:</td>
+            <td>@Model.SetCount</td>
         </tr>
         <tr>
-            <td>Departure Port:</td>
-            <td>@Model.DeparturePort.ToString()</td>
-            <td>Return Port:</td>
-            <td>@Model.ReturnPort.ToString()</td>
-        </tr>
-        <!-- Add Sea days and sets for PS trips -->
-        @if ("S".Equals(Model.GearCode))
-        {
-            <tr>
-                <td>Sea Days:</td>
-                <td>@Model.SeaDayCount
-                    /
-                    @Model.ExpectedSeaDayCount
-                </td>
-                <td>Sets:</td>
-                <td>@Model.SetCount</td>
-            </tr> 
-        }  
+            <td>Vessel Days:</td>
+            <td id="vesselDays">@Model.VesselDays</td>
+            <td>CPUE (mT):</td>
+            <td id="cpue">@Html.DisplayFor(m => m.Cpue, new { format = "F2" })</td>
+        </tr> 
+    }  
     
-        @* TODO Add this to the VM
-        @if (Model.IsSpillSampled.HasValue && Model.IsSpillSampled.Value)
-        {
-        <tr>
-            <td>Spill Observer:</td>
-            <td>TODO</td>
-            <td>Spill Trip Number:</td>
-            <td>@Html.DisplayFor(m => m.SpillTripNumber)</td>
-        </tr>
-        }
-        *@
-        <tr>
-            <td>Entered By:</td>
-            <td>@Model.EnteredBy</td>
-            <td>Entered Date:</td>
-            <td>@Html.DisplayFor(m => m.EnteredDate, new { format = "dd/MM/yy" })</td>
-        </tr>
-        @if (Model.ClosedDate.HasValue)
-        {
-        <tr>
-            <td>Closed Date:</td>
-            <td>@Html.DisplayFor(m => m.ClosedDate, new { format = "dd/MM/yy" })</td>
-            <td>Entry Comments:</td>
-            <td>
-                @* Modal doesn't work with large-text plugin *@
-                @if (null != ViewBag.IsModal && ViewBag.IsModal)
-                {
-                    @: &nbsp;
-                }
-                else
-                {
-                <div class="large-text">
-                    @Html.DisplayFor(m => m.EntryComments)
-                </div>
-                }
-            </td>
-        </tr>
-        }
-        @* TODO Add verified information *@
-    </table>
-</fieldset>
+    @* TODO Add this to the VM
+    @if (Model.IsSpillSampled.HasValue && Model.IsSpillSampled.Value)
+    {
+    <tr>
+        <td>Spill Observer:</td>
+        <td>TODO</td>
+        <td>Spill Trip Number:</td>
+        <td>@Html.DisplayFor(m => m.SpillTripNumber)</td>
+    </tr>
+    }
+    *@
+    <tr>
+        <td>Entered By:</td>
+        <td>@Model.EnteredBy</td>
+        <td>Entered Date:</td>
+        <td>@Html.DisplayFor(m => m.EnteredDate, new { format = "dd/MM/yy" })</td>
+    </tr>
+    @if (Model.ClosedDate.HasValue)
+    {
+    <tr>
+        <td>Closed Date:</td>
+        <td>@Html.DisplayFor(m => m.ClosedDate, new { format = "dd/MM/yy" })</td>
+        <td>Entry Comments:</td>
+        <td>
+            @* Modal doesn't work with large-text plugin *@
+            @if (null != ViewBag.IsModal && ViewBag.IsModal)
+            {
+                @: &nbsp;
+            }
+            else
+            {
+            <div class="large-text">
+                @Html.DisplayFor(m => m.EntryComments)
+            </div>
+            }
+        </td>
+    </tr>
+    }
+    @* TODO Add verified information *@
+</table>

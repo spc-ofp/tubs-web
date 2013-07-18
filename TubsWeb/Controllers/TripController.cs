@@ -30,6 +30,7 @@ namespace TubsWeb.Controllers
     using System.Web.Configuration;
     using System.Web.Mvc;
     using AutoMapper;
+    using Newtonsoft.Json;
     using PagedList;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Common; // For date utilities
@@ -242,15 +243,12 @@ namespace TubsWeb.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Return all trip positions as KML.
         /// </summary>
-        /// <param name="tripId"></param>
-        /// <returns></returns>
+        /// <param name="tripId">Current trip</param>
+        /// <returns>KML document with all trip positions.</returns>
         public ActionResult Positions(Trip tripId)
         {
-            // TODO:  Along with ModelBinder, could I create an
-            // attribute that returns InvalidTripResponse if
-            // the result of ModelBinder is null?
             if (null == tripId)
             {
                 return InvalidTripResponse();
@@ -278,9 +276,9 @@ namespace TubsWeb.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Action for displaying trip KML via Google Earth plugin.
         /// </summary>
-        /// <param name="tripId"></param>
+        /// <param name="tripId">Current trip</param>
         /// <returns></returns>
         public ActionResult Map(Trip tripId)
         {
@@ -329,6 +327,11 @@ namespace TubsWeb.Controllers
             return View(auditResults);
         }
 
+        /// <summary>
+        /// Partial view containing trip details (the same table shown in the full detail view).
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         public PartialViewResult DetailModal(Trip tripId)
         {
             if (null == tripId)
@@ -346,7 +349,7 @@ namespace TubsWeb.Controllers
         /// NOTE:  Trip is retrieved by TripModelBinder -- the caller actually passes in the
         /// integer TripId.  If no such trip exists, the ModelBinder will return null.
         /// </summary>
-        /// <example>GET: /Trip/Details/1</example>
+        /// <example>GET: /Trip/1/Details</example>
         /// <param name="tripId">Trip</param>
         /// <returns></returns>
         public ActionResult Details(Trip tripId)
@@ -376,31 +379,9 @@ namespace TubsWeb.Controllers
             return View(vm);
         }
 
-        //[EditorAuthorize]
-        //public ActionResult Close(Trip tripId)
-        //{
-        //    if (null == tripId)
-        //    {
-        //        return new NoSuchTripResult();
-        //    }
-
-        //    if (tripId.IsReadOnly)
-        //    {
-        //        return RedirectToAction("Details", "Trip", new { tripId = tripId.Id });
-        //    }
-
-        //    ViewBag.Title = tripId.ToString();
-        //    ViewBag.TripNumber = tripId.SpcTripNumber;
-        //    TripClosureViewModel tcvm = new TripClosureViewModel()
-        //    {
-        //        TripId = tripId.Id
-        //    };
-
-        //    return View(tcvm);
-        //}
-
         /// <summary>
-        /// 
+        /// Mark data entry as complete.  After closure, trip is considered
+        /// to be read-only.
         /// </summary>
         /// <param name="tcvm"></param>
         /// <returns></returns>
@@ -440,6 +421,27 @@ namespace TubsWeb.Controllers
             // Pull page just for closing trip.  Modal is fine, although may want to make it larger.
             //return View(tcvm);
             return RedirectToAction("Details", "Trip", new { tripId = trip.Id });
+        }
+
+        /// <summary>
+        /// Export the current trip as JSON
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        public ActionResult Export(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            return new JsonNetResult()
+            {
+                Data = tripId,
+                Formatting = Formatting.None,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                SerializerSettings = TubsDataService.GetExportSettings(),               
+            };
         }
 
         /// <summary>
@@ -503,7 +505,7 @@ namespace TubsWeb.Controllers
                 from t in repo.FilterBy(t => t.Observer.StaffCode == thvm.ObserverCode && t.TripNumber == thvm.TripNumber)
                 select t.Id).FirstOrDefault<int>();
 
-            Logger.Debug("Checking for observer/tripNumber violation...");
+            // TODO:  Replace 'Flash' with toastr
             if (existingId != default(int))
             {
                 string message =
