@@ -32,7 +32,7 @@ namespace TubsWeb.Controllers
     using TubsWeb.ViewModels;
 
     /// <summary>
-    /// 
+    /// MVC controller for GEN-3 (Trip Monitoring) form.
     /// </summary>
     public class Gen3Controller : SuperController
     {
@@ -99,6 +99,7 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
@@ -114,7 +115,6 @@ namespace TubsWeb.Controllers
         [HttpPost]
         [EditorAuthorize]
         [HandleTransactionManually]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public ActionResult Edit(Trip tripId, Gen3ViewModel vm)
         {
             if (null == tripId)
@@ -151,10 +151,9 @@ namespace TubsWeb.Controllers
                 return View(CurrentAction(), vm);
             }
 
-            // TODO:  D'Oh!  Forgot to handle Detail deletes...
             using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
-                var deletedNoteIds = vm.Notes.Where(n => n != null && n._destroy).Select(n => n.Id);
+                var deletedNoteIds = vm.Notes.Where(n => null != n && n._destroy).Select(n => n.Id);
                 
                 if (Spc.Ofp.Tubs.DAL.Common.WorkbookVersion.v2009 == tripId.Version.Value)
                 {

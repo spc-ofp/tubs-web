@@ -38,6 +38,30 @@ $(document).ready(function () {
         }
     };
 
+    /*
+     * I'm not super happy to bind this to document.  What I'd really like
+     * is to export the function and then use a more specific container binding.
+     * That said, I'll live with the disappointment for a while...
+     */
+    $(document).on('keydown', 'input.species', hotkeys, function (e) {
+        var val = lookup[e.keyCode];
+        if (val) {
+            // Set the input value
+            this.value = val;
+            // Prevent the event from bubbling up
+            // IE doesn't let us stop this from bubbling by returning false
+            // Sledgehammer courtesy StackOverflow
+            // http://stackoverflow.com/questions/9019278/how-to-disable-default-help-function-of-browsers
+            if (isIE) {
+                stopF1(e);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    });
+
+    /*
     $('input.species').on('keydown', hotkeys, function (e) {
         var val = lookup[e.keyCode];
         if (val) {
@@ -55,6 +79,7 @@ $(document).ready(function () {
             return true;
         }
     });
+    */
 
 
 });

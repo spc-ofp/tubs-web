@@ -66,6 +66,11 @@
     </div>
 </div>
 <hr />
+@*
+ * One issue with this layout is that weight is very seldom directly recorded.
+ * There should be a good way to ignore weight if we're sure that no values have been
+ * recorded (e.g. remove columns)
+ *@
 <table id="ll4-details-table" class="table table-bordered table-condensed table-striped">
     <thead>
         <tr>
@@ -103,10 +108,10 @@
             @* TODO Should SampleNumber stay here? *@
             @* TODO Any placeholders? *@
             @*<td><span data-bind="text: SampleNumber" /></td>*@
-            <td><input tabindex="3000" class="input-mini" data-bind="value: DateOnly.formattedDate" /></td>
-            <td><input class="input-mini" data-bind="value: TimeOnly" /></td>
+            <td><input type="text" class="input-mini" data-bind="value: DateOnly.formattedDate" /></td>
+            <td><input type="text" class="input-mini" data-bind="hasFocus: NeedsFocus, value: TimeOnly" /></td>
             <td><input type="number" min="0" class="input-mini" data-bind="value: HookNumber" /></td>
-            <td><input class="input-mini species" data-bind="value: SpeciesCode" required="required"/></td>
+            <td><input type="text" class="input-mini species" data-bind="value: SpeciesCode" /></td>
             <td><select class="input-mini" data-bind="options: $root.ConditionCodes, value: CaughtCondition"></select></td>
             <td><select class="input-mini" data-bind="options: $root.ConditionCodes, value: DiscardedCondition"></select></td>
             <td><input type="number" min="0" class="input-mini" data-bind="value: Length" /></td>
@@ -115,10 +120,14 @@
             <td><select class="input-mini" data-bind="    options: $root.WeightCodes, value: WeightCode"></select></td>
             <td><select class="input-small" data-bind="options: $root.FateCodes, value: FateCode"></select></td>
             <td><select class="input-mini" data-bind="options: $root.SexCodes, value: SexCode"></select></td>
-            <td><input class="input-large" data-bind="value: Comments" /></td>            
+            <td><input type="text" class="input-large" data-bind="value: Comments" /></td>            
             <td>
-                <button type="button" class="btn btn-danger removeItem nobr" tabindex="5000" rel="tooltip" title="Click to remove row">
-                    <i class="icon-minus-sign icon-white"></i> Delete
+                <button type="button" 
+                        class="btn btn-danger removeItem" 
+                        tabindex="3000" 
+                        rel="tooltip" 
+                        title="Click to remove row">
+                    <i class="icon-trash icon-white"></i>
                 </button>
             </td>
         </tr>
@@ -127,11 +136,9 @@
 
 <button id="addDetailButton" type="button" class="btn btn-info addItem"><i class="icon-plus-sign icon-white"></i> Add Detail</button>
 
-
 @*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
 *@
-
 
 @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
 @section AdditionalScripts {
@@ -143,12 +150,6 @@
     <script src="~/Scripts/App/vm.longlinesample.js"></script>
     <script>
         $(document).ready(function () {
-            $(document).on('keypress', 'enter', function () {
-                // It would be cool to convert this to a tab keypress, but I'll be happy to
-                // prevent unintended saves for now.
-                return false;
-            });
-
             var viewModel = new tubs.LongLineSample(@modelAsJson);
             ko.applyBindings(viewModel);
             viewModel.clearDirtyFlag();

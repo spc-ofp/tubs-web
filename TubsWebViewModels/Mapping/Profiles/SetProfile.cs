@@ -71,17 +71,17 @@ namespace TubsWeb.Mapping.Profiles
                 ;
 
             CreateMap<PurseSeineSetViewModel, DAL.Entities.PurseSeineSet>()
-                .BeforeMap((s, d) =>
-                {
-                    if (null == s.AllCatch)
-                        s.AllCatch = new List<PurseSeineSetViewModel.SetCatch>();
+                //.BeforeMap((s, d) =>
+                //{
+                //    if (null == s.AllCatch)
+                //        s.AllCatch = new List<PurseSeineSetViewModel.SetCatch>();
 
-                    if (s.AllCatch.Count == 0)
-                    {
-                        if (null != s.TargetCatch) { s.AllCatch.AddRange(s.TargetCatch); }
-                        if (null != s.ByCatch) { s.AllCatch.AddRange(s.ByCatch); }
-                    }
-                })
+                //    if (s.AllCatch.Count == 0)
+                //    {
+                //        if (null != s.TargetCatch) { s.AllCatch.AddRange(s.TargetCatch); }
+                //        if (null != s.ByCatch) { s.AllCatch.AddRange(s.ByCatch); }
+                //    }
+                //})
                 // Ignore entity relationships
                 .ForMember(d => d.Activity, o => o.Ignore())
                 // Standard ignores
@@ -187,7 +187,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.ContainsLargeYellowfin, o => o.ResolveUsing<BooleanResolver>().FromMember(s => s.ContainsLargeYellowfin))
                 // NOTE: AllCatch isn't used in the Edit view
                 // Might be worthwhile to turn AllCatch into an IEnumerable that merges TargetCatch and ByCatch
-                .ForMember(d => d.AllCatch, o => o.MapFrom(s => s.CatchList))
+                //.ForMember(d => d.AllCatch, o => o.MapFrom(s => s.CatchList))
                 .ForMember(d => d.ByCatch, o => o.MapFrom(s => s.CatchList.Where(cl => null != cl && cl.IncludeInBycatch())))
                 .ForMember(d => d.TargetCatch, o => o.MapFrom(s => s.CatchList.Where(cl => null != cl && cl.IncludeInTargetCatch())))
                 .AfterMap((s, d) =>

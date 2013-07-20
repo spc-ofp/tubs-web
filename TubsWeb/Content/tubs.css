@@ -102,9 +102,14 @@ div.compact-row {
     background: white;
 }
 
-/* Bootstrap adds a 10 pixel bottom margin to all inputs.  This is undesirable in a table, so turn it off*/
+/* 
+ * Bootstrap adds a 10 pixel bottom margin to all inputs.  This is undesirable in a table, so turn it off.
+ * The final entry, with the 'not([type])' is there to manage inputs without any type.
+ * It's not perfect, but it prevents a truly hideous display.
+ */
 .table td input[type="text"],
-.table td input[type="number"]
+.table td input[type="number"],
+.table td input:not([type])
 {
     display: inline-block;
     height: 20px;

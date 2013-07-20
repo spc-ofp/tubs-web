@@ -2,6 +2,7 @@
 // <copyright file="Gen1Controller.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2011 Secretariat of the Pacific Community
 // </copyright>
+// -----------------------------------------------------------------------
 
 namespace TubsWeb.Controllers
 {
@@ -32,7 +33,7 @@ namespace TubsWeb.Controllers
     using TubsWeb.ViewModels;
 
     /// <summary>
-    /// 
+    /// MVC controller for working with GEN-1 sightings and transfers.
     /// </summary>
     public class Gen1Controller : SuperController
     {
@@ -65,17 +66,34 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), tvm);
         }
         
+        /// <summary>
+        /// MVC Action to display list of all sightings.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         public ActionResult Sightings(Trip tripId)
         {
             return SightingViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// MVC Action to display editor for all sightings.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
         public ActionResult EditSightings(Trip tripId)
         {
             return SightingViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// MVC Action to update sighting data for a trip.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="svm">ViewModel containing all sightings for current trip.</param>
+        /// <returns></returns>
         [HttpPost]
         [HandleTransactionManually]
         [EditorAuthorize]
@@ -115,9 +133,8 @@ namespace TubsWeb.Controllers
                 IRepository<Sighting> repo = TubsDataService.GetRepository<Sighting>(MvcApplication.CurrentSession);
 
                 // Deletes first
-                // This I can do in LINQ
-                svm.Sightings.Where(s => s != null && s._destroy).ToList().ForEach(s => repo.DeleteById(s.Id));
-                // TODO:  Backfill audit.  I really need to fix this problem...
+                svm.DeletedIds.ToList().ForEach(id => repo.DeleteById(id));
+
                 sightings.ForEach(s => repo.Save(s));
                 xa.Commit();
             }
@@ -137,13 +154,25 @@ namespace TubsWeb.Controllers
             return RedirectToAction("EditSightings", "Gen1", new { tripId = tripId.Id });
         }
 
+        /// <summary>
+        /// MVC Action to display list of all transfers.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         public ActionResult Transfers(Trip tripId)
         {
             return TransferViewActionImpl(tripId);
         }
 
-        // HttpGet without HttpPost should lock out the client from POSTing to
-        // this endpoint
+        /// <summary>
+        /// MVC Action to display editor for all transfers.
+        /// </summary>
+        /// <remarks>
+        /// HttpGet attribute without HttpPost locks out client scripts from
+        /// POSTing to this endpoint.
+        /// </remarks>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         [HttpGet]
         [EditorAuthorize]
         public ActionResult EditTransfers(Trip tripId)
@@ -151,6 +180,12 @@ namespace TubsWeb.Controllers
             return TransferViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// MVC Action to update transfer data for a trip.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="tvm">ViewModel containing all transfers.</param>
+        /// <returns></returns>
         [HttpPost]
         [HandleTransactionManually]
         [EditorAuthorize]
@@ -190,10 +225,8 @@ namespace TubsWeb.Controllers
                 IRepository<Transfer> repo = TubsDataService.GetRepository<Transfer>(MvcApplication.CurrentSession);
 
                 // Deletes first
-                // This I can do in LINQ
-                tvm.Transfers.Where(s => s != null && s._destroy).ToList().ForEach(s => repo.DeleteById(s.Id));
-                // TODO:  Backfill audit.  I really need to fix this problem...
-                transfers.ForEach(s => repo.Save(s));
+                tvm.DeletedIds.ToList().ForEach(id => repo.DeleteById(id));
+                transfers.ForEach(t => repo.Save(t));
                 xa.Commit();
             }
 
@@ -228,90 +261,7 @@ namespace TubsWeb.Controllers
             }
 
             ViewBag.Title = String.Format(titleFormat, tripId.ToString());
-            AddMinMaxDates(tripId);
             return View(CurrentAction(), tripId);
         }
-
-        /*
-        [EditorAuthorize]
-        public ActionResult EditSightings(Trip tripId)
-        {
-            return Load(tripId, "Edit GEN-1 sightings for trip {0}");
-        }
-        */
-
-        /*
-        [EditorAuthorize]
-        public ActionResult EditTransfers(Trip tripId)
-        {
-            return Load(tripId, "Edit GEN-1 transfers for trip {0}");
-        }
-        */
-
-        /*
-        [HttpPost]
-        [EditorAuthorize]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
-        public PartialViewResult EditSighting(Trip tripId, Sighting sighting)
-        {            
-            if (ModelState.IsValid)
-            {
-                var repo = new TubsRepository<Sighting>(MvcApplication.CurrentSession);
-                sighting.Trip = tripId;
-                repo.Update(sighting, true);
-                Logger.Debug("Sighting updated!");
-            }           
-            return PartialView("_EditSighting", sighting);
-        }
-
-        [HttpPost]
-        [EditorAuthorize]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
-        public PartialViewResult AddSighting(Trip tripId, [Bind(Prefix = "sighting")] Sighting sighting)
-        {
-            var repo = new TubsRepository<Sighting>(MvcApplication.CurrentSession);
-            if (ModelState.IsValid)
-            {
-                sighting.Trip = tripId;
-                sighting.EnteredBy = User.Identity.Name;
-                sighting.EnteredDate = DateTime.Now;
-                repo.Add(sighting);
-            }
-            var sightings = repo.FilterBy(t => t.Trip.Id == tripId.Id);
-            return PartialView("_EditSightings", sightings);
-        }
-
-        [HttpPost]
-        [EditorAuthorize]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
-        public PartialViewResult EditTransfer(Trip tripId, Transfer transfer)
-        {
-            if (ModelState.IsValid)
-            {
-                var repo = new TubsRepository<Transfer>(MvcApplication.CurrentSession);
-                transfer.Trip = tripId;
-                repo.Update(transfer, true);
-            }
-            return PartialView("_EditTransfer", transfer);
-        }
-
-        [HttpPost]
-        [EditorAuthorize]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
-        public PartialViewResult AddTransfer(Trip tripId, [Bind(Prefix = "transfer")] Transfer transfer)
-        {
-            var repo = new TubsRepository<Transfer>(MvcApplication.CurrentSession);
-            if (ModelState.IsValid)
-            {
-                transfer.Trip = tripId;
-                transfer.EnteredBy = User.Identity.Name;
-                transfer.EnteredDate = DateTime.Now;
-                repo.Add(transfer);
-            }
-            var transfers = repo.FilterBy(t => t.Trip.Id == tripId.Id);
-            return PartialView("_EditTransfers", transfers);
-        }
-        */
-
     }
 }

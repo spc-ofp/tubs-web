@@ -54,6 +54,8 @@ tubs.LongLineSampleDetail = function (data) {
     self.FateCode = ko.observable(data.FateCode || '');
     self.SexCode = ko.observable(data.SexCode || '');
     self.Comments = ko.observable(data.Comments || '');
+    self._destroy = ko.observable(data._destroy || false);
+    self.NeedsFocus = ko.observable(data.NeedsFocus || false);
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.DateOnly,
@@ -131,8 +133,8 @@ tubs.LongLineSample = function (data) {
     };
 
     self.addDetail = function () {
-        var previous,
-            dateOnly;
+        var previous = null,
+            dateOnly = null;
         // Get the date from the previous entry
         previous = _.last(self.Details());
         if (previous && previous.DateOnly) {
@@ -143,7 +145,7 @@ tubs.LongLineSample = function (data) {
             dateOnly = self.HaulDate();
         }
 
-        self.Details.push(new tubs.LongLineSampleDetail({ DateOnly: dateOnly, NeedsFocus: true }));
+        self.Details.push(new tubs.LongLineSampleDetail({ DateOnly: dateOnly, NeedsFocus: true, FateCode: 'RGG', SexCode: 'U' }));
     };
 
     self.removeDetail = function (detail) {

@@ -68,16 +68,21 @@ namespace TubsWeb.ViewModels
         public List<CrewMemberModel> Hands { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<CrewMemberModel> Deleted
+        public IEnumerable<int> Deleted
         {
             get
             {
-                return this.Hands.Where(c =>
-                    c != null &&
-                    c.Id != default(Int32) && // Ignore entities with a zero for Id, as they're not in the database
-                    (c._destroy || !c.IsFilled) // If someone blanked the name (or name && comments), we'll count that as a delete
-                );
+                if (null == this.Hands || !this.Hands.Any())
+                    return Enumerable.Empty<int>();
+
+                // Ignore entities with an Id of zero, as they are not in the database
+                // If data has been blanked (determined by !IsFilled), count that as a delete
+                return
+                    from c in this.Hands
+                    where null != c && default(Int32) != c.Id && (c._destroy || !c.IsFilled)
+                    select c.Id;
             }
+                
         }
         
         public class CrewMemberModel

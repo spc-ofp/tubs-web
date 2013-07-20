@@ -24,10 +24,12 @@ namespace TubsWeb.ViewModels
      */
     using System;
     using System.Collections.Generic;
-    using Spc.Ofp.Tubs.DAL.Common;
-    using Spc.Ofp.Tubs.DAL.Entities;
+    using System.Linq;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// ViewModel representing all the GEN-1 sightings in a single trip.
+    /// </summary>
     public class SightingViewModel
     {
         public SightingViewModel()
@@ -62,7 +64,26 @@ namespace TubsWeb.ViewModels
 
         public List<Sighting> Sightings { get; set; }
 
-        public class Sighting
+        [JsonIgnore]
+        public IEnumerable<int> DeletedIds
+        {
+            get
+            {
+                foreach (var s in this.Sightings ?? Enumerable.Empty<Sighting>())
+                {
+                    if (null == s)
+                        continue;
+
+                    if (s._destroy && default(int) != s.Id)
+                        yield return s.Id;
+                }
+            }
+        }
+
+        /// <summary>
+        /// A single sighting from the sightings portion of the GEN-1 form.
+        /// </summary>
+        public sealed class Sighting
         {
             public int Id { get; set; }
             public DateTime? DateOnly { get; set; }

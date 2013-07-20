@@ -55,18 +55,7 @@ namespace TubsWeb.ViewModels.Resolvers
     {
         protected override MeasuringInstrument? ResolveCore(string source)
         {
-            source = string.IsNullOrEmpty(source) ? source : source.Trim();
-            if (string.IsNullOrEmpty(source))
-                return null;
-
-            return
-                "Board".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.B :
-                "Aluminum Caliper".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.C :
-                "Ruler".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.R :
-                "Deck Tape".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.T :
-                "Wooden Caliper".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.W :
-                (MeasuringInstrument?)null;
-
+            return source.MeasuringInstrumentFromString();
         }
     }
 }

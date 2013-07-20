@@ -24,10 +24,12 @@ namespace TubsWeb.ViewModels
      */
     using System;
     using System.Collections.Generic;
-    using Spc.Ofp.Tubs.DAL.Common;
-    using Spc.Ofp.Tubs.DAL.Entities;
+    using System.Linq;
     using Newtonsoft.Json;
     
+    /// <summary>
+    /// ViewModel representing all the GEN-1 transfers in a single trip.
+    /// </summary>
     public class TransferViewModel
     {
         public TransferViewModel()
@@ -42,11 +44,30 @@ namespace TubsWeb.ViewModels
 
         public IList<int?> TypeCodes = new List<int?>() { null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 31 };
         public IList<string> ActionCodes =
-            new List<string>() { string.Empty, "TR", "SR", "BR", "OR", "TG", "SG", "BG", "OG" };
+            new List<string>() { String.Empty, "TR", "SR", "BR", "OR", "TG", "SG", "BG", "OG" };
 
         public List<Transfer> Transfers { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<int> DeletedIds
+        {
+            get
+            {
+                foreach (var t in this.Transfers ?? Enumerable.Empty<Transfer>())
+                {
+                    if (null == t)
+                        continue;
+
+                    if (t._destroy && default(int) != t.Id)
+                        yield return t.Id;
+                }
+            }
+        }
         
-        public class Transfer
+        /// <summary>
+        /// A single transfer from the transfers portion of the GEN-1 form.
+        /// </summary>
+        public sealed class Transfer
         {
             public int Id { get; set; }
             public DateTime? DateOnly { get; set; }

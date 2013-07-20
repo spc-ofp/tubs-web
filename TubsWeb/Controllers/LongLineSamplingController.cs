@@ -25,12 +25,10 @@ namespace TubsWeb.Controllers
     using System;
     using System.Linq;
     using System.Web.Mvc;
-    using System.Web.Routing;
     using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
-    using TubsWeb.Models;
     using TubsWeb.ViewModels;
 
     /// <summary>
@@ -168,6 +166,9 @@ namespace TubsWeb.Controllers
             }
 
             // TODO Validation
+            // Possible validations:
+            // 1)  Any sample date less than start of haul
+            // 2)  Length out of range (really needs to be on client side too)
 
             if (!ModelState.IsValid)
             {
@@ -188,6 +189,7 @@ namespace TubsWeb.Controllers
                 vm.DeletedCatch.ToList().ForEach(id => crepo.DeleteById(id));
 
                 var fset = srepo.FindById(vm.SetId);
+                
 
                 int index = 1;
                 foreach (var sample in header.Samples.OrderBy(s => s.Date))
@@ -198,6 +200,11 @@ namespace TubsWeb.Controllers
                     crepo.Save(sample);
                     ++index;
                 }
+
+                // MeasuringInstrument is recorded on the LongLineSet entity
+                // Save here, after samples, to avoid transient object problems
+                fset.MeasuringInstrument = vm.MeasuringInstrument.MeasuringInstrumentFromString();
+                srepo.Save(fset);
 
                 xa.Commit();
 

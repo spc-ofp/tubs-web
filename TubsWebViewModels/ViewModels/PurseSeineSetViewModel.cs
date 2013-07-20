@@ -25,6 +25,7 @@ namespace TubsWeb.ViewModels
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -36,7 +37,7 @@ namespace TubsWeb.ViewModels
         {
             ByCatch = new List<SetCatch>(8);
             TargetCatch = new List<SetCatch>(16);
-            AllCatch = new List<SetCatch>(16);
+            //AllCatch = new List<SetCatch>(16);
         }
 
         // Use Knockout to help with common codes
@@ -176,17 +177,55 @@ namespace TubsWeb.ViewModels
 
         // This is used to display data -- The normal display doesn't
         // differentiate between target and bycatch
+        // For what it's worth, this could probably be replaced by a read-only property
+        // that combines ByCatch and TargetCatch
+        // That might even simplify the mapping...
         [JsonIgnore]
-        public List<SetCatch> AllCatch { get; set; }
+        public IEnumerable<SetCatch> AllCatch
+        {
+            get
+            {
+                return (
+                    this.TargetCatch ?? Enumerable.Empty<SetCatch>()
+                ).Union(
+                    this.ByCatch ?? Enumerable.Empty<SetCatch>()
+                );
+            }
+        }
+        //public List<SetCatch> AllCatch { get; set; }
 
         [Display(Name = "Recovered Tag Count")]
         public int? RecoveredTagCount { get; set; }
         public string Comments { get; set; }
 
-        public class SetCatch
+        [JsonIgnore]
+        public IEnumerable<int> DeletedCatchIds
         {
-            public int Id { get; set; }
-            public bool _destroy { get; set; }
+            get
+            {
+                var all = (
+                    this.TargetCatch ?? Enumerable.Empty<SetCatch>()
+                ).Union(
+                    this.ByCatch ?? Enumerable.Empty<SetCatch>()
+                );
+
+                foreach (var c in all)
+                {
+                    if (null == c)
+                        continue;
+
+                    if (c._destroy && c.Id != default(Int32))
+                        yield return c.Id;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public sealed class SetCatch
+        {
+            public int Id { get; set; }            
             public string SpeciesCode { get; set; }
             public string FateCode { get; set; }
             public decimal? ObservedWeight { get; set; }
@@ -195,6 +234,7 @@ namespace TubsWeb.ViewModels
             public int? LogbookCount { get; set; }
             public string Comments { get; set; }
             public bool NeedsFocus { get; set; }
+            public bool _destroy { get; set; }
         }
     }
 }

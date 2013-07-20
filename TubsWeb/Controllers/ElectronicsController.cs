@@ -116,18 +116,6 @@ namespace TubsWeb.Controllers
                 select Mapper.Map<ElectronicsViewModel.DeviceModel, ElectronicDevice>(d)
             );
 
-            //electronics.AddRange(
-            //    from b in vm.Buoys
-            //    where b != null && !b._destroy
-            //    select Mapper.Map<ElectronicsViewModel.DeviceModel, ElectronicDevice>(b)
-            //);
-
-            //electronics.AddRange(
-            //    from d in vm.OtherDevices
-            //    where d != null && !d._destroy
-            //    select Mapper.Map<ElectronicsViewModel.DeviceModel, ElectronicDevice>(d)
-            //);
-
             electronics.AddRange(
                 from c in vm.Categories
                 select Mapper.Map<ElectronicsViewModel.DeviceCategory, ElectronicDevice>(c)
@@ -144,7 +132,6 @@ namespace TubsWeb.Controllers
                 foreach (var device in electronics)
                 {
                     device.Trip = tripId;
-                    // TODO Confirm entered by/updated by backfill is occurring
                     device.SetAuditTrail(User.Identity.Name, DateTime.Now);
                     erepo.Save(device);
                 }

@@ -27,7 +27,6 @@ namespace TubsWeb.Controllers
     using System.Linq;
     using System.Web.Mvc;
     using AutoMapper;
-    using Newtonsoft.Json;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
@@ -96,6 +95,11 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), vm);
         }
 
+        /// <summary>
+        /// MVC Action for displaying all SSIs for a given trip.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         public ActionResult List(Trip tripId)
         {
             if (null == tripId)
@@ -134,11 +138,22 @@ namespace TubsWeb.Controllers
             return View(summaries);
         }
 
+        /// <summary>
+        /// MVC Action for displaying a singe special species interaction.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
         public ActionResult Index(Trip tripId, int pageNumber)
         {
             return ViewActionImpl(tripId, pageNumber);
         }
 
+        /// <summary>
+        /// MVC Action 
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
         [EditorAuthorize]
         public ActionResult AddLanded(Trip tripId)
         {
@@ -157,14 +172,23 @@ namespace TubsWeb.Controllers
             return AddImpl(tripId, new Gen2SightingViewModel());
         }
 
+        [HttpGet]
         [EditorAuthorize]
         public ActionResult Edit(Trip tripId, int pageNumber)
         {
             return ViewActionImpl(tripId, pageNumber);
         }
 
-        // Binder can't create an abstract class, but we can put something into the posted data to help it figure out the
-        // correct concrete implementation.
+        /// <summary>
+        /// MVC Action to modify interaction data.
+        /// </summary>
+        /// <remarks>
+        /// Binder can't create an abstract class, but we can put something into the posted data to help it figure out the
+        /// correct concrete implementation.
+        /// </remarks>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="vm">Interaction view model</param>
+        /// <returns></returns>
         [HttpPost]
         [HandleTransactionManually]
         [EditorAuthorize]

@@ -25,81 +25,70 @@
     Html.RenderPartial("_CountryCodes");
 }
 
-@*<form id="sightingsForm">*@
-    @* 
-     * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
-     * when the first 'dirtying' change occurs.
-     *@
-    <p>
-        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
-            <i class="icon-refresh icon-white"></i>&nbsp;Reload
-        </button>
-        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
-    </p>
-    <hr />
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>Name</th>
-                <th>IRCS</th>
-                <th>Flag</th>
-                <th>Type</th>
-                <th>Bearing</th>
-                <th>Distance</th>
-                <th>Action</th>
-                <th>Photo</th>
-                <th>Comments</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody data-bind="foreach: Sightings" class="lineitems">
-            <tr data-bind="css: { warning: (isDirty() || 0 === Id) }">
-                <td>
-                    @* Delete button is taken out of the tab order to prevent accidents *@
-                    <button type="button"
-                            tabindex="3000"
-                            class="removeItem btn btn-mini btn-danger" 
-                            rel="tooltip" 
-                            title="Click to remove row">
-                        <i class="icon-remove icon-white"></i>
-                    </button>
-                </td>
-                <td><input type="text" data-bind="value: DateOnly.formattedDate, uniqueName: true" class="input-mini" /></td>
-                <td><input type="text" data-bind="value: TimeOnly, uniqueName: true" class="input-mini" /></td>
-                <td><input type="text" data-bind="value: Latitude, uniqueName: true" class="input-small" /></td>
-                <td><input type="text" data-bind="value: Longitude, uniqueName: true" class="input-small" /></td>
-                <td><input type="text" data-bind="value: Name, uniqueName: true" class="vesselName" /></td>
-                <td><input type="text" data-bind="value: Ircs, uniqueName: true" class="input-mini" /></td>
-                <td><input type="text" data-bind="value: CountryCode, uniqueName: true" class="input-mini" list="countryCodes" /></td>
-                <td>
-                    <select data-bind="value: TypeCode, options: $root.TypeCodes" class="input-mini"></select>
-                </td>
-                <td><input type="number" data-bind="value: Bearing, uniqueName: true" class="input-mini" /></td>
-                <td><input type="number" data-bind="value: Distance, uniqueName: true" class="input-mini" /></td>
-                <td>
-                    <select data-bind="value: ActionCode, options: $root.ActionCodes" class="input-mini"></select>
-                </td>
-                <td><input type="text" data-bind="value: PhotoFrame, uniqueName: true" class="input-mini" /></td>
-                <td><input type="text" data-bind="value: Comments, uniqueName: true" /></td>
-                <td>
-                    <button class="addItem btn btn-mini btn-info" 
-                            type="button"
-                            rel="tooltip" 
-                            title="Click to add row">
-                        <i class="icon-plus icon-white"></i>
-                    </button>
-                </td>
-            </tr>        
-        </tbody>
-    </table>
-    <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.Sightings().length == 0">Add Sighting</button>
-@*</form>*@
+@* 
+    * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+    * when the first 'dirtying' change occurs.
+    *@
+<p>
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
+<hr />
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th class="input-mini">Date</th>
+            <th class="input-mini">Time</th>
+            <th class="input-small">Latitude</th>
+            <th class="input-small">Longitude</th>
+            <th class="input-medium">Name</th>
+            <th class="input-mini">IRCS</th>
+            <th class="input-mini">Flag</th>
+            <th class="input-mini">Type</th>
+            <th>Bearing</th>
+            <th>Distance</th>
+            <th>Action</th>
+            <th>Photo</th>
+            <th class="input-xlarge">Comments</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: Sightings" class="lineitems">
+        <tr data-bind="css: { warning: (isDirty() || 0 === Id) }">               
+            <td><input type="text" data-bind="value: DateOnly.formattedDate, uniqueName: true" class="input-mini" /></td>
+            <td><input type="text" data-bind="value: TimeOnly, uniqueName: true" class="input-mini" /></td>
+            <td><input type="text" data-bind="value: Latitude, uniqueName: true" class="input-small" /></td>
+            <td><input type="text" data-bind="value: Longitude, uniqueName: true" class="input-small" /></td>
+            <td><input type="text" data-bind="value: Name, uniqueName: true" class="input-medium vesselName" /></td>
+            <td><input type="text" data-bind="value: Ircs, uniqueName: true" class="input-mini" /></td>
+            <td><input type="text" data-bind="value: CountryCode, uniqueName: true" class="input-mini" list="countryCodes" /></td>
+            <td>
+                <select data-bind="value: TypeCode, options: $root.TypeCodes" class="input-mini"></select>
+            </td>
+            <td><input type="number" data-bind="value: Bearing, uniqueName: true" class="input-mini" /></td>
+            <td><input type="number" step="any" data-bind="value: Distance, uniqueName: true" class="input-mini" /></td>
+            <td>
+                <select data-bind="value: ActionCode, options: $root.ActionCodes" class="input-mini"></select>
+            </td>
+            <td><input type="text" data-bind="value: PhotoFrame, uniqueName: true" class="input-mini" /></td>
+            <td><input type="text" data-bind="value: Comments, uniqueName: true" class="input-xlarge"/></td>
+            <td>
+                @* Delete button is taken out of the tab order to prevent accidents *@
+                <button type="button"
+                        tabindex="3000"
+                        class="removeItem btn btn-danger" 
+                        rel="tooltip" 
+                        title="Click to remove row">
+                    <i class="icon-trash icon-white"></i>
+                </button>
+            </td>
+        </tr>        
+    </tbody>
+</table>
+<button id="btnAddSighting" type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i> Add Sighting</button>
 
 @*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
@@ -130,11 +119,7 @@
                 viewModel.removeEvent(ko.dataFor(this));
             });
 
-            $(".lineitems").on("click", ".addItem", function () {
-                viewModel.addEvent();
-            });
-
-            $("#btnAddWhenEmpty").on("click", function () {
+            $("#btnAddSighting").on("click", function () {
                 viewModel.addEvent();
             });
 

@@ -160,7 +160,30 @@ namespace TubsWeb.ViewModels
                 }
             }
             throw new ArgumentException("Enumeration value not found", "description");
+        }
 
+        /// <summary>
+        /// Convert string value into measuring instrument enumeration value.
+        /// </summary>
+        /// <remarks>
+        /// One _HUGE_ annoyance with AutoMapper is that it's near on impossible to re-use resolvers outside
+        /// a mapping context.  Hence, 
+        /// </remarks>
+        /// <param name="source">Verbose measuring instrument description</param>
+        /// <returns>Enumeration value or null if string can't be converted.</returns>
+        public static MeasuringInstrument? MeasuringInstrumentFromString(this string source)
+        {
+            source = String.IsNullOrEmpty(source) ? source : source.Trim();
+            if (String.IsNullOrEmpty(source))
+                return null;
+
+            return
+                "Board".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.B :
+                "Aluminum Caliper".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.C :
+                "Ruler".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.R :
+                "Deck Tape".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.T :
+                "Wooden Caliper".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? MeasuringInstrument.W :
+                (MeasuringInstrument?)null;
         }
     }
 }

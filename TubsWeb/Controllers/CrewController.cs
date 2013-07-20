@@ -23,14 +23,10 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Web.Mvc;
     using AutoMapper;
-    using NHibernate;
     using Spc.Ofp.Tubs.DAL;
-    using Spc.Ofp.Tubs.DAL.Common;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     using TubsWeb.Models.ExtensionMethods;
@@ -63,86 +59,31 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), cvm);           
         }
 
-        /*
         /// <summary>
-        /// Find the first crewmember with the given job in the list of all crew for the trip.
-        /// If there is no crewmember, create a new, empty object.
+        /// MVC Action for displaying crew associated with a purse seine trip.
         /// </summary>
-        /// <param name="crewlist"></param>
-        /// <param name="jobType"></param>
+        /// <example>
+        /// GET /Trip/{tripId}/Crew
+        /// </example>
+        /// <param name="tripId"></param>
         /// <returns></returns>
-        internal static CrewViewModel.CrewMemberModel GetCrewmember(IQueryable<Crew> crewlist, JobType jobType)
-        {
-            return (
-                from c in crewlist
-                where c.Job.HasValue && jobType == c.Job.Value
-                select new CrewViewModel.CrewMemberModel
-                {
-                    Id = c.Id,
-                    Job = c.Job,
-                    Name = c.Name,
-                    Nationality = c.CountryCode,
-                    Comments = c.Comments,
-                    Years = c.YearsExperience
-                }
-            ).FirstOrDefault<CrewViewModel.CrewMemberModel>() ?? new CrewViewModel.CrewMemberModel(jobType);
-        }
-
-        internal static IEnumerable<CrewViewModel.CrewMemberModel> GetDeckHands(IQueryable<Crew> crew)
-        {
-            return 
-                from c in crew
-                where c.Job.HasValue && JobType.Crew == c.Job.Value
-                select new CrewViewModel.CrewMemberModel
-                {
-                    Id = c.Id,
-                    Job = JobType.Crew,
-                    Name = c.Name,
-                    Nationality = c.CountryCode,
-                    Comments = c.Comments,
-                    Years = c.YearsExperience
-                };
-        }
-
-        internal static CrewViewModel Fill(IStatelessSession session, int tripId)
-        {
-            CrewViewModel cvm = new CrewViewModel();
-            cvm.TripId = tripId;
-            var crewlist = TubsDataService.GetRepository<Crew>(session).FilterBy(c => c.Trip.Id == tripId);
-            cvm.Hands.AddRange(GetDeckHands(crewlist));
-            // Get named crew members
-            cvm.Captain = GetCrewmember(crewlist, JobType.Captain);
-            cvm.Navigator = GetCrewmember(crewlist, JobType.NavigatorOrMaster);
-            cvm.Mate = GetCrewmember(crewlist, JobType.Mate);
-            cvm.ChiefEngineer = GetCrewmember(crewlist, JobType.ChiefEngineer);
-            cvm.AssistantEngineer = GetCrewmember(crewlist, JobType.AssistantEngineer);
-            cvm.DeckBoss = GetCrewmember(crewlist, JobType.DeckBoss);
-            cvm.Cook = GetCrewmember(crewlist, JobType.Cook);
-            cvm.HelicopterPilot = GetCrewmember(crewlist, JobType.HelicopterPilot);
-            cvm.SkiffMan = GetCrewmember(crewlist, JobType.SkiffMan);
-            cvm.WinchMan = GetCrewmember(crewlist, JobType.WinchMan);
-            return cvm;
-        }
-        */
-
-        //
-        // GET: /Crew/
         public ActionResult Index(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// MVC Action for displaying the crew edit form.
+        /// </summary>
+        /// <param name="tripId"></param>
+        /// <returns></returns>
         [EditorAuthorize]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
-        // This should only ever be hit by the Knockout function, but we'll still probably want
-        // to cater for straight up HTML Forms
-        // This is the first test of the manual transaction attribute.
-        // The transaction is committed in the middle so that we can be sure
-        // that what's sent to the client is what's in the database.
+        
         [HttpPost]
         [HandleTransactionManually]
         [EditorAuthorize]
@@ -167,7 +108,7 @@ namespace TubsWeb.Controllers
             {
                 IRepository<Crew> repo = TubsDataService.GetRepository<Crew>(MvcApplication.CurrentSession);
                 // Deletes first
-                cvm.Deleted.ToList().ForEach(c => repo.DeleteById(c.Id));
+                cvm.Deleted.ToList().ForEach(id => repo.DeleteById(id));
 
                 // AsCrewList strips out any crew marked _destroy or that don't have details
                 var crewlist = cvm.AsCrewList();
@@ -191,12 +132,8 @@ namespace TubsWeb.Controllers
                 }
                 return GettableJsonNetData(cvm);
             }
-            else
-            {
-                return RedirectToAction("Index", "Crew", new { tripId = tripId.Id });
-            }
-        }
 
-        // http://xhalent.wordpress.com/2011/02/05/using-unobtrusive-ajax-forms-in-asp-net-mvc3/
+            return RedirectToAction("Index", "Crew", new { tripId = tripId.Id });
+        }
     }
 }
