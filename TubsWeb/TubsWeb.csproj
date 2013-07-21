@@ -28,7 +28,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
-    <JSLintSkip>\Scripts\amplify-vsdoc.js|\Scripts\amplify.js|\Scripts\amplify.min.js|\Scripts\angular-bootstrap-prettify.js|\Scripts\angular-bootstrap-prettify.min.js|\Scripts\angular-bootstrap.js|\Scripts\angular-bootstrap.min.js|\Scripts\angular-cookies.js|\Scripts\angular-cookies.min.js|\Scripts\angular-loader.js|\Scripts\angular-loader.min.js|\Scripts\angular-mocks.js|\Scripts\angular-resource.js|\Scripts\angular-resource.min.js|\Scripts\angular-sanitize.js|\Scripts\angular-sanitize.min.js|\Scripts\angular-scenario.js|\Scripts\angular.js|\Scripts\angular.min.js|\Scripts\bootstrap-datepicker.js|\Scripts\bootstrap-datepicker.min.js|\Scripts\bootstrap.js|\Scripts\bootstrap.min.js|\Scripts\hogan-2.0.0.js|\Scripts\jquery-1.10.0.intellisense.js|\Scripts\jquery-1.10.0.js|\Scripts\jquery-1.10.0.min.js|\Scripts\jquery-migrate-1.1.1.js|\Scripts\jquery-migrate-1.1.1.min.js|\Scripts\jquery.rateit.js|\Scripts\jquery.rateit.min.js|\Scripts\jquery.unobtrusive-ajax.js|\Scripts\jquery.unobtrusive-ajax.min.js|\Scripts\jquery.validate-vsdoc.js|\Scripts\jquery.validate.dates.js|\Scripts\jquery.validate.js|\Scripts\jquery.validate.min.js|\Scripts\jquery.validate.unobtrusive.js|\Scripts\jquery.validate.unobtrusive.min.js|\Scripts\knockout-2.2.1.debug.js|\Scripts\knockout-2.2.1.js|\Scripts\knockout.activity.js|\Scripts\knockout.command.js|\Scripts\knockout.dirtyFlag.js|\Scripts\knockout.mapping-latest.debug.js|\Scripts\knockout.mapping-latest.js|\Scripts\knockout.validation.debug.js|\Scripts\knockout.validation.js|\Scripts\knockout.viewmodel.2.0.2.js|\Scripts\knockout.viewmodel.2.0.2.min.js|\Scripts\MicrosoftAjax.debug.js|\Scripts\MicrosoftAjax.js|\Scripts\MicrosoftMvcAjax.debug.js|\Scripts\MicrosoftMvcAjax.js|\Scripts\MicrosoftMvcValidation.debug.js|\Scripts\MicrosoftMvcValidation.js|\Scripts\modernizr-2.6.2.js|\Scripts\moment.js|\Scripts\moment.min.js|\Scripts\pageguide.js|\Scripts\pageguide.min.js|\Scripts\qunit-1.11.0.js|\Scripts\sco.ajax.js|\Scripts\sco.collapse.js|\Scripts\sco.confirm.js|\Scripts\sco.message.js|\Scripts\sco.modal.js|\Scripts\sco.panes.js|\Scripts\sco.tab.js|\Scripts\sco.tooltip.js|\Scripts\toastr.js|\Scripts\toastr.min.js|\Scripts\trunk8.js|\Scripts\typeahead.js|\Scripts\typeahead.min.js|\Silverlight.js|\Scripts\underscore.js|\Scripts\underscore.min.js|\Scripts\jquery-2.0.2.intellisense.js|\Scripts\jquery-2.0.2.js|\Scripts\jquery-2.0.2.min.js|\Scripts\qunit-composite.js|\Scripts\Highcharts-3.0.1\js\modules\canvas-tools.js|\Scripts\Highcharts-3.0.1\js\modules\canvas-tools.src.js|\Scripts\Highcharts-3.0.1\js\modules\data.js|\Scripts\Highcharts-3.0.1\js\modules\data.src.js|\Scripts\Highcharts-3.0.1\js\modules\exporting.js|\Scripts\Highcharts-3.0.1\js\modules\exporting.src.js|\Scripts\Highcharts-3.0.1\js\modules\funnel.js|\Scripts\Highcharts-3.0.1\js\modules\funnel.src.js|\Scripts\Highcharts-3.0.1\js\themes\dark-blue.js|\Scripts\Highcharts-3.0.1\js\themes\dark-green.js|\Scripts\Highcharts-3.0.1\js\themes\gray.js|\Scripts\Highcharts-3.0.1\js\themes\grid.js|\Scripts\Highcharts-3.0.1\js\themes\skies.js|\Scripts\Highcharts-3.0.1\js\highcharts-more.js|\Scripts\Highcharts-3.0.1\js\highcharts.js|\Scripts\Highcharts-3.0.1\js\highcharts.src.js|\Scripts\jquery.hotkeys.js|\Scripts\knockout-2.3.0rc.debug.js|\Scripts\knockout-2.3.0rc.js|\Scripts\knockout-3.0.0beta.js|\Scripts\knockout-2.3.0.debug.js|\Scripts\knockout-2.3.0.js|\Scripts\leaflet-src.js|\Scripts\leaflet.js|\Scripts\KML.js|\Scripts\jquery-2.0.3.intellisense.js|\Scripts\jquery-2.0.3.js|\Scripts\jquery-2.0.3.min.js</JSLintSkip>
+    <JSLintSkip>\Scripts\amplify-vsdoc.js|\Scripts\amplify.js|\Scripts\amplify.min.js|\Scripts\angular-bootstrap-prettify.js|\Scripts\angular-bootstrap-prettify.min.js|\Scripts\angular-bootstrap.js|\Scripts\angular-bootstrap.min.js|\Scripts\angular-cookies.js|\Scripts\angular-cookies.min.js|\Scripts\angular-loader.js|\Scripts\angular-loader.min.js|\Scripts\angular-mocks.js|\Scripts\angular-resource.js|\Scripts\angular-resource.min.js|\Scripts\angular-sanitize.js|\Scripts\angular-sanitize.min.js|\Scripts\angular-scenario.js|\Scripts\angular.js|\Scripts\angular.min.js|\Scripts\bootstrap-datepicker.js|\Scripts\bootstrap-datepicker.min.js|\Scripts\bootstrap.js|\Scripts\bootstrap.min.js|\Scripts\hogan-2.0.0.js|\Scripts\jquery-1.10.0.intellisense.js|\Scripts\jquery-1.10.0.js|\Scripts\jquery-1.10.0.min.js|\Scripts\jquery-migrate-1.1.1.js|\Scripts\jquery-migrate-1.1.1.min.js|\Scripts\jquery.rateit.js|\Scripts\jquery.rateit.min.js|\Scripts\jquery.unobtrusive-ajax.js|\Scripts\jquery.unobtrusive-ajax.min.js|\Scripts\jquery.validate-vsdoc.js|\Scripts\jquery.validate.dates.js|\Scripts\jquery.validate.js|\Scripts\jquery.validate.min.js|\Scripts\jquery.validate.unobtrusive.js|\Scripts\jquery.validate.unobtrusive.min.js|\Scripts\knockout-2.2.1.debug.js|\Scripts\knockout-2.2.1.js|\Scripts\knockout.activity.js|\Scripts\knockout.command.js|\Scripts\knockout.dirtyFlag.js|\Scripts\knockout.mapping-latest.debug.js|\Scripts\knockout.mapping-latest.js|\Scripts\knockout.validation.debug.js|\Scripts\knockout.validation.js|\Scripts\knockout.viewmodel.2.0.2.js|\Scripts\knockout.viewmodel.2.0.2.min.js|\Scripts\MicrosoftAjax.debug.js|\Scripts\MicrosoftAjax.js|\Scripts\MicrosoftMvcAjax.debug.js|\Scripts\MicrosoftMvcAjax.js|\Scripts\MicrosoftMvcValidation.debug.js|\Scripts\MicrosoftMvcValidation.js|\Scripts\modernizr-2.6.2.js|\Scripts\moment.js|\Scripts\moment.min.js|\Scripts\pageguide.js|\Scripts\pageguide.min.js|\Scripts\qunit-1.11.0.js|\Scripts\sco.ajax.js|\Scripts\sco.collapse.js|\Scripts\sco.confirm.js|\Scripts\sco.message.js|\Scripts\sco.modal.js|\Scripts\sco.panes.js|\Scripts\sco.tab.js|\Scripts\sco.tooltip.js|\Scripts\toastr.js|\Scripts\toastr.min.js|\Scripts\trunk8.js|\Scripts\typeahead.js|\Scripts\typeahead.min.js|\Silverlight.js|\Scripts\underscore.js|\Scripts\underscore.min.js|\Scripts\jquery-2.0.2.intellisense.js|\Scripts\jquery-2.0.2.js|\Scripts\jquery-2.0.2.min.js|\Scripts\qunit-composite.js|\Scripts\Highcharts-3.0.1\js\modules\canvas-tools.js|\Scripts\Highcharts-3.0.1\js\modules\canvas-tools.src.js|\Scripts\Highcharts-3.0.1\js\modules\data.js|\Scripts\Highcharts-3.0.1\js\modules\data.src.js|\Scripts\Highcharts-3.0.1\js\modules\exporting.js|\Scripts\Highcharts-3.0.1\js\modules\exporting.src.js|\Scripts\Highcharts-3.0.1\js\modules\funnel.js|\Scripts\Highcharts-3.0.1\js\modules\funnel.src.js|\Scripts\Highcharts-3.0.1\js\themes\dark-blue.js|\Scripts\Highcharts-3.0.1\js\themes\dark-green.js|\Scripts\Highcharts-3.0.1\js\themes\gray.js|\Scripts\Highcharts-3.0.1\js\themes\grid.js|\Scripts\Highcharts-3.0.1\js\themes\skies.js|\Scripts\Highcharts-3.0.1\js\highcharts-more.js|\Scripts\Highcharts-3.0.1\js\highcharts.js|\Scripts\Highcharts-3.0.1\js\highcharts.src.js|\Scripts\jquery.hotkeys.js|\Scripts\knockout-2.3.0rc.debug.js|\Scripts\knockout-2.3.0rc.js|\Scripts\knockout-3.0.0beta.js|\Scripts\knockout-2.3.0.debug.js|\Scripts\knockout-2.3.0.js|\Scripts\leaflet-src.js|\Scripts\leaflet.js|\Scripts\KML.js|\Scripts\jquery-2.0.3.intellisense.js|\Scripts\jquery-2.0.3.js|\Scripts\jquery-2.0.3.min.js|\Scripts\OpenLayers.js</JSLintSkip>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -642,6 +642,71 @@
     <Content Include="Content\images\tlyguide\tlyguide_icon.png" />
     <Content Include="Content\leaflet.css" />
     <Content Include="Content\leaflet.ie.css" />
+    <Content Include="Content\OpenLayers\img\blank.gif" />
+    <Content Include="Content\OpenLayers\img\cloud-popup-relative.png" />
+    <Content Include="Content\OpenLayers\img\drag-rectangle-off.png" />
+    <Content Include="Content\OpenLayers\img\drag-rectangle-on.png" />
+    <Content Include="Content\OpenLayers\img\east-mini.png" />
+    <Content Include="Content\OpenLayers\img\layer-switcher-maximize.png" />
+    <Content Include="Content\OpenLayers\img\layer-switcher-minimize.png" />
+    <Content Include="Content\OpenLayers\img\marker-blue.png" />
+    <Content Include="Content\OpenLayers\img\marker-gold.png" />
+    <Content Include="Content\OpenLayers\img\marker-green.png" />
+    <Content Include="Content\OpenLayers\img\marker.png" />
+    <Content Include="Content\OpenLayers\img\measuring-stick-off.png" />
+    <Content Include="Content\OpenLayers\img\measuring-stick-on.png" />
+    <Content Include="Content\OpenLayers\img\north-mini.png" />
+    <Content Include="Content\OpenLayers\img\panning-hand-off.png" />
+    <Content Include="Content\OpenLayers\img\panning-hand-on.png" />
+    <Content Include="Content\OpenLayers\img\slider.png" />
+    <Content Include="Content\OpenLayers\img\south-mini.png" />
+    <Content Include="Content\OpenLayers\img\west-mini.png" />
+    <Content Include="Content\OpenLayers\img\zoom-minus-mini.png" />
+    <Content Include="Content\OpenLayers\img\zoom-plus-mini.png" />
+    <Content Include="Content\OpenLayers\img\zoom-world-mini.png" />
+    <Content Include="Content\OpenLayers\img\zoombar.png" />
+    <Content Include="Content\OpenLayers\theme\default\google.css" />
+    <Content Include="Content\OpenLayers\theme\default\google.tidy.css" />
+    <Content Include="Content\OpenLayers\theme\default\ie6-style.css" />
+    <Content Include="Content\OpenLayers\theme\default\ie6-style.tidy.css" />
+    <Content Include="Content\OpenLayers\theme\default\img\add_point_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\add_point_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\blank.gif" />
+    <Content Include="Content\OpenLayers\theme\default\img\close.gif" />
+    <Content Include="Content\OpenLayers\theme\default\img\drag-rectangle-off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\drag-rectangle-on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\draw_line_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\draw_line_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\draw_point_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\draw_point_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\draw_polygon_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\draw_polygon_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\editing_tool_bar.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\move_feature_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\move_feature_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\navigation_history.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\overview_replacement.gif" />
+    <Content Include="Content\OpenLayers\theme\default\img\pan-panel-NOALPHA.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\pan-panel.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\panning-hand-off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\panning-hand-on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\pan_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\pan_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\remove_point_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\remove_point_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\ruler.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\save_features_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\save_features_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\view_next_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\view_next_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\view_previous_off.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\view_previous_on.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\zoom-panel-NOALPHA.png" />
+    <Content Include="Content\OpenLayers\theme\default\img\zoom-panel.png" />
+    <Content Include="Content\OpenLayers\theme\default\style.css" />
+    <Content Include="Content\OpenLayers\theme\default\style.mobile.css" />
+    <Content Include="Content\OpenLayers\theme\default\style.mobile.tidy.css" />
+    <Content Include="Content\OpenLayers\theme\default\style.tidy.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\pageguide.css" />
     <Content Include="Content\pageguide.min.css" />
@@ -932,7 +997,6 @@
     <Folder Include="Areas\WebApi\App_Start\" />
     <Folder Include="Areas\WebApi\Models\" />
     <Folder Include="Areas\WebApi\Views\Shared\" />
-    <Folder Include="Content\OpenLayers\" />
     <Folder Include="externals\" />
   </ItemGroup>
   <ItemGroup>
