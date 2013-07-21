@@ -26,11 +26,10 @@
             @{ Html.RenderPartial("_Downloads", Model); }
         </div>
         <div class="tab-pane" id="map">
-            <div id="mapX" style="width: 600px; height: 400px;"></div>
+            <div id="mapX" style="width: 700px; height: 500px;"></div>
         </div>
     </div>
 </div>
-
 
 @* The following infrastructure moves the trip close form to a Bootstrap modal form *@
 <div id="closeModal" class="modal hide fade" tabindex="-1" role="dialog">
@@ -143,13 +142,12 @@
 }
 
 @section AdditionalCss {
-    <link rel="stylesheet" href="~/Content/leaflet.css" />
+    <link rel="stylesheet" href="~/Content/OpenLayers/theme/default/style.tidy.css" />
 }
 
 @section AdditionalScripts {
     @* Sco.js integrates with Bootstrap and adds some useful features *@
     @System.Web.Optimization.Scripts.Render("~/bundles/scojs")
-    @System.Web.Optimization.Scripts.Render("~/bundles/leaflet")
     <script>
         $(function () {
             $('.large-text').trunk8({
@@ -159,32 +157,51 @@
             tl.pg.init();
         });
     </script>
+    @* 
+     * openlayers Bundle includes OpenLayers script _plus_ javascript for creating a trip map.
+     *@
+    @System.Web.Optimization.Scripts.Render("~/bundles/openlayers")
     <script>
+        // This isn't in the bundle since it needs to be set in Razor
+        OpenLayers.ImgPath = '@Url.Content("~/Content/OpenLayers/img")';
         $(function () {
-            /*
-             * Couple problems with this:
-             * 1) Leaflet uses a single map marker, negating the custom styling in the KML
-             * 2) OSM tiles appear to be _very_ slow
-             * 3) Clicking on a marker gives us the label (YAY), but it does some kind of strange auto-movement thing
-             * 4) The folders in the KML aren't being respected
-             * 5) The default OSM map is probably more detailed than we want
-             * 6) This map should have some additional layers with EEZ, 12 mile boundary, etc.
-             *
-             * GeoJSON looks promising except for some different issues:
-             * 1)  The only package for GeoJSON in C# is 3 years old and is not being updated
-             * 2)  GeoJSON has no timestamps, so times need to go into item properties
-             * 3)  There are no good examples for using the GeoJSON.Net project
-             */
-            L.Icon.Default.imagePath = '@Url.Content("~/Content/images")';
-            var map = new L.Map('mapX');
-            var osm = new L.TileLayer.OpenStreetMap();
-            var track = new L.KML('@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId }, this.Request.Url.Scheme)');
-            track.on("loaded", function (e) {
-                map.fitBounds(e.target.getBounds());
+            // NOTE:  tubs-openlayers.js (in ~/bundles/openlayers) adds a global 'map' variable.
+            map = new OpenLayers.Map('mapX', { theme: null });
+            var layer = new OpenLayers.Layer.XYZ(
+              "Layer",
+              ["http://nouofputil01/mbtiles/test/${z}/${x}/${y}.png"],
+              {
+                  sphericalMercator: true,
+                  attribution: "CROP &copy; ",
+                  wrapDateLine: true,
+                  numZoomLevels: 9
+              }
+            );
+            var kml = new OpenLayers.Layer.Vector("KML", {
+                strategies: [new OpenLayers.Strategy.Fixed()],
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: '@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })',
+                    format: new OpenLayers.Format.KML({
+                        extractStyles: true,
+                        extractAttributes: true,
+                        maxDepth: 2
+                    })
+                })
             });
-            map.addLayer(track);
-            map.addLayer(osm);
-            map.addControl(new L.Control.Layers({}, { 'Track': track }));
+
+            // Add layers to the map
+            map.addLayers([layer, kml]);
+
+            // TODO:  KML folders
+            // TODO:  Center map correctly
+
+            // Set the map's initial center point
+            var center = new OpenLayers.LonLat(150, -9.0).transform(epsg4326, map.getProjectionObject());
+            map.setCenter(center, 5);
+
+            var click = new OpenLayers.Control.Click();
+            map.addControl(click);
+            click.activate();
         });
     </script>
 }

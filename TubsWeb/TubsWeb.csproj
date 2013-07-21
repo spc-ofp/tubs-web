@@ -760,14 +760,11 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\KML.js" />
     <Content Include="Scripts\knockout-2.3.0.debug.js" />
     <Content Include="Scripts\knockout-2.3.0.js" />
     <Content Include="Scripts\knockout.activity.js" />
     <Content Include="Scripts\knockout.command.js" />
-    <Content Include="Scripts\leaflet-src.js" />
-    <Content Include="Scripts\leaflet.js" />
-    <Content Include="Scripts\TileLayer.Common.js" />
+    <Content Include="Scripts\OpenLayers.js" />
     <Content Include="Scripts\tubs-custom-bindings.js" />
     <Content Include="Scripts\knockout.dirtyFlag.js" />
     <Content Include="Scripts\knockout.mapping-latest.debug.js" />
@@ -797,6 +794,7 @@
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
     <Content Include="Scripts\trunk8.js" />
+    <Content Include="Scripts\tubs-openlayers.js" />
     <Content Include="Scripts\tubs-unobtrusive.js" />
     <Content Include="Scripts\tubs.js" />
     <Content Include="Scripts\typeahead.js" />
@@ -934,6 +932,7 @@
     <Folder Include="Areas\WebApi\App_Start\" />
     <Folder Include="Areas\WebApi\Models\" />
     <Folder Include="Areas\WebApi\Views\Shared\" />
+    <Folder Include="Content\OpenLayers\" />
     <Folder Include="externals\" />
   </ItemGroup>
   <ItemGroup>

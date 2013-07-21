@@ -107,11 +107,10 @@ namespace TubsWeb
                     "~/Scripts/sco.tab.js"
                 ));
 
-            bundles.Add(new ScriptBundle("~/bundles/leaflet")
+            bundles.Add(new ScriptBundle("~/bundles/openlayers")
                 .Include(
-                    "~/Scripts/leaflet-src.js",
-                    "~/Scripts/KML.js",
-                    "~/Scripts/TileLayer.Common.js"
+                    "~/Scripts/OpenLayers.js",
+                    "~/Scripts/tubs-openlayers.js"
                 ));
 
             // Typeahead is, at least at present, a fairly uncommon facility
