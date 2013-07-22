@@ -26,7 +26,7 @@
             @{ Html.RenderPartial("_Downloads", Model); }
         </div>
         <div class="tab-pane" id="map">
-            <div id="mapX" style="width: 700px; height: 500px;"></div>
+            @{ Html.RenderPartial("_Map"); }
         </div>
     </div>
 </div>
@@ -130,7 +130,6 @@
 </ul>
 
 @section Sidebar {
-
     @{
         IEnumerable<Tuple<string, string>> navpills = ViewBag.NavPills;
         if (null != navpills)
@@ -138,10 +137,10 @@
             Html.RenderPartial("_VerticalTripNavBar", navpills);
         }
     }
-
 }
 
 @section AdditionalCss {
+    @* Print stylesheet? *@
     <link rel="stylesheet" href="~/Content/OpenLayers/theme/default/style.tidy.css" />
 }
 
@@ -163,9 +162,11 @@
     @System.Web.Optimization.Scripts.Render("~/bundles/openlayers")
     <script>
         // This isn't in the bundle since it needs to be set in Razor
-        OpenLayers.ImgPath = '@Url.Content("~/Content/OpenLayers/img")';
+        OpenLayers.ImgPath = '@Url.Content("~/Content/OpenLayers/img/")';
         $(function () {
             // NOTE:  tubs-openlayers.js (in ~/bundles/openlayers) adds a global 'map' variable.
+            // TODO:  Read the layer URL from web.config.  It's okay to hard-code within SPC,
+            // but other customers won't be as lucky.
             map = new OpenLayers.Map('mapX', { theme: null });
             var layer = new OpenLayers.Layer.XYZ(
               "Layer",
@@ -177,7 +178,7 @@
                   numZoomLevels: 9
               }
             );
-            var kml = new OpenLayers.Layer.Vector("KML", {
+            kml = new OpenLayers.Layer.Vector("KML", {
                 strategies: [new OpenLayers.Strategy.Fixed()],
                 protocol: new OpenLayers.Protocol.HTTP({
                     url: '@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })',
@@ -201,6 +202,12 @@
 
             var click = new OpenLayers.Control.Click();
             map.addControl(click);
+            map.addControl(new OpenLayers.Control.MousePosition({ displayProject: epsg4326 }));
+            map.addControl(new OpenLayers.Control.OverviewMap());
+            map.addControl(new OpenLayers.Control.ScaleLine({
+                topOutUnits: 'nmi',
+                topInUnits: 'm'
+            }));
             click.activate();
         });
     </script>

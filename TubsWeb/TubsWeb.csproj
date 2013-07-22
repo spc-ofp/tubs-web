@@ -640,8 +640,6 @@
     <Content Include="Content\images\star.gif" />
     <Content Include="Content\images\tlyguide\tlyguide_arrow.png" />
     <Content Include="Content\images\tlyguide\tlyguide_icon.png" />
-    <Content Include="Content\leaflet.css" />
-    <Content Include="Content\leaflet.ie.css" />
     <Content Include="Content\OpenLayers\img\blank.gif" />
     <Content Include="Content\OpenLayers\img\cloud-popup-relative.png" />
     <Content Include="Content\OpenLayers\img\drag-rectangle-off.png" />
@@ -941,7 +939,6 @@
     <Content Include="Views\TripInfo\_SafetyInspection.cshtml" />
     <Content Include="Views\TripInfo\_RefrigerationMethod.cshtml" />
     <Content Include="Views\TripInfo\_CrewNationality.cshtml" />
-    <Content Include="Views\Trip\Map.cshtml" />
     <Content Include="Views\SetHaul\_SpecificationEditor.cshtml" />
     <Content Include="Views\SetHaul\_BaitEditor.cshtml" />
     <Content Include="Views\SetHaul\_DetailsEditor.cshtml" />
@@ -987,6 +984,7 @@
     <Content Include="Views\FishingSet\_Comments.cshtml" />
     <Content Include="Views\Ps4\Index.cshtml" />
     <Content Include="Views\Trip\_Downloads.cshtml" />
+    <Content Include="Views\Trip\_Map.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

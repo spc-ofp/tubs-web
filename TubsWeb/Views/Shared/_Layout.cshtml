@@ -21,6 +21,7 @@
     <link rel="start" href="~/" id="applicationHome" />    
     <link rel="alternate" type="application/rss+xml" title="Latest Trips" href="@Url.RouteUrl(TubsWeb.RouteConfig.RssFeed)" />
     @Styles.Render("~/Content/css")
+    @* TODO: TUBS should have a print stylesheet *@
     @RenderSection("AdditionalCss", false) 
 
     <!-- Use Modernizr instead of html5shim / html5shiv, at least until it breaks -->
@@ -93,7 +94,16 @@
         else
         {
             @RenderBody()
-        }          
+        }
+        @*
+         * This may be really cool or it may be the worst hack ever.
+         * If the current trip is closed, splash a big, giant ribbon
+         * in the upper-right corner telling the user.
+         *@
+        @if (ViewBag.IsReadOnly != null && ViewBag.IsReadOnly)
+        { 
+            <span id="closed-ribbon"><a href="#">This trip is closed</a></span>
+        }  
         </div> 
         <div class="push"><!--//--></div>
     </div>

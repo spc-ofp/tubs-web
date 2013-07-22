@@ -36,6 +36,8 @@ namespace TubsWeb
                 cfg.AddProfile<Gen5Profile>();
                 cfg.AddProfile<PageCountProfile>();
                 cfg.AddProfile<TripSummaryProfile>();
+                cfg.AddProfile<TrackProfile>();
+                cfg.AddProfile<PositionsProfile>();
                 cfg.AddProfile<LongLineSampleProfile>();
                 cfg.AddProfile<TripSamplingProfile>(); // Purse Seine sampling
                 // Trim all strings.  If the trimmed string is empty, return a null

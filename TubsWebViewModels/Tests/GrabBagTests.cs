@@ -23,6 +23,8 @@ namespace TubsWeb.ViewModels.Tests
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
     using NUnit.Framework;
 
     /// <summary>
@@ -93,6 +95,47 @@ namespace TubsWeb.ViewModels.Tests
             StringAssert.AreEqualIgnoringCase("07 09.339N", FormatLatitude(latitude));
             double? longitude = 171.1794;
             StringAssert.AreEqualIgnoringCase("171 10.764E", FormatLongitude(longitude));
+        }
+
+        [Test]
+        public void TrackAsGeoJson()
+        {
+            var track = new TrackViewModel();
+            track.Positions.Add(new[] { 102.0M, 0.0M });
+            track.Positions.Add(new[] { 103.0M, 1.0M });
+            track.Positions.Add(new[] { 104.0M, 0.0M });
+            track.Positions.Add(new[] { 105.0M, 1.0M });
+            track.Properties.Add("prop0", "value0");
+            track.Properties.Add("prop1", 0.0M);
+            var json = JsonConvert.SerializeObject(track.GeoJson);
+            System.Console.WriteLine(json);
+            Assert.True(true);
+        }
+
+        [Test]
+        public void PositionsAsGeoJson()
+        {
+            var pvm = new PositionsViewModel();
+            pvm.Positions.Add(new PositionsViewModel.ObservedPosition()
+            {
+                Longitude = 158.0583M,
+                Latitude = -3.6893M
+            });
+            pvm.Positions.Add(new PositionsViewModel.ObservedPosition()
+            {
+                Longitude = 157.9265M,
+                Latitude = -3.7240M
+            });
+            pvm.Positions[0].Properties.Add(new KeyValuePair<string, object>("timestamp", "2010-10-01T06:00:00"));
+            pvm.Positions[0].Properties.Add(new KeyValuePair<string, object>("activity", "Transit"));
+            pvm.Positions[1].Properties.Add(new KeyValuePair<string, object>("timestamp", "2010-10-02T06:00:00"));
+            pvm.Positions[1].Properties.Add(new KeyValuePair<string, object>("activity", "Set"));
+            pvm.Positions[1].Properties.Add(new KeyValuePair<string, object>("catch", "100MT"));
+            pvm.Properties.Add("prop0", "value0");
+            pvm.Properties.Add("prop1", 0.0M);
+            var json = JsonConvert.SerializeObject(pvm.GeoJson);
+            System.Console.WriteLine(json);
+            Assert.True(true);
         }
     }
 }

@@ -242,6 +242,9 @@ namespace TubsWeb.Controllers
             return new RssResult(feed);
         }
 
+        // TODO Move 'Positions' to a separate controller
+        // Add methods for full KML, just track, and just points.
+
         /// <summary>
         /// Return all trip positions as KML.
         /// </summary>

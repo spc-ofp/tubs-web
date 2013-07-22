@@ -317,10 +317,10 @@ namespace TubsWeb.Controllers
             // View KML directly in the browser
             // Currently uses Google Earth plugin, but it could be changed to any slippy map
             // down the road
-            if (null != tripId.Pushpins && tripId.Pushpins.Any())
-            {
-                pills.Add(Tuple.Create("Map", Url.Action("Map", "Trip", routeValues)));
-            }
+            //if (null != tripId.Pushpins && tripId.Pushpins.Any())
+            //{
+            //    pills.Add(Tuple.Create("Map", Url.Action("Map", "Trip", routeValues)));
+            //}
 
             //if (!tripId.IsReadOnly)
             //{

@@ -87,6 +87,9 @@ namespace TubsWeb.Core
             {
                 return null;
             }
+            // TODO:  What is really wanting here is the ability to add extended data
+            // KML is KML, but some KML clients (e.g. OpenLayers) don't pass all the data along, so it
+            // would be good to include it another way
             return new Placemark()
             {
                 name = pushpin.Description,

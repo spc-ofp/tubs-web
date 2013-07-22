@@ -171,5 +171,70 @@ label + input:focus {
     background-color: #fa3;
 }
 */
-      
 
+/*
+ * closed-ribbon is a repurposing of the fairly common 'fork on GitHub' ribbon
+ * found on OSS software project pages
+ * This implementation is from here:
+ * http://codepo8.github.io/css-fork-on-github-ribbon/
+ * The one problem is that it steps on the PageGuide fly-out.
+ * One potential fix is to put it into one of the bottom corners.
+ */
+ 
+#closed-ribbon a {
+    background:#00f;
+    color:#fff;
+    text-decoration:none;
+    font-family:arial, sans-serif;
+    text-align:center;
+    font-weight:bold;
+    padding:5px 40px;
+    font-size:1rem;
+    line-height:2rem;
+    position:relative;
+    transition:0.5s;
+}
+
+#closed-ribbon a:hover {
+    background:#0ff;
+    color:#fff;
+}
+
+#closed-ribbon a::before,
+#closed-ribbon a::after {
+    content:"";
+    width:100%;
+    display:block;
+    position:absolute;
+    top:1px;
+    left:0;
+    height:1px;
+    background:#fff;
+}
+
+#closed-ribbon a::after {
+    bottom:1px;
+    top:auto;
+}
+
+@media screen and (min-width:800px){
+    #closed-ribbon {
+        position:absolute;
+        display:block;
+        top:40px;
+        right:0;
+        width:200px;
+        overflow:hidden;
+        height:200px;
+
+    }
+    #closed-ribbon a {
+        width:200px;
+        position:absolute;
+        top:40px;
+        right:-60px;       
+        -webkit-transform:rotate(45deg);
+                transform:rotate(45deg);
+        box-shadow:4px 4px 10px rgba(0,0,0,0.8);
+    }
+}

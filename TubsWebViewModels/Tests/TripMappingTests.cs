@@ -50,6 +50,42 @@ namespace TubsWeb.Tests
                 Assert.NotNull(vm);
             }
         }
+
+        [Test]
+        public void TripEntityToTrackViewModel([Values(70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<Trip, TrackViewModel>(trip);
+                Assert.NotNull(vm);
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(vm.GeoJson);
+                // Not really sure how to test this.  For now, assume it passes while dumping the
+                // output to the console for external validation.
+                System.Console.WriteLine(json);
+                Assert.IsNotNullOrEmpty(json);
+            }
+        }
+
+        [Test]
+        public void TripEntityToPositionsViewModel([Values(70)] int tripId)
+        {
+            Mapper.AssertConfigurationIsValid();
+            using (var repo = TubsDataService.GetRepository<Trip>(false))
+            {
+                var trip = repo.FindById(tripId);
+                Assert.NotNull(trip);
+                var vm = Mapper.Map<Trip, PositionsViewModel>(trip);
+                Assert.NotNull(vm);
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(vm.GeoJson);
+                // Not really sure how to test this.  For now, assume it passes while dumping the
+                // output to the console for external validation.
+                System.Console.WriteLine(json);
+                Assert.IsNotNullOrEmpty(json);
+            }
+        }
         
         
         [Test]

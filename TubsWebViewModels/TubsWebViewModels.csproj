@@ -79,12 +79,14 @@
     <Compile Include="Mapping\Profiles\LongLineSampleProfile.cs" />
     <Compile Include="Mapping\Profiles\LongLineSetProfile.cs" />
     <Compile Include="Mapping\Profiles\PageCountProfile.cs" />
+    <Compile Include="Mapping\Profiles\PositionsProfile.cs" />
     <Compile Include="Mapping\Profiles\Ps1Profile.cs" />
     <Compile Include="Mapping\Profiles\Ps1ViewModelProfile.cs" />
     <Compile Include="Mapping\Profiles\SafetyInspectionProfile.cs" />
     <Compile Include="Mapping\Profiles\SeaDayProfile.cs" />
     <Compile Include="Mapping\Profiles\SetProfile.cs" />
     <Compile Include="Mapping\Profiles\SightingProfile.cs" />
+    <Compile Include="Mapping\Profiles\TrackProfile.cs" />
     <Compile Include="Mapping\Profiles\TransferProfile.cs" />
     <Compile Include="Mapping\Profiles\TripInfoProfile.cs" />
     <Compile Include="Mapping\Profiles\TripSamplingProfile.cs" />
@@ -116,6 +118,7 @@
     <Compile Include="Tests\MapperSetup.cs" />
     <Compile Include="Tests\MappingTests.cs" />
     <Compile Include="Tests\TripMappingTests.cs" />
+    <Compile Include="ViewModels\BaseGeoViewModel.cs" />
     <Compile Include="ViewModels\CrewViewModel.cs" />
     <Compile Include="ViewModels\ElectronicsViewModel.cs" />
     <Compile Include="ViewModels\Gen2GearViewModel.cs" />
@@ -131,11 +134,13 @@
     <Compile Include="ViewModels\LongLineSetViewModel.cs" />
     <Compile Include="ViewModels\LongLineTripInfoViewModel.cs" />
     <Compile Include="ViewModels\PageCountViewModel.cs" />
+    <Compile Include="ViewModels\PositionsViewModel.cs" />
     <Compile Include="ViewModels\Ps1ViewModel.cs" />
     <Compile Include="ViewModels\PurseSeineSetViewModel.cs" />
     <Compile Include="ViewModels\SafetyInspectionViewModel.cs" />
     <Compile Include="ViewModels\SeaDayViewModel.cs" />
     <Compile Include="ViewModels\SightingViewModel.cs" />
+    <Compile Include="ViewModels\TrackViewModel.cs" />
     <Compile Include="ViewModels\TransferViewModel.cs" />
     <Compile Include="ViewModels\TripCreationViewModel.cs" />
     <Compile Include="ViewModels\TripSamplingViewModel.cs" />
