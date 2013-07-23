@@ -288,6 +288,7 @@
     <Compile Include="Controllers\Gen5Controller.cs" />
     <Compile Include="Controllers\LengthSampleController.cs" />
     <Compile Include="Controllers\LongLineSamplingController.cs" />
+    <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\PageCountController.cs" />
     <Compile Include="Controllers\Ps1Controller.cs" />
     <Compile Include="Controllers\Ps4Controller.cs" />
@@ -304,12 +305,10 @@
     <Compile Include="Controllers\Gen3Controller.cs" />
     <Compile Include="Controllers\Gen6Controller.cs" />
     <Compile Include="Core\AuditHelper.cs" />
-    <Compile Include="Core\CrossOriginRequestsAttribute.cs" />
     <Compile Include="Core\CxmlResult.cs" />
     <Compile Include="Core\DateTimeModelBinder.cs" />
     <Compile Include="Core\EditorAuthorizeAttribute.cs" />
     <Compile Include="Core\ElmahHandledErrorLoggerFilter.cs" />
-    <Compile Include="Core\GeoJsonBuilder.cs" />
     <Compile Include="Core\HandleTransactionManuallyAttribute.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ObserverController.cs" />
@@ -985,6 +984,9 @@
     <Content Include="Views\Ps4\Index.cshtml" />
     <Content Include="Views\Trip\_Downloads.cshtml" />
     <Content Include="Views\Trip\_Map.cshtml" />
+    <Content Include="Views\Shared\_SpeciesCodes.cshtml" />
+    <Content Include="Views\Shared\_CommonSpeciesPS.cshtml" />
+    <Content Include="Views\Shared\_CommonSpeciesLL.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

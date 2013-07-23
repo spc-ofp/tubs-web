@@ -16,7 +16,7 @@
 
 <p>
 <img src='@Url.Content("~/Content/images/google-earth-16x16.png")' alt="" />
-<a href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })'>View in Google Earth</a>
+<a href='@Url.RouteUrl(TubsWeb.RouteConfig.FullTripKml, new { tripId = ViewBag.TripId })'>View in Google Earth</a>
 </p>
 
 <p>
@@ -38,9 +38,9 @@ velocity between points exceeds 35 km/h (19 knots).
     <tbody>
     @foreach (var item in Model)
     {
-        var styleString = (item.DeltaVelocity.HasValue && item.DeltaVelocity.Value > 35) ? " style='color:red;'" : String.Empty;
-        <tr @Html.Raw(styleString)>
-            <td style="white-space:nowrap;">@Html.DisplayFor(m => item.Timestamp, new { format = "dd/MM/yy HHmm" })</td>
+        @* Highlight potential position entry issues *@
+        <tr @Html.Raw((item.DeltaVelocity.HasValue && item.DeltaVelocity.Value > 35) ? " class='lookatme'" : String.Empty)>
+            <td class="nobr">@Html.DisplayFor(m => item.Timestamp, new { format = "dd/MM/yy HHmm" })</td>
             <td>
                 @TubsHelpers.FormatLatitude(item.Latitude) / <br /> 
                 @TubsHelpers.FormatLongitude(item.Longitude)

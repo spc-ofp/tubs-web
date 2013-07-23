@@ -49,6 +49,12 @@
 <br />
 @* NOTE:  The onboard entry flow might be different from the office entry flow *@
 
+@*
+ * It would be good if we could pull this down another way so that the client would cache the list.
+ * Still, I guess that's the point of AngularJS and cached views separate from data.
+ *@
+@{ Html.RenderPartial("_CommonSpeciesPS"); }
+
 <div class="tabbable tabs-top">
     <ul id="formSections" class="nav nav-tabs">
         <li class="active"><a href="#times" data-toggle="tab">Set Times</a></li>

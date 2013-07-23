@@ -107,6 +107,7 @@ namespace TubsWeb.Controllers
             var pageNumber = page ?? 1;
             var entities = repo.All().ToPagedList(pageNumber, itemsPerPage);
             ViewBag.TotalRows = entities.TotalItemCount;
+            ViewBag.Title = "All Trips";
             return View(entities);
         }
 
@@ -130,6 +131,7 @@ namespace TubsWeb.Controllers
             ViewBag.TotalRows = entities.TotalItemCount;
             ViewBag.ActionName = "MyTrips";
             ViewBag.FilterCriteria = filterCriteria; // For debug use
+            ViewBag.Title = "My Trips";
             return View("Index", entities);
         }
 
@@ -242,9 +244,7 @@ namespace TubsWeb.Controllers
             return new RssResult(feed);
         }
 
-        // TODO Move 'Positions' to a separate controller
-        // Add methods for full KML, just track, and just points.
-
+        /*
         /// <summary>
         /// Return all trip positions as KML.
         /// </summary>
@@ -277,50 +277,7 @@ namespace TubsWeb.Controllers
                     this.HttpContext.Request.RawUrl);
             return new KmlResult(tripDoc);
         }
-
-        public ActionResult PositionsEx(Trip tripId)
-        {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
-            // Exclude any pushpins that won't display nicely
-            var pushpins = tripId.Pushpins.Where(p => p.CanDisplay()).ToList();
-            // Sort by date (assumes all timestamps have the same base frame of reference for date)
-            // which occasionally is not true.
-            pushpins.Sort(
-                delegate(Pushpin p1, Pushpin p2)
-                {
-                    return Comparer<DateTime?>.Default.Compare(p1.Timestamp, p2.Timestamp);
-                });
-
-            var features = GeoJsonBuilder.BuildTripTrack(pushpins);
-            // This is throwing a NotImplementedException -- Serenity Now!
-            string json = JsonConvert.SerializeObject(features);
-
-            return Content(json, "application/json");
-            
-        }
-
-        /// <summary>
-        /// Action for displaying trip KML via Google Earth plugin.
-        /// </summary>
-        /// <param name="tripId">Current trip</param>
-        /// <returns></returns>
-        public ActionResult Map(Trip tripId)
-        {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
-            ViewBag.Title = String.Format("Positions for trip {0}", tripId.SpcTripNumber);
-            ViewBag.TripId = tripId.Id;
-            ViewBag.TripNumber = tripId.SpcTripNumber;
-
-            return View();
-        }
+        */
 
         /// <summary>
         /// 
@@ -458,6 +415,8 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         public ActionResult Export(Trip tripId)
         {
+            // TODO: Move to export controller?
+
             if (null == tripId)
             {
                 return InvalidTripResponse();

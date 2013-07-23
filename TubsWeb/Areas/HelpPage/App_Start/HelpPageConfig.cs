@@ -35,10 +35,29 @@ namespace TubsWeb.Areas.HelpPage
     /// </summary>
     public static class HelpPageConfig
     {
+        /// <summary>
+        /// Configure dynamic API help documentation.
+        /// </summary>
+        /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
         {
-            //// Uncomment the following to use the documentation from XML documentation file.
-            config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("/bin/TubsWeb.XML")));
+            // After the third time this bit me, I decided it was time to do something about this.
+            string docPath = String.Empty;
+            try
+            {
+                docPath = HttpContext.Current.Server.MapPath("/bin/TubsWeb.XML");
+            }
+            catch (HttpException hex)
+            {
+                // No documentation for you, one year!
+            }
+
+            if (!String.IsNullOrEmpty(docPath))
+            {
+                //// Uncomment the following to use the documentation from XML documentation file.
+                config.SetDocumentationProvider(new XmlDocumentationProvider(docPath));
+            }
+            
 
             //// Uncomment the following to use "sample string" as the sample for all actions that have string as the body parameter or return type.
             //// Also, the string arrays will be used for IEnumerable<string>. The sample objects will be serialized into different media type 

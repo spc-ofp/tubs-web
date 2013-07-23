@@ -51,6 +51,12 @@
 </p>
 <hr />
 
+@*
+ * It would be good if we could pull this down another way so that the client would cache the list.
+ * Still, I guess that's the point of AngularJS and cached views separate from data.
+ *@
+@{ Html.RenderPartial("_CommonSpeciesLL"); }
+
 <div class="row">
     <div class="span4">
         <label><strong>Measuring Instrument</strong></label>
@@ -111,7 +117,7 @@
             <td><input type="text" class="input-mini" data-bind="value: DateOnly.formattedDate" /></td>
             <td><input type="text" class="input-mini" data-bind="hasFocus: NeedsFocus, value: TimeOnly" /></td>
             <td><input type="number" min="0" class="input-mini" data-bind="value: HookNumber" /></td>
-            <td><input type="text" class="input-mini species" data-bind="value: SpeciesCode" /></td>
+            <td><input type="text" class="input-mini species" list="commonSpeciesLL" data-bind="value: SpeciesCode" /></td>
             <td><select class="input-mini" data-bind="options: $root.ConditionCodes, value: CaughtCondition"></select></td>
             <td><select class="input-mini" data-bind="options: $root.ConditionCodes, value: DiscardedCondition"></select></td>
             <td><input type="number" min="0" class="input-mini" data-bind="value: Length" /></td>

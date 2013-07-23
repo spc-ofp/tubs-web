@@ -57,9 +57,10 @@
         }
         else
         {
-        <a id="kmlLink" href='@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })' download="@(baseFileName)positions.kml">
+        @* Prefer KMZ over KML *@          
+        <a id="kmlLink" href='@Url.RouteUrl(TubsWeb.RouteConfig.FullTripKml, new { tripId = ViewBag.TripId })' download="@(baseFileName)positions.kmz">
             <img src="~/Content/images/google-earth-16x16.png" alt="KML" height="16" width="16" />&nbsp;KML
-        </a>
+        </a>    
         }
     </div>
     <div class="span2"><a href="#">Other Formats</a></div>

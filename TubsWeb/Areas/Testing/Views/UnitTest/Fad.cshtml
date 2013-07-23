@@ -114,7 +114,7 @@
             equal(viewmodel.Attachments().length, 0, "Correct number of attachments");
         });
         test("Dirty flag", function () {
-            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
             viewmodel.Comments("Sweet gorilla of Manila!");
             ok(viewmodel.isDirty(), "viewmodel is dirty");
             viewmodel.clearDirtyFlag();
@@ -123,6 +123,19 @@
             //ko.viewmodel.updateFromModel(viewmodel, modelAsJson);
             //equal(viewmodel.isDirty(), false, "reloaded viewmodel is clean");
         });
+        // In classic unit test fashion, a user has reported an issue and this test is
+        // a response
+        // On 23/07/13, Nabila reported that changing deployment date didn't result in a dirty status
+        // Further investigation showed that changing (and then reverting!) another property
+        // marked the view model as dirty.
+        test("Nabila's Deployment Date Problem", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.DeploymentDate("2012-07-24T00:00:00");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.DeploymentDate(null);
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+        });
+
         test("Async commands", function () {
             equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
             equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");

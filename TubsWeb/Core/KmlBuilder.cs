@@ -275,13 +275,14 @@ namespace TubsWeb.Core
             folder.Features.AddRange(qry.Where(p => p != null));
             return folder;
         }
-        
+       
         /// <summary>
         /// Build a KML document from a collection of Pushpin entities.
         /// </summary>
         /// <param name="positions">Collection of Pushpin entities</param>
+        /// <param name="includeTrack">Boolean parameter for including the track</param>
         /// <returns>KML document.</returns>
-        public static Document Build(IEnumerable<Pushpin> positions)
+        public static Document Build(IEnumerable<Pushpin> positions, bool includeTrack = true)
         {
             // TODO See about moving StyleBuilder over
             Folder root = new Folder()
@@ -310,6 +311,24 @@ namespace TubsWeb.Core
             // Add GEN-6 events
             root.Features.Add(BuildGen6(positions));
 
+            Document doc = new Document()
+            {
+                id = Guid.NewGuid().ToString(),
+                open = true
+            };
+            doc.Features.Add(root);
+            doc.StyleSelectors.AddRange(KmlStyleBuilder.BuildStyles());
+            return doc;
+        }
+
+        /// <summary>
+        /// Build a KML document that only contains the trip track.
+        /// </summary>
+        /// <param name="positions">Collection of Pushpin entities</param>
+        /// <returns>KML document</returns>
+        public static Document BuildTrack(IEnumerable<Pushpin> positions)
+        {
+            Folder root = BuildTripTrack(positions);
             Document doc = new Document()
             {
                 id = Guid.NewGuid().ToString(),

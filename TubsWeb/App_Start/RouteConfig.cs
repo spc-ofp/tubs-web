@@ -210,10 +210,37 @@ namespace TubsWeb
         public static string CreateTrip = "CreateTrip";
 
         /// <summary>
+        /// MVC route name for trip track with a client-selectable file extension.
+        /// </summary>
+        public static string TrackWithExtension = "TrackWithExtension";
+
+        /// <summary>
+        /// MVC route name for trip positions with a client-selectable file extension.
+        /// </summary>
+        public static string PositionsWithExtension = "PositionsWithExtension";
+
+        /// <summary>
+        /// MVC route name for full trip data as KML (or KMZ).
+        /// </summary>
+        public static string FullTripKml = "FullTripKml";
+
+        /// <summary>
         /// Regular expression constraint for use with database primary key specifications
         /// in MVC routes.
         /// </summary>
         public const string IsPositiveInteger = @"^\d+$";
+
+        /// <summary>
+        /// This is an acceptable starting point.  If we really want a case insensitive
+        /// constraint, we actually have to create a new constraint class.
+        /// http://stackoverflow.com/questions/13008904/can-i-create-an-asp-mvc-route-that-only-accepts-uppercase-in-the-url
+        /// </summary>
+        /// <remarks>
+        /// Some people, when confronted with a problem, think 
+        /// “I know, I'll use regular expressions.”   Now they have two problems.
+        /// -jwz
+        /// </remarks>
+        public const string IsMappingExtension = @"^(kml|KML|kmz|KMZ|json|JSON|geojson|GEOJSON)$";
 
         /// <summary>
         /// Register MVC routes in the application.
@@ -241,6 +268,31 @@ namespace TubsWeb
                 name: CreateTrip,
                 url: "Trip/Create",
                 defaults: new { controller = "Trip", action = "Create" }
+            );
+
+            // I'm fairly certain that the DoddleReports installer fiddled web.config
+            // so that routes that include a file extension get routed through MVC
+            routes.MapRoute(
+                name: TrackWithExtension,
+                url: "Trip/{tripId}/track.{extension}",
+                defaults: new { controller = "Map", action = "Track" },
+                constraints: new { tripId = IsPositiveInteger, extension = IsMappingExtension }
+            );
+
+            routes.MapRoute(
+                name: PositionsWithExtension,
+                url: "Trip/{tripId}/positions.{extension}",
+                defaults: new { controller = "Map", action = "Positions" },
+                constraints: new { tripId = IsPositiveInteger, extension = IsMappingExtension }
+            );
+
+            // For this one, we can set a default extension, preferring compression for what
+            // is likely to be a large file.
+            routes.MapRoute(
+                name: FullTripKml,
+                url: "Trip/{tripId}/full_trip.{extension}",
+                defaults: new { controller = "Map", action = "AllData", extension = "kmz" },
+                constraints: new { tripId = IsPositiveInteger, extension = IsMappingExtension }
             );
 
             routes.MapRoute(
