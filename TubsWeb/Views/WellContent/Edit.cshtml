@@ -2,6 +2,10 @@
 @using Newtonsoft.Json
 @using System.Web.Optimization
 
+@{
+    ViewBag.Title = String.Format("{0}: Edit Well Content", Model.TripNumber);
+}
+
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
@@ -9,7 +13,7 @@
         Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
         Tuple.Create(Url.Action("Index", "WellContent", new { tripId = Model.TripId }), "Well Content"),
-        Tuple.Create("#", "Edit Well Content")
+        Tuple.Create("#", "Edit")
     };
 }
 
@@ -43,8 +47,8 @@
         </thead>
         <tbody data-bind="foreach: $root.WellContentItems" class="ps2events">
             <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">                
-                <td><input data-bind="hasfocus: NeedsFocus, value: WellNumber, uniqueName: true" class="required input-small" type="number" required="required"/></td>
-                <td><select data-bind="options: $root.Locations, value: Location" class="input-small"></select></td>
+                <td><input data-bind="hasfocus: NeedsFocus, value: WellNumber, uniqueName: true" class="required input-mini" type="number" required="required"/></td>
+                <td><select data-bind="options: $root.Locations, value: Location" class="input-medium"></select></td>
                 <td><input data-bind="value: Capacity, uniqueName: true" class="input-small" type="number" step="any"/></td>
                 <td><select data-bind="options: $root.Contents, value: Content" class="input-small"></select></td>
                 <td><input data-bind="value: Comment, uniqueName: true" class="input-large" type="text" /></td>

@@ -997,6 +997,7 @@
     <Content Include="Views\Shared\_SpeciesCodes.cshtml" />
     <Content Include="Views\Shared\_CommonSpeciesPS.cshtml" />
     <Content Include="Views\Shared\_CommonSpeciesLL.cshtml" />
+    <Content Include="Views\Map\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

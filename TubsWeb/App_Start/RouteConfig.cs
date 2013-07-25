@@ -173,6 +173,11 @@ namespace TubsWeb
         public static string TripDetails = "TripDetails";
 
         /// <summary>
+        /// MVC route name for trip map.
+        /// </summary>
+        public static string TripMap = "TripMap";
+
+        /// <summary>
         /// MVC route name for
         /// </summary>
         public static string TripDefault = "TripDefault";
@@ -293,6 +298,13 @@ namespace TubsWeb
                 url: "Trip/{tripId}/full_trip.{extension}",
                 defaults: new { controller = "Map", action = "AllData", extension = "kmz" },
                 constraints: new { tripId = IsPositiveInteger, extension = IsMappingExtension }
+            );
+
+            routes.MapRoute(
+                name: TripMap,
+                url: "Trip/{tripId}/Map",
+                defaults: new { controller = "Map", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(

@@ -16,7 +16,6 @@
     <ul id="summarySections" class="nav nav-tabs">
         <li class="active" id="summaryTab"><a href="#summary" data-toggle="tab">Summary</a></li>
         <li id="downloadTab"><a href="#downloads" data-toggle="tab">Downloads</a></li>        
-        <li><a href="#map" data-toggle="tab">Map</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="summary">
@@ -24,9 +23,6 @@
         </div>
         <div class="tab-pane" id="downloads">
             @{ Html.RenderPartial("_Downloads", Model); }
-        </div>
-        <div class="tab-pane" id="map">
-            @{ Html.RenderPartial("_Map"); }
         </div>
     </div>
 </div>
@@ -141,7 +137,6 @@
 
 @section AdditionalCss {
     @* Print stylesheet? *@
-    <link rel="stylesheet" href="~/Content/OpenLayers/theme/default/style.tidy.css" />
 }
 
 @section AdditionalScripts {
@@ -154,61 +149,6 @@
             });
             /* TODO:  Only execute this if it works in the current browser (read:  Not IE8 or lower) */
             tl.pg.init();
-        });
-    </script>
-    @* 
-     * openlayers Bundle includes OpenLayers script _plus_ javascript for creating a trip map.
-     *@
-    @System.Web.Optimization.Scripts.Render("~/bundles/openlayers")
-    <script>
-        // This isn't in the bundle since it needs to be set in Razor
-        OpenLayers.ImgPath = '@Url.Content("~/Content/OpenLayers/img/")';
-        $(function () {
-            // NOTE:  tubs-openlayers.js (in ~/bundles/openlayers) adds a global 'map' variable.
-            // TODO:  Read the layer URL from web.config.  It's okay to hard-code within SPC,
-            // but other customers won't be as lucky.
-            map = new OpenLayers.Map('mapX', { theme: null });
-            var layer = new OpenLayers.Layer.XYZ(
-              "Layer",
-              ["http://nouofputil01/mbtiles/test/${z}/${x}/${y}.png"],
-              {
-                  sphericalMercator: true,
-                  attribution: "CROP &copy; ",
-                  wrapDateLine: true,
-                  numZoomLevels: 9
-              }
-            );
-            kml = new OpenLayers.Layer.Vector("KML", {
-                strategies: [new OpenLayers.Strategy.Fixed()],
-                protocol: new OpenLayers.Protocol.HTTP({
-                    url: '@Url.Action("Positions", "Trip", new { tripId = ViewBag.TripId })',
-                    format: new OpenLayers.Format.KML({
-                        extractStyles: true,
-                        extractAttributes: true,
-                        maxDepth: 2
-                    })
-                })
-            });
-
-            // Add layers to the map
-            map.addLayers([layer, kml]);
-
-            // TODO:  KML folders
-            // TODO:  Center map correctly
-
-            // Set the map's initial center point
-            var center = new OpenLayers.LonLat(150, -9.0).transform(epsg4326, map.getProjectionObject());
-            map.setCenter(center, 5);
-
-            var click = new OpenLayers.Control.Click();
-            map.addControl(click);
-            map.addControl(new OpenLayers.Control.MousePosition({ displayProject: epsg4326 }));
-            map.addControl(new OpenLayers.Control.OverviewMap());
-            map.addControl(new OpenLayers.Control.ScaleLine({
-                topOutUnits: 'nmi',
-                topInUnits: 'm'
-            }));
-            click.activate();
         });
     </script>
 }

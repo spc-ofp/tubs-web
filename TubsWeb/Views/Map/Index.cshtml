@@ -1,0 +1,94 @@
+﻿@using Newtonsoft.Json
+@using System.Web.Optimization
+
+@* For now, create this in the View. *@
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.TripList), "Trips"),
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.TripDetails, new { tripId = ViewBag.TripId }), ViewBag.TripNumber ?? "This Trip"),
+        Tuple.Create("#", "Map")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<div id="map" style="width: 900px; height: 500px;"></div>
+
+@*
+ * TODO: Add pane for displaying details of currently selected position.
+ *@
+
+@section AdditionalCss {
+    <link rel="stylesheet" href="~/Content/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="~/Content/leaflet.ie.css" />
+    <![endif]-->
+}
+
+@{
+    // Preparatory work for embedding track and position in page render.
+    // Use an empty object if nothing in the ViewBag.
+    var positionJson = Html.Raw("{}");
+    var trackJson = Html.Raw("{}");
+    
+    if (ViewBag.Positions != null)
+    {
+        positionJson = Html.Raw(JsonConvert.SerializeObject(ViewBag.Positions));
+    }
+
+    if (ViewBag.Track != null)
+    {
+        trackJson = Html.Raw(JsonConvert.SerializeObject(ViewBag.Track));
+    }   
+}
+
+
+@section AdditionalScripts {
+    @System.Web.Optimization.Scripts.Render("~/bundles/leaflet")
+    <script>
+        $(function () {
+            L.Icon.Default.imagePath = '@Url.Content("~/Content/images")';
+
+            // One layer per GeoJSON object
+            var trackLayer = L.geoJson();
+            var positionsLayer = L.geoJson();
+
+            // An additional layer for our local tile server
+            var tileLayer = L.tileLayer('http://nouofputil01/mbtiles/test/{z}/{x}/{y}.png', {
+                maxZoom: 9,
+                attribution: 'Map data &copy; CROP'
+            });
+
+            // Create the map with all available layers.
+            // If the layer will be optional, we can leave it out of here
+            // but put it into the overlayMaps object below and it will be available
+            // but off by default
+            var map = L.map('map', {
+                layers: [tileLayer, trackLayer, positionsLayer]
+            }).setView([-9.0, 150.0], 4);
+
+            // This object allows us to name the base layer
+            var baseMaps = {
+                "CROP": tileLayer
+            };
+
+            // These are layers that can be enabled/disabled via the layer control
+            var overlayMaps = {
+                "Track": trackLayer,
+                "Positions": positionsLayer
+            };
+
+            L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+            // The scale control included with Leaflet only does km and miles
+            // There's a third party control (leaflet.customscale) that can handle
+            // custom units including nautical miles
+            L.control.scale().addTo(map);
+
+            trackLayer.addData(@trackJson);
+
+            positionsLayer.addData(@positionJson);
+        });
+    </script>
+}

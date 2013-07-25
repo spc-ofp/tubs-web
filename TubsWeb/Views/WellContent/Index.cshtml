@@ -40,6 +40,5 @@
 
 @if (!ViewBag.IsReadOnly)
 {
-    @Html.ActionLink("Edit Well Content", "Edit")
+    <a href='@Url.RouteUrl(TubsWeb.RouteConfig.WellContents, new { tripId = Model.TripId, action = "Edit" })' class="btn btn-primary">Edit Well Content</a>
 }
-

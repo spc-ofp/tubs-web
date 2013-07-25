@@ -155,6 +155,36 @@ namespace TubsWeb.Controllers
         }
 
         /// <summary>
+        /// MVC Action for rendering the map plugin.
+        /// Leaflet doesn't like living in a Bootstrap tab, so this
+        /// has been extracted to a separate view.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        public ActionResult Index(Trip tripId)
+        {
+            if (null == tripId)
+            {
+                return InvalidTripResponse();
+            }
+
+            ViewBag.Title = String.Format("{0}: Map", tripId.SpcTripNumber);
+            ViewBag.TripNumber = tripId.SpcTripNumber;
+            // Rather than make network calls, stuff the positions and track
+            // into the ViewBag (and then into the page)
+
+            var pvm = Mapper.Map<Trip, PositionsViewModel>(tripId);
+            if (null != pvm)
+                ViewBag.Positions = pvm.GeoJson;
+
+            var tvm = Mapper.Map<Trip, TrackViewModel>(tripId);
+            if (null != tvm)
+                ViewBag.Track = tvm.GeoJson;
+
+            return View();
+        }
+
+        /// <summary>
         /// MVC Action for returning all trip positions
         /// </summary>
         /// <param name="tripId">Current trip</param>

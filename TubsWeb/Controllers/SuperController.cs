@@ -314,13 +314,16 @@ namespace TubsWeb.Controllers
 
             pills.Add(Tuple.Create("Position Audit", Url.Action("PositionAudit", "Trip", routeValues)));
 
-            // View KML directly in the browser
-            // Currently uses Google Earth plugin, but it could be changed to any slippy map
-            // down the road
-            //if (null != tripId.Pushpins && tripId.Pushpins.Any())
-            //{
-            //    pills.Add(Tuple.Create("Map", Url.Action("Map", "Trip", routeValues)));
-            //}
+            // View trip positions and track in the browser
+            if (null != tripId.Pushpins && tripId.Pushpins.Any())
+            {
+                pills.Add(
+                    Tuple.Create(
+                        "Map",
+                        Url.RouteUrl(TubsWeb.RouteConfig.TripMap, routeValues)
+                     )
+                );
+            }
 
             //if (!tripId.IsReadOnly)
             //{
