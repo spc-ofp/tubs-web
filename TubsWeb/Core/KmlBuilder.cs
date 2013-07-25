@@ -172,7 +172,7 @@ namespace TubsWeb.Core
             };
 
             StringBuilder linestringBuilder = new StringBuilder(1024);
-            var previousPosition = positions.First();
+            var previousPosition = positions.FirstOrDefault();
             foreach (var position in positions.Skip(1))
             {
                 linestringBuilder.AppendFormat(

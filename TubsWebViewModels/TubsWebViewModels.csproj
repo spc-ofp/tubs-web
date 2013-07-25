@@ -13,6 +13,8 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -91,6 +93,7 @@
     <Compile Include="Mapping\Profiles\TripInfoProfile.cs" />
     <Compile Include="Mapping\Profiles\TripSamplingProfile.cs" />
     <Compile Include="Mapping\Profiles\TripSummaryProfile.cs" />
+    <Compile Include="Mapping\Profiles\WellContentProfile.cs" />
     <Compile Include="Mapping\Resolvers\ActionCodeResolver.cs" />
     <Compile Include="Mapping\Resolvers\ActivityResolver.cs" />
     <Compile Include="Mapping\Resolvers\AssociationResolver.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="Mapping\Resolvers\InteractionActivityResolver.cs" />
     <Compile Include="Mapping\Resolvers\InteractionTypeResolver.cs" />
     <Compile Include="Mapping\Resolvers\LengthUnitResolver.cs" />
+    <Compile Include="Mapping\Resolvers\LocationResolver.cs" />
     <Compile Include="Mapping\Resolvers\MeasuringInstrumentResolver.cs" />
     <Compile Include="Mapping\Resolvers\SamplingProtocolResolver.cs" />
     <Compile Include="Mapping\Resolvers\TransferVesselResolver.cs" />
@@ -145,6 +149,7 @@
     <Compile Include="ViewModels\TripCreationViewModel.cs" />
     <Compile Include="ViewModels\TripSamplingViewModel.cs" />
     <Compile Include="ViewModels\TripSummaryViewModel.cs" />
+    <Compile Include="ViewModels\WellContentViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -155,6 +160,7 @@
     <Folder Include="Mapping\Converters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

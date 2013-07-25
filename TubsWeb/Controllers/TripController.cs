@@ -278,30 +278,7 @@ namespace TubsWeb.Controllers
             return new KmlResult(tripDoc);
         }
 
-        public ActionResult PositionsEx(Trip tripId)
-        {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
-            // Exclude any pushpins that won't display nicely
-            var pushpins = tripId.Pushpins.Where(p => p.CanDisplay()).ToList();
-            // Sort by date (assumes all timestamps have the same base frame of reference for date)
-            // which occasionally is not true.
-            pushpins.Sort(
-                delegate(Pushpin p1, Pushpin p2)
-                {
-                    return Comparer<DateTime?>.Default.Compare(p1.Timestamp, p2.Timestamp);
-                });
-
-            var features = GeoJsonBuilder.BuildTripTrack(pushpins);
-            // This is throwing a NotImplementedException -- Serenity Now!
-            string json = JsonConvert.SerializeObject(features);
-
-            return Content(json, "application/json");
-            
-        }
+        
 
         /// <summary>
         /// Action for displaying trip KML via Google Earth plugin.

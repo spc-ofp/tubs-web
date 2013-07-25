@@ -37,6 +37,7 @@ namespace TubsWeb
                 cfg.AddProfile<PageCountProfile>();
                 cfg.AddProfile<TripSummaryProfile>();
                 cfg.AddProfile<TrackProfile>();
+                cfg.AddProfile<WellContentProfile>();
                 cfg.AddProfile<PositionsProfile>();
                 cfg.AddProfile<LongLineSampleProfile>();
                 cfg.AddProfile<TripSamplingProfile>(); // Purse Seine sampling
