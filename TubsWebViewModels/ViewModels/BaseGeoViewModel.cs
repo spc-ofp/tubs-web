@@ -52,6 +52,8 @@ namespace TubsWeb.ViewModels
         /// </summary>
         public const decimal MAX_LATITUDE = 90.0M;
 
+        public const string WGS84_CRS = "urn:ogc:def:crs:OGC:1.3:CRS84";
+
         /// <summary>
         /// Create a default bounding box that covers the entire world.
         /// </summary>

@@ -639,6 +639,8 @@
     <Content Include="Content\images\star.gif" />
     <Content Include="Content\images\tlyguide\tlyguide_arrow.png" />
     <Content Include="Content\images\tlyguide\tlyguide_icon.png" />
+    <Content Include="Content\leaflet.css" />
+    <Content Include="Content\leaflet.ie.css" />
     <Content Include="Content\OpenLayers\img\blank.gif" />
     <Content Include="Content\OpenLayers\img\cloud-popup-relative.png" />
     <Content Include="Content\OpenLayers\img\drag-rectangle-off.png" />
@@ -762,6 +764,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Scripts\amplify-vsdoc.js" />
+    <Content Include="map.html" />
     <Content Include="Scripts\amplify.js" />
     <Content Include="Scripts\amplify.min.js" />
     <Content Include="Scripts\App\datacontext.js" />
@@ -826,6 +829,8 @@
     <Content Include="Scripts\knockout-2.3.0.js" />
     <Content Include="Scripts\knockout.activity.js" />
     <Content Include="Scripts\knockout.command.js" />
+    <Content Include="Scripts\leaflet-src.js" />
+    <Content Include="Scripts\leaflet.js" />
     <Content Include="Scripts\OpenLayers.js" />
     <Content Include="Scripts\tubs-custom-bindings.js" />
     <Content Include="Scripts\knockout.dirtyFlag.js" />
@@ -856,6 +861,7 @@
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
     <Content Include="Scripts\trunk8.js" />
+    <Content Include="Scripts\tubs-leaflet.js" />
     <Content Include="Scripts\tubs-openlayers.js" />
     <Content Include="Scripts\tubs-unobtrusive.js" />
     <Content Include="Scripts\tubs.js" />

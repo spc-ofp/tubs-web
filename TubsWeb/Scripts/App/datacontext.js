@@ -138,6 +138,20 @@ amplify.request.define(
     $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/LL-4/{SetNumber}/Edit' })
 );
 
+// Request for loading trip track
+amplify.request.define(
+    "getTripTrack",
+    "ajax",
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/track.geojson' })
+);
+
+// Request for loading trip track
+amplify.request.define(
+    "getTripPositions",
+    "ajax",
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/positions.geojson' })
+);
+
 /**
  * Load PS-2 data for a given sea day.
  * @param {Number} tripId Trip primary key
@@ -677,4 +691,34 @@ tubs.saveLonglineSample = function (tripId, setNumber, sample, success_cb, error
         timeout: tubs.saveTimeout
     }).done(success_cb)
       .fail(error_cb);
+};
+
+/**
+ * Get track for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.getTripTrack = function (tripId, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getTripTrack",
+        data: { "TripId": tripId },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+/**
+ * Get all positions for a given trip.
+ * @param {Number} tripId Trip primary key
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.getTripPositions = function (tripId, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getTripPositions",
+        data: { "TripId": tripId },
+        success: success_cb,
+        error: error_cb
+    });
 };
