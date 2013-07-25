@@ -1,24 +1,42 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip
-@using Spc.Ofp.Tubs.DAL.Entities
+﻿@model TubsWeb.ViewModels.WellContentViewModel
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
         Tuple.Create("#", "Well Content")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@{ Html.RenderPartial("_WellContent", Model.WellContent); }
+<table class="table table-bordered table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>Well Number</th>
+            <th>Location</th>
+            <th>Capacity (mT)</th>
+            <th>Contents</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var wellContent in Model.WellContentItems)
+    {
+        <tr>
+            <td>@wellContent.WellNumber</td>
+            <td>@wellContent.Location</td>
+            <td>@Html.DisplayFor(m=>wellContent.Capacity)</td>
+            <td>@wellContent.Content</td>
+            <td><div class="large-text">@wellContent.Comment</div></td>
+        </tr>
+    }
+    </tbody>
+</table>
 
-<div class="row">
-    <div class="span4"><strong>Total Well Capacity</strong></div>
-    <div class="span2">@Html.DisplayFor(m => Model.WellCapacity) mT</div>
-</div>
+
 
 @if (!ViewBag.IsReadOnly)
 {

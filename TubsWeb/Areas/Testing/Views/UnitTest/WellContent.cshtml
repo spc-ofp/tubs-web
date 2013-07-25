@@ -1,0 +1,109 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.wellcontent.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "Locations": [
+                  "",
+                  "Port",
+                  "Starboard",
+                  "Center"
+            ],
+            "Contents": [
+                "",
+                "Fuel",
+                "Water",
+                "Other"
+            ],
+            "TripId": 1,
+            "TripNumber": "DJB   / 1301",
+            "WellContentItems": [
+                {
+                    "Id": 4,
+                    "WellNumber": 1,
+                    "Location": "P",
+                    "Capacity": 350.00,
+                    "Content": "Fuel",
+                    "Comment": "my comment",
+                    "_destroy": false,
+                    "NeedsFocus": false
+                }
+            ]
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("Well Content", {
+            setup: function () {
+                viewmodel = new tubs.WellContentViewModel(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB   / 1301", "TripNumber correct");
+            equal(viewmodel.WellContentItems().length, 1, "Correct number of WellContentItems");
+        });
+
+        test("Dirty flag child", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.WellContentItems()[0].Comment("I changed you");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            equal(viewmodel.isDirty(), false, "viewmodel is clean after reset");
+        });
+
+        test("Dirty flag parent", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var wellContent = viewmodel.WellContentItems().slice(-1)[0];
+            viewmodel.removeWellContent(wellContent);
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            equal(viewmodel.isDirty(), false, "viewmodel is clean after reset");
+        });
+
+        test("Async commands", function () {
+            equal(viewmodel.reloadCommand.canExecute(), false, "reload blocked on clean viewmodel");
+            equal(viewmodel.saveCommand.canExecute(), false, "save blocked on clean viewmodel");
+            viewmodel.WellContentItems()[0].Comment("I changed you");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            ok(viewmodel.reloadCommand.canExecute(), "reload enabled on dirty viewmodel");
+            ok(viewmodel.saveCommand.canExecute(), "save enabled on dirty viewmodel");
+        });
+
+        test("Add/remove new well content item", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            viewmodel.addWellContent();
+            ok(viewmodel.isDirty(), "viewmodel is dirty after creating well content item");
+            equal(viewmodel.WellContentItems().length, 2, "Correct number of well content items");
+            var wellContent = viewmodel.WellContentItems().slice(-1)[0];
+            ok(wellContent, "New wellContent not null");
+            equal(wellContent.Id(), 0, "New wellContent has no primary key");
+            viewmodel.removeWellContent(wellContent);
+            equal(viewmodel.WellContentItems().length, 1, "Correct number of hands");
+        });
+
+        test("Remove existing deckhand", function () {
+            equal(viewmodel.isDirty(), false, "viewmodel is clean");
+            var zoidberg = viewmodel.WellContentItems()[0];
+            viewmodel.removeWellContent(zoidberg);
+            ok(viewmodel.isDirty(), "viewmodel is dirty after removing hand");
+            equal(viewmodel.WellContentItems().length, 1, "Correct number of hands");
+        });
+    </script>
+}

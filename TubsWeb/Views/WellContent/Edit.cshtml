@@ -1,84 +1,113 @@
-﻿@model Spc.Ofp.Tubs.DAL.Entities.PurseSeineTrip
-@using Spc.Ofp.Tubs.DAL.Entities
+﻿@model TubsWeb.ViewModels.WellContentViewModel
+@using Newtonsoft.Json
+@using System.Web.Optimization
 
 @* For now, create this in the View. *@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
         Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = ViewBag.TripId }), Model.SpcTripNumber ?? "This Trip"),
-        Tuple.Create(Url.Action("Index", "WellContent", new { tripId = ViewBag.TripId }), "Well Content"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.Action("Index", "WellContent", new { tripId = Model.TripId }), "Well Content"),
         Tuple.Create("#", "Edit Well Content")
     };
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@* TODO Change this to an editable table.  Change will also need to be reflected in controller method *@
-@{ Html.RenderPartial("_WellContent", Model.WellContent); }
+@* 
+ * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
+ * when the first 'dirtying' change occurs.
+ *@
+<p>
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
+<hr />
 
-<fieldset>
-    <legend>Add Well</legend>
-    @{ var options = new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "wellContentTable", OnSuccess = "onAddSuccess", OnFailure = "onAddFail" };  }
-    @using (Ajax.BeginForm("AddItem", null, options, new { @class = "well", id = "addWellForm" }))
-    {
-        var item = new PurseSeineWellContent();
-        @Html.ValidationSummary(false)
-        @Html.HiddenFor(m => item.Id)
-        @Html.LabelFor(m => item.WellNumber)
-        @Html.TextBoxFor(m => item.WellNumber)
+    @* TODO: Move 'Delete' button to last column and use full text in button (e.g. SetHaul _LogEditor) *@
+    @* Full text will also allow for better notification of attached set *@
+    <table class="table table-condensed">
+        <thead>
+            <tr>                
+                <th>Well Number</th>
+                <th>Location</th>
+                <th>Capacity (mT)</th>
+                <th>Contents</th>
+                <th>Comments</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: $root.WellContentItems" class="ps2events">
+            <tr data-bind="css: { warning: (isDirty() || Id() == 0) }">                
+                <td><input data-bind="hasfocus: NeedsFocus, value: WellNumber, uniqueName: true" class="required input-small" type="number" required="required"/></td>
+                <td><select data-bind="options: $root.Locations, value: Location" class="input-small"></select></td>
+                <td><input data-bind="value: Capacity, uniqueName: true" class="input-small" type="number" step="any"/></td>
+                <td><select data-bind="options: $root.Contents, value: Content" class="input-small"></select></td>
+                <td><input data-bind="value: Comment, uniqueName: true" class="input-large" type="text" /></td>
+                <td>
+                    @* Delete button is taken out of the tab order to prevent accidents *@
+                    <button 
+                            type="button"
+                            tabindex="3000"
+                            class="removeItem btn btn-danger" 
+                            rel="tooltip" 
+                            title="Click to delete row">
+                        <i class="icon-trash icon-white"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+<button id="btnAddWellContent" type="button" class="btn btn-info" rel="tooltip" title="Click to add row"><i class="icon-plus-sign icon-white"></i> Add Well Content</button>
 
-        @Html.LabelFor(m => item.WellLocation)
-        @Html.TextBoxFor(m => item.WellLocation)
+@*<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
 
-        @Html.LabelFor(m => item.WellCapacity)
-        @Html.TextBoxFor(m => item.WellCapacity)
-        @Html.ValidationMessageFor(m => item.WellCapacity)
-
-        @Html.LabelFor(m => item.FuelOrWater)
-        @Html.DropDownListFor(m => item.FuelOrWater, new SelectList(TubsWeb.Models.WellContents.ContentTypes, item.FuelOrWater), "Choose")
-
-        @Html.LabelFor(m => item.Comments)
-        @Html.TextBoxFor(m => item.Comments)
-        
-        @Html.Label("DCT Score")
-        <input type="range" min="0" max="3" value="0" step="1" id="item_DctScore" name="item.DctScore" tabindex="500" />
-        <div id="rateIt" class="rateit" data-rateit-backingfld="#item_DctScore"></div>       
-        
-        <div class="btn-group">
-            <input type="submit" name="Save" value="Save" class="btn-primary" />
-            <input type="reset" name="Cancel" />
-        </div>
-    }
-
-</fieldset>
 
 @section AdditionalScripts {
-    <script src="~/Scripts/App/errorlogger.js"></script>
-    <script src="~/Scripts/jquery.rateit.min.js"></script>   
+    @Scripts.Render("~/bundles/knockout")
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(document).on('keypress', 'enter', function () {
-                // It would be cool to convert this to a tab keypress, but I'll be happy to
-                // prevent unintended saves for now.
-                return false;
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.wellcontent.js"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <script>
+        $(function () {
+
+            var viewModel = new tubs.WellContentViewModel(@modelAsJson);           
+            ko.applyBindings(viewModel);
+            viewModel.clearDirtyFlag();
+
+            $("#btnAddWellContent").on("click", function () {
+                viewModel.addWellContent();
             });
 
-            var tooltipvalues = [ 'Obvious Error', 'Uncertain about transcription', 'Follow Up'];
-            $('#rateIt').bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value-1]); });
+            $(".ps2events").on("click", ".removeItem", function () {
+                viewModel.removeWellContent(ko.dataFor(this));
+            });
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function(e) {
+                if (viewModel.isDirty())
+                {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };
         });
-
-        function onAddFail(xhr, status, error) {
-            tubs.notify('Well content save failed', xhr, status);
-        }
-
-        function onAddSuccess(data, status, xhr) {
-            /* Nothing hidden, so use the original 'clearForm' to leave the numeric Id hidden input */
-            clearForm('#addWellForm');
-
-            $('#item_WellNumber').focus();
-            toastr.success('Well added');
-        }
     </script>
 }

@@ -152,6 +152,13 @@ amplify.request.define(
     $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/positions.geojson' })
 );
 
+// Request for loading Well Content data
+amplify.request.define(
+    "getWellNumber",
+    "ajax",
+     $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/WellContent/Edit' })
+);
+
 /**
  * Load PS-2 data for a given sea day.
  * @param {Number} tripId Trip primary key
@@ -165,6 +172,32 @@ tubs.getSeaDay = function (tripId, dayNumber, success_cb, error_cb) {
         data: { "TripId": tripId, "DayNumber": dayNumber },
         success: success_cb,
         error: error_cb
+    });
+};
+
+tubs.getWellContent = function (tripId,success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getWellNumber",
+        data: { "TripId": tripId},
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+/**
+
+ */
+tubs.saveWellContent = function (tripId, wellContent, success_cb, error_cb) {
+    var url = appBase + 'Trip/' + tripId + '/WellContent/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(wellContent),
+        success: success_cb,
+        error: error_cb,
+        timeout: tubs.saveTimeout
     });
 };
 

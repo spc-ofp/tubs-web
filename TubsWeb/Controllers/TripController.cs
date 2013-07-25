@@ -244,41 +244,6 @@ namespace TubsWeb.Controllers
             return new RssResult(feed);
         }
 
-        /*
-        /// <summary>
-        /// Return all trip positions as KML.
-        /// </summary>
-        /// <param name="tripId">Current trip</param>
-        /// <returns>KML document with all trip positions.</returns>
-        public ActionResult Positions(Trip tripId)
-        {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
-            // Exclude any pushpins that won't display nicely
-            var pushpins = tripId.Pushpins.Where(p => p.CanDisplay()).ToList();           
-            // Sort by date (assumes all timestamps have the same base frame of reference for date)
-            // which occasionally is not true.
-            pushpins.Sort(
-                delegate(Pushpin p1, Pushpin p2)
-                {
-                    return Comparer<DateTime?>.Default.Compare(p1.Timestamp, p2.Timestamp);
-                });
-
-            var tripDoc = KmlBuilder.Build(tripId.Pushpins);
-            tripDoc.name = "All Trip Positions";
-            tripDoc.description =
-                String.Format(
-                    "Positions for trip {0} generated on {1} via URL: [{2}]",
-                    tripId.ToString(),
-                    DateTime.Now.ToShortDateString(),
-                    this.HttpContext.Request.RawUrl);
-            return new KmlResult(tripDoc);
-        }
-        */
-
         /// <summary>
         /// 
         /// </summary>

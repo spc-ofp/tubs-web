@@ -223,5 +223,15 @@ namespace TubsWeb.Areas.Testing.Controllers
             return View();
         }
 
+        /// <summary>
+        /// PS Well Content form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
+        public ActionResult WellContent()
+        {
+            ViewBag.Title = "Well Content unit tests";
+            return View();
+        }
+
     }
 }
