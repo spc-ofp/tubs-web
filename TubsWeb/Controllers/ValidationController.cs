@@ -51,9 +51,17 @@ namespace TubsWeb.Controllers
             @"select 1 as valid from ref.species where UPPER(sp_code) = UPPER(?)";
 
         // Find any parameter that looks like species code
-        private static Regex SpeciesCodeRegex = new Regex(@"speciescode=(\w{3})", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant); 
+        private static Regex SpeciesCodeRegex = 
+            new Regex(@"speciescode=(\w{3})", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant); 
 
-        // GET /Validation/IsSpeciesCodeValid?speciesCode=skj
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <example>
+        /// GET /Validation/IsSpeciesCodeValid?speciesCode=skj
+        /// </example>
+        /// <param name="speciesCode"></param>
+        /// <returns></returns>
         public JsonResult IsSpeciesCodeValid(string speciesCode)
         {
             if (String.IsNullOrEmpty(speciesCode))

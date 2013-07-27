@@ -31,19 +31,18 @@ namespace TubsWeb.Controllers
     using TubsWeb.ViewModels;
 
     /// <summary>
-    /// 
+    /// MVC Controller for working with PS-1 form data.
     /// </summary>
     public class Ps1Controller : SuperController
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         internal ActionResult ViewActionImpl(Trip tripId)
         {
-            var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
-            var ps1vm = Mapper.Map<PurseSeineTrip, Ps1ViewModel>(trip);
+            var ps1vm = Mapper.Map<PurseSeineTrip, Ps1ViewModel>(tripId as PurseSeineTrip);
 
             if (IsApiRequest())
                 return GettableJsonNetData(ps1vm);
@@ -52,31 +51,46 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), ps1vm);
         }
         
-        //
-        // GET: /Trip/{tripId}/PS-1
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <example>
+        /// GET: /Trip/{tripId}/PS-1
+        /// </example>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Index(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="ps1vm">ViewModel containing PS-1 form data.</param>
+        /// <returns></returns>
         [HttpPost]
         [EditorAuthorize]
+        [ValidTripFilter(TripType=typeof(PurseSeineTrip))]
         [HandleTransactionManually]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public ActionResult Edit(Trip tripId, Ps1ViewModel ps1vm)
         {
             var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             // TODO:  What kind of validation needs to occur?
             // Should we pull this snippet out into a new function?
             if (!ModelState.IsValid)

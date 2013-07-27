@@ -24,24 +24,24 @@ namespace TubsWeb.Controllers
      */
     using System;
     using System.Linq;
-    using System.Collections.Generic;
     using System.Web.Mvc;
+    using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
     using TubsWeb.Core;
     using TubsWeb.ViewModels;
-    using AutoMapper;
     
     /// <summary>
     /// 
     /// </summary>
     public class WellContentController : SuperController
     {
-        public ActionResult Index(Trip tripId)
-        {
-            return ViewActionImpl(tripId);
-        }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         internal ActionResult ViewActionImpl(Trip tripId)
         {
             var trip = tripId as PurseSeineTrip;
@@ -58,24 +58,43 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), vm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(PurseSeineTrip))]
+        public ActionResult Index(Trip tripId)
+        {
+            return ViewActionImpl(tripId);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
-        [HttpPost]
-        [HandleTransactionManually]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="wcvm"></param>
+        /// <returns></returns>
+        [HttpPost]       
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
+        [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, WellContentViewModel wcvm)
-        {
-            
+        {            
             var trip = tripId as PurseSeineTrip;
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             if (!ModelState.IsValid)
             {
                 LogModelErrors();

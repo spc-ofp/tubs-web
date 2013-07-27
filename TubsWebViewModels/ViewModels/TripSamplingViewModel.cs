@@ -28,14 +28,14 @@ namespace TubsWeb.ViewModels
     using Newtonsoft.Json;
 
     /// <summary>
-    /// TripSamplingViewModel manages a list of all the PS-4 forms associated
-    /// with a given trip.
+    /// TripSamplingViewModel is a view of all PS-4 forms associated with a trip
+    /// grouped at the set level.
     /// </summary>
     public sealed class TripSamplingViewModel
     {
         public TripSamplingViewModel()
         {
-            this.Headers = new List<SampleSummary>(48);
+            this.Headers = new List<SampleSummary>(32);
         }
         
         public string TripNumber { get; set; }
@@ -50,12 +50,6 @@ namespace TubsWeb.ViewModels
         public sealed class SampleSummary
         {
             /// <summary>
-            /// PS-4 page number.  This is for the entire trip, not just a single
-            /// set.
-            /// </summary>
-            public int PageNumber { get; set; }
-
-            /// <summary>
             /// Set number.
             /// </summary>
             public int SetNumber { get; set; }
@@ -66,15 +60,29 @@ namespace TubsWeb.ViewModels
             public DateTime? SetDate { get; set; }
 
             /// <summary>
-            /// Sampling protocol in use for this page.
+            /// Sampling protocol(s) in use for this set.
             /// </summary>
             public string SampleType { get; set; }
 
             /// <summary>
-            /// Number of samples recorded for this page.
+            /// Number of samples recorded for this set.
             /// </summary>
             public int SampleCount { get; set; }
 
+            /// <summary>
+            /// Number of PS-4 forms used for this set.
+            /// </summary>
+            public int FormCount { get; set; }
+
+            public override string ToString()
+            {
+                return
+                    String.Format(
+                        "Set #{0} ({1})",
+                        this.SetNumber,
+                        this.SetDate.HasValue ? this.SetDate.Value.ToString("dd/MM/yy HHmm") : "N/A"
+                    );
+            }
         }
     }
 }

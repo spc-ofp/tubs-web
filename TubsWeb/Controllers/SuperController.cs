@@ -88,12 +88,20 @@ namespace TubsWeb.Controllers
             };
         }
 
+        /// <summary>
+        /// Convert MVC model errors into a single string
+        /// </summary>
+        /// <param name="errors">MVC model error collection</param>
+        /// <returns>Comma separated string containing all errors.</returns>
         protected string ModelErrorString(ModelErrorCollection errors)
         {
             var messages = errors.Select(e => e.ErrorMessage);
             return String.Join(", ", messages);
         }
 
+        /// <summary>
+        /// Write MVC model errors to error log.
+        /// </summary>
         protected void LogModelErrors()
         {
             StringBuilder buffer = new StringBuilder();
@@ -105,6 +113,10 @@ namespace TubsWeb.Controllers
             Logger.WarnFormat("Model validation failed with the following errors:\n{0}", buffer);
         }
 
+        /// <summary>
+        /// Convert MVC model errors into JSON.
+        /// </summary>
+        /// <returns>JSON representation of MVC model errors.</returns>
         protected JsonResult ModelErrorsResponse()
         {
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -129,6 +141,12 @@ namespace TubsWeb.Controllers
             ViewData["flash-level"] = level;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reportName"></param>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         public string GetReportUrl(string reportName, int tripId)
         {
             string formatString = WebConfigurationManager.AppSettings["ReportingServicesFormatUrl"].ToString();
@@ -162,11 +180,19 @@ namespace TubsWeb.Controllers
             }
         }
 
+        /// <summary>
+        /// Read action out of the route data.
+        /// </summary>
+        /// <returns>Currently executing action name</returns>
         protected string CurrentAction()
         {
             return this.ControllerContext.RouteData.GetRequiredString("action");
         }
 
+        /// <summary>
+        /// Read controller out of the route data.
+        /// </summary>
+        /// <returns>Controller hosting the currently executing action.</returns>
         protected string CurrentController()
         {
             return this.ControllerContext.RouteData.GetRequiredString("controller");
@@ -257,8 +283,14 @@ namespace TubsWeb.Controllers
                 {
                     pills.Add(Tuple.Create("Days (PS-2)", Url.Action("List", "SeaDay", routeValues)));
                 }
-                // TODO Use the route for this so that the name looks right
-                pills.Add(Tuple.Create("Sets (PS-3)", Url.Action("List", "FishingSet", routeValues)));
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && pstrip.FishingSets.Any()))
+                {
+                    pills.Add(Tuple.Create("Sets (PS-3)", Url.Action("List", "FishingSet", routeValues)));
+                }
+
+                // TODO:  Not sure if we want to force entry of some set information before PS-4 entry
+                pills.Add(Tuple.Create("Samples (PS-4)", Url.RouteUrl(RouteConfig.Ps4List, routeValues)));
+                
             }
 
             if (typeof(LongLineTrip) == tripId.GetType())
@@ -276,30 +308,31 @@ namespace TubsWeb.Controllers
                     pills.Add(Tuple.Create("Catch Monitoring (LL-4)", Url.RouteUrl(RouteConfig.LongLineSampleList, routeValues)));
                 }
 
-
             }
          
             // Hide pills if trip is closed and no such entity exists
             bool hasGen1 = tripId.Sightings.Any() || tripId.Transfers.Any();
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && hasGen1))
             {
-                pills.Add(Tuple.Create("GEN-1", Url.Action("Index", "Gen1", routeValues)));
+                pills.Add(Tuple.Create("GEN-1", Url.RouteUrl(RouteConfig.Gen1, routeValues)));
             }
             
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.Interactions.Any()))
             {
-                pills.Add(Tuple.Create("GEN-2", Url.Action("List", "Gen2", routeValues)));
+                pills.Add(Tuple.Create("GEN-2", Url.RouteUrl(RouteConfig.Gen2, routeValues)));
             }
             
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.TripMonitor != null))
             {
-                pills.Add(Tuple.Create("GEN-3", Url.Action("Index", "Gen3", routeValues)));
+                pills.Add(Tuple.Create("GEN-3", Url.RouteUrl(RouteConfig.Gen3, routeValues)));
             }
             // GEN-5 is Purse Seine only
             if (typeof(PurseSeineTrip) == tripId.GetType())
             {
-                // TODO:  Hide if read only and no data
-                pills.Add(Tuple.Create("GEN-5", Url.Action("Index", "Gen5", routeValues)));
+                if (!tripId.IsReadOnly || (tripId.IsReadOnly && ((PurseSeineTrip)tripId).FishAggregatingDevices.Any()))
+                {
+                    pills.Add(Tuple.Create("GEN-5", Url.RouteUrl(RouteConfig.Gen5, routeValues)));
+                }
             }
 
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.PollutionEvents.Any()))
@@ -308,8 +341,8 @@ namespace TubsWeb.Controllers
             }
 
             if (!tripId.IsReadOnly || (tripId.IsReadOnly && tripId.PageCounts.Any()))
-            { 
-                pills.Add(Tuple.Create("Page Counts", Url.Action("Index", "PageCount", routeValues)));
+            {
+                pills.Add(Tuple.Create("Page Counts", Url.RouteUrl(RouteConfig.PageCount, routeValues)));
             }
 
             pills.Add(Tuple.Create("Position Audit", Url.Action("PositionAudit", "Trip", routeValues)));
@@ -324,11 +357,6 @@ namespace TubsWeb.Controllers
                      )
                 );
             }
-
-            //if (!tripId.IsReadOnly)
-            //{
-            //    pills.Add(Tuple.Create("Close Trip", Url.Action("Close", "Trip", routeValues)));
-            //}
 
             // TODO Add security trimming
             if (!tripId.IsReadOnly)

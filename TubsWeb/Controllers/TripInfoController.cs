@@ -43,11 +43,6 @@ namespace TubsWeb.Controllers
         internal ActionResult ViewActionImpl(Trip tripId)
         {
             var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             var tivm = Mapper.Map<LongLineTrip, LongLineTripInfoViewModel>(trip);
 
             if (IsApiRequest())
@@ -57,30 +52,46 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), tivm);
         }
 
-        //
-        // GET: /Trip/{tripId}/LL-1
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <example>
+        /// GET: /Trip/{tripId}/LL-1
+        /// </example>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(LongLineTrip))]
         public ActionResult Index(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="tivm"></param>
+        /// <returns></returns>
         [HttpPost]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
         [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, LongLineTripInfoViewModel tivm)
         {
             var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             if (!ModelState.IsValid)
             {
                 if (IsApiRequest())

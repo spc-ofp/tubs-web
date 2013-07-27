@@ -52,6 +52,31 @@ footer
     padding-top: 60px;
 }
 
+img.app-logo
+{
+    float:left;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+img.summary
+{
+    float: left;
+    margin-right: 10px;
+    margin-left: -5px;
+}
+
+div.summary
+{
+    float: right;
+}
+
+/* http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/ */
+/* Unfortunately, this doesn't work with the start attribute.  Blargh! */
+/* According to this, the only real way to style an ordered list is to set the li list-style to
+ * none and then add your own content.  Kind of kills the idea of using the start attribute.
+ */
+
 /* div.compact-header, div.compact-row, editor-row, and span1q are all part of using divs to contain multi-row inputs instead of a table */
 .editor-row
 {

@@ -47,17 +47,12 @@ namespace TubsWeb.Controllers
         
         internal ActionResult ViewActionImpl(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             string formatString =
                 IsEdit() ?
-                    "Edit GEN-3 for {0}" :
-                    "GEN-3 for {0}";
+                    "{0}: GEN-3 Edit" :
+                    "{0}: GEN-3";
 
-            ViewBag.Title = String.Format(formatString, tripId.ToString());
+            ViewBag.Title = String.Format(formatString, tripId.SpcTripNumber);
 
             // Build ViewModel from the appropriate Trip sub entity/entities
             var vm = LoadViewModel(tripId);
@@ -89,6 +84,7 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult Index(Trip tripId)
         {
             return ViewActionImpl(tripId);
@@ -101,6 +97,7 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
@@ -114,14 +111,10 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         [HttpPost]
         [EditorAuthorize]
+        [ValidTripFilter]
         [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, Gen3ViewModel vm)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             if (null == vm)
             {
                 return ViewActionImpl(tripId);

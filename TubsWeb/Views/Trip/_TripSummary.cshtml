@@ -66,18 +66,6 @@
             <td id="cpue">@Html.DisplayFor(m => m.Cpue, new { format = "F2" })</td>
         </tr> 
     }  
-    
-    @* TODO Add this to the VM
-    @if (Model.IsSpillSampled.HasValue && Model.IsSpillSampled.Value)
-    {
-    <tr>
-        <td>Spill Observer:</td>
-        <td>TODO</td>
-        <td>Spill Trip Number:</td>
-        <td>@Html.DisplayFor(m => m.SpillTripNumber)</td>
-    </tr>
-    }
-    *@
     <tr>
         <td>Entered By:</td>
         <td>@Model.EnteredBy</td>
@@ -91,17 +79,18 @@
         <td>@Html.DisplayFor(m => m.ClosedDate, new { format = "dd/MM/yy" })</td>
         <td>Entry Comments:</td>
         <td>
-            @* Modal doesn't work with large-text plugin *@
-            @if (null != ViewBag.IsModal && ViewBag.IsModal)
-            {
-                @: &nbsp;
-            }
-            else
-            {
+        @* Modal doesn't work with large-text plugin *@
+        @if (null != ViewBag.IsModal && ViewBag.IsModal)
+        {
+            @: &nbsp;
+        }
+        else
+        {
+            @* TODO: Consider moving this to a larger element outside the table *@
             <div class="large-text">
                 @Html.DisplayFor(m => m.EntryComments)
             </div>
-            }
+        }
         </td>
     </tr>
     }

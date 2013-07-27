@@ -126,11 +126,6 @@ namespace TubsWeb.Controllers
         internal ActionResult ViewActionImpl(Trip tripId, int setNumber)
         {
             var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             // It was getting crazy to duplicate views for what is essentially the
             // same thing
             string viewName = (IsAdd() || IsEdit()) ? "_Editor" : CurrentAction();          
@@ -192,11 +187,6 @@ namespace TubsWeb.Controllers
         internal ActionResult SaveActionImpl(Trip tripId, int setNumber, LongLineSetViewModel svm)
         {
             var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             Validate(trip, svm);
 
             if (!ModelState.IsValid)
@@ -289,14 +279,10 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId"></param>
         /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(LongLineTrip))]
         public ActionResult List(Trip tripId)
         {
             var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             var repo = TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession);
             var sets =
                 TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession)
@@ -311,9 +297,10 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tripId"></param>
-        /// <param name="setNumber"></param>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Set number within the current trip</param>
         /// <returns></returns>
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
         public ActionResult Index(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
@@ -322,18 +309,28 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tripId"></param>
-        /// <param name="setNumber"></param>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Set number within the current trip</param>
         /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
         public ActionResult Add(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
         }
 
-        [HttpPost]
-        [HandleTransactionManually]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Set number within the current trip</param>
+        /// <param name="svm"></param>
+        /// <returns></returns>
+        [HttpPost]        
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
+        [HandleTransactionManually]
         public ActionResult Add(Trip tripId, int setNumber, LongLineSetViewModel svm)
         {
             return SaveActionImpl(tripId, setNumber, svm);
@@ -342,18 +339,28 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tripId"></param>
-        /// <param name="setNumber"></param>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Set number within the current trip</param>
         /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
         public ActionResult Edit(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
         }
 
-        [HttpPost]
-        [HandleTransactionManually]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Set number within the current trip</param>
+        /// <param name="svm"></param>
+        /// <returns></returns>
+        [HttpPost]       
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
+        [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, int setNumber, LongLineSetViewModel svm)
         {
             return SaveActionImpl(tripId, setNumber, svm);

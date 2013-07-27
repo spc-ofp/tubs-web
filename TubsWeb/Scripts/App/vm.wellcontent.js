@@ -27,7 +27,6 @@ tubs.WellContent = function (data) {
     'use strict';
     var self = this;
     self.Id = ko.observable(data.Id || 0);
- 
     self.NeedsFocus = ko.observable(data.NeedsFocus || false);
     self._destroy = ko.observable(data._destroy || false);
     self.Comment = ko.observable(data.Comment || '');

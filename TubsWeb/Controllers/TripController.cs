@@ -249,13 +249,9 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId"></param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult PositionAudit(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
             IList<PositionAuditViewModel> auditResults = new List<PositionAuditViewModel>(tripId.Pushpins.Count);
             var pushpins = tripId.Pushpins.ToList();
             pushpins.Sort(
@@ -302,13 +298,9 @@ namespace TubsWeb.Controllers
         /// <example>GET: /Trip/1/Details</example>
         /// <param name="tripId">Trip</param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult Details(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             // ViewBag means nothing for an API request
             if (!IsApiRequest())
             {
@@ -378,15 +370,10 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult Export(Trip tripId)
         {
             // TODO: Move to export controller?
-
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             return new JsonNetResult()
             {
                 Data = tripId,

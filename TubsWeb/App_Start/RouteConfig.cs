@@ -364,33 +364,33 @@ namespace TubsWeb
             );
 
             routes.MapRoute(
-                Gen1,
-                "Trip/{tripId}/GEN-1/{action}",
-                new { controller = "Gen1", action = "Index" },
-                new { tripId = IsPositiveInteger }
+                name: Gen1,
+                url: "Trip/{tripId}/GEN-1/{action}",
+                defaults: new { controller = "Gen1", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             // A trip has zero to n GEN-2 forms, and each GEN-2 has a "Page X of Y"
             // field...
             routes.MapRoute(
-                Gen2Details,
-                "Trip/{tripId}/GEN-2/{pageNumber}/{action}",
-                new { controller = "Gen2", action = "Index" },
-                new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
+                name: Gen2Details,
+                url: "Trip/{tripId}/GEN-2/{pageNumber}/{action}",
+                defaults: new { controller = "Gen2", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
             routes.MapRoute(
-                Gen2,
-                "Trip/{tripId}/GEN-2/{action}",
-                new { controller = "Gen2", action = "List" },
-                new { tripId = IsPositiveInteger }
+                name: Gen2,
+                url: "Trip/{tripId}/GEN-2/{action}",
+                defaults: new { controller = "Gen2", action = "List" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
-                Gen3,
-                "Trip/{tripId}/GEN-3/{action}",
-                new { controller = "Gen3", action = "Index" },
-                new { tripId = IsPositiveInteger }
+                name: Gen3,
+                url: "Trip/{tripId}/GEN-3/{action}",
+                defaults: new { controller = "Gen3", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
@@ -403,17 +403,17 @@ namespace TubsWeb
             // Link to particular GEN-6 page has to come first
             // due to route precedence
             routes.MapRoute(
-                Gen6Details,
-                "Trip/{tripId}/GEN-6/{pageNumber}",
-                new { controller = "Gen6", action = "Index" },
-                new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
+                name: Gen6Details,
+                url: "Trip/{tripId}/GEN-6/{pageNumber}",
+                defaults: new { controller = "Gen6", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
             routes.MapRoute(
-                Gen6,
-                "Trip/{tripId}/GEN-6/{action}/{pageNumber}",
-                new { controller = "Gen6", action = "List", pageNumber = UrlParameter.Optional },
-                new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
+                name: Gen6,
+                url: "Trip/{tripId}/GEN-6/{action}/{pageNumber}",
+                defaults: new { controller = "Gen6", action = "List", pageNumber = UrlParameter.Optional },
+                constraints: new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
             routes.MapRoute(
@@ -454,9 +454,16 @@ namespace TubsWeb
             );
 
             routes.MapRoute(
-                name: Ps4List,
-                url: "Trip/{tripId}/PS-4/Pages",
+                name: "Ps4BySetAndPage",
+                url: "Trip/{tripId}/PS-4/{setNumber}/{pageNumber}/{action}",
                 defaults: new { controller = "Ps4", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger, pageNumber = IsPositiveInteger }
+            );
+
+            routes.MapRoute(
+                name: Ps4List,
+                url: "Trip/{tripId}/PS-4/",
+                defaults: new { controller = "Ps4", action = "List" },
                 constraints: new { tripId = IsPositiveInteger }
             );
 

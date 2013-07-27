@@ -107,11 +107,6 @@ namespace TubsWeb.Controllers
         internal ActionResult ViewActionImpl(Trip tripId, int dayNumber)
         {
             var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             var days = TubsDataService.GetRepository<SeaDay>(
                 MvcApplication.CurrentSession).FilterBy(
                     d => d.Trip.Id == tripId.Id);
@@ -419,15 +414,17 @@ namespace TubsWeb.Controllers
             return RedirectToAction("Edit", "SeaDay", new { tripId = tripId.Id, dayNumber = dayNumber });
         }
         
-        //
-        // GET: /SeaDay/
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <example>
+        /// GET: /Trip/{tripId}/SeaDays/List
+        /// </example>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(PurseSeineTrip))]
         public ActionResult List(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
             var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);            
             // Push the projection into a List so that it's not the NHibernate collection implementation
             var days = repo.FilterBy(d => d.Trip.Id == tripId.Id).ToList<SeaDay>();
@@ -436,77 +433,76 @@ namespace TubsWeb.Controllers
             return View(days);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="dayNumber">Day number within the current trip</param>
+        /// <returns></returns>
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Index(Trip tripId, int dayNumber)
         {
             return ViewActionImpl(tripId, dayNumber);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="dayNumber">Day number within the current trip</param>
+        /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Add(Trip tripId, int dayNumber)
         {
             return ViewActionImpl(tripId, dayNumber);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="dayNumber">Day number within the current trip</param>
+        /// <returns></returns>
+        [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Edit(Trip tripId, int dayNumber)
         {
             return ViewActionImpl(tripId, dayNumber);
         }
 
-        [HttpPost]
-        [HandleTransactionManually]
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="dayNumber">Day number within the current trip</param>
+        /// <param name="sdvm"></param>
+        /// <returns></returns>
+        [HttpPost]        
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
+        [HandleTransactionManually]
         public ActionResult Add(Trip tripId, int dayNumber, SeaDayViewModel sdvm)
         {
             return SaveActionImpl(tripId, dayNumber, sdvm);
         }
 
-        // This should only ever be hit by the Knockout function, but we'll still probably want
-        // to cater for straight up HTML Forms
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="dayNumber">Day number within the current trip</param>
+        /// <param name="sdvm"></param>
+        /// <returns></returns>
         [HttpPost]
-        [HandleTransactionManually]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
+        [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, int dayNumber, SeaDayViewModel sdvm)
         {
             return SaveActionImpl(tripId, dayNumber, sdvm);
         }
-
-        // TODO Remove this
-        public ActionResult AutoFill(Trip tripId)
-        {
-            if (null == tripId)
-            {
-                // TODO Figure out if this is really how we want to handle this...
-                return new NoSuchTripResult();
-            }
-
-            var repo = new TubsRepository<SeaDay>(MvcApplication.CurrentSession);
-            if (repo.FilterBy(d => d.Trip.Id == tripId.Id).Count() > 0)
-            {
-                // Already has at least one day -- don't mess with it
-                return JavaScript("alert('One or more days already present');");
-            }
-
-            // Figure out how many days are between departure and end date
-            TimeSpan span = tripId.ReturnDate.Value.Subtract(tripId.DepartureDate.Value);
-            int daysAdded = 0;
-            for (int i = 0; i <= span.Days; i++)
-            {
-                DateTime startDate = tripId.DepartureDate.Value.AddDays(i);
-                SeaDay seaDay = tripId.CreateSeaDay(startDate);
-                var enteredDate = DateTime.Now;
-                if (null != seaDay)
-                {
-                    seaDay.Trip = tripId;
-                    seaDay.EnteredBy = User.Identity.Name;
-                    seaDay.EnteredDate = enteredDate;
-                    repo.Add(seaDay);
-                    daysAdded++;
-                }
-            }
-
-            return JavaScript(String.Format("alert('Added {0} day(s)');", daysAdded));
-        }
-
     }
 }

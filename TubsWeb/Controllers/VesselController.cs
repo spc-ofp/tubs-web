@@ -32,12 +32,16 @@ namespace TubsWeb.Controllers
     /// Lookup-only controller for adding Ajax autocomplete capabilities.
     /// </summary>
     [SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
-    [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
     public class VesselController : SuperController
     {                
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="term">Vessel search term</param>
+        /// <returns></returns>
         public JsonResult Find(string term)
         {
-            var repo = new TubsRepository<Vessel>(MvcApplication.CurrentSession);
+            var repo = TubsDataService.GetRepository<Vessel>(MvcApplication.CurrentSession);
             var vessels = (
                 from vessel in repo.FilterBy(v => v.Name.Contains(term))
                 select new

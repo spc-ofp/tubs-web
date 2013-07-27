@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SamplingController.cs" company="Secretariat of the Pacific Community">
+// <copyright file="AbstractSetController.cs" company="Secretariat of the Pacific Community">
 // Copyright (C) 2013 Secretariat of the Pacific Community
 // </copyright>
 // -----------------------------------------------------------------------
@@ -23,16 +23,13 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
-    using System.Web.Mvc;
     using System.Web.Routing;
-    using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Core;
 
     /// <summary>
-    /// I go through all the trouble to extract the common code for navigating through LL and
-    /// PS sets and then I can't use this navigation scheme for PS-4 entry.
+    /// AbstractSetController implements the logic that determines if a given
+    /// set number falls within a trip.
     /// </summary>
-    public abstract class SamplingController : SuperController
+    public abstract class AbstractSetController : SuperController
     {
         /// <summary>
         /// Validate the incoming setNumber parameter
@@ -43,10 +40,8 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         internal Tuple<bool, RouteValueDictionary> NeedsRedirect(int tripId, int setNumber, int maxSets)
         {
-            var needsRedirect = false;
+            bool needsRedirect = false;
             // Fill values that don't change
-            // TODO: Confirm CurrentController returns the "friendly" name (e.g. FishingSet)
-            // and not the full name (e.g. FishingSetController).
             var rvd = new RouteValueDictionary(
                 new { controller = CurrentController(), tripId = tripId }
             );
@@ -62,42 +57,6 @@ namespace TubsWeb.Controllers
             }
 
             return Tuple.Create(needsRedirect, rvd);
-
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tripId"></param>
-        /// <param name="setNumber"></param>
-        /// <returns></returns>       
-        internal abstract ActionResult ViewActionImpl(Trip tripId, int setNumber);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tripId"></param>
-        /// <param name="setNumber"></param>
-        /// <returns></returns>
-        [ValidTripFilter]
-        public ActionResult Index(Trip tripId, int setNumber)
-        {
-            return ViewActionImpl(tripId, setNumber);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tripId"></param>
-        /// <param name="setNumber"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [EditorAuthorize]
-        [ValidTripFilter]
-        public ActionResult Edit(Trip tripId, int setNumber)
-        {
-            return ViewActionImpl(tripId, setNumber);
-        }
-
     }
 }

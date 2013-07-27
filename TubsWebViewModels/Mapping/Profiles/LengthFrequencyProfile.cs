@@ -40,7 +40,6 @@ namespace TubsWeb.Mapping.Profiles
 
             // Entity to ViewModel
             CreateMap<DAL.Entities.LengthSample, LengthFrequencyViewModel.Sample>()
-
                 ;
 
             CreateMap<DAL.Entities.LengthSamplingHeader, LengthFrequencyViewModel>()

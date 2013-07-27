@@ -52,13 +52,14 @@ namespace TubsWeb.Controllers
                 select i;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
         internal ActionResult ViewActionImpl(Trip tripId, int pageNumber)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             int maxPages = tripId.Interactions.Count;
             if (pageNumber > maxPages)
             {
@@ -86,6 +87,12 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), vm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="vm"></param>
+        /// <returns></returns>
         internal ActionResult AddImpl(Trip tripId, Gen2ViewModel vm)
         {
             vm.TripId = tripId.Id;
@@ -100,13 +107,9 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult List(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             ViewBag.SpcTripNumber = tripId.SpcTripNumber;
 
             IList<Gen2SummaryViewModel> summaries = new List<Gen2SummaryViewModel>();
@@ -144,6 +147,7 @@ namespace TubsWeb.Controllers
         /// <param name="tripId">Current trip</param>
         /// <param name="pageNumber"></param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult Index(Trip tripId, int pageNumber)
         {
             return ViewActionImpl(tripId, pageNumber);
@@ -152,28 +156,48 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// MVC Action 
         /// </summary>
-        /// <param name="tripId"></param>
+        /// <param name="tripId">Current trip</param>
         /// <returns></returns>
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult AddLanded(Trip tripId)
         {
             return AddImpl(tripId, new Gen2LandedViewModel());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult AddGear(Trip tripId)
         {
             return AddImpl(tripId, new Gen2GearViewModel());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult AddSighting(Trip tripId)
         {
             return AddImpl(tripId, new Gen2SightingViewModel());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
         [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult Edit(Trip tripId, int pageNumber)
         {
             return ViewActionImpl(tripId, pageNumber);
@@ -189,16 +213,12 @@ namespace TubsWeb.Controllers
         /// <param name="tripId">Current trip</param>
         /// <param name="vm">Interaction view model</param>
         /// <returns></returns>
-        [HttpPost]
-        [HandleTransactionManually]
+        [HttpPost]       
         [EditorAuthorize]
+        [ValidTripFilter]
+        [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, [AbstractBind(ConcreteTypeParameter = "InteractionType")] Gen2ViewModel vm)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             if (!ModelState.IsValid)
             {
                 if (IsApiRequest())

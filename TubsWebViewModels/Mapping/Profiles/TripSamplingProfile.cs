@@ -52,27 +52,25 @@ namespace TubsWeb.Mapping.Profiles
             CreateMap<DAL.Entities.PurseSeineSet, TripSamplingViewModel.SampleSummary>()
                 .ForMember(d => d.SetNumber, o => o.MapFrom(s => s.SetNumber))
                 .ForMember(d => d.SetDate, o => o.MapFrom(s => s.SkiffOff))
-                .ForMember(d => d.SampleCount, o => o.Ignore()) // Ignore while we fix another problem
-                .ForMember(d => d.PageNumber, o => o.Ignore())
-                .ForMember(d => d.SampleType, o => o.Ignore())
-                // First problem:  Sample Type can now have 3 values:
-                // null, where there is no associated SamplingHeader (aka PS-4)
-                // A single string value, where there is only one SamplingHeader (uncommon)
-                // A list of strings, with one value for each SamplingHeader
-                // The third value is complicated even more by the fairly common situation of
-                // multiple pages used for "normal" sampling.  For example, if there are 4 PS-4 pages
-                // associated with a set, 3 may be for "normal" sampling with the last one for bycatch.
+                .ForMember(d => d.FormCount, o => o.MapFrom(s => s.SamplingHeaders.Count))
+                .ForMember(d => d.SampleCount, o => o.MapFrom(s => (from h in s.SamplingHeaders
+                                                                    where null != h
+                                                                    select h.Samples.Count).Sum()))
+                .ForMember(d => d.SampleType, o => o.MapFrom(s => String.Join(", ", s.SamplingHeaders.Select(h => h.SamplingProtocol).Distinct())))
                 ;
-
 
             CreateMap<DAL.Entities.PurseSeineTrip, TripSamplingViewModel>()
                 .ForMember(d => d.TripId, o => o.MapFrom(s => s.Id))
                 .ForMember(d => d.TripNumber, o => o.MapFrom(s => s.SpcTripNumber))
+                .ForMember(d => d.Headers, o => o.MapFrom(s => s.FishingSets))
+                /*
+                // Leaving this here for now in the event that we go back to operating on LengthSamplingHeader
                 // The trick here was .SelectMany, which merges the IEnumerable<IList<blah>> into a single IEnumerable<blah>
                 .ForMember(d => d.Headers, o => o.MapFrom(s => (from day in s.SeaDays
                                                                 from act in day.Activities
                                                                 where null != act.FishingSet
                                                                 select act.FishingSet.SamplingHeaders).SelectMany(x => x)))
+                */
                 ;
         }
     }

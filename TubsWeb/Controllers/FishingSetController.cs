@@ -42,37 +42,12 @@ namespace TubsWeb.Controllers
     /// the maximum set number.  If a set needs to be added, the associated activity from a PS-2 must
     /// be entered.
     /// </summary>
-    public class FishingSetController : SuperController
+    public class FishingSetController : AbstractSetController
     {
-        internal Tuple<bool, RouteValueDictionary> NeedsRedirect(int tripId, int setNumber, int maxSets)
-        {
-            var needsRedirect = false;
-            // Fill values that don't change
-            var rvd = new RouteValueDictionary(
-                new { controller = "FishingSet", tripId = tripId }
-            );
-
-            if (IsEdit())
-            {
-                if (setNumber > maxSets)
-                {
-                    rvd["setNumber"] = maxSets;
-                    rvd["action"] = "Edit";
-                    needsRedirect = true;
-                }
-            }
-
-            return Tuple.Create(needsRedirect, rvd);
-        }
 
         internal ActionResult ViewActionImpl(Trip tripId, int setNumber)
         {
             var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             // While PurseSeineTrip can access sets directly,
             // the current implementation is preferred as it
             // doesn't actually hydrate the sets in question
@@ -123,8 +98,9 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// MVC Action for displaying a list of all sets in a trip.
         /// </summary>
-        /// <param name="tripId"></param>
+        /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(PurseSeineTrip))]
         public ActionResult List(Trip tripId)
         {
             var trip = tripId as PurseSeineTrip;
@@ -145,28 +121,45 @@ namespace TubsWeb.Controllers
             return View(sets);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Edit(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber"></param>
+        /// <returns></returns>
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Index(Trip tripId, int setNumber)
         {
             return ViewActionImpl(tripId, setNumber);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber"></param>
+        /// <param name="fsvm"></param>
+        /// <returns></returns>
         [HttpPost]
-        [HandleTransactionManually]
         [EditorAuthorize]
+        [HandleTransactionManually]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Edit(Trip tripId, int setNumber, PurseSeineSetViewModel fsvm)
         {
             var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             // TODO Any validation that the attributes don't cover
 
             if (!ModelState.IsValid)

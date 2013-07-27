@@ -156,7 +156,7 @@ amplify.request.define(
 amplify.request.define(
     "getWellNumber",
     "ajax",
-     $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/WellContent/Edit' })
+    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/WellContent/Edit' })
 );
 
 /**
@@ -175,7 +175,7 @@ tubs.getSeaDay = function (tripId, dayNumber, success_cb, error_cb) {
     });
 };
 
-tubs.getWellContent = function (tripId,success_cb, error_cb) {
+tubs.getWellContent = function (tripId, success_cb, error_cb) {
     amplify.request({
         resourceId: "getWellNumber",
         data: { "TripId": tripId},

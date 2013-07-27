@@ -31,8 +31,17 @@ namespace TubsWeb.Controllers
     using TubsWeb.Core;
     using TubsWeb.ViewModels;
     
+    /// <summary>
+    /// MVC Controller for working with the number of available pages
+    /// in a physical workbook (or workbook scan)
+    /// </summary>
     public class PageCountController : SuperController
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         internal ActionResult ViewActionImpl(Trip tripId)
         {
             if (null == tripId)
@@ -48,22 +57,40 @@ namespace TubsWeb.Controllers
             return View(CurrentAction(), vm);
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult Index(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="pcvm"></param>
+        /// <returns></returns>
         [HttpPost]
         [EditorAuthorize]
+        [ValidTripFilter]
         [HandleTransactionManually]
-        [OutputCache(NoStore = true, VaryByParam = "None", Duration = 0)]
         public ActionResult Edit(Trip tripId, PageCountViewModel pcvm)
         {
             if (null == tripId)
@@ -80,15 +107,15 @@ namespace TubsWeb.Controllers
             {
                 var repo = TubsDataService.GetRepository<PageCount>(MvcApplication.CurrentSession);
                 // Deletes first
-                pcvm.PageCounts.Where(pc => pc != null && pc._destroy).ToList().ForEach(x => repo.DeleteById(x.Id));
+                pcvm.PageCounts.Where(pc => null != pc && pc._destroy).ToList().ForEach(x => repo.DeleteById(x.Id));
                 // Save or update
-                var saves = pcvm.PageCounts.Where(pc => pc != null && !pc._destroy);
+                var saves = pcvm.PageCounts.Where(pc => null != pc && !pc._destroy);
                 foreach (var item in saves)
                 {
-                    Logger.ErrorFormat("Saving PageCount with key {0} and value {1}", item.Key, item.Value);
+                    Logger.DebugFormat("Saving PageCount with key {0} and value {1}", item.Key, item.Value);
                     var entity = Mapper.Map<PageCountViewModel.PageCount, PageCount>(item);
                     if (null == entity) { continue; }
-                    Logger.ErrorFormat("Entity values for Form {0} and Count {1}", entity.FormName, entity.FormCount);
+                    Logger.DebugFormat("Entity values for Form {0} and Count {1}", entity.FormName, entity.FormCount);
                     entity.Trip = tripId;
                     entity.EnteredBy = User.Identity.Name;
                     entity.EnteredDate = DateTime.Now;

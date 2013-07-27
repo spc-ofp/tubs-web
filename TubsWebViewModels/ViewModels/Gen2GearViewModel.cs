@@ -26,6 +26,9 @@ namespace TubsWeb.ViewModels
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// View Model for recording a GEN-2 gear interaction.
+    /// </summary>
     public class Gen2GearViewModel : Gen2ViewModel
     {
         public Gen2GearViewModel()

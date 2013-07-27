@@ -40,11 +40,6 @@ namespace TubsWeb.Controllers
 
         internal ActionResult SightingViewActionImpl(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             var svm = Mapper.Map<Trip, SightingViewModel>(tripId);
             if (IsApiRequest())
                 return GettableJsonNetData(svm);
@@ -54,11 +49,6 @@ namespace TubsWeb.Controllers
 
         internal ActionResult TransferViewActionImpl(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             var tvm = Mapper.Map<Trip, TransferViewModel>(tripId);
             if (IsApiRequest())
                 return GettableJsonNetData(tvm);
@@ -71,6 +61,7 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult Sightings(Trip tripId)
         {
             return SightingViewActionImpl(tripId);
@@ -83,6 +74,7 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult EditSightings(Trip tripId)
         {
             return SightingViewActionImpl(tripId);
@@ -94,16 +86,12 @@ namespace TubsWeb.Controllers
         /// <param name="tripId">Current trip</param>
         /// <param name="svm">ViewModel containing all sightings for current trip.</param>
         /// <returns></returns>
-        [HttpPost]
-        [HandleTransactionManually]
+        [HttpPost]       
         [EditorAuthorize]
+        [ValidTripFilter]
+        [HandleTransactionManually]
         public ActionResult EditSightings(Trip tripId, SightingViewModel svm)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             if (!ModelState.IsValid)
             {
                 if (IsApiRequest())
@@ -159,6 +147,7 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult Transfers(Trip tripId)
         {
             return TransferViewActionImpl(tripId);
@@ -175,6 +164,7 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         [HttpGet]
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult EditTransfers(Trip tripId)
         {
             return TransferViewActionImpl(tripId);
@@ -186,16 +176,12 @@ namespace TubsWeb.Controllers
         /// <param name="tripId">Current trip</param>
         /// <param name="tvm">ViewModel containing all transfers.</param>
         /// <returns></returns>
-        [HttpPost]
-        [HandleTransactionManually]
+        [HttpPost]        
         [EditorAuthorize]
+        [ValidTripFilter]
+        [HandleTransactionManually]
         public ActionResult EditTransfers(Trip tripId, TransferViewModel tvm)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             if (!ModelState.IsValid)
             {
                 if (IsApiRequest())
@@ -218,7 +204,6 @@ namespace TubsWeb.Controllers
                     transfers.Add(entity);
                 }
             }
-
 
             using (var xa = MvcApplication.CurrentSession.BeginTransaction())
             {
@@ -248,6 +233,7 @@ namespace TubsWeb.Controllers
         
         //
         // GET: /Gen1/
+        [ValidTripFilter]
         public ActionResult Index(Trip tripId)
         {
             return Load(tripId, "GEN-1 events for trip {0}");
@@ -255,11 +241,6 @@ namespace TubsWeb.Controllers
 
         private ActionResult Load(Trip tripId, string titleFormat)
         {
-            if (null == tripId)
-            {
-                return new NoSuchTripResult();
-            }
-
             ViewBag.Title = String.Format(titleFormat, tripId.ToString());
             return View(CurrentAction(), tripId);
         }

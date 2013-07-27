@@ -34,6 +34,9 @@ namespace TubsWeb.Core
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class UseTransactionsByDefaultAttribute : ActionFilterAttribute
     {
+        /// <summary>
+        /// Log4Net logger.
+        /// </summary>
         protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(UseTransactionsByDefaultAttribute));
         
         private static bool ShouldDelegateTransactionSupport(ActionExecutingContext filterContext)

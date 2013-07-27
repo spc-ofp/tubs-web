@@ -1,0 +1,118 @@
+﻿@model TubsWeb.ViewModels.LengthFrequencyViewModel
+
+<div class="row">
+    <div class="span1">
+        <label><strong>Full</strong></label>
+        @Html.DisplayFor(m => m.FullBrailCount)
+    </div>
+    <div class="span1">
+        <label><strong>7/8</strong></label>
+        @Html.DisplayFor(m => m.SevenEighthsBrailCount)
+    </div>
+    <div class="span1">
+        <label><strong>3/4</strong></label>
+        @Html.DisplayFor(m => m.ThreeQuartersBrailCount)
+    </div>
+    <div class="span1">
+        <label><strong>2/3</strong></label>
+        @Html.DisplayFor(m => m.TwoThirdsBrailCount)
+    </div>
+    <div class="span1">
+        <label><strong>1/2</strong></label>
+        @Html.DisplayFor(m => m.OneHalfBrailCount)
+    </div>
+    <div class="span1">
+        <label><strong>1/3</strong></label>
+        @Html.DisplayFor(m => m.OneThirdBrailCount)
+    </div>
+    <div class="span1">
+        <label><strong>1/4</strong></label>
+        @Html.DisplayFor(m => m.OneQuarterBrailCount)
+    </div>
+    <div class="span1">
+        <label><strong>1/8</strong></label>
+        @Html.DisplayFor(m => m.OneEighthBrailCount)
+    </div>
+    <div class="span1">
+        <label><strong>Total</strong></label>
+        @Html.DisplayFor(m => m.TotalBrails)
+    </div>
+    <div class="span1">
+        <label><strong>Sum</strong></label>
+        @Html.DisplayFor(m => m.SumOfAllBrails, new { format = "F2" })
+    </div>
+</div>
+
+<hr />
+
+<p>
+    Brail fullness and samples per brail.  Written as (fullness code) / (samples).
+</p>
+
+@*
+ * TODO: Better styling for the ordered lists.
+ * Whats in the screen is pretty information dense and could use some good
+ * CSS to visually break up the display
+ * http://css-tricks.com/numbering-in-style/
+ *@
+
+@*
+ * Slice the up-to-30 brails into 6 columns of 5 values.
+ * This is the most compact form that will also respect tab order
+ *@
+<div class="row">
+    <div class="span2">
+        <ol>
+            <li>1 / 5</li>
+            <li>1 / 5</li>
+            <li>8 / 5</li>
+            <li>5</li>
+            <li>5</li>
+        </ol>
+    </div>
+    <div class="span2">
+        <ol start="6">
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+        </ol>
+    </div>
+    <div class="span2">
+        <ol start="11">
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+        </ol>
+    </div>
+    <div class="span2">
+        <ol start="16">
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+        </ol>
+    </div>
+    <div class="span2">
+        <ol start="21">
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+        </ol>
+    </div>
+    <div class="span2">
+        <ol start="26">
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+            <li>5</li>
+        </ol>
+    </div>
+</div>

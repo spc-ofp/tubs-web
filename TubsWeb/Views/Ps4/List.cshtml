@@ -1,0 +1,74 @@
+﻿@model TubsWeb.ViewModels.TripSamplingViewModel
+
+@{
+    ViewBag.Title = String.Format("{0}: All PS-4 Forms", Model.TripNumber);
+}
+
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.TripList), "Trips"),
+        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber),
+        Tuple.Create("#", "All PS-4 Forms")
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+
+<table class="table table-bordered table-condensed table-striped" id="setTable">
+    <thead>
+        <tr>
+            <th>Set</th> 
+            <th>Date</th>@* No set# on PS-4 form, so Nabila has asked for set date here for navigation assistance *@
+            <th>Samples</th>
+            <th>Sample Type</th>
+            <th>Pages</th>
+        </tr>
+    </thead>
+    <tbody>
+    @*
+     * If the trip is closed, only show sets for which there are PS-4 records.
+     * If the trip is _not_ closed, show all sets.  Incidentally, how awesome is LINQ?
+     *@
+    @foreach (var header in (ViewBag.IsReadOnly ? Model.Headers.Where(h => h.SampleCount > 0) : Model.Headers))
+    {
+        <tr>
+            <td>@header.SetNumber</td>
+            <td>@Html.DisplayFor(m => header.SetDate, new { format = "dd/MM/yy HHmm" })</td>
+            <td>@header.SampleCount</td>
+            <td>@header.SampleType</td>
+            <td>
+            @for (int i = 1; i <= header.FormCount; i++)
+            { 
+                <text> @i </text>
+            }            
+            @if (!ViewBag.IsReadOnly)
+            {
+                <a href="#" class="btn btn-info addPage"><i class="icon-plus-sign icon-white"></i> Add Page</a>
+            }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<ul id="tlyPageGuide" data-tourtitle="PS-4 data navigation">
+    <li class="tlypageguide_left" data-tourtarget="#setTable">
+        <div>
+            Each row in this table represents all the PS-4 forms associated with a single set.
+        </div>
+    </li>
+    <li class="tlypageguide_right" data-tourtarget=".addPage:first">
+        <div>
+            Use this button to add a new PS-4 form to a set.
+        </div>
+    </li>
+</ul>
+
+@section AdditionalScripts {
+    <script>
+        $(function () {
+            tl.pg.init();
+        });
+    </script>
+}

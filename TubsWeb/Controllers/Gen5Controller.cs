@@ -46,14 +46,10 @@ namespace TubsWeb.Controllers
         /// </example>
         /// <param name="tripId"></param>
         /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(PurseSeineTrip))]
         public ActionResult Index(Trip tripId)
         {
             var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             ViewBag.TripNumber = trip.SpcTripNumber;
             // I'd like this to be stateless, since we could give a fig about the
             // materials, but the AutoMapper portion would choke...
@@ -77,11 +73,6 @@ namespace TubsWeb.Controllers
         internal ActionResult ViewActionImpl(Trip tripId, int? fadId, int? activityId)
         {
             var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             var repo = TubsDataService.GetRepository<Gen5Object>(MvcApplication.CurrentSession);
             Gen5Object fad = null;
 
@@ -128,14 +119,10 @@ namespace TubsWeb.Controllers
         /// <param name="tripId">Current trip</param>
         /// <param name="fvm"></param>
         /// <returns></returns>
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         internal ActionResult SaveActionImpl(Trip tripId, Gen5ViewModel fvm)
         {
             var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             // TODO:  What kind of validation needs to occur?
             // Should we pull this snippet out into a new function?
             if (!ModelState.IsValid)
@@ -240,6 +227,7 @@ namespace TubsWeb.Controllers
         /// <param name="fadId"></param>
         /// <param name="activityId"></param>
         /// <returns></returns>
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Details(Trip tripId, int? fadId, int? activityId)
         {
             return ViewActionImpl(tripId, fadId, activityId);
@@ -251,6 +239,9 @@ namespace TubsWeb.Controllers
         /// <param name="tripId"></param>
         /// <param name="fadId"></param>
         /// <returns></returns>
+        [HttpGet]
+        [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Edit(Trip tripId, int fadId)
         {
             return ViewActionImpl(tripId, fadId, null);
@@ -263,8 +254,9 @@ namespace TubsWeb.Controllers
         /// <param name="fvm"></param>
         /// <returns></returns>
         [HttpPost]
-        [HandleTransactionManually]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
+        [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, Gen5ViewModel fvm)
         {
             return SaveActionImpl(tripId, fvm);
@@ -276,6 +268,9 @@ namespace TubsWeb.Controllers
         /// <param name="tripId"></param>
         /// <param name="activityId"></param>
         /// <returns></returns>
+        [HttpGet]
+        [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
         public ActionResult Add(Trip tripId, int activityId)
         {
             return ViewActionImpl(tripId, null, activityId);
@@ -287,9 +282,10 @@ namespace TubsWeb.Controllers
         /// <param name="tripId"></param>
         /// <param name="fvm"></param>
         /// <returns></returns>
-        [HttpPost]
-        [HandleTransactionManually]
+        [HttpPost]       
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
+        [HandleTransactionManually]
         public ActionResult Add(Trip tripId, Gen5ViewModel fvm)
         {
             return SaveActionImpl(tripId, fvm);

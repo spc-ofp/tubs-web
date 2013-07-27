@@ -37,21 +37,20 @@ namespace TubsWeb.Controllers
     /// </summary>
     public class CrewController : SuperController
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         internal ActionResult ViewActionImpl(Trip tripId)
         {
-            var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
-            var cvm = Mapper.Map<PurseSeineTrip, CrewViewModel>(trip);
+            var cvm = Mapper.Map<PurseSeineTrip, CrewViewModel>(tripId as PurseSeineTrip);
             string formatString = 
                 IsEdit() ? 
-                    "Edit crew list for {0}" :
-                    "Crew list for {0}";
+                    "{0}: Edit Crew" :
+                    "{0}: Crew";
 
-            ViewBag.Title = String.Format(formatString, tripId.ToString());
+            ViewBag.Title = String.Format(formatString, tripId.SpcTripNumber);
 
             if (IsApiRequest())
                 return GettableJsonNetData(cvm);
@@ -65,8 +64,9 @@ namespace TubsWeb.Controllers
         /// <example>
         /// GET /Trip/{tripId}/Crew
         /// </example>
-        /// <param name="tripId"></param>
+        /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(PurseSeineTrip))]
         public ActionResult Index(Trip tripId)
         {
             return ViewActionImpl(tripId);
@@ -75,25 +75,30 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// MVC Action for displaying the crew edit form.
         /// </summary>
-        /// <param name="tripId"></param>
+        /// <example>
+        /// GET /Trip/{tripId}/Crew/Edit
+        /// </example>
+        /// <param name="tripId">Current trip</param>
         /// <returns></returns>
         [EditorAuthorize]
+        [ValidTripFilter(TripType=typeof(PurseSeineTrip))]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
         }
 
-        
-        [HttpPost]
-        [HandleTransactionManually]
+        /// <summary>
+        /// MVC Action for updating crew list for a purse seine trip.
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="cvm">ViewModel representing all crewmembers.</param>
+        /// <returns></returns>
+        [HttpPost]        
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
+        [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, CrewViewModel cvm)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             if (!ModelState.IsValid)
             {
                 if (IsApiRequest())

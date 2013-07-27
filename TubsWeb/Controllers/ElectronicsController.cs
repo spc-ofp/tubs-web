@@ -38,12 +38,13 @@ namespace TubsWeb.Controllers
     /// </summary>
     public class ElectronicsController : SuperController
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
         internal ActionResult ViewActionImpl(Trip tripId)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
             var vm = Mapper.Map<Trip, ElectronicsViewModel>(tripId) ?? new ElectronicsViewModel();
 
             if (IsApiRequest())
@@ -55,8 +56,9 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tripId"></param>
+        /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter]
         public ActionResult Index(Trip tripId)
         {
             return ViewActionImpl(tripId);
@@ -65,9 +67,10 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tripId"></param>
+        /// <param name="tripId">Current trip</param>
         /// <returns></returns>
         [EditorAuthorize]
+        [ValidTripFilter]
         public ActionResult Edit(Trip tripId)
         {
             return ViewActionImpl(tripId);
@@ -76,19 +79,15 @@ namespace TubsWeb.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="tripId"></param>
+        /// <param name="tripId">Current trip</param>
         /// <param name="vm"></param>
         /// <returns></returns>
-        [EditorAuthorize]
         [HttpPost]
+        [EditorAuthorize]        
+        [ValidTripFilter]
         [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, ElectronicsViewModel vm)
         {
-            if (null == tripId)
-            {
-                return InvalidTripResponse();
-            }
-
             // TODO Are there any real validations on this model?
             // Maybe if someone provides a mobile phone # and then says there is
             // no mobile phone for the vessel...

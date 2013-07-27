@@ -23,81 +23,96 @@ namespace TubsWeb.Controllers
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Linq;
     using System.Web.Mvc;
     using System.Web.Routing;
     using AutoMapper;
+    using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
+    using TubsWeb.Core;
     using TubsWeb.ViewModels;
 
     /// <summary>
     /// 
     /// </summary>
-    public class Ps4Controller : SuperController
+    public class Ps4Controller : AbstractSetController
     {
         /*
-         * List of all PS-4 pages (Index):
+         * List of all PS-4 pages for a trip:
          * /Trip/{tripId}/PS-4/
          * 
-         * Sampling details for a given page
-         * /Trip/{tripId}/PS-4/Pages/{pageNumber}
+         * List of all PS-4 pages for a set:
+         * /Trip/{tripId}/PS-4/{setNumber}/List
          * 
-         * Length samples for a given page and column
-         * /Trip/{tripId}/PS-4/Pages/{pageNumber}/Column/{columnNumber}
+         * Direct link to a PS-4 page
+         * /Trip/{tripId}/PS-4/{setNumber}/{pageNumber}/Index
+         * 
+         * Edit link to a PS-4 page
+         * /Trip/{tripId}/PS-4/{setNumber}/{pageNumber}/Edit
          */
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(PurseSeineTrip))]
+        public ActionResult List(Trip tripId)
+        {
+            var vm = Mapper.Map<PurseSeineTrip, TripSamplingViewModel>(tripId as PurseSeineTrip);
+            return View(vm);
+        }
 
-        public ActionResult Index(Trip tripId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber"></param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        [ValidTripFilter(TripType = typeof(PurseSeineTrip))]
+        public ActionResult Index(Trip tripId, int setNumber, int pageNumber)
         {
             var trip = tripId as PurseSeineTrip;
-            if (null == trip)
+            int maxSets = trip.FishingSets.Count();
+            if (setNumber > maxSets)
             {
-                return InvalidTripResponse();
+                // This isn't like set, where someone can use
+                // setNumber = 999 to get to the last set.
+                // For now, redirect to List, but a better response is probably called for
+                return RedirectToAction("List", new { tripId = trip.Id });
             }
 
-            var vm = Mapper.Map<PurseSeineTrip, TripSamplingViewModel>(trip);
+            var repo = TubsDataService.GetRepository<PurseSeineSet>(MvcApplication.CurrentSession);
+
+            var fset = 
+                repo.FilterBy(
+                    s => s.Activity.Day.Trip.Id == trip.Id && s.SetNumber == setNumber
+                ).FirstOrDefault();
+
+            // Shouldn't happen, but then again...
+            if (null == fset)
+                return RedirectToAction("List", new { tripId = trip.Id });
+
+            // We can (and should) be lenient on page number
+            int maxPages = fset.SamplingHeaders.Count;
+
+            if (pageNumber > maxPages)
+                pageNumber = maxPages;
+
+            var header = fset.SamplingHeaders.Skip(pageNumber - 1).Take(1).FirstOrDefault();
+            if (null == header)
+                return RedirectToAction("List", new { tripId = trip.Id });
+
+            var vm = Mapper.Map<LengthSamplingHeader, LengthFrequencyViewModel>(header);
+
+            if (IsApiRequest())
+                return GettableJsonNetData(vm);
 
             return View(vm);
         }
 
-        public ActionResult AddPage(Trip tripId)
-        {
-            var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-            // At this point, we are unsure of which set we're adding a page for
-            // We could fix this by changing the TripSamplingViewModel such that we get
-            // something for each set regardless of existence of PS-4
-
-
-            return View();
-        }
-
-        public ActionResult Page(Trip tripId, int pageNumber)
-        {
-            var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-            // TODO: Confirm that page number falls within trip
-
-
-            return View();
-        }
-
-        public ActionResult Column(Trip tripId, int pageNumber, int columnNumber)
-        {
-            var trip = tripId as PurseSeineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-            // TODO: Confirm that page number falls within trip
-            // TODO: Confirm that column number falls within number of samples for this page
-            return View();
-        }
+        
 
     }
 }
