@@ -1,25 +1,31 @@
-﻿/*
- * vm.gen3.js
- * Knockout.js ViewModel for editing a GEN-3
+﻿/** 
+ * @file Knockout ViewModel for editing a GEN-3 form
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
  * Depends on:
- * jquery
- * knockout
- * knockout.mapping (automatically maps JSON)
- * knockout.asyncCommand (makes it easier to show user activity)
- * knockout.dirtyFlag (avoid unneccesary saves)
- * knockout.activity (fancy UI gadget)
- * amplify (local storage and Ajax mapping
- * toastr (user notification)
- * knockout.custom-bindings (date binding)
+ * knockout.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
  */
-/// <reference path="../knockout-2.1.0.debug.js"  />
 
-// All the view models are in the tubs namespace
+/// <reference path="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="../tubs-common-extensions.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
-
-// WARNING:  The v2007 workbook, with it's use of "0" as a key
-// for all the incidents, breaks when using a "key" function
-// in knockout.mapping
+ 
+/**
+ * Knockout mapping for GEN-3 form data.
+ * WARNING:  The v2007 workbook, with it's use of "0" as a key
+ * for all the incidents, breaks when using a "key" function
+ * in knockout.mapping.
+ */
 tubs.gen3Mapping = {
     'Notes': {
         create: function (options) {
@@ -36,7 +42,11 @@ tubs.gen3Mapping = {
     }
 };
 
-
+/**
+ * A single GEN-3 incident (recorded as a yes/no and general code)
+ * @constructor
+ * @param {object} incidentData - Incident data
+ */
 tubs.gen3Incident = function (incidentData) {
     'use strict';
     var self = this;
@@ -62,11 +72,16 @@ tubs.gen3Incident = function (incidentData) {
     return self;
 };
 
+/**
+ * A single GEN-3 note.
+ * @constructor
+ * @param {object} noteData - Note data
+ */
 tubs.gen3Note = function (noteData) {
     'use strict';
     var self = this;
     self.Id = ko.observable(noteData.Id || 0);
-    self.Date = ko.observable(noteData.Date || null).extend({ isoDate: 'DD/MM/YY' });
+    self.Date = ko.observable(noteData.Date || null).extend(tubs.dateExtension);
     self.Comments = ko.observable(noteData.Comments || null);
     self._destroy = ko.observable(noteData._destroy || false); //ignore jslint
     self.NeedsFocus = ko.observable(noteData.NeedsFocus || false);
@@ -87,7 +102,12 @@ tubs.gen3Note = function (noteData) {
     return self;
 };
 
-tubs.gen3 = function (data) {
+/**
+ * View model for all GEN-3 incidents and notes for a single trip.
+ * @constructor
+ * @param {object} data - GEN-3 data
+ */
+tubs.Gen3ViewModel = function (data) {
     'use strict';
     var self = this;
     ko.mapping.fromJS(data, tubs.gen3Mapping, self);

@@ -1,38 +1,43 @@
-﻿/*
-* vm.gen2.js
-* Knockout.js ViewModel for editing GEN-2 data
-* Depends on:
-* jquery
-* knockout
-* knockout.asyncCommand (makes it easier to show user activity)
-* knockout.dirtyFlag (avoid unneccesary saves)
-* knockout.activity (fancy UI gadget)
-* knockout.mapping
-* amplify (local storage and Ajax mapping
-* toastr (user notification)
-* knockout.custom-bindings (date binding)
-*/
+﻿/** 
+ * @file Knockout ViewModel for editing GEN-2 data
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
+ * Depends on:
+ * knockout.js
+ * underscore.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
+ */
 
-// All the view models are in the tubs namespace
+/// <reference path="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="../tubs-common-extensions.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
+/**
+ * Basic special species interaction object.
+ * @constructor
+ * @param {object} data - Shared data for all interaction types.
+ */
 tubs.Gen2Event = function (data) {
+    'use strict';
     var self = this;
 
     // Set common properties
     self.Id = ko.observable(data.Id || 0);
     self.TripId = ko.observable(data.TripId);
     self.PageNumber = ko.observable(data.PageNumber || 0);
-    self.ShipsDate = ko.observable(data.ShipsDate || '').extend({ isoDate: 'DD/MM/YY' });
-    self.ShipsTime = ko.observable(data.ShipsTime || '');
-    self.Latitude =
-        ko.observable(data.Latitude || '').extend({
-            pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$'
-        });
-    self.Longitude =
-        ko.observable(data.Longitude || '').extend({
-            pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$'
-        });
+    self.ShipsDate = ko.observable(data.ShipsDate || '').extend(tubs.dateExtension);
+    self.ShipsTime = ko.observable(data.ShipsTime || '').extend(tubs.timeExtension);
+    self.Latitude = ko.observable(data.Latitude || '').extend(tubs.latitudeExtension);
+    self.Longitude = ko.observable(data.Longitude || '').extend(tubs.longitudeExtension);
     self.SpeciesCode = ko.observable(data.SpeciesCode || '');
     self.SpeciesDescription = ko.observable(data.SpeciesDescription || '');
     self.ActionName = ko.observable(data.ActionName || 'add');
@@ -53,11 +58,15 @@ tubs.Gen2Event = function (data) {
     return self;
 };
 
+/**
+ * Interaction in which the species in question is landed on deck.
+ * @constructor
+ * @param {object} data - Landing data
+ */
 tubs.Gen2LandedEvent = function (data) {
     var self = this;
 
     ko.utils.extend(self, new tubs.Gen2Event(data));
-    // If necessary, we can add a custom mapping function
     ko.mapping.fromJS(data, {}, self);
 
     self.dirtyFlag = new ko.DirtyFlag([
@@ -91,7 +100,6 @@ tubs.Gen2LandedEvent = function (data) {
         self.dirtyFlag().reset();
     };
 
-    // Commands
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.getInteraction(
@@ -101,13 +109,12 @@ tubs.Gen2LandedEvent = function (data) {
                     ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded GEN-2 event');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload GEN-2 event', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {
@@ -124,13 +131,12 @@ tubs.Gen2LandedEvent = function (data) {
                     ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     toastr.success('Saved GEN-2');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save GEN-2', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {
@@ -142,6 +148,10 @@ tubs.Gen2LandedEvent = function (data) {
 
 };
 
+/**
+ * Knockout mapping for interaction in which the species
+ * in question interacts with the gear.
+ */
 tubs.Gen2GearMapping = {
     'StartOfInteraction': {
         create: function (options) {
@@ -155,6 +165,13 @@ tubs.Gen2GearMapping = {
     }
 };
 
+/**
+ * Gear interactions can have interactions with multiple animals.
+ * Observers are instructed to group the animals together based on
+ * any commonality.
+ * @constructor
+ * @param {object} data - Species group data
+ */
 tubs.Gen2SpeciesGroup = function (data) {
     var self = this;
     self.Id = ko.observable(data.Id || 0);
@@ -181,11 +198,16 @@ tubs.Gen2SpeciesGroup = function (data) {
     return self;
 };
 
+/**
+ * Special species interaction during which the animal(s)
+ * interact with the vessel or gear.
+ * @constructor
+ * @param {object} data - Gear interaction data
+ */
 tubs.Gen2GearEvent = function (data) {
     var self = this;
 
     ko.utils.extend(self, new tubs.Gen2Event(data));
-    // If necessary, we can add a custom mapping function
     ko.mapping.fromJS(data, tubs.Gen2GearMapping, self);
 
     self.dirtyFlag = new ko.DirtyFlag([
@@ -309,10 +331,15 @@ tubs.Gen2GearEvent = function (data) {
     return self;
 };
 
+/**
+ * Special species interaction during which the animal(s)
+ * is only sighted.
+ * @constructor
+ * @param {object} data - Sighting data
+ */
 tubs.GenSightedEvent = function (data) {
     var self = this;
     ko.utils.extend(self, new tubs.Gen2Event(data));
-    // If necessary, we can add a custom mapping function
     ko.mapping.fromJS(data, {}, self);
 
     self.dirtyFlag = new ko.DirtyFlag([
@@ -350,13 +377,12 @@ tubs.GenSightedEvent = function (data) {
                     ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded GEN-2 event');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload GEN-2 event', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {
@@ -373,13 +399,12 @@ tubs.GenSightedEvent = function (data) {
                     ko.mapping.fromJS(result, {}, self);
                     self.clearDirtyFlag();
                     toastr.success('Saved GEN-2');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save GEN-2', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {

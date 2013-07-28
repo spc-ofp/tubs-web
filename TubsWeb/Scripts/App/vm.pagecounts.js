@@ -1,28 +1,45 @@
-﻿/*
- * vm.pagecount.js
- * Knockout.js ViewModel for editing the number of forms in this trip
+﻿/** 
+ * @file Knockout ViewModel for the number of forms in this workbook
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
  * Depends on:
- * jquery
- * knockout
- * knockout.mapping (automatically maps JSON)
- * knockout.command (makes it easier to show user activity)
- * knockout.dirtyFlag (avoid unneccesary saves)
- * knockout.activity (fancy UI gadget)
- * amplify (local storage and Ajax mapping
- * toastr (user notification)
+ * knockout.js
+ * underscore.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
  */
 
-// All the view models are in the tubs namespace
+/// <reference name="../underscore.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
+/**
+ * Knockout mapping for page counts
+ */
 tubs.PageCountMapping = {
     'PageCounts': {
         create: function (options) {
             return new tubs.PageCount(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     }
 };
 
+/**
+ * Page count for a single form type.
+ * @constructor
+ * @param {object} data
+ */
 tubs.PageCount = function (data) {
     'use strict';
     var self = this;
@@ -47,6 +64,11 @@ tubs.PageCount = function (data) {
     return self;
 };
 
+/**
+ * View model for all page counts in a trip.
+ * @constructor
+ * @param {object} data
+ */
 tubs.PageCountViewModel = function (data) {
     'use strict';
     var self = this;
@@ -57,11 +79,10 @@ tubs.PageCountViewModel = function (data) {
     ], false);
 
     self.isDirty = ko.computed(function () {
-        // Add/Remove from PageCounts
         if (self.dirtyFlag().isDirty()) {
             return true;
         }
-        // Iterate over PageCounts
+
         var hasDirtyChild = false;
         ko.utils.arrayForEach(self.PageCounts(), function (item) {
             if (item.isDirty()) {
@@ -71,15 +92,11 @@ tubs.PageCountViewModel = function (data) {
         return hasDirtyChild;
     });
 
-    // Clear the dirty flag for the this entity
-    self.clearDirtyFlag = function () {
-        self.dirtyFlag().reset();
+    self.clearDirtyFlag = function () {        
         _.each(self.PageCounts(), function (item) {
             item.clearDirtyFlag();
         });
-        //ko.utils.arrayForEach(self.PageCounts(), function (item) {
-        //    item.clearDirtyFlag();
-        //});
+        self.dirtyFlag().reset();
     };
 
     self.addPageCount = function () {
@@ -94,7 +111,6 @@ tubs.PageCountViewModel = function (data) {
         }
     };
 
-    // Commands
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.getPageCounts(
@@ -103,13 +119,12 @@ tubs.PageCountViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.PageCountMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded page counts');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload page counts', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {
@@ -117,7 +132,6 @@ tubs.PageCountViewModel = function (data) {
         }
     });
 
-    // tubs.saveFad = function (tripId, fad, success_cb, error_cb)
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.savePageCounts(
@@ -127,13 +141,12 @@ tubs.PageCountViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.PageCountMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved page counts');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save page counts', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {

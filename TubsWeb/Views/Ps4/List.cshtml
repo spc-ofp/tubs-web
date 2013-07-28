@@ -15,6 +15,11 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
+@{
+    // Might as well display total trip samples here.
+    int totalSamples = 0;
+}
+
 <table class="table table-bordered table-condensed table-striped" id="setTable">
     <thead>
         <tr>
@@ -32,6 +37,7 @@
      *@
     @foreach (var header in (ViewBag.IsReadOnly ? Model.Headers.Where(h => h.SampleCount > 0) : Model.Headers))
     {
+        totalSamples += header.SampleCount;
         <tr>
             <td>@header.SetNumber</td>
             <td>@Html.DisplayFor(m => header.SetDate, new { format = "dd/MM/yy HHmm" })</td>
@@ -39,8 +45,12 @@
             <td>@header.SampleType</td>
             <td>
             @for (int i = 1; i <= header.FormCount; i++)
-            { 
-                <text> @i </text>
+            {
+                var detail = 
+                    Url.RouteUrl(
+                        TubsWeb.RouteConfig.Ps4BySetAndPage, 
+                        new { tripId = Model.TripId, setNumber = header.SetNumber, pageNumber = i });
+                <a href="@detail">@i</a><text>&nbsp;</text>
             }            
             @if (!ViewBag.IsReadOnly)
             {
@@ -50,6 +60,14 @@
         </tr>
     }
     </tbody>
+    @* TODO: Consider moving totalSamples to ViewModel _AND_ hiding footer if value is 0 *@
+    <tfoot>
+        <tr>
+            <th colspan="2">Total Samples</th>
+            <th>@totalSamples</th>
+            <th colspan="2">&nbsp;</th>
+        </tr>
+    </tfoot>
 </table>
 
 <ul id="tlyPageGuide" data-tourtitle="PS-4 data navigation">

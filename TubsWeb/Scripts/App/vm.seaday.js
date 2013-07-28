@@ -6,19 +6,20 @@
  */
 
 /// <reference name="../underscore.js" />
-/// <reference name="../knockout-2.2.1.debug.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
 /// <reference name="../knockout.mapping-latest.debug.js" />
 /// <reference name="../tubs-custom-bindings.js" />
+/// <reference name="../tubs-common-extensions.js" />
 /// <reference name="datacontext.js" />
 
-// All the view models are in the tubs namespace
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
-// This mapping is used to override the default
-// JSON mapper for the named property (or properties).
-// In this case, the 'Events' property of the mapped JSON
-// object are converted via the anonymous function in
-// 'create'.
+/**
+ * Knockout mapping for entire sea day (PS-2 form)
+ */
 tubs.psSeaDayMapping = {
     'Events': {
         create: function (options) {
@@ -28,21 +29,9 @@ tubs.psSeaDayMapping = {
             return ko.utils.unwrapObservable(data.EventId);
         }
     },
-    'ShipsDate': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
-    },
-    'UtcDate': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
-    }
+    'ShipsDate': tubs.mappedDate,
+    'UtcDate': tubs.mappedDate
 };
-
-// TODO:  Add draft auto-save via AmplifyJS
-// http://craigcav.wordpress.com/2012/05/16/simple-client-storage-for-view-models-with-amplifyjs-and-knockout/
-
 
 /**
  * A single event during purse seine trip.
@@ -207,13 +196,12 @@ tubs.psSeaDay = function (data) {
                     ko.mapping.fromJS(result, tubs.psSeaDayMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded daily log');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload daily log', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
@@ -231,13 +219,12 @@ tubs.psSeaDay = function (data) {
                     ko.mapping.fromJS(result, tubs.psSeaDayMapping, self);
                     self.clearDirtyFlag();
                     toastr.success('Daily log saved');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save daily log', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
@@ -246,20 +233,11 @@ tubs.psSeaDay = function (data) {
     return self;
 };
 
-/*
- * ko.toJS (and ko.toJSON) both accept the same arguments
- * as JSON.stringify().
- * This function is passed in and will ignore properties
- * that are UI state related.
- * At present (2012-09-28), it's flat and doesn't take
- * into account the owning entity. 
+/**
+ * This function is an opt-out hash function.
+ * http://stackoverflow.com/questions/4910567/json-stringify-how-to-exclude-certain-fields-from-the-json-string
  */
 tubs.psSeaDayReplacer = function (key, value) {
-    // Opt-out version of replacer.
-    // If an opt-in version was desired, this function should
-    // only return the value for keys that we're interested in using
-    // for 'hashing'
-    // http://stackoverflow.com/questions/4910567/json-stringify-how-to-exclude-certain-fields-from-the-json-string
     if (key === "IsLocked") {
         return undefined;
     }
@@ -273,8 +251,6 @@ tubs.psSeaDayReplacer = function (key, value) {
 // to JSON, using the tubs.psSeaDayReplacer function to remove any
 // fields down at the Event level that we don't consider
 // when marking the whole day as 'dirty'.
-// 
-//
 tubs.seaDayHashFunction = function (seaDay) {
     return ko.toJSON(seaDay, tubs.psSeaDayReplacer);
 };

@@ -1,46 +1,77 @@
-﻿/*
- * vm.fad.js
- * Knockout.js ViewModel for editing a single GEN-5 record
+﻿/** 
+ * @file Knockout ViewModel for a single GEN-5 (floating object) record.
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
  * Depends on:
- * jquery
- * knockout
- * knockout.mapping (automatically maps JSON)
- * knockout.asyncCommand (makes it easier to show user activity)
- * knockout.dirtyFlag (avoid unneccesary saves)
- * knockout.activity (fancy UI gadget)
- * amplify (local storage and Ajax mapping
- * toastr (user notification)
- * knockout.custom-bindings (date binding)
+ * knockout.js
+ * underscore.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
  */
 
-// All the view models are in the tubs namespace
+/// <reference path="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="../tubs-common-extensions.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
-// TODO:  Extend Lat/Lon with appropriate regex
+/**
+ * Knockout mapping for a FAD record.
+ * DeploymentDate uses the ISODate extension
+ * Latitude is extended with a custom latitude validator
+ * Longitude is extended with a custom longitude validator
+ */
 tubs.FadMapping = {
     'DeploymentDate': {
         create: function (options) {
-            return ko.observable(options.data).extend({ isoDate: 'DD/MM/YY' });
+            return ko.observable(options.data).extend(tubs.dateExtension);
+        }
+    },
+    'Latitude' : {
+        create: function (options) {
+            return ko.observable(options.data).extend(tubs.latitudeExtension);
+        }
+    },
+    'Longitude': {
+        create: function (options) {
+            return ko.observable(options.data).extend(tubs.longitudeExtension);
         }
     },
     'MainMaterials': {
         create: function (options) {
             return new tubs.FadMaterial(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     },
     'Attachments': {
         create: function (options) {
             return new tubs.FadMaterial(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     }
 };
 
+/**
+ * A single material item.  This could either be a main material
+ * or an attachment.
+ * @constructor
+ * @param {object} data - FAD material data
+ */
 tubs.FadMaterial = function (data) {
     'use strict';
     var self = this;
     self.Id = ko.observable(data.Id || 0);
     self.MaterialCode = ko.observable(data.MaterialCode || null);
-    // This is used to set focus on the most recently added FadMaterial
     self.NeedsFocus = ko.observable(data.NeedsFocus || false);
 
     self.dirtyFlag = new ko.DirtyFlag([
@@ -54,6 +85,11 @@ tubs.FadMaterial = function (data) {
     return self;
 };
 
+/**
+ * View model for the floating object record.
+ * @constructor
+ * @param {object} data - FAD data
+ */
 tubs.FadViewModel = function (data) {
     'use strict';
     var self = this;
@@ -80,9 +116,9 @@ tubs.FadViewModel = function (data) {
 
     self.isDirty = ko.computed(function () {
         var hasDirtyChild = false;
-        // Avoid iterating over the events if the header
-        // has changed
-        if (self.dirtyFlag().isDirty()) { return true; }
+        if (self.dirtyFlag().isDirty()) {
+            return true;
+        }
 
         hasDirtyChild = _.any(self.MainMaterials(), function (material) {
             return material.isDirty();
@@ -102,8 +138,6 @@ tubs.FadViewModel = function (data) {
     // Clear the dirty flag for the this entity, plus all the
     // child entities stored in the MainMaterials and Attachments observableArrays
     self.clearDirtyFlag = function () {
-        self.dirtyFlag().reset();
-
         _.each(self.MainMaterials(), function (material) {
             material.dirtyFlag().reset();
         });
@@ -111,6 +145,8 @@ tubs.FadViewModel = function (data) {
         _.each(self.Attachments(), function (attach) {
             attach.dirtyFlag().reset();
         });
+
+        self.dirtyFlag().reset();
     };
 
     // Operations
@@ -148,20 +184,18 @@ tubs.FadViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.FadMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded FAD details');
-                    complete();
                 },
                 function (xhr, status) {
-                    tubs.notify('Failed to reload FAD details', xhr, status);
-                    complete();
+                    tubs.notify('Failed to reload FAD details', xhr, status);                   
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
         }
     });
 
-    // tubs.saveFad = function (tripId, fad, success_cb, error_cb)
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.saveFad(
@@ -170,14 +204,13 @@ tubs.FadViewModel = function (data) {
                 function (result) {
                     ko.mapping.fromJS(result, tubs.FadMapping, self);
                     self.clearDirtyFlag();
-                    toastr.info('Saved FAD details');
-                    complete();
+                    toastr.info('Saved FAD details');                    
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save FAD details', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();

@@ -95,15 +95,15 @@
             ok(wellContent, "New wellContent not null");
             equal(wellContent.Id(), 0, "New wellContent has no primary key");
             viewmodel.removeWellContent(wellContent);
-            equal(viewmodel.WellContentItems().length, 1, "Correct number of hands");
+            equal(viewmodel.WellContentItems().length, 1, "Correct number of well content items");
         });
 
-        test("Remove existing deckhand", function () {
+        test("Remove existing well content item", function () {
             equal(viewmodel.isDirty(), false, "viewmodel is clean");
-            var zoidberg = viewmodel.WellContentItems()[0];
-            viewmodel.removeWellContent(zoidberg);
-            ok(viewmodel.isDirty(), "viewmodel is dirty after removing hand");
-            equal(viewmodel.WellContentItems().length, 1, "Correct number of hands");
+            var item = viewmodel.WellContentItems()[0];
+            viewmodel.removeWellContent(item);
+            ok(viewmodel.isDirty(), "viewmodel is dirty after removing well content item");
+            equal(viewmodel.WellContentItems().length, 1, "Correct number of well content items");
         });
     </script>
 }

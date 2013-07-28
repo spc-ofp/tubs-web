@@ -11,14 +11,19 @@
  */
 
 /// <reference name="../underscore.js" />
-/// <reference name="../knockout-2.2.1.debug.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
 /// <reference name="../knockout.mapping-latest.debug.js" />
 /// <reference name="../tubs-custom-bindings.js" />
 /// <reference name="datacontext.js" />
 
-// All the view models are in the tubs namespace
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
+/**
+ * Knockout mapping for a single sample (catch record).
+ */
 tubs.longlineSampleMapping = {
     'Details': {
         create: function (options) {
@@ -145,6 +150,8 @@ tubs.LongLineSample = function (data) {
             dateOnly = self.HaulDate();
         }
 
+        // Defaults for Fate and Sex are based on a user request to keep the same
+        // functionality present in the existing legacy system
         self.Details.push(new tubs.LongLineSampleDetail({ DateOnly: dateOnly, NeedsFocus: true, FateCode: 'RGG', SexCode: 'U' }));
     };
 

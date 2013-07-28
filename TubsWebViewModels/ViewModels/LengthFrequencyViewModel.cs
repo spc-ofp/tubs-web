@@ -29,6 +29,11 @@ namespace TubsWeb.ViewModels
     /// </summary>
     public class LengthFrequencyViewModel
     {
+        public LengthFrequencyViewModel()
+        {
+            this.Brails = new List<Brail>(30);
+        }
+        
         public int Id { get; set; }
         public int SetId { get; set; }
         public int TripId { get; set; }

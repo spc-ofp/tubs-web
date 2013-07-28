@@ -1,22 +1,29 @@
-﻿/*
-* vm.ps1.js
-* Knockout.js ViewModel for editing a subset of PS-1 data
-* Depends on:
-* jquery
-* json2 (for down-level browser support)
-* knockout
-* knockout.mapping (automatically maps JSON)
-* knockout.asyncCommand (makes it easier to show user activity)
-* knockout.dirtyFlag (avoid unneccesary saves)
-* knockout.activity (fancy UI gadget)
-* amplify (local storage and Ajax mapping
-* toastr (user notification)
-* knockout.custom-bindings (date binding)
-*/
+﻿/** 
+ * @file Knockout ViewModel for editing a subset of PS-1 data
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
+ * Depends on:
+ * knockout.js
+ * underscore.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
+ */
 
-// All the view models are in the tubs namespace
+/// <reference name="../underscore.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
+/**
+ * Knockout mapping for entire view model.
+ */
 tubs.Ps1Mapping = {
     'Characteristics': {
         create: function (options) {
@@ -35,6 +42,11 @@ tubs.Ps1Mapping = {
     }
 };
 
+/**
+ * Vessel data as recorded on PS-1 form.
+ * @constructor
+ * @param {object} data - Vessel data
+ */
 tubs.Ps1VesselCharacteristics = function (data) {
     'use strict';
     var self = this;
@@ -74,7 +86,13 @@ tubs.Ps1VesselCharacteristics = function (data) {
     return self;
 };
 
+/**
+ * Fishing gear as recorded on PS-1 form.
+ * @constructor
+ * @param {object} data - Gear data
+ */
 tubs.Ps1Gear = function (data) {
+    'use strict';
     var self = this;
     ko.mapping.fromJS(data, {}, self);
 
@@ -106,7 +124,13 @@ tubs.Ps1Gear = function (data) {
     return self;
 };
 
+/**
+ * Safety gear as recorded on PS-1 form.
+ * @constructor
+ * @param {object} data - Safety gear data
+ */
 tubs.SafetyInspection = function (data) {
+    'use strict';
     var self = this;
     ko.mapping.fromJS(data, {}, self);
 
@@ -145,7 +169,13 @@ tubs.SafetyInspection = function (data) {
     return self;
 };
 
+/**
+ * View model for PS-1 form
+ * @constructor
+ * @param {object} data - PS-1 data
+ */
 tubs.Ps1ViewModel = function (data) {
+    'use strict';
     var self = this;
     ko.mapping.fromJS(data, tubs.Ps1Mapping, self);
 
@@ -172,7 +202,6 @@ tubs.Ps1ViewModel = function (data) {
         self.dirtyFlag().reset();
     };
 
-    // Commands
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.getPs1(
@@ -181,13 +210,12 @@ tubs.Ps1ViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.Ps1Mapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded PS-1 details');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload PS-1 details', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {
@@ -204,13 +232,12 @@ tubs.Ps1ViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.Ps1Mapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved PS-1 details');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save PS-1 details', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {

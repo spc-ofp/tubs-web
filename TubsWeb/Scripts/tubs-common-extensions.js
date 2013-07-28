@@ -9,18 +9,20 @@
  * knockout-custom-bindings (for ISO date)
  */
 
-/// <reference name="../knockout-2.2.1.debug.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
 /// <reference name="../knockout-custom-bindings.js" />
 /// <reference name="../knockout.validation.debug.js" />
 var tubs = tubs || {};
 
 /**
  * Apply a regular expression to 24 hour time values.
+ * Knockout validation creates a regex from a string parameter, so
+ * create a RegExp directly to make the implicit explicit.
  */
 tubs.timeExtension = {
     pattern: {
         message: 'Must be a valid 24 hour time',
-        params: '^(20|21|22|23|[01][0-9])[0-5][0-9]$'
+        params: new RegExp('^(20|21|22|23|[01][0-9])[0-5][0-9]$')
     },
     maxLength: 4
 };
@@ -37,13 +39,23 @@ tubs.dateExtension = {
 };
 
 /**
+ * Common Knockout mapping plugin creation function for
+ * date values.
+ */
+tubs.mappedDate = {
+    create: function (options) {
+        return ko.observable(options.data).extend(tubs.dateExtension);
+    }
+};
+
+/**
  * Extend latitude string with a regular expression validator
  * that conforms to standard 'SPC' latitude format.
  */
 tubs.latitudeExtension = {
     pattern: {
         message: 'Latitude should be ddmm.mmmN or ddmm.mmmS',
-        params: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$'
+        params: new RegExp('^[0-8][0-9]{3}\.?[0-9]{3}[NS]$', 'i')
     },
     maxLength: 9
 };
@@ -55,7 +67,7 @@ tubs.latitudeExtension = {
 tubs.longitudeExtension = {
     pattern: {
         message: 'Longitude should be dddmm.mmmE or dddmm.mmmW',
-        params: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$'
+        params: new RegExp('^[0-1]\\d{4}\.?\\d{3}[EW]$', 'i')
     },
     maxLength: 10
 };

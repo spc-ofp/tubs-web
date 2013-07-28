@@ -10,14 +10,19 @@
  */
 
 /// <reference name="../underscore.js" />
-/// <reference name="../knockout-2.1.0.debug.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
 /// <reference name="../knockout.mapping-latest.debug.js" />
 /// <reference name="../tubs-custom-bindings.js" />
 /// <reference name="datacontext.js" />
 
-// All the view models are in the tubs namespace
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
+/**
+ * Knockout mapping for collection properties.
+ */
 tubs.electronicsMapping = {
     'Buoys': {
         create: function (options) {
@@ -53,7 +58,6 @@ tubs.electronicsCategoryDefaults = {
     IsInstalled: '',
     Usage: ''
 };
-
 
 
 /**
@@ -196,6 +200,12 @@ tubs.ElectronicsDevice = function (data) {
     return self;
 };
 
+/**
+ * All electronic equipment, information services and communication services
+ * for a given trip.
+ * @constructor
+ * @param {object} data - Electronic equipment data
+ */
 tubs.Electronics = function (data) {
     'use strict';
     var self = this;

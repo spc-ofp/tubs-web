@@ -1,40 +1,52 @@
-﻿/*
-* vm.sighting.js
-* Knockout.js ViewModel for editing the sightings
-* portion of the GEN-1 form.
-* Depends on:
-* jquery
-* json2
-* knockout
-* knockout.mapping (automatically maps JSON)
-* knockout.asyncCommand (makes it easier to show user activity)
-* knockout.dirtyFlag (avoid unneccesary saves)
-* knockout.activity (fancy UI gadget)
-* amplify (local storage and Ajax mapping
-* toastr (user notification)
-* knockout.custom-bindings (date binding)
-* spc.utilities (String hashCode)
-*/
+﻿/** 
+ * @file Knockout ViewModel for editing sightings of other vessels
+ * during a trip.
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
+ * Depends on:
+ * knockout.js
+ * underscore.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
+ */
 
-// All the view models are in the tubs namespace
+/// <reference name="../underscore.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="../tubs-common-extensions.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
+/**
+ * Knockout mapping for collection of sightings.
+ */
 tubs.sightingMapping = {
     'Sightings': {
         create: function (options) {
-            return new tubs.sighting(options.data);
+            return new tubs.VesselSighting(options.data);
         }
     }
 };
 
-tubs.sighting = function (eventData) {
+/**
+ * A sighting of a single vessel as recorded on a GEN-1 form.
+ * @constructor
+ * @param {object} eventData - Sighting data
+ */
+tubs.VesselSighting = function (eventData) {
     'use strict';
     var self = this;
     self.Id = ko.observable(eventData.Id || 0);
-    self.DateOnly = ko.observable(eventData.DateOnly || null).extend({ isoDate: 'DD/MM/YY' });
-    self.TimeOnly = ko.observable(eventData.TimeOnly || '').extend({ pattern: '^[0-2][0-9][0-5][0-9]$' });
-    self.Latitude = ko.observable(eventData.Latitude || '').extend({ pattern: '^[0-8][0-9]{3}\.?[0-9]{3}[NnSs]$' });
-    self.Longitude = ko.observable(eventData.Longitude || '').extend({ pattern: '^[0-1]\\d{4}\.?\\d{3}[EeWw]$' });
+    self.DateOnly = ko.observable(eventData.DateOnly || null).extend(tubs.dateExtension);
+    self.TimeOnly = ko.observable(eventData.TimeOnly || '').extend(tubs.timeExtension);
+    self.Latitude = ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
+    self.Longitude = ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
     self.VesselId = ko.observable(eventData.VesselId || 0);
     self.Name = ko.observable(eventData.Name || '');
     self.Ircs = ko.observable(eventData.Ircs || '');
@@ -73,9 +85,21 @@ tubs.sighting = function (eventData) {
     return self;
 };
 
+/**
+ * View model for all sightings in a single trip
+ * @constructor
+ * @param {object} data - Sightings data
+ */
 tubs.SightingViewModel = function (data) {
     var self = this;
     ko.mapping.fromJS(data, tubs.sightingMapping, self);
+
+    // The clear function preps this ViewModel for being reloaded
+    self.clear = function () {
+        if (self.Sightings) {
+            self.Sightings([]);
+        }
+    };
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.Sightings
@@ -103,7 +127,7 @@ tubs.SightingViewModel = function (data) {
     // Operations
     // Create a new GEN-1 Sighting line item
     self.addEvent = function () {
-        self.Sightings.push(new tubs.sighting({ "NeedsFocus": true }));
+        self.Sightings.push(new tubs.VesselSighting({ "NeedsFocus": true }));
     };
 
     self.removeEvent = function (evt) {
@@ -119,16 +143,16 @@ tubs.SightingViewModel = function (data) {
             tubs.getSightings(
                 self.TripId(),
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.sightingMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded sightings');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload sightings', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
@@ -141,16 +165,16 @@ tubs.SightingViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
+                    self.clear();
                     ko.mapping.fromJS(result, tubs.sightingMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved sightings');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save sightings', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {

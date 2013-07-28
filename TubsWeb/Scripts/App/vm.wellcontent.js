@@ -1,47 +1,63 @@
-﻿/*
- * vm.wellcontent.js
- * Knockout.js ViewModel for editing the number of forms in this trip
+﻿/** 
+ * @file Knockout ViewModel for PS-1 well content
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
  * Depends on:
- * jquery
- * knockout
- * knockout.mapping (automatically maps JSON)
- * knockout.command (makes it easier to show user activity)
- * knockout.dirtyFlag (avoid unneccesary saves)
- * knockout.activity (fancy UI gadget)
- * amplify (local storage and Ajax mapping
- * toastr (user notification)
+ * knockout.js
+ * underscore.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
  */
 
-// All the view models are in the tubs namespace
+/// <reference name="../underscore.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
+/**
+ * Knockout mapping for all well content.
+ */
 tubs.WellContentMapping = {
     'WellContentItems': {
         create: function (options) {
             return new tubs.WellContent(options.data);
+        },
+        key: function (data) {
+            return ko.utils.unwrapObservable(data.Id);
         }
     }
 };
 
+/**
+ * Content for a single well.
+ * @constructor
+ * @parameter {object} data - Well content data
+ */
 tubs.WellContent = function (data) {
     'use strict';
     var self = this;
-    self.Id = ko.observable(data.Id || 0);
-    self.NeedsFocus = ko.observable(data.NeedsFocus || false);
-    self._destroy = ko.observable(data._destroy || false);
+    self.Id = ko.observable(data.Id || 0);    
     self.Comment = ko.observable(data.Comment || '');
     self.Content = ko.observable(data.Content || '');
     self.Capacity = ko.observable(data.Capacity || null);
     self.Location = ko.observable(data.Location || '');
     self.WellNumber = ko.observable(data.WellNumber || 0);
+    self.NeedsFocus = ko.observable(data.NeedsFocus || false);
+    self._destroy = ko.observable(data._destroy || false);
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.Comment,
         self.Content,
         self.Capacity,
         self.Location,
-        self.WellNumber,
-        self.Id
+        self.WellNumber
     ], false);
 
     self.isDirty = ko.computed(function () {
@@ -55,6 +71,11 @@ tubs.WellContent = function (data) {
     return self;
 };
 
+/**
+ * View model representing all well content recorded on PS-1 form.
+ * @constructor
+ * @parameter {object} data - Well content data
+ */
 tubs.WellContentViewModel = function (data) {
     'use strict';
     var self = this;
@@ -79,7 +100,6 @@ tubs.WellContentViewModel = function (data) {
         return hasDirtyChild;
     });
 
-    // Clear the dirty flag for the this entity
     self.clearDirtyFlag = function () {
         ko.utils.arrayForEach(self.WellContentItems(), function (item) {
             item.clearDirtyFlag();
@@ -99,7 +119,6 @@ tubs.WellContentViewModel = function (data) {
         }
     };
 
-    // Commands
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.getWellContent(
@@ -108,13 +127,12 @@ tubs.WellContentViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.WellContentMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded well contents');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload well contents', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {
@@ -122,7 +140,6 @@ tubs.WellContentViewModel = function (data) {
         }
     });
 
-    // tubs.saveFad = function (tripId, fad, success_cb, error_cb)
     self.saveCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.saveWellContent(
@@ -132,13 +149,12 @@ tubs.WellContentViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.WellContentMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved well contents');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save well contents', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {

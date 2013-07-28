@@ -1,28 +1,35 @@
-﻿/*
-* vm.transfer.js
-* Knockout.js ViewModel for editing the transfers
-* portion of the GEN-1 form.
-* Depends on:
-* jquery
-* json2
-* knockout
-* knockout.mapping (automatically maps JSON)
-* knockout.asyncCommand (makes it easier to show user activity)
-* knockout.dirtyFlag (avoid unneccesary saves)
-* knockout.activity (fancy UI gadget)
-* amplify (local storage and Ajax mapping
-* toastr (user notification)
-* knockout.custom-bindings (date binding)
-* spc.utilities (String hashCode)
-*/
+﻿/** 
+ * @file Knockout ViewModel for editing transfers to/from vessels at sea
+ * during a trip.
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
+ * Depends on:
+ * knockout.js
+ * underscore.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
+ */
 
-// All the view models are in the tubs namespace
+/// <reference name="../underscore.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="../tubs-common-extensions.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
+/**
+ * Knockout mapping for collection transfers view model.
+ */
 tubs.transferMapping = {
     'Transfers': {
         create: function (options) {
-            return new tubs.transfer(options.data);
+            return new tubs.Transfer(options.data);
         },
         key: function (data) {
             return ko.utils.unwrapObservable(data.Id);
@@ -30,7 +37,12 @@ tubs.transferMapping = {
     }
 };
 
-tubs.transfer = function (eventData) {
+/**
+ * A transfer to/from a single vessel as recorded on a GEN-1 form.
+ * @constructor
+ * @param {object} eventData - Transfer data
+ */
+tubs.Transfer = function (eventData) {
     'use strict';
     var self = this;
     self.Id = ko.observable(eventData.Id || 0);
@@ -115,7 +127,7 @@ tubs.TransferViewModel = function (data) {
     // Operations
     // Create a new GEN-1 Transfer line item
     self.addEvent = function () {
-        self.Transfers.push(new tubs.transfer({ "NeedsFocus": true }));
+        self.Transfers.push(new tubs.Transfer({ "NeedsFocus": true }));
     };
 
     self.removeEvent = function (evt) {
@@ -135,13 +147,12 @@ tubs.TransferViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.transferMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded transfers');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload transfers', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();
@@ -158,13 +169,12 @@ tubs.TransferViewModel = function (data) {
                     ko.mapping.fromJS(result, tubs.transferMapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Saved transfers');
-                    complete();
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save transfers', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
         canExecute: function (isExecuting) {
             return !isExecuting && self.isDirty();

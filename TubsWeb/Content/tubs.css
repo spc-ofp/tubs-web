@@ -71,11 +71,43 @@ div.summary
     float: right;
 }
 
-/* http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/ */
-/* Unfortunately, this doesn't work with the start attribute.  Blargh! */
-/* According to this, the only real way to style an ordered list is to set the li list-style to
- * none and then add your own content.  Kind of kills the idea of using the start attribute.
+/*
+ * 'dense' ordered list is a merger of the following techniques:
+ * http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/
+ * (Boxes around numbers etc.)
+ * http://designshack.net/articles/css/5-simple-and-practical-css-list-styles-you-can-copy-and-paste/
+ * Approach of forcing a child entity to hold the numeric list value.
  */
+ol.dense > li
+{
+    list-style:none;
+}
+
+/* 
+ * There's some work to be done here to get the color scheme to match up better with
+ * Bootstrap.  Still, the extra emphasis should make for a better UX.
+ * A potential enhancement to this is to use some additional classes to highlight
+ * specific information (e.g. low/exact/high samples per brail)
+ * Assuming the same CSS is used in the actual LF entry/display pages, the box color could
+ * highlight high/low values per species.
+ */
+ol.dense > li > span
+{
+    top:-2px;
+    left:-2em;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    width:2em;
+    margin-right:8px;
+    padding:4px;
+    /*border-top:2px solid #666;*/
+    color:#fff;
+    background:#666;
+    font-weight:bold;
+    font-family:"Helvetica Neue", Arial, sans-serif;
+    text-align:center;
+}
 
 /* div.compact-header, div.compact-row, editor-row, and span1q are all part of using divs to contain multi-row inputs instead of a table */
 .editor-row

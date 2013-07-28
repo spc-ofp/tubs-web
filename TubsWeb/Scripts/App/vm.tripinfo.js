@@ -6,12 +6,11 @@
  * Depends on:
  * knockout.js
  * knockout.viewmodel plugin
- * knockout.dirtyFlag
- * knockout.command
  */
 
-/// <reference name="../knockout-2.1.0.debug.js" />
-/// <reference name="datacontext.js" />
+/// <reference name="../underscore.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
+/// <reference path="datacontext.js" />
 
 /**
  * Namespace for all TUBS javascript
@@ -19,6 +18,11 @@
  */
 var tubs = tubs || {};
 
+/**
+ * View model for LL-1 form
+ * @constructor
+ * @param {object} data - LL-1 data
+ */
 tubs.TripInfo = function (data) {
     'use strict';
 

@@ -1,83 +1,69 @@
-﻿/*
-* vm.fishingset.js
-* Knockout.js ViewModel for editing a PS-3
-* Depends on:
-* jquery
-* json2
-* knockout
-* knockout.mapping (automatically maps JSON)
-* knockout.asyncCommand (makes it easier to show user activity)
-* knockout.dirtyFlag (avoid unneccesary saves)
-* knockout.activity (fancy UI gadget)
-* amplify (local storage and Ajax mapping
-* toastr (user notification)
-* knockout.custom-bindings (date binding)
-*/
-/// <reference path="../knockout-2.1.0.debug.js"  />
+﻿/** 
+ * @file Knockout ViewModel for editing a PS-3 (set) form.
+ * @copyright 2013, Secretariat of the Pacific Community
+ * @author Corey Cole <coreyc@spc.int>
+ *
+ * Depends on:
+ * jQuery (isNumeric)
+ * knockout.js
+ * underscore.js
+ * knockout.mapping plugin
+ * KoLite plugins (asyncCommand, activity, dirtyFlag)
+ * toastr
+ */
 
-// All the view models are in the tubs namespace
+/// <reference path="../knockout-2.3.0.debug.js" />
+/// <reference path="../knockout.mapping-latest.js" />
+/// <reference path="../tubs-common-extensions.js" />
+/// <reference path="datacontext.js" />
+
+/**
+ * @namespace All view models are in the tubs namespace.
+ */
 var tubs = tubs || {};
 
-tubs.psSetMapping = {
-    'LogbookDate': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
+/**
+ * Common Knockout mapping for target catch and bycatch.
+ * Same object model for both, with the only difference
+ * being which list they go into.
+ */
+tubs.psCatchMapping = {
+    create: function (options) {
+        return new tubs.psSetCatch(options.data);
     },
-    'SkiffOff': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
-    },
-    'WinchOnDateOnly': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
-    },
-    'RingsUpDateOnly': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
-    },
-    'BeginBrailingDateOnly': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
-    },
-    'EndBrailingDateOnly': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
-    },
-    'EndOfSetDateOnly': {
-        create: function (options) {
-            return ko.observable(options.data).extend(tubs.dateExtension);
-        }
-    },
-    'ByCatch': {
-        create: function (options) {
-            return new tubs.psSetCatch(options.data);
-        },
-        key: function (data) {
-            return ko.utils.unwrapObservable(data.Id);
-        }
-    },
-    'TargetCatch': {
-        create: function (options) {
-            return new tubs.psSetCatch(options.data);
-        },
-        key: function (data) {
-            return ko.utils.unwrapObservable(data.Id);
-        }
+    key: function (data) {
+        return ko.utils.unwrapObservable(data.Id);
     }
 };
 
+/**
+ * Knockout mapping for entire purse seine set.
+ * Date values are extended with ISODate extension.
+ * Target catch and bycatch are mapped with common
+ * tubs.psCatchMapping options.
+ */
+tubs.psSetMapping = {
+    'LogbookDate': tubs.mappedDate,
+    'SkiffOff': tubs.mappedDate,
+    'WinchOnDateOnly': tubs.mappedDate,
+    'RingsUpDateOnly': tubs.mappedDate,
+    'BeginBrailingDateOnly': tubs.mappedDate,
+    'EndBrailingDateOnly': tubs.mappedDate,
+    'EndOfSetDateOnly': tubs.mappedDate,
+    'ByCatch': tubs.psCatchMapping,
+    'TargetCatch': tubs.psCatchMapping
+};
 
+/**
+ * Single catch record.  Includes fields common to target
+ * and bycatch records.
+ * @constructor
+ * @param {object} catchData - Catch record data.
+ */
 tubs.psSetCatch = function (catchData) {
     'use strict';
     var self = this;
-    self.Id = ko.observable(catchData.Id || 0);
-    self._destroy = ko.observable(catchData._destroy || false); //ignore jslint
+    self.Id = ko.observable(catchData.Id || 0);    
     self.SpeciesCode = ko.observable(catchData.SpeciesCode || '');
     self.FateCode = ko.observable(catchData.FateCode || '');
     self.ObservedWeight = ko.observable(catchData.ObservedWeight || null);
@@ -86,6 +72,7 @@ tubs.psSetCatch = function (catchData) {
     self.LogbookCount = ko.observable(catchData.LogbookCount || null);
     self.Comments = ko.observable(catchData.Comments || null);
     self.NeedsFocus = ko.observable(catchData.NeedsFocus || false);
+    self._destroy = ko.observable(catchData._destroy || false); //ignore jslint
 
     self.dirtyFlag = new ko.DirtyFlag([
         self.SpeciesCode,
@@ -104,14 +91,14 @@ tubs.psSetCatch = function (catchData) {
     return self;
 };
 
-// This is the actual Purse Seine Sea Day view model
-// Any functions/properties/etc. that belong on the view model
-// are defined here.
+/**
+ * View model representing a single purse seine set.
+ * @constructor
+ * @param {object} data - Set data
+ */
 tubs.psSet = function (data) {
     'use strict';
     var self = this;
-    // Map the incoming JSON in 'data' to self, using
-    // the options in psSetMapping
     ko.mapping.fromJS(data, tubs.psSetMapping, self);
 
     self.dirtyFlag = new ko.DirtyFlag([
@@ -146,38 +133,32 @@ tubs.psSet = function (data) {
     ], false);
 
     self.isDirty = ko.computed(function () {
-        // Avoid iterating over the events if the header
-        // has changed
-        if (self.dirtyFlag().isDirty()) { return true; }
-        // Check each child, bailing on the first
-        // dirty child.
         var hasDirtyChild = false;
-        $.each(self.ByCatch(), function (i, sc) { //ignore jslint
-            if (sc.isDirty()) {
-                hasDirtyChild = true;
-                return false;
-            }
+        if (self.dirtyFlag().isDirty()) {
+            return true;
+        }
+
+        hasDirtyChild = _.any(self.ByCatch(), function (item) { //ignore jslint
+            return item.isDirty();
         });
-        if (hasDirtyChild) { return hasDirtyChild; }
-        $.each(self.TargetCatch(), function (i, sc) { //ignore jslint
-            if (sc.isDirty()) {
-                hasDirtyChild = true;
-                return false;
-            }
+
+        if (hasDirtyChild) {
+            return hasDirtyChild;
+        }
+
+        return _.any(self.TargetCatch(), function (item) { //ignore jslint
+            return item.isDirty();
         });
-        return hasDirtyChild;
     });
 
-    // Clear the dirty flag for the this entity, plus all the
-    // child entities stored in the ByCatch and TargetCatch observableArrays
     self.clearDirtyFlag = function () {
+        _.each(self.ByCatch(), function (item) { //ignore jslint
+            item.dirtyFlag().reset();
+        });
+        _.each(self.TargetCatch(), function (item) { //ignore jslint
+            item.dirtyFlag().reset();
+        });
         self.dirtyFlag().reset();
-        $.each(self.ByCatch(), function (index, value) { //ignore jslint
-            value.dirtyFlag().reset();
-        });
-        $.each(self.TargetCatch(), function (index, value) { //ignore jslint
-            value.dirtyFlag().reset();
-        });
     };
 
     // The clear function preps this ViewModel for being reloaded
@@ -190,7 +171,7 @@ tubs.psSet = function (data) {
         }
     };
 
-    // Compute total catch, not to store, but as a possible check
+    // Compute total catch, not to store, but as a quality check
     self.computedCatch = ko.computed(function () {
         var brail1 = 0,
             brail2 = 0;
@@ -220,7 +201,6 @@ tubs.psSet = function (data) {
         return retval;
     });
 
-    // Operations
     self.addByCatch = function () {
         self.ByCatch.push(new tubs.psSetCatch({ "NeedsFocus": true }));
     };
@@ -245,7 +225,6 @@ tubs.psSet = function (data) {
         }
     };
 
-    // Commands
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.getFishingSet(
@@ -255,14 +234,13 @@ tubs.psSet = function (data) {
                     self.clear();
                     ko.mapping.fromJS(result, tubs.psSetMapping, self);
                     self.clearDirtyFlag();
-                    toastr.info('Reloaded set details');
-                    complete();
+                    toastr.info('Reloaded set details');                   
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload set details', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {
@@ -280,14 +258,13 @@ tubs.psSet = function (data) {
                     self.clear();
                     ko.mapping.fromJS(result, tubs.psSetMapping, self);
                     self.clearDirtyFlag();
-                    toastr.info('Saved set details');
-                    complete();
+                    toastr.info('Saved set details');                   
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save set details', xhr, status);
-                    complete();
                 }
             );
+            complete();
         },
 
         canExecute: function (isExecuting) {

@@ -7,11 +7,11 @@
  * knockout.js
  * underscore.js
  * knockout.viewmodel plugin
- * knockout-custom-bindings (for ISO date)
+ * tubs-custom-bindings (for ISO date)
  */
 
-/// <reference name="../knockout-2.1.0.debug.js" />
-/// <reference name="../knockout-custom-bindings.js" />
+/// <reference path="~/Scripts/knockout-2.3.0.debug.js" />
+/// <reference name="../tubs-custom-bindings.js" />
 
 // All the view models are in the tubs namespace
 var tubs = tubs || {};

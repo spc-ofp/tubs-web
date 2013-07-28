@@ -134,6 +134,8 @@ namespace TubsWeb
 
         public static string Ps4ByPage = "Ps4ByPage";
 
+        public static string Ps4BySetAndPage = "Ps4BySetAndPage";
+
 
         public static string LengthSamples = "LengthSamples";
 
@@ -454,7 +456,7 @@ namespace TubsWeb
             );
 
             routes.MapRoute(
-                name: "Ps4BySetAndPage",
+                name: Ps4BySetAndPage,
                 url: "Trip/{tripId}/PS-4/{setNumber}/{pageNumber}/{action}",
                 defaults: new { controller = "Ps4", action = "Index" },
                 constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger, pageNumber = IsPositiveInteger }

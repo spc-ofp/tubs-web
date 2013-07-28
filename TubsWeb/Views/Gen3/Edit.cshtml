@@ -6,7 +6,7 @@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.TripList), "Trips"),
         Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber as string),
         Tuple.Create(Url.Action("Index", "Gen3", new { tripId = Model.TripId }), "GEN-3"),
         Tuple.Create("#", "Edit GEN-3")
@@ -70,8 +70,6 @@ else
 </table>
 <button id="btnAddNote" type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i> Add Note</button>
 
-
-<!-- TODO Add a debug param so that this can be displayed for troubleshooting -->
 @*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
 *@
@@ -92,7 +90,7 @@ else
                 return false;
             });
 
-            var viewModel = new tubs.gen3(@modelAsJson);            
+            var viewModel = new tubs.Gen3ViewModel(@modelAsJson);            
             ko.applyBindings(viewModel);
             viewModel.clearDirtyFlag();
 
