@@ -36,9 +36,8 @@
     </tbody>
 </table>
 
-
-
 @if (!ViewBag.IsReadOnly)
 {
-    <a href='@Url.RouteUrl(TubsWeb.RouteConfig.WellContents, new { tripId = Model.TripId, action = "Edit" })' class="btn btn-primary">Edit Well Content</a>
+    var editLink = Url.RouteUrl(TubsWeb.RouteConfig.WellContents, new { tripId = Model.TripId, action = "Edit" });   
+    <a href='@editLink' class="btn btn-primary"><i class="icon-edit icon-white"></i> &nbsp;Edit Well Content</a>
 }

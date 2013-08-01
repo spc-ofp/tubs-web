@@ -314,6 +314,7 @@
         test("Create viewmodel", function () {
             ok(viewmodel, "ViewModel not null");
             equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber correct");
+            equal(viewmodel.Incidents()[0].Answer(), "NO", "First answer correct");
         });
         test("Async commands", function () {
             ok(!viewmodel.saveCommand.canExecute(), "No save possible on clean model");

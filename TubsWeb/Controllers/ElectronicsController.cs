@@ -47,7 +47,7 @@ namespace TubsWeb.Controllers
         {
             var vm = Mapper.Map<Trip, ElectronicsViewModel>(tripId) ?? new ElectronicsViewModel();
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(vm);
 
             return View(vm);
@@ -94,7 +94,7 @@ namespace TubsWeb.Controllers
             if (!ModelState.IsValid)
             {
                 LogModelErrors();
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(vm);
             }
@@ -141,7 +141,7 @@ namespace TubsWeb.Controllers
 
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var repo = TubsDataService.GetRepository<Trip>(false))
                 {

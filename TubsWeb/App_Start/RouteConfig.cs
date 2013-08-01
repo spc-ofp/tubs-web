@@ -132,8 +132,14 @@ namespace TubsWeb
         /// </summary>
         public static string Ps4List = "Ps4List";
 
-        public static string Ps4ByPage = "Ps4ByPage";
+        /// <summary>
+        /// MVC route name for adding a PS-4 form to a set
+        /// </summary>
+        public static string AddPs4 = "AddPs4";
 
+        /// <summary>
+        /// MVC route for accessing a PS-4 form by set and page number
+        /// </summary>
         public static string Ps4BySetAndPage = "Ps4BySetAndPage";
 
 
@@ -441,6 +447,7 @@ namespace TubsWeb
                 constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger }
             );
 
+            /*
             routes.MapRoute(
                 name: "Ps4ByPageAndColumn",
                 url: "Trip/{tripId}/PS-4/Pages/{pageNumber}/Column/{columnNumber}",
@@ -453,6 +460,16 @@ namespace TubsWeb
                 url: "Trip/{tripId}/PS-4/Pages/{pageNumber}",
                 defaults: new { controller = "Ps4", action = "Page" },
                 constraints: new { tripId = IsPositiveInteger, pageNumber = IsPositiveInteger }
+            );
+            */
+
+            // This route has the 'Add' verb in the URL to prevent routing confusion with
+            // the next route (Ps4BySetAndPage).
+            routes.MapRoute(
+                name: AddPs4,
+                url: "Trip/{tripId}/PS-4/{setNumber}/Add",
+                defaults: new { controller = "Ps4", action = "Add" },
+                constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger }
             );
 
             routes.MapRoute(
@@ -473,10 +490,10 @@ namespace TubsWeb
             // Although length samples are subordinate to Sets, they'll be available at a higher level
             // for a more readable URL.
             routes.MapRoute(
-                LengthSamples,
-                "Trip/{tripId}/Samples/{setNumber}/Page/{pageNumber}",
-                new { controller = "LengthSample", action = "Index", pageNumber = UrlParameter.Optional },
-                new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger, pageNumber = IsPositiveInteger }
+                name: LengthSamples,
+                url: "Trip/{tripId}/Samples/{setNumber}/Page/{pageNumber}",
+                defaults: new { controller = "LengthSample", action = "Index", pageNumber = UrlParameter.Optional },
+                constraints: new { tripId = IsPositiveInteger, setNumber = IsPositiveInteger, pageNumber = IsPositiveInteger }
             );
 
             routes.MapRoute(
@@ -508,31 +525,24 @@ namespace TubsWeb
             );
 
             routes.MapRoute(
-                Gear,
-                "Trip/{tripId}/Gear/{action}",
-                new { controller = "Gear", action = "Index" },
-                new { tripId = IsPositiveInteger }
+                name: WellContents,
+                url: "Trip/{tripId}/WellContent/{action}",
+                defaults: new { controller = "WellContent", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
-                WellContents,
-                "Trip/{tripId}/WellContent/{action}",
-                new { controller = "WellContent", action = "Index" },
-                new { tripId = IsPositiveInteger }
+                name: PageCount,
+                url: "Trip/{tripId}/PageCount/{action}",
+                defaults: new { controller = "PageCount", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
-                PageCount,
-                "Trip/{tripId}/PageCount/{action}",
-                new { controller = "PageCount", action = "Index" },
-                new { tripId = IsPositiveInteger }
-            );
-
-            routes.MapRoute(
-                TripDetails,
-                "Trip/{tripId}/{action}",
-                new { controller = "Trip", action = "Details" },
-                new { tripId = IsPositiveInteger }
+                name: TripDetails,
+                url: "Trip/{tripId}/{action}",
+                defaults: new { controller = "Trip", action = "Details" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             // TODO: Consider changing route to LL-2?  (Problem is that the form is LL-2/3, and '/' isn't great in a route URL)
@@ -552,22 +562,22 @@ namespace TubsWeb
             // Can this route replace the fairly generic routes?
             // Doesn't look like it...
             routes.MapRoute(
-                TripDefault,
-                "Trip/{tripId}/{controller}/{action}",
-                new { action = "Index" },
-                new { tripId = IsPositiveInteger }
+                name: TripDefault,
+                url: "Trip/{tripId}/{controller}/{action}",
+                defaults: new { action = "Index" },
+                constraints: new { tripId = IsPositiveInteger }
             );
 
             routes.MapRoute(
-                TripList,
-                "Trip/",
-                new { controller = "Trip", action = "Index" }
+                name: TripList,
+                url: "Trip/",
+                defaults: new { controller = "Trip", action = "Index" }
             );
 
             routes.MapRoute(
-                Default, // Route name
-                "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
+                name: Default, // Route name
+                url: "{controller}/{action}/{id}", // URL with parameters
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
         }
     }

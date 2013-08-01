@@ -19,7 +19,8 @@
 @if (!ViewBag.IsReadOnly)
 {
 <p>
-    @Html.ActionLink("Edit PS-1", "Edit", null, new { @class = "btn btn-primary" })
+    @{ var editLink = Url.Action("Edit"); }
+    <a href="@editLink" class="btn btn-primary"><i class="icon-edit icon-white"></i>&nbsp;Edit PS-1</a>
 </p>
 }
 

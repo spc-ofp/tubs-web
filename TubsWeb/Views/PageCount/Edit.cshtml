@@ -14,45 +14,45 @@
 }
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+<p>
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
+        <i class="icon-save icon-white"></i>&nbsp;Save
+    </button>
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
 
-<form id="pageCountForm" class="form-horizontal">
-    <p>
-        <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
-        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
-            <i class="icon-refresh icon-white"></i>&nbsp;Reload
-        </button>
-        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
-    </p>
 
-    <button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.PageCounts().length == 0">Add Page Count</button>
-    <ul class="unstyled page-count-entries" data-bind="foreach: $root.PageCounts">
-        <li>
-            <div class="row-fluid">
-                <div class="span1">
-                    <button type="button"
-                        tabindex="3000"
-                        class="removeItem btn btn-mini btn-danger" 
-                        rel="tooltip" 
-                        title="Click to remove row"><i class="icon-remove icon-white"></i></button>
-                </div>
-                <div class="span3">
-                <div class="control-group">
-                    <select class="input-small" data-bind="options: $root.FormKeys, value: $data.Key"></select>
-                    <input type="number" data-bind="value: $data.Value" class="input-mini" />
-                    </div>
-                </div>
-                <div class="span1">
-                <button class="addItem btn btn-mini btn-info" 
-                        type="button"
-                        rel="tooltip" 
-                        title="Click to add row">
-                    <i class="icon-plus icon-white"></i>
-                </button>
+<button id="btnAddWhenEmpty" type="button" class="btn btn-info" data-bind="visible: $root.PageCounts().length == 0">Add Page Count</button>
+<ul class="unstyled page-count-entries" data-bind="foreach: $root.PageCounts">
+    <li>
+        <div class="row-fluid">
+            <div class="span1">
+                <button type="button"
+                    tabindex="3000"
+                    class="removeItem btn btn-mini btn-danger" 
+                    rel="tooltip" 
+                    title="Click to remove row"><i class="icon-remove icon-white"></i></button>
+            </div>
+            <div class="span3">
+            <div class="control-group">
+                <select class="input-small" data-bind="options: $root.FormKeys, value: $data.Key"></select>
+                <input type="number" data-bind="value: $data.Value" class="input-mini" />
                 </div>
             </div>
-        </li>
-    </ul>
-</form>
+            <div class="span1">
+            <button class="addItem btn btn-mini btn-info" 
+                    type="button"
+                    rel="tooltip" 
+                    title="Click to add row">
+                <i class="icon-plus icon-white"></i>
+            </button>
+            </div>
+        </div>
+    </li>
+</ul>
 
 @*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>

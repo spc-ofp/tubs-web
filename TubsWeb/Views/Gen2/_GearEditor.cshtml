@@ -14,7 +14,9 @@
         <i class="icon-backward icon-white"></i>
     </a>
     }
-    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">Save</button>
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
+        <i class="icon-save icon-white"></i>&nbsp;Save
+    </button>
     <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand, visible: !$root.isAdd()">
         <i class="icon-refresh icon-white"></i>&nbsp;Reload
     </button>

@@ -51,10 +51,10 @@ namespace TubsWeb.Controllers
 
             var vm = Mapper.Map<Trip, PageCountViewModel>(tripId);
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(vm);
  
-            return View(CurrentAction(), vm);
+            return View(CurrentAction, vm);
         }
         
         /// <summary>
@@ -126,7 +126,7 @@ namespace TubsWeb.Controllers
                 xa.Commit();
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var trepo = TubsDataService.GetRepository<Trip>(false))
                 {

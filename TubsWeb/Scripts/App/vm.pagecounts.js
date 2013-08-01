@@ -92,7 +92,7 @@ tubs.PageCountViewModel = function (data) {
         return hasDirtyChild;
     });
 
-    self.clearDirtyFlag = function () {        
+    self.clearDirtyFlag = function () {
         _.each(self.PageCounts(), function (item) {
             item.clearDirtyFlag();
         });

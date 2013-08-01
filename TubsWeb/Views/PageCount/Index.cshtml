@@ -18,7 +18,8 @@
 
 @if (!ViewBag.IsReadOnly)
 {
-    <p>@Html.ActionLink("Edit Page Counts", "Edit", null, new { @class = "btn btn-primary" })</p>    
+    var editLink = Url.Action("Edit");
+    <p><a href="@editLink" class="btn btn-primary"><i class="icon-edit icon-white"></i>&nbsp;Edit Page Counts</a></p>   
 }
 
 <table class="table table-bordered table-condensed table-striped">

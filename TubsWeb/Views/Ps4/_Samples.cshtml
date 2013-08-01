@@ -1,147 +1,38 @@
-﻿<div class="row">
-    <div class="span2">
-        <ol>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-        </ol>
-        @* Add a button to edit _THIS COLUMN_ *@
-    </div>
-    <div class="span2">
-        <ol start="21">
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-        </ol>
-    </div>
-    <div class="span2">
-        <ol start="41">
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-        </ol>
-    </div>
-    <div class="span2">
-        <ol start="61">
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-        </ol>
-    </div>
-    <div class="span2">
-        <ol start="81">
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-        </ol>
-    </div>
-    <div class="span2">
-        <ol start="101">
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>SKJ 65</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-            <li>YFT 120</li>
-            <li>BET 100</li>
-        </ol>
-    </div>
+﻿@model TubsWeb.ViewModels.LengthFrequencyViewModel
+
+@*
+ * Slice the up-to-120 samples into 6 columns of 20 values.
+ * This is similar to how we're displaying brail details.
+ * TODO: It would be good to add a hint of background color to alternating li
+ * elements to break up the "wall o' text".
+ * Also, it would be good to fix the CSS so that the width is the same across all elements
+ * without having to resort to the &nbsp; hack.
+ *
+ *@
+<div class="row">
+@if (Model.Samples.Any() || Model.IsEditor)
+{
+    foreach (var offset in Enumerable.Range(0, 6).Select(x => x * 20))
+    { 
+        <div class="span2">
+            @if(Model.IsEditor)
+            {
+                @* Offset is embedded in the button so we can figure out how to display the correct column *@
+                <p><button type="button" class="btn btn-info editColumn" data-offset="@offset">
+                    <i class="icon-edit icon-white" title="Edit Column" rel="tooltip"></i>&nbsp;Edit Column</button></p>                
+            }
+            <ol class="dense">
+            @foreach (var sample in Model.Samples.Skip(offset).Take(20))
+            {
+                if (sample.Length.HasValue || !String.IsNullOrEmpty(sample.SpeciesCode))
+                { 
+                <text>
+                    <li><span>@if (sample.Number < 10) { <text>&nbsp;</text> }@if (sample.Number < 100) { <text>&nbsp;</text> }@sample.Number</span> @sample.SpeciesCode @sample.Length</li> 
+                </text>
+                }
+            }
+            </ol>            
+        </div>
+    }
+}
 </div>

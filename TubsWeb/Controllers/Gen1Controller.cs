@@ -41,19 +41,19 @@ namespace TubsWeb.Controllers
         internal ActionResult SightingViewActionImpl(Trip tripId)
         {
             var svm = Mapper.Map<Trip, SightingViewModel>(tripId);
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(svm);
 
-            return View(CurrentAction(),svm);
+            return View(CurrentAction,svm);
         }
 
         internal ActionResult TransferViewActionImpl(Trip tripId)
         {
             var tvm = Mapper.Map<Trip, TransferViewModel>(tripId);
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(tvm);
 
-            return View(CurrentAction(), tvm);
+            return View(CurrentAction, tvm);
         }
         
         /// <summary>
@@ -94,7 +94,7 @@ namespace TubsWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(svm);
             }
@@ -128,7 +128,7 @@ namespace TubsWeb.Controllers
             }
 
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var trepo = TubsDataService.GetRepository<Trip>(false))
                 {
@@ -184,7 +184,7 @@ namespace TubsWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(tvm);
             }
@@ -216,7 +216,7 @@ namespace TubsWeb.Controllers
             }
 
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var trepo = TubsDataService.GetRepository<Trip>(false))
                 {
@@ -242,7 +242,7 @@ namespace TubsWeb.Controllers
         private ActionResult Load(Trip tripId, string titleFormat)
         {
             ViewBag.Title = String.Format(titleFormat, tripId.ToString());
-            return View(CurrentAction(), tripId);
+            return View(CurrentAction, tripId);
         }
     }
 }

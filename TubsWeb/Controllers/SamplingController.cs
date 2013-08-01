@@ -48,10 +48,10 @@ namespace TubsWeb.Controllers
             // TODO: Confirm CurrentController returns the "friendly" name (e.g. FishingSet)
             // and not the full name (e.g. FishingSetController).
             var rvd = new RouteValueDictionary(
-                new { controller = CurrentController(), tripId = tripId }
+                new { controller = CurrentController, tripId = tripId }
             );
 
-            if (IsEdit())
+            if (IsEdit)
             {
                 if (setNumber > maxSets)
                 {

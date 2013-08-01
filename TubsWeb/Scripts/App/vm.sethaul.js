@@ -28,9 +28,12 @@ var tubs = tubs || {};
  * Add a KoLite dirty flag to all members of the Comments observable array.
  * Add a KoLite dirty flag to all members of the IntermediateHaulPositions array.
  * Track members of the Comments observable array using their intrinsic 'Id' property.
- * Track members of the IntermediateHaulPositions array using their intrinsic 'Id' property.
- * Extend the 'ShipsDate' property with a function that displays the date in DD/MM/YY format.
- * Extend the 'UtcDate' property with a function that displays the date in DD/MM/YY format.
+ * Track members of the IntermediateHaulPositions array using their 
+ *  intrinsic 'Id' property.
+ * Extend the 'ShipsDate' property with a function that displays the date 
+ *  in DD/MM/YY format.
+ * Extend the 'UtcDate' property with a function that displays the date 
+ *  in DD/MM/YY format.
  */
 tubs.setHaulOptions = {
     extend: {
@@ -96,17 +99,23 @@ tubs.setHaulOptions = {
         TimePattern: function (time) {
             time.extend(tubs.timeExtension);
         },
-        /* Validate latitude with a simple regex.  It allows invalid values but it's a decent first pass. */
+        /* 
+         * Validate latitude with a simple regex.
+         * It allows invalid values but it's a decent first pass.
+         */
         LatitudePattern: function (latitude) {
             latitude.extend(tubs.latitudeExtension);
         },
-        /* Validate longitude with a simple regex.  It allows invalid values but it's a decent first pass. */
+        /* 
+         * Validate longitude with a simple regex.
+         * It allows invalid values but it's a decent first pass.
+         */
         LongitudePattern: function (longitude) {
             longitude.extend(tubs.longitudeExtension);
         },
         /* Add formattedDate property to full date object */
         IsoDate: function (date) {
-            date.extend({ isoDate: 'DD/MM/YY' });
+            date.extend(tubs.dateExtension);
         }
     }
 };
@@ -255,12 +264,8 @@ tubs.SetHaul = function (data) {
     'use strict';
 
     // Use knockout.viewmodel to manage most of the mapping
-    // 
     var vm = ko.viewmodel.fromModel(tubs.setHaulDefaults(data), tubs.setHaulOptions);
 
-    // Setting the dirty flag in the viewmodel options is a bridge too far...
-    // I'm fine with extending the instance versus adding this via prototype since there should
-    // only ever be one SetHaul viewmodel on a page
     vm.dirtyFlag = new ko.DirtyFlag([
         vm.HooksPerBasket,
         vm.TotalBaskets,
@@ -352,7 +357,12 @@ tubs.SetHaul = function (data) {
         } else {
             dateOnly = vm.ShipsDate();
         }
-        vm.Comments.push(new tubs.SetHaulComment({ DateOnly: dateOnly, NeedsFocus: true }));
+        vm.Comments.push(
+            new tubs.SetHaulComment({
+                DateOnly: dateOnly,
+                NeedsFocus: true
+            })
+        );
     };
 
     vm.removeComment = function (comment) {
@@ -388,7 +398,12 @@ tubs.SetHaul = function (data) {
             dateOnly = vm.ShipsDate();
         }
 
-        vm.IntermediateHaulPositions.push(new tubs.SetHaulPosition({ DateOnly: dateOnly, NeedsFocus: true }));
+        vm.IntermediateHaulPositions.push(
+            new tubs.SetHaulPosition({
+                DateOnly: dateOnly,
+                NeedsFocus: true
+            })
+        );
     };
 
     vm.removePosition = function (position) {

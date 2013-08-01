@@ -46,10 +46,14 @@ tubs.Transfer = function (eventData) {
     'use strict';
     var self = this;
     self.Id = ko.observable(eventData.Id || 0);
-    self.DateOnly = ko.observable(eventData.DateOnly || null).extend(tubs.dateExtension);
-    self.TimeOnly = ko.observable(eventData.TimeOnly || '').extend(tubs.timeExtension);
-    self.Latitude = ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
-    self.Longitude = ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
+    self.DateOnly =
+        ko.observable(eventData.DateOnly || null).extend(tubs.dateExtension);
+    self.TimeOnly =
+        ko.observable(eventData.TimeOnly || '').extend(tubs.timeExtension);
+    self.Latitude =
+        ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
+    self.Longitude =
+        ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
     self.VesselId = ko.observable(eventData.VesselId || 0);
     self.Name = ko.observable(eventData.Name || '');
     self.Ircs = ko.observable(eventData.Ircs || '');

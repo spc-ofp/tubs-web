@@ -209,11 +209,8 @@ namespace TubsWeb.Tests
                 Assert.NotNull(ps4);
                 var vm = Mapper.Map<LengthSamplingHeader, LengthFrequencyViewModel>(ps4);
                 Assert.NotNull(vm);
-                StringAssert.AreEqualIgnoringCase("1729", vm.StartBrailingTime);
-                StringAssert.AreEqualIgnoringCase("1859", vm.EndBrailingTime);
-                Assert.True(vm.IsBrail1, "IsBrail1?");
-                Assert.AreEqual(1, vm.SamplePageNumber);
-                Assert.AreEqual(3, vm.SamplePageTotal);
+                Assert.AreEqual(1, vm.PageNumber);
+                Assert.AreEqual(3, vm.PageCount);
                 Assert.AreEqual(5, vm.GrabTarget);
                 Assert.AreEqual(10, vm.SevenEighthsBrailCount);
                 Assert.AreEqual(10, vm.ThreeQuartersBrailCount);

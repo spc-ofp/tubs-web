@@ -43,7 +43,7 @@ tubs.WellContentMapping = {
 tubs.WellContent = function (data) {
     'use strict';
     var self = this;
-    self.Id = ko.observable(data.Id || 0);    
+    self.Id = ko.observable(data.Id || 0);
     self.Comment = ko.observable(data.Comment || '');
     self.Content = ko.observable(data.Content || '');
     self.Capacity = ko.observable(data.Capacity || null);

@@ -1,0 +1,112 @@
+﻿@model TubsWeb.ViewModels.LengthFrequencyViewModel
+@using Newtonsoft.Json
+@using System.Web.Optimization
+
+@{
+    string titleSuffix = String.Format("Set {0}, {1} Page {2} of {3}", Model.SetNumber, Model.ActionName, Model.PageNumber, Model.PageCount);
+    ViewBag.Title = String.Format("{0}: PS-4 {1}", Model.TripNumber, titleSuffix);
+}
+
+@{
+    IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
+    {
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.TripList), "Trips"),
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.TripDetails, new { tripId = Model.TripId }), Model.TripNumber),
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.Ps4List, new { tripId = Model.TripId }), "All PS-4s"),
+        Tuple.Create("#", titleSuffix)
+    };
+}
+
+@{ Html.RenderPartial("_BreadCrumbs", crumbs); }
+@{
+    var previousPage = Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, pageNumber = Model.PageNumber - 1, action = "Edit" });
+    var nextPage = Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, pageNumber = Model.PageNumber + 1, action = "Edit" });
+    var addPage = Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, action = "Add" });
+}
+
+<p>
+    @if (Model.HasPrevious)
+    { 
+    <a href="@previousPage" class="btn btn-info"><i class="icon-backward icon-white"></i>&nbsp;Previous Page</a>
+    }
+    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
+        <i class="icon-save icon-white"></i>&nbsp;Save
+    </button>
+    @if (Model.Id != 0)
+    {
+    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+        <i class="icon-refresh icon-white"></i>&nbsp;Reload
+    </button>
+    }
+    @if (Model.HasNext)
+    { 
+    <a href="@nextPage" class="btn btn-info">Next Page&nbsp;<i class="icon-forward icon-white"></i></a>
+    }
+    
+    @if (!Model.HasNext && Model.Id != 0)
+    { 
+    <a href="@addPage" class="btn btn-info addPage"><i class="icon-plus-sign icon-white"></i> Add Page</a>
+    }
+    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+</p>
+
+<div class="tabbable tabs-top">
+    <ul id="formSections" class="nav nav-tabs">
+        <li class="active"><a href="#details" data-toggle="tab">Sampling Details</a></li>
+        <li><a href="#brails" data-toggle="tab">Brails</a></li>
+        <li><a href="#samples" data-toggle="tab">Samples</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="details">
+            @{ Html.RenderPartial("_ProtocolEditor"); }
+        </div>
+        <div class="tab-pane" id="brails">
+            @{ Html.RenderPartial("_BrailEditor"); }
+        </div>    
+        <div class="tab-pane" id="samples">
+            @{ Html.RenderPartial("_Samples", Model); }
+        </div>
+    </div>
+</div>
+
+@*
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+*@
+
+
+
+@section AdditionalScripts {
+    @Scripts.Render("~/bundles/knockout")
+
+    <!-- Ajax data layer -->
+    <script src="~/Scripts/App/errorlogger.js"></script>
+    <script src="~/Scripts/App/datacontext.js"></script>
+    <script src="~/Scripts/App/vm.length-frequency.js"></script>
+    @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
+    <script>
+        $(function () {
+            var viewModel = new tubs.Ps4HeaderViewModel(@modelAsJson);           
+            ko.applyBindings(viewModel);
+            viewModel.clearDirtyFlag();
+
+            /* TODO: Extract this into a common script for the whole application */
+            window.onbeforeunload = function(e) {
+                if (viewModel.isDirty())
+                {
+                    if (!e) e = window.event;
+                    // IE only?
+                    e.cancelBubble = true;
+                    e.returnValue = "Leaving the page will discard unsaved changes.";
+                    // Firefox?
+                    if (e.stopPropagation)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+
+                    return "Leaving the page will discard unsaved changes.";
+                }
+            };
+        });
+    </script>
+}

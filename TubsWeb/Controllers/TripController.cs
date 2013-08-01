@@ -50,7 +50,7 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="trip"></param>
         /// <param name="thvm"></param>
-        private void ValidateTripDependencies(Trip trip, TripHeaderViewModel thvm)
+        internal void ValidateTripDependencies(Trip trip, TripHeaderViewModel thvm)
         {
             // These shouldn't happen, so in addition to notifying user, drop a warning message into the application log
             if (null == trip.Observer)
@@ -83,18 +83,6 @@ namespace TubsWeb.Controllers
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        private IQueryable<Trip> SearchImpl(SearchCriteria criteria)
-        {
-            // TODO:  Yank this in favor of IQueryable<TripHeader>
-            return TubsDataService.Search(MvcApplication.CurrentStatelessSession, criteria);
-        }
-
-
-        /// <summary>
         /// Get a list of trips
         /// </summary>
         /// <example>GET: /Trip/</example>
@@ -103,7 +91,7 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         public ActionResult Index(int? page, int itemsPerPage = 15)
         {
-            var repo = TubsDataService.GetRepository<TripHeader>(MvcApplication.CurrentStatelessSession);
+            var repo = TubsDataService.GetRepository<TripHeader>(MvcApplication.CurrentSession);
             var pageNumber = page ?? 1;
             var entities = repo.All().ToPagedList(pageNumber, itemsPerPage);
             ViewBag.TotalRows = entities.TotalItemCount;
@@ -168,7 +156,7 @@ namespace TubsWeb.Controllers
                 throw new Exception("No criteria, no can do.");
 
             Expression<Func<TripHeader, bool>> IsMatch = trip =>
-                (String.IsNullOrEmpty(staffCode) || trip.StaffCode == staffCode) &&
+                (String.IsNullOrEmpty(staffCode) || trip.Observer.StaffCode == staffCode) &&
                 (String.IsNullOrEmpty(vessel) || trip.Vessel.Name.ToUpper().Contains(vessel.ToUpper())) &&
                 (String.IsNullOrEmpty(program) || trip.ProgramCode.ToString() == program);
 
@@ -178,33 +166,6 @@ namespace TubsWeb.Controllers
             ViewBag.TotalRows = trips.Count();
             ViewBag.ActionName = "Search";
             return PartialView("_Trips", trips);
-        }
-
-        /// <summary>
-        /// For now, this is for TUFMAN/VMS reconciliation. 
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public JsonResult ReconciliationSearch(SearchCriteria criteria)
-        {
-            if (null == criteria || !criteria.IsValid())
-            {
-                return GettableJsonNetData("No criteria, no can do.");
-            }
-
-            var slimList =
-                from r in SearchImpl(criteria)
-                select new SearchResult
-                {
-                   DetailUrl = Url.Action("Details", "Trip", new { tripId = r.Id }),
-                   VesselName = r.Vessel.Name,
-                   DeparturePort = r.DeparturePort.Name,
-                   StartDate = r.DepartureDate.Value,
-                   ReturnPort = r.ReturnPort.Name,
-                   ReturnDate = r.ReturnDate.Value
-                };
-            return GettableJsonNetData(slimList);
         }
 
         /// <summary>
@@ -302,7 +263,7 @@ namespace TubsWeb.Controllers
         public ActionResult Details(Trip tripId)
         {
             // ViewBag means nothing for an API request
-            if (!IsApiRequest())
+            if (!IsApiRequest)
             {
                 AddTripNavbar(tripId);
                 ViewBag.Title = tripId.ToString();
@@ -315,7 +276,7 @@ namespace TubsWeb.Controllers
 
             var vm = Mapper.Map<Trip, TripSummaryViewModel>(tripId);
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(vm);
             
             return View(vm);

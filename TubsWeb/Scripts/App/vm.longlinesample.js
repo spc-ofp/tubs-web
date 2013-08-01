@@ -152,7 +152,14 @@ tubs.LongLineSample = function (data) {
 
         // Defaults for Fate and Sex are based on a user request to keep the same
         // functionality present in the existing legacy system
-        self.Details.push(new tubs.LongLineSampleDetail({ DateOnly: dateOnly, NeedsFocus: true, FateCode: 'RGG', SexCode: 'U' }));
+        self.Details.push(
+            new tubs.LongLineSampleDetail({
+                DateOnly: dateOnly,
+                NeedsFocus: true,
+                FateCode: 'RGG',
+                SexCode: 'U'
+            })
+        );
     };
 
     self.removeDetail = function (detail) {

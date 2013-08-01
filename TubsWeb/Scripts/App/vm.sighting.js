@@ -43,17 +43,22 @@ tubs.VesselSighting = function (eventData) {
     'use strict';
     var self = this;
     self.Id = ko.observable(eventData.Id || 0);
-    self.DateOnly = ko.observable(eventData.DateOnly || null).extend(tubs.dateExtension);
-    self.TimeOnly = ko.observable(eventData.TimeOnly || '').extend(tubs.timeExtension);
-    self.Latitude = ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
-    self.Longitude = ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
+    self.DateOnly =
+        ko.observable(eventData.DateOnly || null).extend(tubs.dateExtension);
+    self.TimeOnly =
+        ko.observable(eventData.TimeOnly || '').extend(tubs.timeExtension);
+    self.Latitude =
+        ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
+    self.Longitude =
+        ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
     self.VesselId = ko.observable(eventData.VesselId || 0);
     self.Name = ko.observable(eventData.Name || '');
     self.Ircs = ko.observable(eventData.Ircs || '');
     self.CountryCode = ko.observable(eventData.CountryCode || '');
     self.TypeCode = ko.observable(eventData.TypeCode || null);
     self.Bearing = ko.observable(eventData.Bearing || null).extend({ min: 0, max: 360 });
-    self.Distance = ko.observable(eventData.Distance || null).extend({ min: 0 }); // No negative distance
+    // No negative distance
+    self.Distance = ko.observable(eventData.Distance || null).extend({ min: 0 });
     self.ActionCode = ko.observable(eventData.ActionCode || '');
     self.PhotoFrame = ko.observable(eventData.PhotoFrame || '');
     self.Comments = ko.observable(eventData.Comments || '');

@@ -43,87 +43,35 @@
     </div>
 </div>
 
-<hr />
-
-@* TODO: Split this into separate partial.  Don't display entire partial if no brails *@
-<p>
-    Brail fullness and samples per brail.  Written as (fullness code) / (samples).
-</p>
-
 @*
- * Slice the up-to-30 brails into 6 columns of 5 values.
+ * Slice the up-to-30 brails into 3 columns of 10 values.
  * This is the most compact form that will also respect tab order
  *@
-@* TODO: After implementing, use same techniques on _Samples partial *@
-@* NOTE: Could probably make this more dynamic by using modulo 5 and a for loop *@
-<div class="row">
-    <div class="span2">
-        <ol class="dense">
-            <li><span>1</span> 1 / 5</li>
-            <li><span>2</span> 1 / 5</li>
-            <li>8 / 5</li>
-            <li>5</li>
-            <li>5</li>
-        </ol>
-    </div>
-    <div class="span2">
-    @if (Model.Brails.Count > 5)
+@if (Model.Brails.Any())
+{
+    var columnSize = 10;
+    var columnCount = 3;
+    <hr />
+    <p>
+        Brail fullness and samples per brail.  Written as (fullness code) / (samples).
+    </p>
+
+    <div class="row">
+    @foreach (var offset in Enumerable.Range(0, columnCount).Select(x => x * columnSize))
     { 
-        <ol>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-        </ol>   
+        <div class="span3">
+            <ol class="dense">
+            @foreach (var brail in Model.Brails.Skip(offset).Take(columnSize))
+            {
+                if (brail.Samples.HasValue || brail.Fullness.HasValue)
+                { 
+                <text>
+                    <li><span>@if (brail.Number < 10) { <text>&nbsp;</text> }@brail.Number</span> @brail.Fullness / @brail.Samples</li>
+                </text>
+                }
+            }
+            </ol>
+        </div>
     }
     </div>
-    <div class="span2">
-    @if (Model.Brails.Count > 10)
-    { 
-        <ol>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-        </ol>   
-    }
-    </div>
-    <div class="span2">
-    @if (Model.Brails.Count > 15)
-    { 
-        <ol>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-        </ol>   
-    }
-    </div>
-    <div class="span2">
-    @if (Model.Brails.Count > 20)
-    { 
-        <ol>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-        </ol>   
-    }
-    </div>
-    <div class="span2">
-    @if (Model.Brails.Count > 25)
-    { 
-        <ol>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-            <li>5</li>
-        </ol>   
-    }
-    </div>
-</div>
+}

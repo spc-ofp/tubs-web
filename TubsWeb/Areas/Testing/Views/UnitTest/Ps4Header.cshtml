@@ -1,0 +1,283 @@
+﻿<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+@Html.ActionLink("Back to Tests", "Index", "UnitTest")
+
+@section ScriptsUnderTest {
+    @* Scripts under test *@
+    <script src="~/Scripts/App/vm.length-frequency.js"></script>
+}
+
+@section TestData {
+    <script>
+        var modelAsJson = {
+            "BooleanValues": [
+              "",
+              "YES",
+              "NO"
+            ],
+            "SampleTypes": [
+              "",
+              "Grab",
+              "Spill",
+              "Other"
+            ],
+            "BrailNumbers": [
+              "",
+              "Brail 1",
+              "Brail 1"
+            ],
+            "OtherCodes": [
+              "",
+              "DA",
+              "DT",
+              "BA",
+              "BY",
+              "LY",
+              "BS"
+            ],
+            "MeasuringInstruments": [
+              "",
+              "Aluminum Caliper",
+              "Measuring Board",
+              "Deck Tape",
+              "Other"
+            ],
+            "Id": 234,
+            "SetId": 290,
+            "SetNumber": 8,
+            "TripId": 70,
+            "TripNumber": "DJB / 10-04",
+            "VersionNumber": 2007,
+            "HasNext": true,
+            "HasPrevious": false,
+            "ActionName": "Edit",
+            "SampleType": "Grab",
+            "OtherCode": null,
+            "ProtocolComments": null,
+            "GrabTarget": 5,
+            "SpillBrailNumber": 0,
+            "SpillNumberFishMeasured": 0,
+            "WhichBrail": "Brail 1",
+            "PageNumber": 1,
+            "PageCount": 3,
+            "MeasuringInstrument": "1.5 calliper",
+            "CalibratedThisSet": "N/A",
+            "FullBrailCount": 1,
+            "SevenEighthsBrailCount": 10,
+            "ThreeQuartersBrailCount": 10,
+            "TwoThirdsBrailCount": 3,
+            "OneHalfBrailCount": 2,
+            "OneThirdBrailCount": 3,
+            "OneQuarterBrailCount": 1,
+            "OneEighthBrailCount": 0,
+            "TotalBrails": 30,
+            "SumOfAllBrails": 21.50,
+            "BrailId": 265,
+            "Brails": [
+              {
+                  "Number": 1,
+                  "Fullness": 5,
+                  "Samples": 3
+              },
+              {
+                  "Number": 2,
+                  "Fullness": 3,
+                  "Samples": 5
+              },
+              {
+                  "Number": 3,
+                  "Fullness": 6,
+                  "Samples": 5
+              },
+              {
+                  "Number": 4,
+                  "Fullness": 3,
+                  "Samples": 5
+              },
+              {
+                  "Number": 5,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 6,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 7,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 8,
+                  "Fullness": 3,
+                  "Samples": 5
+              },
+              {
+                  "Number": 9,
+                  "Fullness": 6,
+                  "Samples": 3
+              },
+              {
+                  "Number": 10,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 11,
+                  "Fullness": 4,
+                  "Samples": 5
+              },
+              {
+                  "Number": 12,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 13,
+                  "Fullness": 4,
+                  "Samples": 5
+              },
+              {
+                  "Number": 14,
+                  "Fullness": 6,
+                  "Samples": 5
+              },
+              {
+                  "Number": 15,
+                  "Fullness": 3,
+                  "Samples": 5
+              },
+              {
+                  "Number": 16,
+                  "Fullness": 5,
+                  "Samples": 3
+              },
+              {
+                  "Number": 17,
+                  "Fullness": 7,
+                  "Samples": 2
+              },
+              {
+                  "Number": 18,
+                  "Fullness": 1,
+                  "Samples": 5
+              },
+              {
+                  "Number": 19,
+                  "Fullness": 3,
+                  "Samples": 5
+              },
+              {
+                  "Number": 20,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 21,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 22,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 23,
+                  "Fullness": 3,
+                  "Samples": 2
+              },
+              {
+                  "Number": 24,
+                  "Fullness": 3,
+                  "Samples": 5
+              },
+              {
+                  "Number": 25,
+                  "Fullness": 3,
+                  "Samples": 5
+              },
+              {
+                  "Number": 26,
+                  "Fullness": 3,
+                  "Samples": 4
+              },
+              {
+                  "Number": 27,
+                  "Fullness": 4,
+                  "Samples": 5
+              },
+              {
+                  "Number": 28,
+                  "Fullness": 2,
+                  "Samples": 5
+              },
+              {
+                  "Number": 29,
+                  "Fullness": 3,
+                  "Samples": 5
+              },
+              {
+                  "Number": 30,
+                  "Fullness": 2,
+                  "Samples": 5
+              }
+            ]
+        };
+    </script>
+}
+
+@section TestScript {
+    @* Unit tests here *@
+    <script>
+        var viewmodel;
+        module("GEN-1 (Sighting)", {
+            setup: function () {
+                viewmodel = new tubs.Ps4HeaderViewModel(modelAsJson);
+            },
+            teardown: function () {
+                viewmodel = null;
+            }
+        });
+        test("Create viewmodel", function () {
+            ok(viewmodel, "ViewModel not null");
+            equal(viewmodel.TripNumber(), "DJB / 10-04", "TripNumber mapped correctly");
+            equal(viewmodel.Brails()[0].Number(), 1, "Brail number for first brail mapped correctly");
+        });
+        test("Dirty flag", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            viewmodel.SampleType("Spill");
+            ok(viewmodel.isDirty(), "viewmodel is dirty");
+            viewmodel.clearDirtyFlag();
+            ok(!viewmodel.isDirty(), "viewmodel is clean after reset");
+        });
+        test("Async commands", function () {
+            ok(!viewmodel.saveCommand.canExecute(), "No save possible on clean model");
+            ok(!viewmodel.reloadCommand.canExecute(), "No reload possible on clean model");
+            viewmodel.SampleType("Other");
+            ok(viewmodel.saveCommand.canExecute(), "Save possible on dirty model");
+            ok(viewmodel.reloadCommand.canExecute(), "Reload possible on dirty model");
+        });
+        test("SampleTypes", function () {
+            viewmodel.SampleType("Spill");
+            ok(viewmodel.isSpill(), "isSpill computed property");
+            viewmodel.SampleType("Grab");
+            ok(viewmodel.isGrab(), "isGrab computed property");
+            viewmodel.SampleType("Other");
+            ok(viewmodel.isOther(), "isOther computed property");
+        });
+        test("Dirty flag (Brails)", function () {
+            ok(!viewmodel.isDirty(), "viewmodel is clean");
+            var brail = viewmodel.Brails()[1];
+            ok(brail, "Brail #2 not null");
+            equal(brail.Samples(), 5, "Correct number of samples");
+            ok(!brail.isDirty(), "Brail #2 is clean");
+            brail.Samples(6);
+            ok(brail.isDirty, "Brail #2 is dirty");
+            ok(viewmodel.isDirty, "viewmodel is dirty");
+        });
+    </script>
+}

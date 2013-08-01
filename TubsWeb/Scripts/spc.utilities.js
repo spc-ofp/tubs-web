@@ -23,8 +23,8 @@ var spc = spc || {};
 // the textbox, 'data' is a single entry from the remote service
 //
 // The following StackOverflow resources were invaluable in figuring this out:
-// http://stackoverflow.com/questions/9496314/bootstrap-typeahead-js-add-a-listener-on-select-event
-// http://stackoverflow.com/questions/9232748/twitter-bootstrap-typeahead-ajax-example
+// http://stackoverflow.com/questions/9496314/
+// http://stackoverflow.com/questions/9232748/
 spc.typeAheadFactory = function (sourceUrl, onSelect) {
     var self = this,
         source,

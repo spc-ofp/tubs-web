@@ -51,35 +51,13 @@ $(document).ready(function () {
             // Prevent the event from bubbling up
             // IE doesn't let us stop this from bubbling by returning false
             // Sledgehammer courtesy StackOverflow
-            // http://stackoverflow.com/questions/9019278/how-to-disable-default-help-function-of-browsers
+            // http://stackoverflow.com/questions/9019278/
             if (isIE) {
                 stopF1(e);
             }
-            return false;
+            return false; //ignore jslint
         } else {
             return true;
         }
     });
-
-    /*
-    $('input.species').on('keydown', hotkeys, function (e) {
-        var val = lookup[e.keyCode];
-        if (val) {
-            // Set the input value
-            this.value = val;
-            // Prevent the event from bubbling up
-            // IE doesn't let us stop this from bubbling by returning false
-            // Sledgehammer courtesy StackOverflow
-            // http://stackoverflow.com/questions/9019278/how-to-disable-default-help-function-of-browsers
-            if (isIE) {
-                stopF1(e);
-            }
-            return false;
-        } else {
-            return true;
-        }
-    });
-    */
-
-
 });

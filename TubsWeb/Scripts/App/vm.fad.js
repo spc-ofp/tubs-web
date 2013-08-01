@@ -174,7 +174,6 @@ tubs.FadViewModel = function (data) {
         }
     };
 
-    // Commands
     self.reloadCommand = ko.asyncCommand({
         execute: function (complete) {
             tubs.getFad(
@@ -186,7 +185,7 @@ tubs.FadViewModel = function (data) {
                     toastr.info('Reloaded FAD details');
                 },
                 function (xhr, status) {
-                    tubs.notify('Failed to reload FAD details', xhr, status);                   
+                    tubs.notify('Failed to reload FAD details', xhr, status);
                 }
             );
             complete();
@@ -204,7 +203,7 @@ tubs.FadViewModel = function (data) {
                 function (result) {
                     ko.mapping.fromJS(result, tubs.FadMapping, self);
                     self.clearDirtyFlag();
-                    toastr.info('Saved FAD details');                    
+                    toastr.info('Saved FAD details');
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save FAD details', xhr, status);

@@ -42,6 +42,11 @@ namespace TubsWeb.Controllers
             return null == port ? String.Empty : String.Format("{0} ({1})", port.Name.Trim(), port.CountryCode);
         }
 
+        /// <summary>
+        /// Port search endpoint.
+        /// </summary>
+        /// <param name="term">Port name search term</param>
+        /// <returns></returns>
         [UseStatelessSessions]
         public JsonResult Find(string term)
         {

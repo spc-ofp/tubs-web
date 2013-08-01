@@ -27,7 +27,8 @@ namespace TubsWeb.ViewModels.Resolvers
     using Spc.Ofp.Tubs.DAL.Common;
 
     /// <summary>
-    /// TODO: Update summary.
+    /// AutoMapper resolver for converting a SamplingProtocol enumeration value
+    /// to a string.
     /// </summary>
     public class SamplingProtocolResolver : ValueResolver<SamplingProtocol?, string>
     {
@@ -38,17 +39,35 @@ namespace TubsWeb.ViewModels.Resolvers
 
             switch (source.Value)
             {
+                case SamplingProtocol.Normal:
+                    return "Grab";
+                case SamplingProtocol.Spill:
+                    return "Spill";
+                case SamplingProtocol.Other:
+                case SamplingProtocol.SmallFish:
+                    return "Other";
                 default:
                     return null;
             }
         }
     }
 
+    /// <summary>
+    /// AutoMapper resolver for converting a string into a SamplingProtocol enumeration value.
+    /// </summary>
     public class SamplingProtocolCodeResolver : ValueResolver<string, SamplingProtocol?>
     {
         protected override SamplingProtocol? ResolveCore(string source)
         {
-            throw new NotImplementedException();
+            source = null == source ? source : source.Trim();
+            if (string.IsNullOrEmpty(source))
+                return null;
+
+            return
+                "Grab".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? SamplingProtocol.Normal :
+                "Spill".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? SamplingProtocol.Spill :
+                "Other".Equals(source, StringComparison.InvariantCultureIgnoreCase) ? SamplingProtocol.Other :
+                (SamplingProtocol?)null;
         }
     }
 }

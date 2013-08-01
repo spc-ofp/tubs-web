@@ -53,17 +53,87 @@ namespace TubsWeb.Controllers
         public const string PSTripSummary = "PS-TripSummary";
         public const string CoverPage = "CoverPage";
 
+        /// <summary>
+        /// Log4Net logger.
+        /// </summary>
         protected static readonly log4net.ILog Logger = log4net.LogManager.GetLogger(typeof(SuperController));
 
-        // This is here until I can find a better way to manage this.
-        protected bool IsApiRequest()
+        /// <summary>
+        /// Read action out of the route data.
+        /// </summary>
+        /// <returns>Currently executing action name</returns>
+        protected string CurrentAction
         {
-            return null != Request.AcceptTypes && Request.AcceptTypes.Contains("application/json");
+            get
+            {
+                return this.ControllerContext.RouteData.GetRequiredString("action");
+            }
+            
+        }
+
+        /// <summary>
+        /// Read controller out of the route data.
+        /// </summary>
+        /// <returns>Controller hosting the currently executing action.</returns>
+        protected string CurrentController
+        {
+            get
+            {
+                return this.ControllerContext.RouteData.GetRequiredString("controller");
+            }
+            
+        }
+
+        /// <summary>
+        /// Check to see if this is the "Add" action
+        /// </summary>
+        /// <returns>true if this is the "Add" action, false otherwise</returns>
+        protected bool IsAdd
+        {
+            get
+            {
+                return "Add".Equals(CurrentAction, StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// Check to see if this is the "Edit" action
+        /// </summary>
+        /// <returns>true if this is the "Edit" action, false otherwise</returns>
+        protected bool IsEdit
+        {
+            get
+            {
+                return "Edit".Equals(CurrentAction, StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// Check to see if this is the "Index" action
+        /// </summary>
+        /// <returns>true if this is the "Index" action, false otherwise</returns>
+        protected bool IsIndex
+        {
+            get
+            {
+            return "Index".Equals(CurrentAction, StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// Read-only property for determining if the incoming request is a Javascript API call.
+        /// </summary>
+        protected bool IsApiRequest
+        {
+            get
+            {
+                return null != Request.AcceptTypes && Request.AcceptTypes.Contains("application/json");
+            }
         }
 
         protected ActionResult InvalidTripResponse()
         {
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return GettableJsonNetData("Missing or invalid trip");
@@ -180,50 +250,7 @@ namespace TubsWeb.Controllers
             }
         }
 
-        /// <summary>
-        /// Read action out of the route data.
-        /// </summary>
-        /// <returns>Currently executing action name</returns>
-        protected string CurrentAction()
-        {
-            return this.ControllerContext.RouteData.GetRequiredString("action");
-        }
-
-        /// <summary>
-        /// Read controller out of the route data.
-        /// </summary>
-        /// <returns>Controller hosting the currently executing action.</returns>
-        protected string CurrentController()
-        {
-            return this.ControllerContext.RouteData.GetRequiredString("controller");
-        }
-
-        /// <summary>
-        /// Check to see if this is the "Add" action
-        /// </summary>
-        /// <returns>true if this is the "Add" action, false otherwise</returns>
-        protected bool IsAdd()
-        {
-            return "Add".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        /// <summary>
-        /// Check to see if this is the "Edit" action
-        /// </summary>
-        /// <returns>true if this is the "Edit" action, false otherwise</returns>
-        protected bool IsEdit()
-        {
-            return "Edit".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        /// <summary>
-        /// Check to see if this is the "Index" action
-        /// </summary>
-        /// <returns>true if this is the "Index" action, false otherwise</returns>
-        protected bool IsIndex()
-        {
-            return "Index".Equals(CurrentAction(), StringComparison.InvariantCultureIgnoreCase);
-        }
+        
 
         // This is still a work in progress
         private void AddTripNavbar(PurseSeineTrip tripId)

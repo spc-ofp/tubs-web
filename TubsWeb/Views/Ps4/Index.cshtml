@@ -1,7 +1,7 @@
 ﻿@model TubsWeb.ViewModels.LengthFrequencyViewModel
 
 @{
-    string titleSuffix = String.Format("Page {0} of {1}", Model.SamplePageNumber, Model.SamplePageTotal);
+    string titleSuffix = String.Format("Set {0}, Page {1} of {2}", Model.SetNumber, Model.PageNumber, Model.PageCount);
     ViewBag.Title = String.Format("{0}: PS-4 {1}", Model.TripNumber, titleSuffix);
 }
 
@@ -17,27 +17,36 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@*
- * TODO: Add edit button as appropriate
- *@
+@* TODO: With these pages, might be better to use the page number instead of just next/previous *@
+<ul class="pager">
+@if (Model.HasPrevious)
+{
+    <li>
+        <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, pageNumber = Model.PageNumber - 1, action = "Index" })'>Previous Page</a>
+    </li>
+}
+    
+@if (Model.HasNext)
+{
+    <li>
+        <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, pageNumber = Model.PageNumber + 1, action = "Index" })'>Next Page</a>
+    </li>
+}
+</ul>
 
 <div class="tabbable tabs-top">
     <ul id="formSections" class="nav nav-tabs">
-        <li class="active"><a href="#brails" data-toggle="tab">Brails</a></li>
-        <li><a href="#sampleType" data-toggle="tab">Protocol</a></li>        
-        <li><a href="#comments" data-toggle="tab">Comments</a></li>
+        <li class="active"><a href="#details" data-toggle="tab">Sampling Details</a></li>
+        <li><a href="#brails" data-toggle="tab">Brails</a></li>
         <li><a href="#samples" data-toggle="tab">Samples</a></li>
     </ul>
-    <div class="tab-content">        
-        <div class="tab-pane active" id="brails">
+    <div class="tab-content">
+        <div class="tab-pane active" id="details">
+            @{ Html.RenderPartial("_Protocol", Model); }
+        </div>
+        <div class="tab-pane" id="brails">
             @{ Html.RenderPartial("_Brails", Model); }
-        </div>
-        <div class="tab-pane" id="sampleType">
-            <p>Sample Type</p>   
-        </div>
-        <div class="tab-pane" id="comments">
-            <p>@Model.ProtocolComments</p>
-        </div>
+        </div>    
         <div class="tab-pane" id="samples">
             @{ Html.RenderPartial("_Samples", Model); }
         </div>

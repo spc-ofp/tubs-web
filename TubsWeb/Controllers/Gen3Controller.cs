@@ -48,7 +48,7 @@ namespace TubsWeb.Controllers
         internal ActionResult ViewActionImpl(Trip tripId)
         {
             string formatString =
-                IsEdit() ?
+                IsEdit ?
                     "{0}: GEN-3 Edit" :
                     "{0}: GEN-3";
 
@@ -71,12 +71,12 @@ namespace TubsWeb.Controllers
             // in the same display order as the printed workbook
             vm.PrepareIncidents();
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(vm);
 
             // Min/max dates in the ViewBag are only useful outside of API calls
             AddMinMaxDates(tripId);
-            return View(CurrentAction(), vm);
+            return View(CurrentAction, vm);
         }
 
         /// <summary>
@@ -138,10 +138,10 @@ namespace TubsWeb.Controllers
             // Simple validation here
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
 
-                return View(CurrentAction(), vm);
+                return View(CurrentAction, vm);
             }
 
             using (var xa = MvcApplication.CurrentSession.BeginTransaction())
@@ -224,7 +224,7 @@ namespace TubsWeb.Controllers
                 xa.Commit();
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var trepo = TubsDataService.GetRepository<Trip>(false))
                 {

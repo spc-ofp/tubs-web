@@ -1,0 +1,64 @@
+﻿@model TubsWeb.ViewModels.LengthFrequencyViewModel
+
+
+<div class="row">
+    <div class="span2">
+        <strong>Sample Type</strong><br />
+        @Model.SampleType
+    </div>
+    @if("Grab".Equals(Model.SampleType, StringComparison.InvariantCultureIgnoreCase))
+    {
+    <div class="span2">
+        <strong>Samples per brail</strong><br />
+        @Html.DisplayFor(m => m.GrabTarget)
+    </div>
+    }
+    @if ("Spill".Equals(Model.SampleType, StringComparison.InvariantCultureIgnoreCase))
+    {
+    <div class="span2">
+        <strong>Brail #</strong><br />
+        @Html.DisplayFor(m => m.SpillBrailNumber)
+    </div>
+    <div class="span2">
+        <strong># Fish Measured</strong><br />
+        @Html.DisplayFor(m => m.SpillNumberFishMeasured)
+    </div>
+    }
+    @if ("Other".Equals(Model.SampleType, StringComparison.InvariantCultureIgnoreCase))
+    { 
+    <div class="span2">
+        <strong>Other</strong><br />
+        @Model.OtherCode
+    </div>
+    }
+    
+</div>
+<hr />
+<div class="row">
+    <div class="span2">
+        <strong>Which Brail</strong><br />
+        @Model.WhichBrail
+    </div>
+    @* This is also in the nav bar... *@
+    <div class="span3">
+        <strong>Forms Used</strong><br />
+        @Html.DisplayFor(m => m.PageNumber) of @Html.DisplayFor(m => m.PageCount)
+    </div>
+    <div class="span2">
+        <strong>Instrument</strong><br />
+        @Html.DisplayFor(m => m.MeasuringInstrument)
+    </div>
+    <div class="span2">
+        <strong>Calibrated this set?</strong><br />
+        @Html.DisplayFor(m => m.CalibratedThisSet)
+    </div>
+</div>
+
+<hr />
+@* Comments go here, not in separate tab *@
+<div class="row">
+    <div class="span12">
+        <strong>Comments</strong><br />
+        <p>@(Model.ProtocolComments ?? "N/A")</p>
+    </div>
+</div>

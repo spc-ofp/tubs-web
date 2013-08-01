@@ -78,13 +78,13 @@ namespace TubsWeb.Controllers
             vm.PreviousPage = pageNumber - 1;
             vm.HasNext = pageNumber < maxPages;
             vm.NextPage = pageNumber + 1;
-            vm.ActionName = CurrentAction();
+            vm.ActionName = CurrentAction;
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(vm);
 
             AddMinMaxDates(tripId);            
-            return View(CurrentAction(), vm);
+            return View(CurrentAction, vm);
         }
 
         /// <summary>
@@ -97,9 +97,9 @@ namespace TubsWeb.Controllers
         {
             vm.TripId = tripId.Id;
             vm.TripNumber = tripId.SpcTripNumber;
-            vm.ActionName = CurrentAction();
+            vm.ActionName = CurrentAction;
             AddMinMaxDates(tripId);
-            return View(CurrentAction(), vm);
+            return View(CurrentAction, vm);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace TubsWeb.Controllers
                 summaries.Add(summary);
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(summaries);
 
             return View(summaries);
@@ -221,7 +221,7 @@ namespace TubsWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(vm);
             }
@@ -263,7 +263,7 @@ namespace TubsWeb.Controllers
             }
 
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var trepo = TubsDataService.GetRepository<Interaction>(false))
                 {

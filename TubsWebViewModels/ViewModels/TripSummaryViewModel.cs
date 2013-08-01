@@ -34,7 +34,9 @@ namespace TubsWeb.ViewModels
     /// </summary>
     public class TripSummaryViewModel
     {
-        // Primary key
+        /// <summary>
+        /// Entity primary key
+        /// </summary>
         public int Id { get; set; }
 
         public string ProgramCode { get; set; }
@@ -64,6 +66,13 @@ namespace TubsWeb.ViewModels
         public string VesselName { get; set; }
 
         public string VesselFlag { get; set; }
+
+        /// <summary>
+        /// FFA vessel identifier (VID).  Added at the request
+        /// of Bryan Scott to aid in integration with systems
+        /// that source data from FFA VMS.
+        /// </summary>
+        public int? FfaVid { get; set; }
 
         public string AlternateTripNumber { get; set; }
 

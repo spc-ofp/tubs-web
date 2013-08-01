@@ -43,10 +43,10 @@ namespace TubsWeb.Controllers
             bool needsRedirect = false;
             // Fill values that don't change
             var rvd = new RouteValueDictionary(
-                new { controller = CurrentController(), tripId = tripId }
+                new { controller = CurrentController, tripId = tripId }
             );
 
-            if (IsEdit())
+            if (IsEdit)
             {
                 if (setNumber > maxSets)
                 {

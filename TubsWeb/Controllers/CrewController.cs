@@ -46,16 +46,16 @@ namespace TubsWeb.Controllers
         {
             var cvm = Mapper.Map<PurseSeineTrip, CrewViewModel>(tripId as PurseSeineTrip);
             string formatString = 
-                IsEdit() ? 
+                IsEdit ? 
                     "{0}: Edit Crew" :
                     "{0}: Crew";
 
             ViewBag.Title = String.Format(formatString, tripId.SpcTripNumber);
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(cvm);
 
-            return View(CurrentAction(), cvm);           
+            return View(CurrentAction, cvm);           
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace TubsWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                 {
                     return ModelErrorsResponse();
                 }
@@ -128,7 +128,7 @@ namespace TubsWeb.Controllers
                 // Flush to database
                 xa.Commit();
             }
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var repo = TubsDataService.GetRepository<Trip>(false))
                 {

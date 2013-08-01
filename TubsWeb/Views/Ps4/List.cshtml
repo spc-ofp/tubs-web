@@ -28,6 +28,10 @@
             <th>Samples</th>
             <th>Sample Type</th>
             <th>Pages</th>
+            @if (!ViewBag.IsReadOnly)
+            { 
+            <th>&nbsp;</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -51,12 +55,16 @@
                         TubsWeb.RouteConfig.Ps4BySetAndPage, 
                         new { tripId = Model.TripId, setNumber = header.SetNumber, pageNumber = i });
                 <a href="@detail">@i</a><text>&nbsp;</text>
-            }            
+            } 
+            </td>           
             @if (!ViewBag.IsReadOnly)
             {
-                <a href="#" class="btn btn-info addPage"><i class="icon-plus-sign icon-white"></i> Add Page</a>
+                var addLink = Url.RouteUrl(TubsWeb.RouteConfig.AddPs4, new { tripId = Model.TripId, setNumber = header.SetNumber, action = "Add" });
+                <td>
+                    <a href="@addLink" class="btn btn-info addPage"><i class="icon-plus-sign icon-white"></i> Add Page</a>
+                </td>
             }
-            </td>
+            
         </tr>
     }
     </tbody>
@@ -65,7 +73,7 @@
         <tr>
             <th colspan="2">Total Samples</th>
             <th>@totalSamples</th>
-            <th colspan="2">&nbsp;</th>
+            <th colspan="@(ViewBag.IsReadOnly ? 2 : 3)">&nbsp;</th>
         </tr>
     </tfoot>
 </table>

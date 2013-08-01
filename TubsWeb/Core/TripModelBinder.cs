@@ -23,6 +23,7 @@ namespace TubsWeb.Core
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
      */
     using System;
+    using System.Linq;
     using System.Web.Mvc;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
@@ -60,7 +61,14 @@ namespace TubsWeb.Core
             }
             // Set TripId in ViewBag regardless of existence of Trip.
             controllerContext.Controller.ViewBag.TripId = entityId;
-            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(entityId);
+            // FIXME
+            // This is a _BRUTAL HACK_
+            // NHibernate session filters aren't used when looking up an entity directly by primary key.
+            // However, if we change the API, we can force the use of a session filter
+            // See the SimpleTripFilter, SimpleTripHeaderFilter, and SimpleTripFilterWithFindBy unit tests in the DAL project for more details.
+            var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(t => t.Id == entityId);
+            // FIXME The following line is the original version and can be re-enabled when the DAL has a better security implementation
+            //var trip = new TubsRepository<Trip>(MvcApplication.CurrentSession).FindBy(entityId);
             // ReadOnly is nonsense for a non-existant trip, but for the sake of completeness, we want
             // to ensure that IsReadOnly is present in the ViewBag
             controllerContext.Controller.ViewBag.IsReadOnly = (null == trip) ? true : trip.IsReadOnly;

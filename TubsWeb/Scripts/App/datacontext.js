@@ -21,17 +21,6 @@ tubs.defaultNetworkSettings = {
     timeout: 10000 /* 10 seconds */
 };
 
-/*
- * After much screwing around, this looks to be
- * a portable solution.  MVC puts the virtual directory
- * app root into every page for us.
- * TODO:  MVC can create dynamic JavaScript.  If we create this file
- * dynamically, it can be cached and potentially we won't have
- * Amplify (re)defining requests on every page load
- * http://blog.pmunin.com/2013/04/dynamic-javascript-css-in-aspnet-mvc.html
- * http://stackoverflow.com/questions/16092473/dynamically-generated-javascript-css-in-asp-net-mvc
- * http://www.codeproject.com/Articles/171695/Dynamic-CSS-using-Razor-Engine
- */
 // TODO appBase and start are still in the global namespace
 var appBase = '/';
 var start = $('#applicationHome');
@@ -43,77 +32,110 @@ if (start) {
 amplify.request.define(
     "getSeaDay",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Days/{DayNumber}/Edit' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/Days/{DayNumber}/Edit' }
+    )
 );
 
 // Request for loading PS-1 crew data
 amplify.request.define(
     "getCrew",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Crew/Edit' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/Crew/Edit' }
+    )
 );
 
 // Request for loading PS-3 data
 amplify.request.define(
     "getFishingSet",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Sets/{SetNumber}/Edit' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/Sets/{SetNumber}/Edit' }
+    )
 );
 
 // Request for loading PS-1/LL-1 electronics data
 amplify.request.define(
     "getElectronics",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Electronics/Edit' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/Electronics/Edit' }
+    )
 );
 
 // Request for loading GEN-1 (sighting) data
 amplify.request.define(
     "getSightings",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Sightings' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/Sightings' }
+    )
 );
 
 // Request for loading GEN-1 (transfer) data
 amplify.request.define(
     "getTransfers",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/Transfers' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/Transfers' }
+    )
 );
 
 // Request for loading GEN-2 data
 amplify.request.define(
     "getInteraction",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/GEN-2/{PageNumber}/Edit' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/GEN-2/{PageNumber}/Edit' }
+    )
 );
 
 // Request for loading GEN-3 data
 amplify.request.define(
     "getGen3",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/GEN-3' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/GEN-3' }
+    )
 );
 
 // Request for loading GEN-5 (transfer) data
 amplify.request.define(
     "getFad",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/GEN-5/Details?fadId={FadId}' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/GEN-5/Details?fadId={FadId}' }
+    )
 );
 
 // Request for loading simple PS-1 data (not crew, wells, or electronics)
 amplify.request.define(
     "getPs1",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/PS-1/Index' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/PS-1/Index' }
+    )
 );
 
 // Request for loading simple LL-1 data (not electronics)
 amplify.request.define(
     "getTripInfo",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/LL-1/Index' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/LL-1/Index' }
+    )
 );
 
 
@@ -121,42 +143,70 @@ amplify.request.define(
 amplify.request.define(
     "getPageCounts",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/PageCount' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/PageCount' }
+    )
 );
 
 // Request for loading LL-2/3 data
 amplify.request.define(
     "getSetHaul",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/SetHaul/{SetNumber}/Edit' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/SetHaul/{SetNumber}/Edit' }
+    )
 );
 
 // Request for loading LL-4 data
 amplify.request.define(
     "getSampleLL",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/LL-4/{SetNumber}/Edit' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/LL-4/{SetNumber}/Edit' }
+    )
 );
 
 // Request for loading trip track
 amplify.request.define(
     "getTripTrack",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/track.geojson' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/track.geojson' }
+    )
 );
 
 // Request for loading trip track
 amplify.request.define(
     "getTripPositions",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/positions.geojson' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/positions.geojson' }
+    )
 );
 
 // Request for loading Well Content data
 amplify.request.define(
     "getWellNumber",
     "ajax",
-    $.extend(tubs.defaultNetworkSettings, { url: appBase + 'Trip/{TripId}/WellContent/Edit' })
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/WellContent/Edit' }
+    )
+);
+
+// Request for loading PS-4 data
+amplify.request.define(
+    "getSampleHeader",
+    "ajax",
+    $.extend(
+        tubs.defaultNetworkSettings,
+        { url: appBase + 'Trip/{TripId}/PS-4/{SetNumber}/{PageNumber}/Edit' }
+    )
 );
 
 /**
@@ -257,7 +307,7 @@ tubs.saveSetHaul = function (tripId, setNumber, setHaul, success_cb, error_cb) {
         data: ko.toJSON(setHaul),
         timeout: tubs.saveTimeout
     }).done(success_cb)
-      .fail(error_cb);
+        .fail(error_cb);
 };
 
 
@@ -332,7 +382,7 @@ tubs.saveElectronics = function (tripId, electronics, success_cb, error_cb) {
         data: ko.toJSON(electronics),
         timeout: tubs.saveTimeout
     }).done(success_cb)
-      .fail(error_cb);
+        .fail(error_cb);
 };
 
 /**
@@ -723,8 +773,48 @@ tubs.saveLonglineSample = function (tripId, setNumber, sample, success_cb, error
         data: ko.toJSON(sample),
         timeout: tubs.saveTimeout
     }).done(success_cb)
-      .fail(error_cb);
+        .fail(error_cb);
 };
+
+/**
+ * Get PS-4 header data for a given fishing set and page
+ * @param {Number} tripId Trip primary key
+ * @param {Number} setNumber Location of the set within the trip
+ * @param {Number} pageNumber Location of form within the current set
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.getPs4Header = function (tripId, setNumber, pageNumber, success_cb, error_cb) {
+    amplify.request({
+        resourceId: "getSampleHeader",
+        data: { "TripId": tripId, "SetNumber": setNumber, "PageNumber": pageNumber },
+        success: success_cb,
+        error: error_cb
+    });
+};
+
+/**
+ * Save PS-4 header data for a given fishing set.
+ * @param {Number} tripId Trip primary key
+ * @param {Number} setNumber Location of the set within the trip
+ * @param {Number} pageNumber Location of form within the current set
+ * @param header Knockout view model containing data
+ * @param success_cb Callback that handles returned data
+ * @param error_cb Callback that handles error situation
+ */
+tubs.savePs4Header = function (tripId, setNumber, pageNumber, header, success_cb, error_cb) {
+    var url = appBase + 'Trip/' + tripId + '/PS-4/' + setNumber + '/' + pageNumber + '/Edit';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: ko.toJSON(header),
+        timeout: tubs.saveTimeout
+    }).done(success_cb)
+        .fail(error_cb);
+};
+
 
 /**
  * Get track for a given trip.

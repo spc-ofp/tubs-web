@@ -44,11 +44,11 @@ namespace TubsWeb.Controllers
         {
             var ps1vm = Mapper.Map<PurseSeineTrip, Ps1ViewModel>(tripId as PurseSeineTrip);
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(ps1vm);
 
             // If we wanted to, we could set up the new NavPills here...
-            return View(CurrentAction(), ps1vm);
+            return View(CurrentAction, ps1vm);
         }
         
         /// <summary>
@@ -95,7 +95,7 @@ namespace TubsWeb.Controllers
             // Should we pull this snippet out into a new function?
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
 
                 return View(ps1vm);
@@ -171,7 +171,7 @@ namespace TubsWeb.Controllers
                 xa.Commit();
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var rrepo = TubsDataService.GetRepository<Trip>(false))
                 {

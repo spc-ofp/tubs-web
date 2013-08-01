@@ -41,14 +41,6 @@ namespace TubsWeb.Mapping.Profiles
             // ViewModel to Entity
 
             // Entity to ViewModel
-            // If this changes to PurseSeineSet, then we're guaranteed an entry for every set 
-            CreateMap<DAL.Entities.LengthSamplingHeader, TripSamplingViewModel.SampleSummary>()
-                .ForMember(d => d.SetNumber, o => o.MapFrom(s => s.Set.SetNumber))
-                .ForMember(d => d.SetDate, o => o.MapFrom(s => s.Set.SkiffOff))
-                .ForMember(d => d.SampleType, o => o.MapFrom(s => s.SamplingProtocol))
-                .ForMember(d => d.SampleCount, o => o.MapFrom(s => null == s.Samples ? 0 : s.Samples.Count))
-                ;
-
             CreateMap<DAL.Entities.PurseSeineSet, TripSamplingViewModel.SampleSummary>()
                 .ForMember(d => d.SetNumber, o => o.MapFrom(s => s.SetNumber))
                 .ForMember(d => d.SetDate, o => o.MapFrom(s => s.SkiffOff))

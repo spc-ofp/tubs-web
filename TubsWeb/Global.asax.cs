@@ -32,6 +32,7 @@ namespace TubsWeb
     using Newtonsoft.Json.Converters;
     using NHibernate;
     using Spc.Ofp.Tubs.DAL;
+    using Spc.Ofp.Tubs.DAL.Infrastructure;
     using TubsWeb.Core;
 
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
@@ -86,9 +87,12 @@ namespace TubsWeb
                 {
                     // If we're running on the Intranet, return a vanilla session
                     CurrentSession = TubsDataService.GetSession();
-
+                    
+                    // TODO:  Stateless sessions add complexity to security.  Perhaps if we just
+                    // remove stateless sessions from the application...
                     // If we're running on the public Internet, add a session filter
                     // for the parent entity of the current logged in user
+                    //CurrentSession.EnableFilter(ProgramCodeFilter.FilterName).SetParameter(ProgramCodeFilter.ParamName, "FMOB");
                 }
                 if (!HttpContext.Current.Items.Contains(IStatelessSessionKey))
                 {

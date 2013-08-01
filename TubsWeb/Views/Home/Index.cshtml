@@ -22,18 +22,14 @@
 <div class="btn-toolbar pagination-centered">
     <a href="#" class="btn btn-large btn-primary disabled">
         <img src='@Url.Content("~/Content/images/cruise.png")' class="summary" alt="Trips" />
-        <div class="summary"><strong>10 trips</strong></div>
-    </a>
-    <a href="#" class="btn btn-large btn-info disabled">
-        <img src='@Url.Content("~/Content/images/project.png")' class="summary" alt="Programs" />
-        <div class="summary"><strong>10 programs</strong></div>
+        <div class="summary"><strong>@ViewBag.TripCount<br />trips</strong></div>
     </a>
     <a href="#" class="btn btn-large btn-success disabled">
         <img src='@Url.Content("~/Content/images/project.png")' class="summary" alt="Programs" />
-        <div class="summary"><strong>10 programs</strong></div>
+        <div class="summary"><strong>@ViewBag.ProgramCount<br />programs</strong></div>
     </a>
     <a href="#" class="btn btn-large btn-warning disabled">
         <img src='@Url.Content("~/Content/images/fishing.png")' class="summary" alt="Programs" />
-        <div class="summary"><strong>10 sets</strong></div>
+        <div class="summary"><strong>@ViewBag.SetCount<br />sets</strong></div>
     </a>
 </div>

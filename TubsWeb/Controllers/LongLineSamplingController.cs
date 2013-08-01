@@ -40,16 +40,12 @@ namespace TubsWeb.Controllers
         // TODO: This needs to be fixed for the "missing set" problem that comes up
         // when this data is published to users that don't have viewing privileges
         // for the entire trip
-        
+
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
         internal override ActionResult ViewActionImpl(Trip tripId, int setNumber)
         {
             // This should never happen, but a little defensive coding goes a long way
             var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             var sets =
                 TubsDataService.GetRepository<LongLineSet>(MvcApplication.CurrentSession)
                     .FilterBy(s => s.Trip.Id == trip.Id);
@@ -71,7 +67,7 @@ namespace TubsWeb.Controllers
 
             // One minor point.  If the user passes in a completely crazy setNumber for Index
             // we'll re-interpret based on intent.
-            if (IsIndex())
+            if (IsIndex)
             {
                 if (setNumber < 1) { setNumber = 1; }
                 if (setNumber > maxSets) { setNumber = maxSets; }
@@ -94,16 +90,16 @@ namespace TubsWeb.Controllers
 
             var svm = Mapper.Map<LongLineCatchHeader, LongLineSampleViewModel>(header);
             // Set some properties that AutoMapper can't manage for us
-            svm.ActionName = CurrentAction();
+            svm.ActionName = CurrentAction;
             svm.HasNext = setNumber < maxSets;
             svm.HasPrevious = setNumber > 1;
             svm.SetCount = maxSets;
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(svm);
 
 
-            return View(CurrentAction(), svm);
+            return View(CurrentAction, svm);
         }
 
         /// <summary>
@@ -111,15 +107,10 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="tripId">Current trip</param>
         /// <returns></returns>
+        [ValidTripFilter(TripType=typeof(LongLineTrip))]
         public ActionResult List(Trip tripId)
         {
-            // This should never happen, but a little defensive coding goes a long way
             var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             ViewBag.TripId = trip.Id;
             ViewBag.TripNumber = trip.SpcTripNumber;
 
@@ -156,15 +147,11 @@ namespace TubsWeb.Controllers
         /// <returns></returns>
         [HttpPost]
         [EditorAuthorize]
+        [ValidTripFilter(TripType = typeof(LongLineTrip))]
         [HandleTransactionManually]
         public ActionResult Edit(Trip tripId, int setNumber, LongLineSampleViewModel vm)
         {
             var trip = tripId as LongLineTrip;
-            if (null == trip)
-            {
-                return InvalidTripResponse();
-            }
-
             // TODO Validation
             // Possible validations:
             // 1)  Any sample date less than start of haul
@@ -173,7 +160,7 @@ namespace TubsWeb.Controllers
             if (!ModelState.IsValid)
             {
                 LogModelErrors();
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(vm);
             }
@@ -210,7 +197,7 @@ namespace TubsWeb.Controllers
 
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var repo = TubsDataService.GetRepository<LongLineSet>(false))
                 {
@@ -222,7 +209,7 @@ namespace TubsWeb.Controllers
 
                     var svm = Mapper.Map<LongLineCatchHeader, LongLineSampleViewModel>(xheader);
                     // Set some properties that AutoMapper can't manage for us
-                    svm.ActionName = CurrentAction();
+                    svm.ActionName = CurrentAction;
                     svm.HasNext = vm.HasNext;
                     svm.HasPrevious = setNumber > 1;
                     svm.SetCount = vm.SetCount;

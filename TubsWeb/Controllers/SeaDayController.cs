@@ -66,7 +66,7 @@ namespace TubsWeb.Controllers
                 new { controller = "SeaDay", tripId = tripId }
             );
 
-            if (IsAdd())
+            if (IsAdd)
             {
                 if (dayNumber <= maxDays)
                 {
@@ -83,7 +83,7 @@ namespace TubsWeb.Controllers
                     needsRedirect = true;
                 }
             }
-            else if (IsEdit())
+            else if (IsEdit)
             {
                 if (dayNumber > maxDays)
                 {
@@ -123,7 +123,7 @@ namespace TubsWeb.Controllers
 
             // One minor point.  If the user passes in a completely crazy dayNumber for Index
             // we'll re-interpret based on intent.
-            if (IsIndex())
+            if (IsIndex)
             {
                 if (dayNumber < 1) { dayNumber = 1; }
                 if (dayNumber > maxDays) { dayNumber = maxDays; } 
@@ -134,7 +134,7 @@ namespace TubsWeb.Controllers
             var day = days.Skip(dayNumber - 1).Take(1).FirstOrDefault() as PurseSeineSeaDay;
             var sdvm = Mapper.Map<PurseSeineSeaDay, SeaDayViewModel>(day);
             // It would be really cool if I could do the following setup in AutoMapper...
-            if (IsAdd())
+            if (IsAdd)
             {
                 sdvm = new SeaDayViewModel();
                 sdvm.TripId = trip.Id;
@@ -146,9 +146,9 @@ namespace TubsWeb.Controllers
             }
             // Set the few properties on sdvm that aren't set by AutoMapper
             sdvm.SetNavDetails(dayNumber, maxDays);
-            sdvm.ActionName = CurrentAction();
+            sdvm.ActionName = CurrentAction;
 
-            if (sdvm.NeedsDates() && (IsAdd() || IsEdit()))
+            if (sdvm.NeedsDates() && (IsAdd || IsEdit))
             {
                 // First day is easy... (Maybe we should do this in 'CreateTrip'?)
                 if (dayNumber == 1)
@@ -175,10 +175,10 @@ namespace TubsWeb.Controllers
                 }
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(sdvm);
 
-            return View(CurrentAction(), sdvm);
+            return View(CurrentAction, sdvm);
 
         }
 
@@ -269,7 +269,7 @@ namespace TubsWeb.Controllers
             if (!ModelState.IsValid)
             {
                 LogModelErrors();
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(sdvm);
             }
@@ -382,7 +382,7 @@ namespace TubsWeb.Controllers
             // database as definitive.
 
             // This is the happy path -- if we get here, everything should have worked...
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 // For some reason (could be a bug, could be something I'm forgetting to do)
                 // the ISession that was used for the updates doesn't reflect said updates
@@ -402,7 +402,7 @@ namespace TubsWeb.Controllers
 
                     sdvm = Mapper.Map<PurseSeineSeaDay, SeaDayViewModel>(day);
                     sdvm.SetNavDetails(dayNumber, maxDays);
-                    sdvm.ActionName = CurrentAction();
+                    sdvm.ActionName = CurrentAction;
                 }
 
                 return GettableJsonNetData(sdvm);

@@ -33,21 +33,16 @@ namespace TubsWeb.Areas.WebApi.Controllers
     using Spc.Ofp.Tubs.DAL.Entities;
 
     /// <summary>
-    /// Read-only OData implementation for observer entities.
+    /// Read-only OData implementation for vessel entities.
     /// </summary>
-    /// <remarks>
-    /// Initially, this was implemented using the EntitySetController in
-    /// the Microsoft OData stack, but that had some issues.  This works,
-    /// so we'll run with it.
-    /// </remarks>
-    public class ObserverController : ApiController
+    public class VesselController : ApiController
     {
         /// <summary>
-        /// OData endpoint for listing/searching observers.
+        /// OData endpoint for listing/searching vessels.
         /// </summary>
         /// <returns></returns>
         [AcceptVerbs("GET", "HEAD")]
-        public PageResult<Observer> Get(ODataQueryOptions<Observer> options)
+        public PageResult<Vessel> Get(ODataQueryOptions<Vessel> options)
         {
             // Implementation from here:
             // http://www.asp.net/web-api/overview/odata-support-in-aspnet-web-api/supporting-odata-query-options
@@ -58,13 +53,13 @@ namespace TubsWeb.Areas.WebApi.Controllers
                 PageSize = 15
             };
 
-            var repo = TubsDataService.GetRepository<Observer>(MvcApplication.CurrentSession);
+            var repo = TubsDataService.GetRepository<Vessel>(MvcApplication.CurrentSession);
             IQueryable results = options.ApplyTo(repo.All(), settings);
 
             // Not sure how to get the appropriate count
             // what is wanted is repo.All().Where(???).Count();
-            return new PageResult<Observer>(
-                results as IEnumerable<Observer>,
+            return new PageResult<Vessel>(
+                results as IEnumerable<Vessel>,
                 Request.GetNextPageLink(),
                 Request.GetInlineCount()
             );
@@ -76,16 +71,16 @@ namespace TubsWeb.Areas.WebApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [AcceptVerbs("GET", "HEAD")]
-        public Observer GetObserver(string id)
+        public Vessel GetVessel(int id)
         {
-            var repo = TubsDataService.GetRepository<Observer>(MvcApplication.CurrentSession);
-            var observer = repo.FindById(id);
-            if (null == observer)
+            var repo = TubsDataService.GetRepository<Vessel>(MvcApplication.CurrentSession);
+            var vessel = repo.FindById(id);
+            if (null == vessel)
             {
                 var response = Request.CreateResponse(HttpStatusCode.NotFound);
                 throw new HttpResponseException(response);
             }
-            return observer;
+            return vessel;
         }
     }
 }

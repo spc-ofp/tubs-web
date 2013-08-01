@@ -69,7 +69,7 @@ namespace TubsWeb.Controllers
 
             // One minor point.  If the user passes in a completely crazy setNumber for Index
             // we'll re-interpret based on intent.
-            if (IsIndex())
+            if (IsIndex)
             {
                 if (setNumber < 1) { setNumber = 1; }
                 if (setNumber > maxSets) { setNumber = maxSets; }
@@ -89,10 +89,10 @@ namespace TubsWeb.Controllers
             fsvm.HasNext = setNumber < maxSets;
             fsvm.HasPrevious = setNumber > 1;
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(fsvm);
 
-            return View(CurrentAction(), fsvm);
+            return View(CurrentAction, fsvm);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace TubsWeb.Controllers
 
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(fsvm);
             }
@@ -201,7 +201,7 @@ namespace TubsWeb.Controllers
                 fsrepo.Reload(fset);
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 var maxSets = fsvm.MaxSets;
                 fsvm = Mapper.Map<PurseSeineSet, PurseSeineSetViewModel>(fset);

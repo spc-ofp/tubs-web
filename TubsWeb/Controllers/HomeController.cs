@@ -36,17 +36,37 @@ namespace TubsWeb.Controllers
     /// </summary>
     public class HomeController : SuperController
     {
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string TUBS_METRICS_QUERY =
+           @"SELECT
+                (SELECT COUNT(1) FROM obsv.trip) AS trip_count,
+                (SELECT COUNT(1) FROM obsv.s_set) AS ps_set_count,
+                (SELECT COUNT(1) FROM obsv.l_set) AS ll_set_count,
+                (SELECT COUNT(DISTINCT(obsprg_code)) from obsv.trip) AS program_count";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string TRIPS_SINCE_QUERY =
+            @"select count(1) from obsv.trip where DATEADD(dd, ?, GETDATE()) < entered_dtime";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string TRIPS_SINCE_FOR_QUERY =
+            @"select count(1) from obsv.trip where DATEADD(dd, -7, GETDATE()) < entered_dtime AND UPPER(entered_by) like ?";
+
         /// <summary>
         /// TripsEnteredSince returns the number of trips entered/registered by the
         /// currently logged in user
         /// </summary>
         /// <param name="daysBack"></param>
         /// <returns></returns>
-        private int TripsEnteredSince(int daysBack)
+        internal int TripsEnteredSince(int daysBack)
         {
-            string query = @"select count(1) from obsv.trip where DATEADD(dd, ?, GETDATE()) < entered_dtime";
-            var results = TubsDataService.Execute(query, daysBack * -1);
+            var results = TubsDataService.Execute(TRIPS_SINCE_QUERY, daysBack * -1);
             return (int)results[0];
         }
 
@@ -55,7 +75,7 @@ namespace TubsWeb.Controllers
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        private int TripsInLastWeekFor(string user)
+        internal int TripsInLastWeekFor(string user)
         {
             // Chomp the domain off user
             int slashIndex = user.IndexOf(@"\");
@@ -67,8 +87,7 @@ namespace TubsWeb.Controllers
             // Prefix with a wildcard
             user = "%" + user.ToUpper();
 
-            string query = @"select count(1) from obsv.trip where DATEADD(dd, -7, GETDATE()) < entered_dtime AND UPPER(entered_by) like ?";
-            var results = TubsDataService.Execute(query, user);
+            var results = TubsDataService.Execute(TRIPS_SINCE_FOR_QUERY, user);
             return (int)results[0];            
         }
         
@@ -81,6 +100,10 @@ namespace TubsWeb.Controllers
             ViewBag.Message = "Home Page";
             ViewBag.TripsEnteredSince = TripsEnteredSince(30);
             ViewBag.TripsInLastWeek = TripsInLastWeekFor(User.Identity.Name);
+            object[] results = TubsDataService.Execute(TUBS_METRICS_QUERY)[0] as object[];
+            ViewBag.TripCount = (int)results[0];
+            ViewBag.SetCount = (int)results[1] + (int)results[2];
+            ViewBag.ProgramCount = (int)results[3];
             return View();
         }
 

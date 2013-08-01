@@ -85,9 +85,9 @@ namespace TubsWeb.Controllers
                 fad = repo.FilterBy(f => f.Activity.Id == activityId.Value).FirstOrDefault();
             }
 
-            if (!IsAdd() && (null == fad || fad.Activity.Day.Trip.Id != trip.Id))
+            if (!IsAdd && (null == fad || fad.Activity.Day.Trip.Id != trip.Id))
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                 {
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return GettableJsonNetData("Missing or invalid GEN-5 record");
@@ -97,7 +97,7 @@ namespace TubsWeb.Controllers
             }
 
             var fvm = Mapper.Map<Gen5Object, Gen5ViewModel>(fad);
-            if (IsAdd() && null == fvm)
+            if (IsAdd && null == fvm)
             {
                 fvm = new Gen5ViewModel
                 {
@@ -107,10 +107,10 @@ namespace TubsWeb.Controllers
                     VersionNumber = trip.Version == WorkbookVersion.v2009 ? 2009 : 2007
                 };
             }
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(fvm);
 
-            return View(CurrentAction(), fvm);
+            return View(CurrentAction, fvm);
         }
 
         /// <summary>
@@ -127,19 +127,19 @@ namespace TubsWeb.Controllers
             // Should we pull this snippet out into a new function?
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 
-                return View(CurrentAction(), fvm);
+                return View(CurrentAction, fvm);
             }
 
             var fad = Mapper.Map<Gen5ViewModel, Gen5Object>(fvm);
             if (null == fad)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
 
-                return View(CurrentAction(), fvm);
+                return View(CurrentAction, fvm);
             }
 
             fad.SetAuditTrail(User.Identity.Name, DateTime.Now);
@@ -202,7 +202,7 @@ namespace TubsWeb.Controllers
 
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var repo = TubsDataService.GetRepository<Gen5Object>(false))
                 {

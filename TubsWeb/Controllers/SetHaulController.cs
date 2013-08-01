@@ -86,7 +86,7 @@ namespace TubsWeb.Controllers
                 new { controller = "SetHaul", tripId = tripId }
             );
 
-            if (IsAdd())
+            if (IsAdd)
             {
                 if (setNumber <= maxSets)
                 {
@@ -103,7 +103,7 @@ namespace TubsWeb.Controllers
                     needsRedirect = true;
                 }
             }
-            else if (IsEdit())
+            else if (IsEdit)
             {
                 if (setNumber > maxSets)
                 {
@@ -128,7 +128,7 @@ namespace TubsWeb.Controllers
             var trip = tripId as LongLineTrip;
             // It was getting crazy to duplicate views for what is essentially the
             // same thing
-            string viewName = (IsAdd() || IsEdit()) ? "_Editor" : CurrentAction();          
+            string viewName = (IsAdd || IsEdit) ? "_Editor" : CurrentAction;          
 
             // Unlike PS data, set number looks pretty sane in the database
             // so we can navigate directly by tripId and setNumber
@@ -140,7 +140,7 @@ namespace TubsWeb.Controllers
             // I expect SQL Server to be able to handle that...
             int maxSets = trip.FishingSets.Count();
 
-            ViewBag.TitleSuffix = IsAdd() ? 
+            ViewBag.TitleSuffix = IsAdd ? 
                 String.Format("Add Set {0}", setNumber) :
                 String.Format("Set {0} of {1}", setNumber, maxSets); 
             ViewBag.Title = String.Format("{0}: {1}", tripId.SpcTripNumber ?? "This Trip", ViewBag.TitleSuffix);
@@ -151,7 +151,7 @@ namespace TubsWeb.Controllers
 
             // One minor point.  If the user passes in a completely crazy dayNumber for Index
             // we'll re-interpret based on intent.
-            if (IsIndex())
+            if (IsIndex)
             {
                 if (setNumber < 1) { setNumber = 1; }
                 if (setNumber > maxSets) { setNumber = maxSets; }
@@ -159,7 +159,7 @@ namespace TubsWeb.Controllers
 
             // If this is an Add, then we won't find the entity.  Better to create a new
             // empty ViewModel, set some minimal properties, and throw it back to the user
-            if (IsAdd())
+            if (IsAdd)
             {
                 var addVm = new LongLineSetViewModel();
                 addVm.TripId = tripId.Id;
@@ -167,7 +167,7 @@ namespace TubsWeb.Controllers
                 addVm.SetNavDetails(setNumber, maxSets);
                 addVm.HasNext = false; // Force it
                 addVm.SetNumber = setNumber;
-                addVm.ActionName = CurrentAction();
+                addVm.ActionName = CurrentAction;
                 return View(viewName, addVm);
             }
 
@@ -176,14 +176,21 @@ namespace TubsWeb.Controllers
             var fset = repo.FilterBy(s => s.Trip.Id == tripId.Id && s.SetNumber == setNumber).FirstOrDefault();
             var vm = Mapper.Map<LongLineSet, LongLineSetViewModel>(fset);
             vm.SetNavDetails(setNumber, maxSets);
-            vm.ActionName = CurrentAction();
+            vm.ActionName = CurrentAction;
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(vm);
 
             return View(viewName, vm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tripId">Current trip</param>
+        /// <param name="setNumber">Set number within the trip</param>
+        /// <param name="svm">Set data as ViewModel</param>
+        /// <returns></returns>
         internal ActionResult SaveActionImpl(Trip tripId, int setNumber, LongLineSetViewModel svm)
         {
             var trip = tripId as LongLineTrip;
@@ -192,7 +199,7 @@ namespace TubsWeb.Controllers
             if (!ModelState.IsValid)
             {
                 LogModelErrors();
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(svm);
             }
@@ -241,7 +248,7 @@ namespace TubsWeb.Controllers
 
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 // For some reason (could be a bug, could be something I'm forgetting to do)
                 // the ISession that was used for the updates doesn't reflect said updates
@@ -261,7 +268,7 @@ namespace TubsWeb.Controllers
 
                     svm = Mapper.Map<LongLineSet, LongLineSetViewModel>(fset);
                     svm.SetNavDetails(setNumber, maxDays);
-                    svm.ActionName = CurrentAction();
+                    svm.ActionName = CurrentAction;
                 }
 
                 return GettableJsonNetData(svm);

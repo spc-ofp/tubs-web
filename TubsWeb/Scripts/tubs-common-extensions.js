@@ -55,7 +55,7 @@ tubs.mappedDate = {
 tubs.latitudeExtension = {
     pattern: {
         message: 'Latitude should be ddmm.mmmN or ddmm.mmmS',
-        params: new RegExp('^[0-8][0-9]{3}\.?[0-9]{3}[NS]$', 'i')
+        params: new RegExp('^[0-8][0-9]{3}\.?[0-9]{3}[NS]$', 'i') //ignore jslint
     },
     maxLength: 9
 };
@@ -67,7 +67,7 @@ tubs.latitudeExtension = {
 tubs.longitudeExtension = {
     pattern: {
         message: 'Longitude should be dddmm.mmmE or dddmm.mmmW',
-        params: new RegExp('^[0-1]\\d{4}\.?\\d{3}[EW]$', 'i')
+        params: new RegExp('^[0-1]\\d{4}\.?\\d{3}[EW]$', 'i') //ignore jslint
     },
     maxLength: 10
 };

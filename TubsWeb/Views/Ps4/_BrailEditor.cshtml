@@ -1,0 +1,89 @@
+﻿
+<div class="row">
+    <div class="span1">
+        <label><strong>Full</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: FullBrailCount" />
+    </div>
+    <div class="span1">
+        <label><strong>7/8</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: SevenEighthsBrailCount" />
+    </div>
+    <div class="span1">
+        <label><strong>3/4</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: ThreeQuartersBrailCount" />
+    </div>
+    <div class="span1">
+        <label><strong>2/3</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: TwoThirdsBrailCount" />
+    </div>
+    <div class="span1">
+        <label><strong>1/2</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: OneHalfBrailCount" />
+    </div>
+    <div class="span1">
+        <label><strong>1/3</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: OneThirdBrailCount" />
+    </div>
+    <div class="span1">
+        <label><strong>1/4</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: OneQuarterBrailCount" />
+    </div>
+    <div class="span1">
+        <label><strong>1/8</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: OneEighthBrailCount" />
+    </div>
+    <div class="span1">
+        <label><strong>Total</strong></label>
+        <input type="number" class="input-mini" min="0" data-bind="value: TotalBrails" />
+    </div>
+    <div class="span1">
+        <label><strong>Sum</strong></label>
+        <input type="number" class="input-mini" min="0" step="any" data-bind="value: SumOfAllBrails" />
+    </div>
+    @*
+     * TODO:  It would be good to put a div here that calculated the sum of all brails compared to
+     * what was entered.
+     *@
+</div>
+<hr />
+@*
+ * A few problems:
+ * First, we need to label the columns somehow
+ * Second, there's another alignment problem
+ * Third, the CSS isn't exactly the same because the hierarchy is slightly different compared to view page
+ *@
+<div class="row">
+    <div class="span3">
+        <ol class="dense" data-bind="foreach: $root.Brails().slice(0, 10)">
+            <li>
+                <div class="form-horizontal compact-row">
+                    <span data-bind="text: Number"></span>
+                    <input type="number" min="1" max="8" class="input-mini" data-bind="value: Fullness" />
+                    <input type="number" min="1" max="8" class="input-mini" data-bind="value: Samples" />
+                </div>
+            </li>
+        </ol>
+    </div>
+    <div class="span3">
+        <ol class="dense" data-bind="foreach: $root.Brails().slice(10, 20)">
+            <li>
+                <div class="form-horizontal compact-row">
+                    <span data-bind="text: Number"></span>
+                    <input type="number" min="1" max="8" class="input-mini" data-bind="value: Fullness" />
+                    <input type="number" min="1" max="8" class="input-mini" data-bind="value: Samples" />
+                </div>
+            </li>
+        </ol>
+    </div>
+    <div class="span3">
+        <ol class="dense" data-bind="foreach: $root.Brails().slice(20, 30)">
+            <li>
+                <div class="form-horizontal compact-row">
+                    <span data-bind="text: Number"></span>
+                    <input type="number" min="1" max="8" class="input-mini" data-bind="value: Fullness" />
+                    <input type="number" min="1" max="8" class="input-mini" data-bind="value: Samples" />
+                </div>
+            </li>
+        </ol>
+    </div>
+</div>

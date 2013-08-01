@@ -7,10 +7,11 @@
  * knockout.js
  */
 
-/// <reference name="../knockout-2.2.1.debug.js" />
+/// <reference name="../knockout-2.3.0.debug.js" />
 
 /**
- * Extend Knockout to store dates using ISO-8601, but display (and accept) in arbitrary formats.
+ * Extend Knockout to store dates using ISO-8601, 
+ * but display (and accept) in arbitrary formats.
  * [Original implementation]{@link http://www.reddnet.net/knockout-js-extender-for-dates-in-iso-8601-format/}
  * [JSFiddle]{@link http://jsfiddle.net/StephenRedd/SXRyr/}
  * @param {HTMLElement} target target HTMLElement

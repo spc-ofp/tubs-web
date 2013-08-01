@@ -50,6 +50,7 @@ namespace TubsWeb.Mapping.Profiles
                 .ForMember(d => d.DeparturePortCode, o => o.MapFrom(s => s.DeparturePort.PortCode))                
                 .ForMember(d => d.VesselName, o => o.MapFrom(s => s.Vessel.Name))
                 .ForMember(d => d.VesselFlag, o => o.MapFrom(s => s.Vessel.RegisteredCountryCode))
+                .ForMember(d => d.FfaVid, o => o.MapFrom(s => s.Vessel.FfaVid))
                 .ForMember(d => d.Version, o => o.MapFrom(s => s.Version == DAL.Common.WorkbookVersion.v2009 ? 2009 : 2007))
                 .ForMember(d => d.EntryComments, o => o.MapFrom(s => s.Comments))
                 .ForMember(d => d.HasGen3, o => o.MapFrom(s => (null != s.TripMonitor) || (s.Gen3Answers.Count > 0)))

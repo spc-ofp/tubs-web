@@ -316,7 +316,11 @@ tubs.Electronics = function (data) {
             tubs.getElectronics(
                 self.TripId(),
                 function (result) {
-                    ko.mapping.fromJS(tubs.addElectronicsDefaults(result), tubs.electronicsMapping, self);
+                    ko.mapping.fromJS(
+                        tubs.addElectronicsDefaults(result),
+                        tubs.electronicsMapping,
+                        self
+                    );
                     self.clearDirtyFlag();
                     toastr.success('Reloaded electronics data');
                 },
@@ -337,7 +341,11 @@ tubs.Electronics = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
-                    ko.mapping.fromJS(tubs.addElectronicsDefaults(result), tubs.electronicsMapping, self);
+                    ko.mapping.fromJS(
+                        tubs.addElectronicsDefaults(result),
+                        tubs.electronicsMapping,
+                        self
+                    );
                     self.clearDirtyFlag();
                     toastr.success('Saved electronics data');
                 },

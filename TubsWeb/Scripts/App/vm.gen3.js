@@ -19,7 +19,7 @@
  * @namespace All view models are in the tubs namespace.
  */
 var tubs = tubs || {};
- 
+
 /**
  * Knockout mapping for GEN-3 form data.
  * WARNING:  The v2007 workbook, with it's use of "0" as a key
@@ -29,7 +29,7 @@ var tubs = tubs || {};
 tubs.gen3Mapping = {
     'Notes': {
         create: function (options) {
-            return new tubs.gen3Note(options.data);
+            return new tubs.Gen3Note(options.data);
         },
         key: function (data) {
             return ko.utils.unwrapObservable(data.Id);
@@ -37,7 +37,7 @@ tubs.gen3Mapping = {
     },
     'Incidents': {
         create: function (options) {
-            return new tubs.gen3Incident(options.data);
+            return new tubs.Gen3Incident(options.data);
         }
     }
 };
@@ -47,7 +47,7 @@ tubs.gen3Mapping = {
  * @constructor
  * @param {object} incidentData - Incident data
  */
-tubs.gen3Incident = function (incidentData) {
+tubs.Gen3Incident = function (incidentData) {
     'use strict';
     var self = this;
     self.Id = ko.observable(incidentData.Id || 0);
@@ -77,7 +77,7 @@ tubs.gen3Incident = function (incidentData) {
  * @constructor
  * @param {object} noteData - Note data
  */
-tubs.gen3Note = function (noteData) {
+tubs.Gen3Note = function (noteData) {
     'use strict';
     var self = this;
     self.Id = ko.observable(noteData.Id || 0);
@@ -162,7 +162,7 @@ tubs.Gen3ViewModel = function (data) {
     };
 
     self.addNote = function () {
-        self.Notes.push(new tubs.gen3Note({ "NeedsFocus": true }));
+        self.Notes.push(new tubs.Gen3Note({ "NeedsFocus": true }));
     };
 
     self.removeNote = function (evt) {
@@ -178,7 +178,10 @@ tubs.Gen3ViewModel = function (data) {
             tubs.getGen3(
                 self.TripId(),
                 function (result) {
-                    self.clear();
+                    // There's a problem here with mapping back into the
+                    // array.  It needs fixing, but we can ignore for the
+                    // time being.
+                    //self.clear();
                     ko.mapping.fromJS(result, tubs.gen3Mapping, self);
                     self.clearDirtyFlag();
                     toastr.info('Reloaded GEN-3');
@@ -200,7 +203,10 @@ tubs.Gen3ViewModel = function (data) {
                 self.TripId(),
                 self,
                 function (result) {
-                    self.clear();
+                    // There's a problem here with mapping back into the
+                    // array.  It needs fixing, but we can ignore for the
+                    // time being.
+                    //self.clear();
                     ko.mapping.fromJS(result, tubs.gen3Mapping, self);
                     self.clearDirtyFlag();
                     toastr.success('GEN-3 saved');

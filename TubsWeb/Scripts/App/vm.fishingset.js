@@ -63,7 +63,7 @@ tubs.psSetMapping = {
 tubs.psSetCatch = function (catchData) {
     'use strict';
     var self = this;
-    self.Id = ko.observable(catchData.Id || 0);    
+    self.Id = ko.observable(catchData.Id || 0);
     self.SpeciesCode = ko.observable(catchData.SpeciesCode || '');
     self.FateCode = ko.observable(catchData.FateCode || '');
     self.ObservedWeight = ko.observable(catchData.ObservedWeight || null);
@@ -234,7 +234,7 @@ tubs.psSet = function (data) {
                     self.clear();
                     ko.mapping.fromJS(result, tubs.psSetMapping, self);
                     self.clearDirtyFlag();
-                    toastr.info('Reloaded set details');                   
+                    toastr.info('Reloaded set details');
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to reload set details', xhr, status);
@@ -258,7 +258,7 @@ tubs.psSet = function (data) {
                     self.clear();
                     ko.mapping.fromJS(result, tubs.psSetMapping, self);
                     self.clearDirtyFlag();
-                    toastr.info('Saved set details');                   
+                    toastr.info('Saved set details');
                 },
                 function (xhr, status) {
                     tubs.notify('Failed to save set details', xhr, status);

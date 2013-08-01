@@ -21,8 +21,7 @@ namespace TubsWeb.Controllers.Api
      *  
      * You should have received a copy of the GNU Affero General Public License
      * along with TUBS.  If not, see <http://www.gnu.org/licenses/>.
-     */    
-    using System;
+     */
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
@@ -30,29 +29,16 @@ namespace TubsWeb.Controllers.Api
     using System.Web.Http;
     using System.Web.Http.OData;
     using System.Web.Http.OData.Query;
+    using AutoMapper;
     using Spc.Ofp.Tubs.DAL;
     using Spc.Ofp.Tubs.DAL.Entities;
-    using TubsWeb.Core;
     using TubsWeb.ViewModels;
-    using AutoMapper;
     
     /// <summary>
     /// 
     /// </summary>
     public class TripController : ApiController
     {
-        /*
-         * Consider this implementation for CORS/OPTIONS support
-         * http://blogs.msdn.com/b/carlosfigueira/archive/2012/02/21/implementing-cors-support-in-asp-net-web-apis-take-2.aspx
-         * More here
-         * http://www.jefclaes.be/2012/09/supporting-options-verb-in-aspnet-web.html
-         * Or this
-         * http://www.strathweb.com/2013/03/adding-http-head-support-to-asp-net-web-api/
-         * Final bit
-         * http://zacstewart.com/2012/04/14/http-options-method.html
-         */
-       
-
         /// <summary>
         /// Get all trips
         /// </summary>

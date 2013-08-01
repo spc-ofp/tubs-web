@@ -34,7 +34,7 @@ tubs.psCrewMemberMapping = {
     key: function (data) {
         return ko.utils.unwrapObservable(data.Id);
     }
-}
+};
 
 /**
  * Knockout mapping for the entire crew.
@@ -53,7 +53,7 @@ tubs.psCrewMapping = {
     'HelicopterPilot': tubs.psCrewMemberMapping,
     'SkiffMan': tubs.psCrewMemberMapping,
     'WinchMan': tubs.psCrewMemberMapping
-}
+};
 
 /**
  * Purse seine crew member
@@ -116,7 +116,7 @@ tubs.psCrewViewModel = function (data) {
         });
     });
 
-    self.clearDirtyFlag = function () {        
+    self.clearDirtyFlag = function () {
         _.each(self.Hands(), function (hand) { //ignore jslint
             hand.dirtyFlag().reset();
         });

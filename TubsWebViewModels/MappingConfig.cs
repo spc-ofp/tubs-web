@@ -30,6 +30,7 @@ namespace TubsWeb
                 cfg.AddProfile<TransferProfile>();
                 cfg.AddProfile<CrewProfile>();
                 cfg.AddProfile<ElectronicsProfile>();
+                cfg.AddProfile<PurseSeineSampleProfile>();
                 cfg.AddProfile<LengthFrequencyProfile>();
                 cfg.AddProfile<Gen2Profile>();
                 cfg.AddProfile<Gen3Profile>();

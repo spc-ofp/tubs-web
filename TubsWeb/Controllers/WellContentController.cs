@@ -52,10 +52,10 @@ namespace TubsWeb.Controllers
 
             var vm = Mapper.Map<PurseSeineTrip, WellContentViewModel>(trip);
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(vm);
 
-            return View(CurrentAction(), vm);
+            return View(CurrentAction, vm);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace TubsWeb.Controllers
             if (!ModelState.IsValid)
             {
                 LogModelErrors();
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
                 return View(wcvm);
             }
@@ -119,7 +119,7 @@ namespace TubsWeb.Controllers
                 xa.Commit();
             }
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 // For some reason (could be a bug, could be something I'm forgetting to do)
                 // the ISession that was used for the updates doesn't reflect said updates

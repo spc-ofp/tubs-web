@@ -45,18 +45,16 @@ tubs.psEvent = function (eventData) {
     self.EventId = ko.observable(eventData.EventId || 0);
     self.Gen5Id = ko.observable(eventData.Gen5Id || 0);
     self.Time = ko.observable(eventData.Time || '').extend(tubs.timeExtension);
-    self.Latitude = ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
-    self.Longitude = ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
-    self.EezCode = ko.observable(eventData.EezCode || '').extend({ minLength: 2, maxLength: 2 });
+    self.Latitude =
+        ko.observable(eventData.Latitude || '').extend(tubs.latitudeExtension);
+    self.Longitude =
+        ko.observable(eventData.Longitude || '').extend(tubs.longitudeExtension);
+    self.EezCode =
+        ko.observable(eventData.EezCode || '').extend({ minLength: 2, maxLength: 2 });
     self.ActivityCode = ko.observable(eventData.ActivityCode || '');
     self.WindSpeed = ko.observable(eventData.WindSpeed || null);
     self.WindDirection = ko.observable(eventData.WindDirection || null);
     self.SeaCode = ko.observable(eventData.SeaCode || '');
-    // NOTE:  Knockout is very sensitive to data types
-    // If the value is coerced to a string, that will count as a 'change'
-    // In this case, I settled on nullable int in the viewModel, with an actual
-    // JavaScript null if no value is provided (probably can get away without, but it's a good reminder
-    // in the event I switch back to a string)
     self.DetectionCode = ko.observable(eventData.DetectionCode || null);
     self.AssociationCode = ko.observable(eventData.AssociationCode || null);
     self.FadNumber = ko.observable(eventData.FadNumber || '');
@@ -235,7 +233,7 @@ tubs.psSeaDay = function (data) {
 
 /**
  * This function is an opt-out hash function.
- * http://stackoverflow.com/questions/4910567/json-stringify-how-to-exclude-certain-fields-from-the-json-string
+ * http://stackoverflow.com/questions/4910567
  */
 tubs.psSeaDayReplacer = function (key, value) {
     if (key === "IsLocked") {

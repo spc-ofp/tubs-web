@@ -1,0 +1,52 @@
+﻿<div class="row">
+    <div class="span2">
+        <strong>Sample Type</strong><br />
+        <select class="input-small" data-bind="options: $root.SampleTypes, value: SampleType"></select>
+    </div>
+    <div class="span2" data-bind="visible: isGrab">
+        <strong>Samples per brail</strong><br />
+        <input type="number" min="1" class="input-mini" data-bind="value: GrabTarget" />
+    </div>
+    <div class="span2" data-bind="visible: isSpill">
+        <strong>Brail #</strong><br />
+        <input type="number" min="1" class="input-mini" data-bind="value: SpillBrailNumber" />
+    </div>
+    <div class="span2" data-bind="visible: isSpill">
+        <strong># Fish Measured</strong><br />
+        <input type="number" min="1" class="input-mini" data-bind="value: SpillNumberFishMeasured" />
+    </div>
+    <div class="span2" data-bind="visible: isOther">
+        <strong>Other</strong><br />
+        <select class="input-small" data-bind="options: $root.OtherCodes, value: OtherCode"></select>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="span2">
+        <strong>Which Brail</strong><br />
+        <select class="input-small" data-bind="options: $root.BrailNumbers, value: WhichBrail"></select>
+    </div>
+    @* This is also in the nav bar... *@
+    <div class="span3">
+        <strong>Forms Used</strong><br />
+        <div class="form-horizontal">
+            <input type="number" min="1" class="input-mini" data-bind="value: PageNumber" /> of&nbsp;
+            <input type="number" min="1" class="input-mini" data-bind="value: PageCount" />
+        </div>
+    </div>
+    <div class="span2">
+        <strong>Instrument</strong><br />
+        <select class="input-medium" data-bind="options: $root.MeasuringInstruments, value: MeasuringInstrument"></select>
+    </div>
+    <div class="span2">
+        <strong>Calibrated this set?</strong><br />
+        <select class="input-small" data-bind="options: $root.BooleanValues, value: CalibratedThisSet"></select>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="span12">
+        <strong>Comments</strong><br />
+        <textarea data-bind="value: ProtocolComments" class="span10" rows="5"></textarea>
+    </div>
+</div>

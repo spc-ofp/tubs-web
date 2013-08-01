@@ -45,11 +45,11 @@ namespace TubsWeb.Controllers
             var trip = tripId as LongLineTrip;
             var tivm = Mapper.Map<LongLineTrip, LongLineTripInfoViewModel>(trip);
 
-            if (IsApiRequest())
+            if (IsApiRequest)
                 return GettableJsonNetData(tivm);
 
             // If we wanted to, we could set up the new NavPills here...
-            return View(CurrentAction(), tivm);
+            return View(CurrentAction, tivm);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace TubsWeb.Controllers
             var trip = tripId as LongLineTrip;
             if (!ModelState.IsValid)
             {
-                if (IsApiRequest())
+                if (IsApiRequest)
                     return ModelErrorsResponse();
 
                 return View(tivm);
@@ -166,7 +166,7 @@ namespace TubsWeb.Controllers
             }
 
 
-            if (IsApiRequest())
+            if (IsApiRequest)
             {
                 using (var rrepo = TubsDataService.GetRepository<Trip>(false))
                 {

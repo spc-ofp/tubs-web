@@ -47,6 +47,8 @@ namespace TubsWeb
             bundles.IgnoreList.Ignore("*-vsdoc.js");
             bundles.IgnoreList.Ignore("*intellisense.js");
 
+            // TODO:  We've gotten this far down the road without Modernizr
+            // Should it be pulled from the project?
             // Modernizr goes separate since it loads first
             bundles.Add(new ScriptBundle("~/bundles/modernizr")
                 .Include("~/Scripts/modernizr-{version}.js"));
@@ -107,12 +109,6 @@ namespace TubsWeb
                     "~/Scripts/sco.tab.js"
                 ));
 
-            bundles.Add(new ScriptBundle("~/bundles/openlayers")
-                .Include(
-                    "~/Scripts/OpenLayers.js",
-                    "~/Scripts/tubs-openlayers.js"
-                ));
-
             bundles.Add(new ScriptBundle("~/bundles/leaflet")
                 .Include(
                     "~/Scripts/leaflet-src.js"
@@ -136,8 +132,8 @@ namespace TubsWeb
                 "~/Content/pageguide.css",
                 "~/Content/rateit.css",
                 "~/Content/toastr.css",
-                "~/Content/scojs.css", // Trial of Sco.js
-                "~/Content/tubs.css" // Custom for sticky footer
+                "~/Content/scojs.css",
+                "~/Content/tubs.css"
                 ));
         }
     }

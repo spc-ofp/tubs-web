@@ -22,7 +22,8 @@
         <div class="tab-pane active" id="1">
         @if(!ViewBag.IsReadOnly)
         {
-            <p>@Html.ActionLink("Edit sightings", "EditSightings", null, new { @class = "btn btn-primary" })</p>
+            var editSightingsLink = Url.Action("EditSightings");
+            <p><a href="@editSightingsLink" class="btn btn-primary"><i class="icon-edit icon-white"></i>&nbsp;Edit Sightings</a></p>
         }
         @* TODO: _Sightings uses WebGrid which isn't where we really want to be *@
         @{ Html.RenderPartial("_Sightings", Model.Sightings); }
@@ -30,7 +31,8 @@
         <div class="tab-pane" id="2">
         @if(!ViewBag.IsReadOnly)
         {
-            <p>@Html.ActionLink("Edit transfers", "EditTransfers", null, new { @class = "btn btn-primary" })</p>
+            var editTransfersLink = Url.Action("EditTransfers");
+            <p><a href="@editTransfersLink" class="btn btn-primary"><i class="icon-edit icon-white"></i>&nbsp;Edit Transfers</a></p>
         }
         @* TODO: _Transfers uses WebGrid which isn't where we really want to be *@ 
         @{ Html.RenderPartial("_Transfers", Model.Transfers); }

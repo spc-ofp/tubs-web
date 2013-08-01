@@ -233,5 +233,15 @@ namespace TubsWeb.Areas.Testing.Controllers
             return View();
         }
 
+        /// <summary>
+        /// PS-4 header form unit tests
+        /// </summary>
+        /// <returns>QUnit view</returns>
+        public ActionResult Ps4Header()
+        {
+            ViewBag.Title = "PS-4 Header unit tests";
+            return View();
+        }
+
     }
 }
