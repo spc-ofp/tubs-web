@@ -17,22 +17,27 @@
 
 @{ Html.RenderPartial("_BreadCrumbs", crumbs); }
 
-@* TODO: With these pages, might be better to use the page number instead of just next/previous *@
-<ul class="pager">
-@if (Model.HasPrevious)
+@if (Model.PageCount.HasValue && Model.PageCount.Value > 1)
 {
-    <li>
-        <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, pageNumber = Model.PageNumber - 1, action = "Index" })'>Previous Page</a>
-    </li>
+<div class="pagination">
+    <ul>
+    @foreach (var pageNumber in Enumerable.Range(1, Model.PageCount.Value).Select(x => x))
+    {
+        var link = Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, pageNumber = pageNumber, action = "Index" });
+        var itemClass = (Model.PageNumber.HasValue && Model.PageNumber.Value == pageNumber) ? "active" : String.Empty;
+        <li class="@itemClass"><a href="@link">Page @pageNumber</a></li>
+    }
+    </ul>
+</div>
 }
-    
-@if (Model.HasNext)
-{
-    <li>
-        <a href='@Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, pageNumber = Model.PageNumber + 1, action = "Index" })'>Next Page</a>
-    </li>
+
+@if (!ViewBag.IsReadOnly)
+{ 
+<p>
+    @{ var editLink = Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, pageNumber = Model.PageNumber, action = "Edit" }); }
+    <a href="@editLink" class="btn btn-primary"><i class="icon-edit icon-white"></i>&nbsp;Edit Page</a>
+</p>
 }
-</ul>
 
 <div class="tabbable tabs-top">
     <ul id="formSections" class="nav nav-tabs">

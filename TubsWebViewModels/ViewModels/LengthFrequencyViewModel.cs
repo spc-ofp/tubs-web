@@ -61,7 +61,7 @@ namespace TubsWeb.ViewModels
         public IList<string> MeasuringInstruments = new List<string>
         {
             String.Empty,
-            "Aluminum Caliper",
+            "Aluminium Callipers",
             "Measuring Board",
             "Deck Tape",
             "Other"
