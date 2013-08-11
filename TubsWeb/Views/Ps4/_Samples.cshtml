@@ -17,7 +17,8 @@
         <div class="span2">
             @if(Model.IsEditor)
             {
-                @* Offset is embedded in the button so we can figure out how to display the correct column *@
+                // Offset is embedded in the button so we can figure out how to display the correct column
+                // TODO: The other issue here is that we'll be unable to save without a header ID
                 <p><button type="button" class="btn btn-info editColumn" data-offset="@offset">
                     <i class="icon-edit icon-white" title="Edit Column" rel="tooltip"></i>&nbsp;Edit Column</button></p>                
             }

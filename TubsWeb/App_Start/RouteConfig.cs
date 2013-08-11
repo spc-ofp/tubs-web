@@ -486,7 +486,14 @@ namespace TubsWeb
                 constraints: new { tripId = IsPositiveInteger }
             );
 
+            routes.MapRoute(
+                name: "Ps4SampleColumn",
+                url: "Trip/{tripId}/Samples/{headerId}/{offset}/{action}",
+                defaults: new { controller = "PurseSeineSample", action = "Index" },
+                constraints: new { tripId = IsPositiveInteger, headerId = IsPositiveInteger, offset = IsPositiveInteger }
+            );
 
+            // TODO: This will probably go out the window
             // Although length samples are subordinate to Sets, they'll be available at a higher level
             // for a more readable URL.
             routes.MapRoute(

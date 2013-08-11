@@ -161,7 +161,7 @@ namespace TubsWeb
             //An authorize attribute filter takes the place of allow roles in web.config
             //filters.Add(new AuthorizeAttribute { Roles = @"NOUMEA\OFP Users" });
             // The following filter is only for non-AD authentication
-            filters.Add(new LogonAuthorize());
+            //filters.Add(new LogonAuthorize());
             filters.Add(new ElmahHandledErrorLoggerFilter());
             filters.Add(new HandleErrorAttribute());
         }

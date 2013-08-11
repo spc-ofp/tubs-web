@@ -24,56 +24,88 @@
     var addPage = Url.RouteUrl(TubsWeb.RouteConfig.Ps4BySetAndPage, new { tripId = Model.TripId, setNumber = Model.SetNumber, action = "Add" });
 }
 
-<p>
-    @if (Model.HasPrevious)
-    { 
-    <a href="@previousPage" class="btn btn-info"><i class="icon-backward icon-white"></i>&nbsp;Previous Page</a>
-    }
-    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
-        <i class="icon-save icon-white"></i>&nbsp;Save
-    </button>
-    @if (Model.Id != 0)
-    {
-    <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
-        <i class="icon-refresh icon-white"></i>&nbsp;Reload
-    </button>
-    }
-    @if (Model.HasNext)
-    { 
-    <a href="@nextPage" class="btn btn-info">Next Page&nbsp;<i class="icon-forward icon-white"></i></a>
-    }
+<div id="ps4form">
+    <p>
+        @if (Model.HasPrevious)
+        { 
+        <a href="@previousPage" class="btn btn-info"><i class="icon-backward icon-white"></i>&nbsp;Previous Page</a>
+        }
+        <button id="saveButton" type="button" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
+            <i class="icon-save icon-white"></i>&nbsp;Save
+        </button>
+        @if (Model.Id != 0)
+        {
+        <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
+            <i class="icon-refresh icon-white"></i>&nbsp;Reload
+        </button>
+        }
+        @if (Model.HasNext)
+        { 
+        <a href="@nextPage" class="btn btn-info">Next Page&nbsp;<i class="icon-forward icon-white"></i></a>
+        }
     
-    @if (!Model.HasNext && Model.Id != 0)
-    { 
-    <a href="@addPage" class="btn btn-info addPage"><i class="icon-plus-sign icon-white"></i> Add Page</a>
-    }
-    <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
-</p>
+        @if (!Model.HasNext && Model.Id != 0)
+        { 
+        <a href="@addPage" class="btn btn-info addPage"><i class="icon-plus-sign icon-white"></i> Add Page</a>
+        }
+        <span data-bind="visible: $root.isDirty" class="text-warning">You have unsaved changes.</span>
+    </p>
 
-<div class="tabbable tabs-top">
-    <ul id="formSections" class="nav nav-tabs">
-        <li class="active"><a href="#details" data-toggle="tab">Sampling Details</a></li>
-        <li><a href="#brails" data-toggle="tab">Brails</a></li>
-        <li><a href="#samples" data-toggle="tab">Samples</a></li>
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" id="details">
-            @{ Html.RenderPartial("_ProtocolEditor"); }
-        </div>
-        <div class="tab-pane" id="brails">
-            @{ Html.RenderPartial("_BrailEditor"); }
-        </div>    
-        <div class="tab-pane" id="samples">
-            @{ Html.RenderPartial("_Samples", Model); }
+    <div class="tabbable tabs-top">
+        <ul id="formSections" class="nav nav-tabs">
+            <li class="active"><a href="#details" data-toggle="tab">Sampling Details</a></li>
+            <li><a href="#brails" data-toggle="tab">Brails</a></li>
+            <li><a href="#samples" data-toggle="tab">Samples</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="details">
+                @{ Html.RenderPartial("_ProtocolEditor"); }
+            </div>
+            <div class="tab-pane" id="brails">
+                @{ Html.RenderPartial("_BrailEditor"); }
+            </div>    
+            <div class="tab-pane" id="samples">
+                @{ Html.RenderPartial("_Samples", Model); }
+            </div>
         </div>
     </div>
-</div>
+</div> <!-- /ps4form -->
 
+@* 
+ * It's important that the code for creating the ViewModel for this modal
+ * _ALWAYS_ creates an array containing 20 entries, even if they're all empty.
+ *
+ * Unbind is ko.cleanNode: http://stackoverflow.com/questions/11032129
+ *@
+<div id="sampleModal" class="modal hide fade" tabindex="-1" role="dialog">
+    <div class="modal-header">
+        <h3><span data-bind="text: $root.HeaderText" /></h3>
+    </div>
+    <div class="modal-body">
+        <ul class="unstyled">
+        @foreach (var index in Enumerable.Range(0, 20))
+        { 
+            var dbind = "with: samples()[" + index + "]";
+            <li data-bind="@dbind">
+                <div class="form-horizontal compact-row">
+                    <span data-bind="text: Number"></span>
+                    <input type="text" class="input-small" data-bind="value: SpeciesCode" />
+                    <input type="number" class="input-small" min="0" data-bind="value: Length" />
+                </div>
+            </li>
+        }
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button type="button" id="closeModal" class="btn">Close</button>
+        <button type="button" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
+            <i class="icon-save icon-white"></i>&nbsp;Save
+        </button>
+    </div>
+</div>
 @*
 <pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
 *@
-
-
 
 @section AdditionalScripts {
     @Scripts.Render("~/bundles/knockout")
@@ -85,8 +117,9 @@
     @{ var modelAsJson = Html.Raw(JsonConvert.SerializeObject(Model)); }
     <script>
         $(function () {
-            var viewModel = new tubs.Ps4HeaderViewModel(@modelAsJson);           
-            ko.applyBindings(viewModel);
+            var viewModel = new tubs.Ps4HeaderViewModel(@modelAsJson);
+            // Unlike everything else in TUBS, this binding is applied at a specific node
+            ko.applyBindings(viewModel, document.getElementById('ps4form'));
             viewModel.clearDirtyFlag();
 
             /* TODO: Extract this into a common script for the whole application */

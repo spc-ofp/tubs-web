@@ -93,6 +93,7 @@ namespace TubsWeb
                     "~/Scripts/trunk8.js",
 
                     // Other 3rd party libraries
+                    "~/Scripts/select2.js",
                     "~/Scripts/pageguide.js",
                     "~/Scripts/moment.js",
                     "~/Scripts/amplify.js",
@@ -123,13 +124,13 @@ namespace TubsWeb
                     "~/Scripts/hogan-{version}.js"
                 ));
 
-
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap-responsive.css",
                 "~/Content/bootstrap.css",
                 "~/Content/font-awesome.css",
-                "~/Content/bootstrap-datepicker.css",                
+                "~/Content/bootstrap-datepicker.css",
                 "~/Content/pageguide.css",
+                "~/Content/select2.css",
                 "~/Content/rateit.css",
                 "~/Content/toastr.css",
                 "~/Content/scojs.css",

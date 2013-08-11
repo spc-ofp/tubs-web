@@ -12,8 +12,8 @@
 @{
     IEnumerable<Tuple<string, string>> crumbs = new List<Tuple<string, string>>()
     {
-        Tuple.Create(Url.RouteUrl("TripList"), "Trips"),
-        Tuple.Create(Url.Action("Details", "Trip", new { tripId = Model.TripId }), Model.TripNumber ?? "This Trip"),
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.TripList), "Trips"),
+        Tuple.Create(Url.RouteUrl(TubsWeb.RouteConfig.TripDetails, new { tripId = Model.TripId }), Model.TripNumber),
         Tuple.Create(Url.Action("Sightings", "Gen1", new { tripId = Model.TripId }), "Sightings"),
         Tuple.Create("#", "Edit GEN-1 Sightings")
     };
@@ -25,12 +25,8 @@
     Html.RenderPartial("_CountryCodes");
 }
 
-@* 
-    * By keeping the buttons and text in the same paragraph container, there's no positional change/re-rendering of form
-    * when the first 'dirtying' change occurs.
-    *@
 <p>
-    <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
+    <button id="saveButton" type="button" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
         <i class="icon-save icon-white"></i>&nbsp;Save
     </button>
     <button id="reloadButton" type="button" class="btn btn-warning" data-bind="activity: $root.reloadCommand.isExecuting, command: $root.reloadCommand">
@@ -60,7 +56,7 @@
     </thead>
     <tbody data-bind="foreach: Sightings" class="lineitems">
         <tr data-bind="css: { warning: (isDirty() || 0 === Id) }">               
-            <td><input type="text" data-bind="value: DateOnly.formattedDate, uniqueName: true" class="input-mini" /></td>
+            <td><input type="text" data-bind="hasfocus: NeedsFocus, value: DateOnly.formattedDate, uniqueName: true" class="input-mini" /></td>
             <td><input type="text" data-bind="value: TimeOnly, uniqueName: true" class="input-mini" /></td>
             <td><input type="text" data-bind="value: Latitude, uniqueName: true" class="input-small" /></td>
             <td><input type="text" data-bind="value: Longitude, uniqueName: true" class="input-small" /></td>

@@ -52,54 +52,44 @@
     </div>
 </div>
 <hr />
+@* TODO: Remove add button in each row *@
 <div class="row-fluid">
     <div class="span4">
         <label><strong>Main Materials</strong></label>
         <button id="addMainMaterialsWhenEmpty" type="button" data-bind="visible: ($root.MainMaterials().length == 0)" class="btn btn-info">Add</button>
         <ul data-bind="foreach: $root.MainMaterials()" class="mainMaterials unstyled">
             <li>
-                <div class="form-horizontal">
-                    <button type="button"
-                            tabindex="3000"
-                            class="removeItem btn btn-mini btn-danger" 
-                            rel="tooltip" 
-                            title="Click to remove row">
-                        <i class="icon-remove icon-white"></i>
-                    </button>
+                <div class="form-horizontal compact-row">
                     <select data-bind="options: $root.MaterialCodes, value: MaterialCode, hasfocus: NeedsFocus" class="input-mini"></select>
                     <button type="button"
-                            class="addItem btn btn-mini btn-info" 
+                            tabindex="3000"
+                            class="removeItem btn btn-danger" 
                             rel="tooltip" 
-                            title="Click to add row">
-                        <i class="icon-plus icon-white"></i>
+                            title="Click to remove row">
+                        <i class="icon-trash icon-white"></i>
                     </button>
                 </div>
             </li>
         </ul>
+        <button id="addMainMaterial" type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i>&nbsp;Add Material</button>
     </div>
     <div class="span4">
         <label><strong>Attachments</strong></label>
-        <button id="addAttachmentWhenEmpty" type="button" data-bind="visible: ($root.Attachments().length == 0)" class="btn btn-info">Add</button>
         <ul data-bind="foreach: $root.Attachments()" class="attachments unstyled">
             <li>
-                <div class="form-horizontal">
-                    <button type="button"
-                            tabindex="3000"
-                            class="removeItem btn btn-mini btn-danger" 
-                            rel="tooltip" 
-                            title="Click to remove row">
-                        <i class="icon-remove icon-white"></i>
-                    </button>
+                <div class="form-horizontal compact-row">
                     <select data-bind="options: $root.MaterialCodes, value: MaterialCode, hasfocus: NeedsFocus" class="input-mini"></select>
                     <button type="button"
-                            class="addItem btn btn-mini btn-info" 
+                            tabindex="3000"
+                            class="removeItem btn btn-danger" 
                             rel="tooltip" 
-                            title="Click to add row">
-                        <i class="icon-plus icon-white"></i>
+                            title="Click to remove row">
+                        <i class="icon-trash icon-white"></i>
                     </button>
                 </div>
             </li>
         </ul>
+        <button id="addAttachment" type="button" class="btn btn-info"><i class="icon-plus-sign icon-white"></i>&nbsp;Add Attachment</button>
     </div>
 </div>
 <hr />

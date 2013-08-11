@@ -10,7 +10,7 @@
     @if (Model.HasPrevious)
     { 
     <a href='@previousPage' id="previousEventButton" class="btn btn-info">
-        <i class="icon-backward icon-white"></i>
+        <i class="icon-backward icon-white"></i>&nbsp;Previous Event
     </a>
     }
     <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
@@ -32,34 +32,28 @@
 <fieldset>
     <legend>Species Sighted</legend>
 </fieldset>
-<div class="row-fluid">
+<div class="row">
     <div class="span2">
         <label>Date</label>
         <div class="input-append date datepicker" data-date-format="dd/mm/yy">
-            @Html.TextBoxFor(
-                m => Model.ShipsDate,
-                new
-                {
-                    data_val = "true",
-                    data_val_required = "Date portion of landing date is required",
-                    data_bind = "value: ShipsDate.formattedDate",
-                    placeholder = "dd/mm/yy",
-                    @class = "input-small"
-                })
+            <input type="text" 
+                   data-val="true" 
+                   data-val-required="Date portion of sighting date is required" 
+                   data-bind="value: ShipsDate.formattedDate" 
+                   class="input-mini" 
+                   placeholder="dd/mm/yy" />
             <span class="add-on"><i class="icon-calendar"></i></span>
         </div>
     </div>
     <div class="span2">
         <label>Time</label>
         <div class="input-append">
-            @Html.TextBoxFor(
-                m => Model.ShipsTime, 
-                new { 
-                    data_val_required = "Time portion of landing date is required", 
-                    data_bind = "value: $root.ShipsTime",
-                    placeholder = "HHmm",
-                    @class = "input-mini"
-                })
+            <input type="text"
+                   data-val="true" 
+                   data-val-required="Time portion of sighting date is required" 
+                   data-bind="value: $root.ShipsTime" 
+                   placeholder="HHmm" 
+                   class="input-mini" />
             <span class="add-on"><i class="icon-time"></i></span>
         </div>
     </div>
@@ -106,7 +100,7 @@
     <div class="span4">
         <label>Description (if other)</label>
         <div>
-            <input type="text" data-bind="value: VesselActivityDescription" class="input-medium" />
+            <input type="text" data-bind="value: VesselActivityDescription, enable: ('Other' == VesselActivity())" class="input-medium" />
         </div>
     </div>
 </div>

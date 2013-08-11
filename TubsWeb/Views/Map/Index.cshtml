@@ -46,6 +46,10 @@
 
 @section AdditionalScripts {
     @System.Web.Optimization.Scripts.Render("~/bundles/leaflet")
+    @{
+        // Allow this to be modified in web.config:  Hopefully this will help FFA etc.
+        var tileserver = System.Web.Configuration.WebConfigurationManager.AppSettings["TileServerUrl"].ToString();
+    }
     <script>
         $(function () {
             L.Icon.Default.imagePath = '@Url.Content("~/Content/images")';
@@ -55,7 +59,7 @@
             var positionsLayer = L.geoJson();
 
             // An additional layer for our local tile server
-            var tileLayer = L.tileLayer('http://nouofputil01/mbtiles/test/{z}/{x}/{y}.png', {
+            var tileLayer = L.tileLayer('@tileserver', {
                 maxZoom: 9,
                 attribution: 'Map data &copy; CROP'
             });

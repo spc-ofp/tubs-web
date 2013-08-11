@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Advanced Search";
+}
+
+<form class="form well">
+    <label for="foo">Yo Dawg:&nbsp;<span class="badge">5</span></label>
+    <input type="text" id="foo"/>
+
+    <label for="bar">Yo Dawg:&nbsp;<span class="badge">5</span></label>
+    <input type="text" id="bar"/>
+</form>
+
+<div class="row">
+    <div class="span2">
+        <label><strong>Year:</strong>&nbsp;<span class="badge">5</span></label>
+        <select multiple="multiple" id="year" class="select2 input-medium">
+            <option>1996</option>
+            <option>1997</option>
+            <option>1998</option>
+        </select>
+    </div>
+    <div class="span4">
+        <label><strong>Observer:</strong>&nbsp;<span class="badge">5</span></label>
+        <select multiple="multiple" id="observer" class="select2 input-xlarge">
+            <option value="DJB">Dave Burgess (DJB)</option>
+            <option value="PBS">Peter Sharples (PBS)</option>
+        </select>
+    </div>
+    <div class="span4">
+        <label><strong>Vessel:</strong>&nbsp;<span class="badge">5</span></label>
+        <select multiple="multiple" id="vessel" class="select2 input-xlarge">
+            <option value="DJB">Dave Burgess (DJB)</option>
+            <option value="PBS">Peter Sharples (PBS)</option>
+        </select>
+    </div>
+</div>
+
+
+@section AdditionalScripts {
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>    
+}

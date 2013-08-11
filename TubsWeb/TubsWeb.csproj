@@ -174,10 +174,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\PagedList.Mvc.4.2.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="RouteDebugger, Version=2.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\routedebugger.2.1.4.0\lib\net40\RouteDebugger.dll</HintPath>
-    </Reference>
     <Reference Include="SharpKml, Version=1.0.4638.18211, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SharpKml.1.1.0.0\lib\net40\SharpKml.dll</HintPath>
@@ -200,6 +196,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Spatial.5.5.0\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -288,7 +285,6 @@
     <Compile Include="Areas\WebApi\Controllers\VesselController.cs" />
     <Compile Include="Areas\WebApi\WebApiAreaRegistration.cs" />
     <Compile Include="Controllers\AbstractSetController.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Areas\WebApi\Controllers\TripController.cs" />
     <Compile Include="Controllers\ElectronicsController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
@@ -300,7 +296,9 @@
     <Compile Include="Controllers\PageCountController.cs" />
     <Compile Include="Controllers\Ps1Controller.cs" />
     <Compile Include="Controllers\Ps4Controller.cs" />
+    <Compile Include="Controllers\PurseSeineSampleController.cs" />
     <Compile Include="Controllers\SamplingController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SetHaulController.cs" />
     <Compile Include="Controllers\TripInfoController.cs" />
     <Compile Include="Areas\Testing\Controllers\UnitTestController.cs" />
@@ -327,7 +325,6 @@
     <Compile Include="Core\KmlBuilder.cs" />
     <Compile Include="Core\KmlResult.cs" />
     <Compile Include="Core\KmlStyleBuilder.cs" />
-    <Compile Include="Core\LogonAuthorize.cs" />
     <Compile Include="Core\NavPill.cs" />
     <Compile Include="Core\NoSuchTripResult.cs" />
     <Compile Include="Core\PushpinExtensions.cs" />
@@ -346,7 +343,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\GearUnits.cs" />
     <Compile Include="Models\PositionAuditViewModel.cs" />
     <Compile Include="Models\SearchResult.cs" />
@@ -366,6 +362,10 @@
     <Content Include="Content\bootstrap-responsive.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\images\select2-spinner.gif" />
+    <Content Include="Content\select2.css" />
+    <Content Include="Content\images\select2.png" />
+    <Content Include="Content\images\select2x2.png" />
     <Content Include="Content\datetimepicker.css" />
     <Content Include="Content\delete.gif" />
     <Content Include="Content\font-awesome-ie7.css" />
@@ -783,6 +783,8 @@
     <Content Include="Scripts\knockout.viewmodel.2.0.3.min.js" />
     <Content Include="Scripts\leaflet-src.js" />
     <Content Include="Scripts\leaflet.js" />
+    <Content Include="Scripts\select2.js" />
+    <Content Include="Scripts\select2.min.js" />
     <Content Include="Scripts\tubs-custom-bindings.js" />
     <Content Include="Scripts\knockout.dirtyFlag.js" />
     <Content Include="Scripts\knockout.mapping-latest.debug.js" />
@@ -949,6 +951,8 @@
     <Content Include="Views\Ps4\_Editor.cshtml" />
     <Content Include="Views\Ps4\_ProtocolEditor.cshtml" />
     <Content Include="Views\Ps4\_BrailEditor.cshtml" />
+    <Content Include="Views\PurseSeineSample\Index.cshtml" />
+    <Content Include="Views\Search\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

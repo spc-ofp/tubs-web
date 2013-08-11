@@ -11,7 +11,7 @@
     @if (Model.HasPrevious)
     { 
     <a href='@previousPage' class="btn btn-info">
-        <i class="icon-backward icon-white"></i>
+        <i class="icon-backward icon-white"></i>&nbsp;Previous Event
     </a>
     }
     <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">
@@ -39,7 +39,7 @@
         <div class="input-append date datepicker" data-date-format="dd/mm/yy">
             <input type="text" 
                    data-val="true" 
-                   data-val-required="Date portion of landing date is required"
+                   data-val-required="Date portion of interaction date is required"
                    data-bind="value: ShipsDate.formattedDate"
                    placeholder="dd/mm/yy"
                    class="input-small required" />
@@ -51,7 +51,7 @@
         <div class="input-append">
             <input type="text" 
                    data-val="true" 
-                   data-val-required="Time portion of landing date is required"
+                   data-val-required="Time portion of interaction date is required"
                    data-bind="value: $root.ShipsTime"
                    placeholder="HHmm"
                    class="input-mini required" />
@@ -101,8 +101,7 @@
     <div class="span4">
         <label>Description (if other)</label>
         <div>
-            @* TODO: Disabled unless VesselActivity == 'Other' *@
-            <input type="text" data-bind="value: VesselActivityDescription" class="input-medium" />
+            <input type="text" data-bind="value: VesselActivityDescription, enable: ('Other' == VesselActivity())" class="input-medium" />
         </div>
     </div>
 </div>

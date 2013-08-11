@@ -16,7 +16,7 @@
     @if (Model.HasPrevious)
     { 
     <a href='@previousPage' id="previousEventButton" class="btn btn-info">
-        <i class="icon-backward icon-white"></i>
+        <i class="icon-backward icon-white"></i>&nbsp;Previous Event
     </a>
     }
     <button id="saveButton" type="submit" class="btn btn-primary" data-bind="activity: $root.saveCommand.isExecuting, command: $root.saveCommand">

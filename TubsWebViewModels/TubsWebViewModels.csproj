@@ -145,6 +145,7 @@
     <Compile Include="ViewModels\PurseSeineSampleViewModel.cs" />
     <Compile Include="ViewModels\PurseSeineSetViewModel.cs" />
     <Compile Include="ViewModels\SafetyInspectionViewModel.cs" />
+    <Compile Include="ViewModels\SampleColumnViewModel.cs" />
     <Compile Include="ViewModels\SeaDayViewModel.cs" />
     <Compile Include="ViewModels\SightingViewModel.cs" />
     <Compile Include="ViewModels\TrackViewModel.cs" />

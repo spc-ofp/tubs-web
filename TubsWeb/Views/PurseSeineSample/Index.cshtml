@@ -1,0 +1,19 @@
+﻿@model TubsWeb.ViewModels.SampleColumnViewModel
+
+@{
+    Layout = null;
+}
+
+Id: @Model.Id
+
+
+
+<ul>
+@foreach (var x in Model.Samples)
+{
+    if (null != x)
+    { 
+    <li>@x.Id | @x.Sequence | @x.SpeciesCode | @x.Length</li>
+    }       
+}
+</ul>
