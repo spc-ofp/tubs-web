@@ -58,7 +58,13 @@ namespace TubsWeb.ViewModels.Resolvers
     {
         protected override string ResolveCore(ElectronicDeviceType source)
         {
-            return source.Description();
+            try
+            {
+                return source.Description();
+            }
+            catch {
+                return "DEVICE VIEWABLE IN TUBS ACCESS ONLY";
+            }
         }
     }
 }
